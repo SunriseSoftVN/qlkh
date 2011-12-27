@@ -1,0 +1,4 @@
+/*This file override gxt widget style*/
+.x-border-layout-ct {
+    background: none !important;
+}

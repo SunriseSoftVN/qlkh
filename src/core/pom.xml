@@ -49,6 +49,13 @@
             <version>${smvp4gVerion}</version>
         </dependency>
 
+        <!--Ext js -->
+        <dependency>
+            <groupId>com.extjs</groupId>
+            <artifactId>gxt</artifactId>
+            <version>${gxtVersion}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

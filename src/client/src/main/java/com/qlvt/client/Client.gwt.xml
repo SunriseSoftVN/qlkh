@@ -2,9 +2,10 @@
 <module rename-to='Client'>
 
     <inherits name='com.smvp4g.mvp.Mvp'/>
+    <inherits name='com.qlvt.core.Core'/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='info.playenglish.client.client.PlayEnglishEntryPoint'/>
+    <entry-point class='com.qlvt.client.client.QlvtEntryPoint'/>
 
     <!-- English language, independent of country -->
     <extend-property name="locale" values="en"/>

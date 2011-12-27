@@ -1,0 +1,50 @@
+/*
+* { margin: 0;	padding: 0; }
+*/
+body {
+    margin: auto !important;
+    width: 900px !important;
+    background: #E9E7E0;
+}
+
+#banner_panel {
+    width: 100%;
+    background: black;
+}
+
+#top_panel {
+    width: 100%;
+}
+
+#left_panel {
+    float: left;
+    width: 200px;
+}
+
+#content_panel {
+    float: left;
+    width: 900px;
+    background: white;
+}
+
+#right_panel {
+    background-color: blue;
+    float: right;
+    width: 200px;
+}
+
+#bottom_panel {
+    clear: left;
+    width: 100%;
+    background: #F9F9F9;
+    border-top: thin solid lightgray;
+}
+
+#loading {
+    text-align: center;
+    width: 100%;
+}
+
+/*table {*/
+/*border: solid #666666;*/
+/*}*/

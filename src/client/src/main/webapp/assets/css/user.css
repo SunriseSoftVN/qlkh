@@ -1,0 +1,30 @@
+.mainmenu {
+    padding-left: 10px;
+    width: 85%;
+}
+
+.topmenu .active {
+    background: #EFD137;
+}
+
+.topmenu {
+    border-bottom:thin solid lightgray;
+}
+
+.copyright_panel {
+    padding-top: 50px;
+    text-align: center;
+}
+
+.login_panel {
+    width: 100%;
+    vertical-align: middle;
+}
+
+.float_right {
+    float: right;
+}
+
+.float_left {
+    float: left;
+}
