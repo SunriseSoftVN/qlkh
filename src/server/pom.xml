@@ -132,10 +132,11 @@
             <version>${slf4jVersion}</version>
         </dependency>
 
+        <!-- jdbc driver -->
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernateVersion}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysqlDiverVersion}</version>
         </dependency>
 
     </dependencies>

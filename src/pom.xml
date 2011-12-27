@@ -22,6 +22,8 @@
         <seleniumVersion>2.2.0</seleniumVersion>
         <slf4jVersion>1.6.1</slf4jVersion>
         <hibernateVersion>4.0.0.Final</hibernateVersion>
+        <hibernateValidatorVersion>4.2.0.Final</hibernateValidatorVersion>
+        <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

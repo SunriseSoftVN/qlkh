@@ -7,7 +7,7 @@
 
     <servlet>
         <servlet-name>ProxyServlet</servlet-name>
-        <servlet-class>info.playenglish.client.server.proxy.MyProxyServlet</servlet-class>
+        <servlet-class>com.qlvt.client.server.proxy.MyProxyServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
