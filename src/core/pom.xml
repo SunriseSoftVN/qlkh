@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>qlvt</artifactId>
+        <groupId>com</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.qlvt</groupId>
+    <artifactId>core</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <!--GWT dependencies-->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <classifier>sources</classifier>
+            <version>1.0.0.GA</version>
+        </dependency>
+
+        <!--add i18n support for server side-->
+        <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>hermes</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
+        <!-- smvp4g framework-->
+        <dependency>
+            <groupId>com.smvp4g</groupId>
+            <artifactId>mvp</artifactId>
+            <version>${smvp4gVerion}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
