@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='Client'>
+
+    <inherits name='com.smvp4g.mvp.Mvp'/>
+
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class='info.playenglish.client.client.PlayEnglishEntryPoint'/>
+
+    <!-- English language, independent of country -->
+    <extend-property name="locale" values="en"/>
+
+    <!-- VietNamese language, independent of country -->
+    <extend-property name="locale" values="vi"/>
+
+    <!-- Default English Language-->
+    <set-property-fallback name="locale" value="en"/>
+
+    <!-- Specify the paths for translatable code                    -->
+    <source path='client'/>
+</module>
