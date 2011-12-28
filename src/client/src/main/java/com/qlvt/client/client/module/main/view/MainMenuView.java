@@ -19,6 +19,7 @@
 
 package com.qlvt.client.client.module.main.view;
 
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.place.TestPlace;
@@ -44,13 +45,20 @@ public class MainMenuView extends AbstractView {
     @HistoryHandler
     MenuLink menuLink = new MenuLink("Menu 1", TestPlace.class);
 
+    Anchor ancLogout = new Anchor("Logout");
+
     private HorizontalPanel mainPanel = new HorizontalPanel();
 
     @Override
     protected void initializeView() {
         mainPanel.add(menuLink);
+        mainPanel.add(ancLogout);
         mainPanel.setSpacing(5);
         setWidget(mainPanel);
         setStyleName("topmenu");
+    }
+
+    public Anchor getAncLogout() {
+        return ancLogout;
     }
 }

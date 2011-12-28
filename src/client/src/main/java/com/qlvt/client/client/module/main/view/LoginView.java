@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 import com.smvp4g.mvp.client.widget.TextField;
@@ -35,6 +36,7 @@ import com.smvp4g.mvp.client.widget.TextField;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 9:51 AM
  */
+@ViewSecurity(showOnlyGuest = true)
 @View(parentDomId = DomIdConstant.CONTENT_PANEL)
 public class LoginView extends AbstractView {
 

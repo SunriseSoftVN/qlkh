@@ -19,9 +19,14 @@
 
 package com.qlvt.client.client.module.main.presenter;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.module.main.view.MainMenuView;
+import com.qlvt.client.client.utils.UrlUtils;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 
 /**
  * The Class MainMenuPresenter.
@@ -34,5 +39,26 @@ public class MainMenuPresenter extends AbstractPresenter<MainMenuView> {
     @Override
     public void onActivate() {
         view.show();
+    }
+
+    @Override
+    protected void doBind() {
+        view.getAncLogout().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                LoginUtils.logOut();
+                goToHomePage();
+            }
+        });
+    }
+
+    private void goToHomePage() {
+        String url = UrlUtils
+                .removeHistoryToken(Window.Location.getHref());
+        if (url.equals(Window.Location.getHref())) {
+            Window.Location.reload();
+        } else {
+            Window.Location.replace(url);
+        }
     }
 }
