@@ -28,4 +28,10 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 12/28/11, 4:52 PM
  */
 public interface UserManagerConstant extends Constants {
+    String userIdColumnTitle();
+    String userNameColumnTitle();
+    String createdDateColumnTitle();
+    String updatedDateColumnTitle();
+    String btnDelete();
+    String btnAdd();
 }
