@@ -17,20 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.core.client.exception;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.qlvt.core.client.model.User;
-import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The Class TestAsync.
+ * The Class UserAuthenticationException.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 5:42 PM
+ * @since 12/28/11, 10:16 AM
  */
-public interface TestAsync extends RemoteServiceAsync<TestAsync> {
-    void test(User user, AsyncCallback<String> async);
+public class UserAuthenticationException extends RuntimeException implements IsSerializable {
 
-    void hello(AsyncCallback<Void> async);
+    public UserAuthenticationException() {
+
+    }
+
+    public UserAuthenticationException(String message) {
+        super(message);
+    }
+
 }

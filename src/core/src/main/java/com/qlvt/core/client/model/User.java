@@ -30,8 +30,8 @@ import com.qlvt.core.client.model.core.AbstractEntity;
 public class User extends AbstractEntity {
 
     private String userName;
-
     private String passWord;
+    private String userRole;
 
     public String getUserName() {
         return userName;
@@ -47,5 +47,13 @@ public class User extends AbstractEntity {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
     }
 }

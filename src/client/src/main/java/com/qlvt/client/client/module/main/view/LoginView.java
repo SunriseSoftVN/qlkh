@@ -67,4 +67,20 @@ public class LoginView extends AbstractView {
         contentPanel.setHeaderVisible(false);
         setWidget(contentPanel);
     }
+
+    public Button getBtnOk() {
+        return btnOk;
+    }
+
+    public Button getBtnCancel() {
+        return btnCancel;
+    }
+
+    public TextField<String> getTxtUserName() {
+        return txtUserName;
+    }
+
+    public TextField<String> getTxtPassWord() {
+        return txtPassWord;
+    }
 }

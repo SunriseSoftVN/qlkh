@@ -17,36 +17,41 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.utils;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.qlvt.client.client.utils.ServiceUtils;
-import com.qlvt.core.client.model.User;
-import com.smvp4g.mvp.client.core.service.RemoteService;
+import com.qlvt.client.client.utils.i18n.ApplicationMessageConstants;
 
 /**
- * The Class Test.
+ * The Utils Class using for get generic message of this application.
+ * <p>
+ * <b>Example:</b>
+ * </p>
+ * <p>
+ * <b>RPC connect error.</b>
+ * </p>
+ * <p>
+ * <b>Server shutdown.</b>
+ * </p>
  *
- * @author Nguyen Duc Dung
- * @since 12/27/11, 5:42 PM
+ * @author dungvn3000
+ * @since 6/17/11, 12:00 PM
  */
-@RemoteServiceRelativePath("Test")
-public interface Test extends RemoteService<Test> {
-    
-    String test(User user);
-    void hello();
-    
-    /**
-     * Utility/Convenience class.
-     * Use Test.App.getInstance() to access static instance of TestAsync
-     */
-    public static class App {
-        private static final TestAsync ourInstance = (TestAsync) GWT.create(Test.class);
+public final class ApplicationMessageUtils {
 
-        public static TestAsync getInstance() {
-            ServiceUtils.configureServiceEntryPoint(Test.class, ourInstance);
-            return ourInstance;
-        }
+    private static ApplicationMessageConstants constants = GWT.create(ApplicationMessageConstants.class);
+
+    private ApplicationMessageUtils() {
+        // Hide it.
     }
+
+    /**
+     * Get generic of this application.
+     *
+     * @return
+     */
+    public static ApplicationMessageConstants getConstants() {
+        return constants;
+    }
+
 }

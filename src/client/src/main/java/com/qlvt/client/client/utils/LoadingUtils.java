@@ -17,21 +17,36 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.client.client.utils;
 
-import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.service.LoginServiceImpl;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * The Class ServletModule.
+ * The Class LoadingUtils.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:39 AM
+ * @since 9/15/11, 6:26 PM
  */
-public class ServletModule extends com.google.inject.servlet.ServletModule {
-    @Override
-    protected void configureServlets() {
-        String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Login").with(LoginServiceImpl.class);
+public final class LoadingUtils {
+
+    private static final String LOADING_PANEL = "loading_panel";
+
+    private LoadingUtils() {
+        //Hide it
     }
+
+    /**
+     * Hide loading panel.
+     */
+    public static void hideLoading() {
+        RootPanel.get(LOADING_PANEL).setVisible(false);
+    }
+
+    /**
+     * Show Loading panel.
+     */
+    public static void showLoading() {
+        RootPanel.get(LOADING_PANEL).setVisible(true);
+    }
+
 }

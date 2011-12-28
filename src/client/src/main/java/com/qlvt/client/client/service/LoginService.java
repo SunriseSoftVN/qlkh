@@ -17,35 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.client.client.service;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.qlvt.client.client.Test;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.exception.UserAuthenticationException;
 import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.service.core.AbstractService;
+import com.smvp4g.mvp.client.core.service.RemoteService;
 
 /**
- * The Class TestServiceImpl.
+ * The Class LoginService.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 5:50 PM
+ * @since 12/28/11, 10:13 AM
  */
-@Singleton
-public class TestServiceImpl extends AbstractService implements Test {
+@RemoteServiceRelativePath("Login")
+public interface LoginService extends RemoteService<LoginService> {
 
-    @Inject
-    private UserDao userDao;
+    User checkLogin(String userName, String passWord) throws UserAuthenticationException;
 
-    @Override
-    public String test(User user) {
-        user = userDao.findByUserName(user.getUserName());
-        return user.getId().toString();
-    }
+    public static class App {
+        private static final LoginServiceAsync ourInstance = (LoginServiceAsync) GWT.create(LoginService.class);
 
-    @Override
-    public void hello() {
-        System.out.println("hello");
+        public static LoginServiceAsync getInstance() {
+            ServiceUtils.configureServiceEntryPoint(LoginService.class, ourInstance);
+            return ourInstance;
+        }
     }
 }
