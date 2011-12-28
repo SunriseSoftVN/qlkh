@@ -52,6 +52,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
     @Override
     public void onActivate() {
         view.show();
+        view.getTxtUserName().focus();
     }
 
     @Override
@@ -70,6 +71,13 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
                     checkLogin(view.getTxtUserName().getValue(),
                             LoginUtils.md5hash(view.getTxtPassWord().getValue()));
                 }
+            }
+        });
+        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                view.getTxtPassWord().clear();
+                view.getTxtUserName().clear();
             }
         });
     }

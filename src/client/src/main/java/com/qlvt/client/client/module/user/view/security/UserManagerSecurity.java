@@ -32,6 +32,6 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 public class UserManagerSecurity implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
-        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN};
+        return new HasRole[]{UserRoleEnum.ADMIN};
     }
 }
