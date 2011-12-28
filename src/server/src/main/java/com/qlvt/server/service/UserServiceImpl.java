@@ -69,4 +69,14 @@ public class UserServiceImpl extends AbstractService implements UserService {
     public void deleteUserByIds(List<Long> userIds) {
         userDao.deleteByIds(User.class, userIds);
     }
+
+    @Override
+    public void updateUser(User user) {
+        userDao.saveOrUpdate(user);
+    }
+
+    @Override
+    public void updateUsers(List<User> users) {
+        userDao.saveOrUpdate(users);
+    }
 }

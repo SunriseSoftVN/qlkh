@@ -33,4 +33,8 @@ public interface UserServiceAsync extends RemoteServiceAsync<UserServiceAsync> {
     void deleteUserById(long userId, AsyncCallback<Void> async);
 
     void deleteUserByIds(List<Long> userIds, AsyncCallback<Void> async);
+
+    void updateUser(User user, AsyncCallback<Void> async);
+
+    void updateUsers(List<User> users, AsyncCallback<Void> async);
 }

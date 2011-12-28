@@ -39,6 +39,13 @@ public interface Dao<E extends AbstractEntity> {
     E saveOrUpdate(E entity);
 
     /**
+     * Save or Update entities.
+     * @param entities
+     * @return
+     */
+    List<E> saveOrUpdate(List<E> entities);
+
+    /**
      * Delete a entity.
      *
      * @param entity
@@ -69,6 +76,15 @@ public interface Dao<E extends AbstractEntity> {
      * @return
      */
     E findById(Class<E> clazz, long id);
+
+    /**
+     * Find a entity by id.
+     *
+     * @param clazz
+     * @param ids
+     * @return
+     */
+    List<E> findByIds(Class<E> clazz, List<Long> ids);
 
     /**
      * Get all entity in data store.

@@ -38,6 +38,8 @@ import java.util.List;
 @RemoteServiceRelativePath("User")
 public interface UserService extends RemoteService<UserService> {
 
+    void updateUsers(List<User> users);
+    void updateUser(User user);
     void deleteUserById(long userId);
     void deleteUserByIds(List<Long> userIds);
 

@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
@@ -71,7 +72,17 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getUsersGrid().getStore().commitChanges();
+                List<User> users = new ArrayList<User>();
+                for (Record record : view.getUsersGrid().getStore().getModifiedRecords()) {
+                    users.add(((BeanModel) record.getModel()).<User>getBean());
+                }
+                userService.updateUsers(users, new AbstractAsyncCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        DiaLogUtils.notify("Cap nhat thanh cong");
+                        view.getUsersGrid().getStore().commitChanges();
+                    }
+                });
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());

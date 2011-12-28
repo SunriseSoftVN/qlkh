@@ -24,7 +24,9 @@ import com.qlvt.server.util.SessionFactoryUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,9 +43,21 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     public E saveOrUpdate(E entity) {
         assert entity != null;
         openSession();
-        session.save(entity);
+        session.saveOrUpdate(entity);
         closeSession();
         return entity;
+    }
+
+    @Override
+    public List<E> saveOrUpdate(List<E> entities) {
+        if (CollectionUtils.isNotEmpty(entities)) {
+            openSession();
+            for (E entity : entities) {
+                session.saveOrUpdate(entity);
+            }
+            closeSession();
+        }
+        return entities;
     }
 
     @Override
@@ -70,6 +84,18 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     }
 
     @Override
+    public List<E> findByIds(Class<E> clazz, List<Long> ids) {
+        openSession();
+        Criteria criteria = session.createCriteria(clazz).add(Restrictions.in("id", ids));
+        List<E> entities = criteria.list();
+        if(CollectionUtils.isNotEmpty(entities)) {
+            return entities;
+        }
+        closeSession();
+        return Collections.emptyList();
+    }
+
+    @Override
     public List<E> getAll(Class<E> clazz) {
         openSession();
         Criteria criteria = session.createCriteria(clazz);
@@ -80,7 +106,7 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
 
     @Override
     public void deleteByIds(Class<E> clazz, List<Long> ids) {
-        List<E> entities = getAll(clazz);
+        List<E> entities = findByIds(clazz, ids);
         if (CollectionUtils.isNotEmpty(entities)) {
             openSession();
             for (E entity : entities) {
