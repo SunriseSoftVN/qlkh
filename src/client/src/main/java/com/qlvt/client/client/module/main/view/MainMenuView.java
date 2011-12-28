@@ -29,9 +29,11 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.qlvt.client.client.constant.DomIdConstant;
-import com.qlvt.client.client.module.content.place.TestPlace;
+import com.qlvt.client.client.module.main.view.i18n.MainMenuConstant;
 import com.qlvt.client.client.module.main.view.security.MainMenuViewSecutiry;
+import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.smvp4g.mvp.client.core.eventbus.annotation.HistoryHandler;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.FieldSecurity;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -45,17 +47,20 @@ import com.smvp4g.mvp.client.widget.MenuLink;
  * @since 12/28/11, 9:07 AM
  */
 @ViewSecurity(configuratorClass = MainMenuViewSecutiry.class)
-@View(parentDomId = DomIdConstant.TOP_PANEL)
-public class MainMenuView extends AbstractView {
+@View(parentDomId = DomIdConstant.TOP_PANEL, constantsClass = MainMenuConstant.class)
+public class MainMenuView extends AbstractView<MainMenuConstant> {
 
     @FieldSecurity
     @HistoryHandler
-    MenuLink menuLink = new MenuLink("Menu 1", TestPlace.class);
+    @I18nField
+    MenuLink mnlUserManager = new MenuLink(UserManagerPlace.class);
 
     @FieldSecurity
-    Anchor ancLogout = new Anchor("Logout");
+    @I18nField
+    Anchor ancLogout = new Anchor("");
 
     @FieldSecurity
+    @I18nField
     Label lblWelcome = new Label();
 
     private LayoutContainer mainPanel = new LayoutContainer();
@@ -67,7 +72,7 @@ public class MainMenuView extends AbstractView {
         layout.setPadding(new Padding(5));
         layout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
         mainPanel.setLayout(layout);
-        mainPanel.add(menuLink);
+        mainPanel.add(mnlUserManager);
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);

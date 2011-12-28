@@ -17,17 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.place;
+package com.qlvt.client.client.module.user.place;
 
 import com.smvp4g.mvp.client.core.place.AbstractPlace;
 import com.smvp4g.mvp.client.core.place.Place;
 
 /**
- * The Class TestPlace.
+ * The Class UserManagerPlace.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:24 AM
+ * @since 12/28/11, 4:46 PM
  */
 @Place(defaultPlace = true)
-public class TestPlace extends AbstractPlace {
+public class UserManagerPlace extends AbstractPlace {
 }

@@ -17,21 +17,18 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.security;
+package com.qlvt.client.client.module.main.view.i18n;
 
-import com.qlvt.core.client.constant.UserRoleEnum;
-import com.smvp4g.mvp.client.core.security.HasRole;
-import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
+import com.smvp4g.mvp.client.core.i18n.Constants;
 
 /**
- * The Class TestViewSecurity.
+ * The Class MainMenuConstant.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:42 AM
+ * @since 12/28/11, 3:25 PM
  */
-public class TestViewSecurity implements ViewSecurityConfigurator {
-    @Override
-    public HasRole[] getRoles() {
-        return new HasRole[]{UserRoleEnum.USER};
-    }
+public interface MainMenuConstant extends Constants {
+    String mnlUserManager();
+    String ancLogout();
+    String lblWelcome();
 }

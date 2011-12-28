@@ -17,23 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view;
+package com.qlvt.client.client.module.user.presenter;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.qlvt.client.client.constant.DomIdConstant;
-import com.smvp4g.mvp.client.core.view.AbstractView;
-import com.smvp4g.mvp.client.core.view.annotation.View;
+import com.qlvt.client.client.module.user.place.UserManagerPlace;
+import com.qlvt.client.client.module.user.view.UserManagerView;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 /**
- * The Class BannerView.
+ * The Class UserManagerPresenter.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 8:57 AM
+ * @since 12/28/11, 4:53 PM
  */
-@View(parentDomId = DomIdConstant.BANNER_PANEL)
-public class BannerView extends AbstractView {
+@Presenter(view = UserManagerView.class, place = UserManagerPlace.class)
+public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     @Override
-    protected void initializeView() {
-        setWidget(new Html("<h3 style='color:white'>QLVT Website v1.0<h3>"));
+    public void onActivate() {
+        view.show();
     }
 }

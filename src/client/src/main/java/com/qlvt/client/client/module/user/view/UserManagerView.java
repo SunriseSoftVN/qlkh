@@ -17,23 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view;
+package com.qlvt.client.client.module.user.view;
 
-import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.user.view.i18n.UserManagerConstant;
+import com.qlvt.client.client.module.user.view.security.UserManagerSecurity;
+import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
 /**
- * The Class BannerView.
+ * The Class UserManagerView.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 8:57 AM
+ * @since 12/28/11, 4:51 PM
  */
-@View(parentDomId = DomIdConstant.BANNER_PANEL)
-public class BannerView extends AbstractView {
+@ViewSecurity(configuratorClass = UserManagerSecurity.class)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = UserManagerConstant.class)
+public class UserManagerView extends AbstractView<UserManagerConstant> {
+
+    private ContentPanel contentPanel = new ContentPanel();
+
     @Override
     protected void initializeView() {
-        setWidget(new Html("<h3 style='color:white'>QLVT Website v1.0<h3>"));
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(500);
+        setWidget(contentPanel);
     }
 }

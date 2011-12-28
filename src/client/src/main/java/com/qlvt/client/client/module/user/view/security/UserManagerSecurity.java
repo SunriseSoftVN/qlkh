@@ -17,23 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view;
+package com.qlvt.client.client.module.user.view.security;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.qlvt.client.client.constant.DomIdConstant;
-import com.smvp4g.mvp.client.core.view.AbstractView;
-import com.smvp4g.mvp.client.core.view.annotation.View;
+import com.qlvt.core.client.constant.UserRoleEnum;
+import com.smvp4g.mvp.client.core.security.HasRole;
+import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 
 /**
- * The Class BannerView.
+ * The Class UserManagerSecurity.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 8:57 AM
+ * @since 12/28/11, 4:51 PM
  */
-@View(parentDomId = DomIdConstant.BANNER_PANEL)
-public class BannerView extends AbstractView {
+public class UserManagerSecurity implements ViewSecurityConfigurator {
     @Override
-    protected void initializeView() {
-        setWidget(new Html("<h3 style='color:white'>QLVT Website v1.0<h3>"));
+    public HasRole[] getRoles() {
+        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN};
     }
 }

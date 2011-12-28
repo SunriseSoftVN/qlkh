@@ -17,31 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view;
+package com.qlvt.client.client.module.user.view.i18n;
 
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.qlvt.client.client.constant.DomIdConstant;
-import com.qlvt.client.client.module.content.view.security.TestViewSecurity;
-import com.smvp4g.mvp.client.core.security.ViewSecurity;
-import com.smvp4g.mvp.client.core.view.AbstractView;
-import com.smvp4g.mvp.client.core.view.annotation.View;
+import com.smvp4g.mvp.client.core.i18n.Constants;
 
 /**
- * The Class TestView.
+ * The Class UserManagerConstant.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:23 AM
+ * @since 12/28/11, 4:52 PM
  */
-@ViewSecurity(configuratorClass = TestViewSecurity.class)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL)
-public class TestView extends AbstractView {
-
-    private ContentPanel contentPanel = new ContentPanel();
-
-    @Override
-    protected void initializeView() {
-        contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
-        setWidget(contentPanel);
-    }
+public interface UserManagerConstant extends Constants {
 }
