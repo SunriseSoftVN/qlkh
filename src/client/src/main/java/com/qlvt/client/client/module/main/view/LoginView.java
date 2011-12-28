@@ -53,6 +53,7 @@ public class LoginView extends AbstractView {
     protected void initializeView() {
         txtUserName.setFieldLabel("Username");
         txtPassWord.setFieldLabel("Password");
+        txtPassWord.setPassword(true);
 
         loginPanel.setFrame(true);
         loginPanel.setHeading("User Login");

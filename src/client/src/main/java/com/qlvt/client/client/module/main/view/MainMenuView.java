@@ -19,8 +19,15 @@
 
 package com.qlvt.client.client.module.main.view;
 
+import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Padding;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.place.TestPlace;
 import com.qlvt.client.client.module.main.view.security.MainMenuViewSecutiry;
@@ -45,20 +52,43 @@ public class MainMenuView extends AbstractView {
     @HistoryHandler
     MenuLink menuLink = new MenuLink("Menu 1", TestPlace.class);
 
+    @FieldSecurity
     Anchor ancLogout = new Anchor("Logout");
 
-    private HorizontalPanel mainPanel = new HorizontalPanel();
+    @FieldSecurity
+    Label lblWelcome = new Label();
+
+    private LayoutContainer mainPanel = new LayoutContainer();
+
+    private HBoxLayout layout = new HBoxLayout();
 
     @Override
     protected void initializeView() {
+        layout.setPadding(new Padding(5));
+        layout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
+        mainPanel.setLayout(layout);
         mainPanel.add(menuLink);
+
+        HBoxLayoutData flex = new HBoxLayoutData();
+        flex.setFlex(1);
+        mainPanel.add(new Text(), flex);
+        lblWelcome.setWidth("200px");
+        lblWelcome.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        mainPanel.add(lblWelcome, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(ancLogout);
-        mainPanel.setSpacing(5);
         setWidget(mainPanel);
         setStyleName("topmenu");
     }
 
+    public HBoxLayout getLayout() {
+        return layout;
+    }
+
     public Anchor getAncLogout() {
         return ancLogout;
+    }
+
+    public Label getLblWelcome() {
+        return lblWelcome;
     }
 }
