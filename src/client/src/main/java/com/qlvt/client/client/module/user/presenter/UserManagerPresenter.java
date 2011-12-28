@@ -33,6 +33,7 @@ import com.qlvt.client.client.module.user.view.UserManagerView;
 import com.qlvt.client.client.service.UserService;
 import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
+import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -76,9 +77,11 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 for (Record record : view.getUsersGrid().getStore().getModifiedRecords()) {
                     users.add(((BeanModel) record.getModel()).<User>getBean());
                 }
+                LoadingUtils.showLoading();
                 userService.updateUsers(users, new AbstractAsyncCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
+                        super.onSuccess(result);
                         DiaLogUtils.notify("Cap nhat thanh cong");
                         view.getUsersGrid().getStore().commitChanges();
                     }
@@ -104,7 +107,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         //Log load exception.
                         DiaLogUtils.logAndShowRpcErrorMessage(t);
                     }
-                };
+        };
 
         return new ListStore<BeanModel>(pagingLoader);
     }
@@ -141,6 +144,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
+                super.onSuccess(result);
                 //Reload grid.
                 view.getPagingToolBar().refresh();
                 DiaLogUtils.notify(view.getConstant().deleteUserMessageSuccess());
@@ -157,6 +161,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
+                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         userService.deleteUserByIds(userIds, callback);
                     } else {

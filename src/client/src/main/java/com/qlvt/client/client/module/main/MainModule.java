@@ -37,6 +37,6 @@ public class MainModule extends AbstractModule {
 
     @Override
     public void start() {
-        RootPanel.get("loading").setVisible(false);
+        RootPanel.get("loading_panel").setVisible(false);
     }
 }

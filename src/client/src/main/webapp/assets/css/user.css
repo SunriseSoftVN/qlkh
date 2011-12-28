@@ -6,14 +6,22 @@
     background: #EFD137;
 }
 
-.copyright_panel {
-    padding-top: 50px;
+#loading_container {
+    position: absolute;
     text-align: center;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 999999;
 }
 
-.login_panel {
-    width: 100%;
-    vertical-align: middle;
+#loading_panel {
+    font-size: 16px;
+    font-weight: bold;
+    background: #FFF1A8;
+    display: inline-block;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 .float_right {
