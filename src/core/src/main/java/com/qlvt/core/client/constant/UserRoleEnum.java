@@ -17,16 +17,44 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.core.client.constant;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.smvp4g.mvp.client.core.security.HasRole;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class UserRoleEnum.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 9:44 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
+public enum UserRoleEnum implements HasRole {
+    /**
+     * The Super admin.
+     */
+    SUPERADMIN("SUPERMAN"),
 
+    /**
+     * The Admin.
+     */
+    ADMIN("ADMIN"),
+
+    /**
+     * The User.
+     */
+    USER("USER");
+
+    private String role;
+
+    UserRoleEnum() {
+        //For Serializable.
+    }
+
+    UserRoleEnum(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public String getRole() {
+        return role;
+    }
 }

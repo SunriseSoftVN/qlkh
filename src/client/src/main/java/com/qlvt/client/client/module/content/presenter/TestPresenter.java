@@ -17,16 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.content.presenter;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.qlvt.client.client.module.content.place.TestPlace;
+import com.qlvt.client.client.module.content.view.TestView;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class TestPresenter.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 9:24 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
-
+@Presenter(view = TestView.class, place = TestPlace.class)
+public class TestPresenter extends AbstractPresenter<TestView> {
+    @Override
+    public void onActivate() {
+        view.show();
+    }
 }

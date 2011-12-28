@@ -17,16 +17,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.main.presenter;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.qlvt.client.client.module.main.view.CopyRightView;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
-/**
- * The Class QlvtEntryPoint.
- *
- * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
- */
-public class QlvtEntryPoint extends AbstractEntryPoint {
-
+@Presenter(view = CopyRightView.class)
+public class CopyRightPresenter extends AbstractPresenter<CopyRightView> {
+    @Override
+    public void onActivate() {
+        view.show();
+    }
 }

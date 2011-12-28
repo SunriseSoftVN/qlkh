@@ -17,16 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.main.place;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.smvp4g.mvp.client.core.place.AbstractPlace;
+import com.smvp4g.mvp.client.core.place.Place;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class LoginPlace.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 9:52 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
-
+@Place(defaultPlace = true)
+public class LoginPlace extends AbstractPlace {
 }

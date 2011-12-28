@@ -17,16 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.main;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.smvp4g.mvp.client.core.module.AbstractModule;
+import com.smvp4g.mvp.client.core.module.annotation.Module;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class MainModule.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 8:49 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
+@Module
+public class MainModule extends AbstractModule {
+    @Override
+    public void configure() {
+    }
 
+    @Override
+    public void start() {
+        RootPanel.get("loading").setVisible(false);
+    }
 }

@@ -17,16 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.main.view;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.qlvt.client.client.constant.DomIdConstant;
+import com.smvp4g.mvp.client.core.view.AbstractView;
+import com.smvp4g.mvp.client.core.view.annotation.View;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class BannerView.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 8:57 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
-
+@View(parentDomId = DomIdConstant.BANNER_PANEL)
+public class BannerView extends AbstractView {
+    @Override
+    protected void initializeView() {
+        setWidget(new Html("<h3 style='color:white'>QLVT Website<h3>"));
+    }
 }

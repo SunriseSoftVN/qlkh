@@ -17,16 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.main.view.security;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.qlvt.core.client.constant.UserRoleEnum;
+import com.smvp4g.mvp.client.core.security.HasRole;
+import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class MainMenuViewSecutiry.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 9:48 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
+public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
 
+    @Override
+    public HasRole[] getRoles() {
+        return new HasRole[0];
+    }
+
+    public HasRole[] menuLink() {
+        return new HasRole[]{UserRoleEnum.USER};
+    }
 }

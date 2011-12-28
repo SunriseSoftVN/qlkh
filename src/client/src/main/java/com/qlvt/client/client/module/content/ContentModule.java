@@ -17,16 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.content;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.smvp4g.mvp.client.core.module.AbstractModule;
+import com.smvp4g.mvp.client.core.module.annotation.Module;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class ContentModule.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 9:22 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
+@Module
+public class ContentModule extends AbstractModule {
+    @Override
+    public void configure() {
+    }
 
+    @Override
+    public void start() {
+    }
 }

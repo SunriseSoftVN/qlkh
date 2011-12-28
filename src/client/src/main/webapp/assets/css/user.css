@@ -1,6 +1,5 @@
-.mainmenu {
-    padding-left: 10px;
-    width: 85%;
+#banner_panel {
+    background: #1C3D7A;
 }
 
 .topmenu .active {

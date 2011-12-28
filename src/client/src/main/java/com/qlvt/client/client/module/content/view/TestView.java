@@ -17,16 +17,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client;
+package com.qlvt.client.client.module.content.view;
 
-import com.smvp4g.mvp.client.AbstractEntryPoint;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.content.view.security.TestViewSecurity;
+import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.view.AbstractView;
+import com.smvp4g.mvp.client.core.view.annotation.View;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class TestView.
  *
  * @author Nguyen Duc Dung
- * @since 12/27/11, 10:31 AM
+ * @since 12/28/11, 9:23 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
+@ViewSecurity(configuratorClass = TestViewSecurity.class)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL)
+public class TestView extends AbstractView {
 
+    private ContentPanel contentPanel = new ContentPanel();
+
+    @Override
+    protected void initializeView() {
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(500);
+        setWidget(contentPanel);
+    }
 }
