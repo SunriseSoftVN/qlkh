@@ -35,4 +35,7 @@ public interface UserManagerConstant extends Constants {
     String btnAdd();
     String btnSave();
     String btnCancel();
+    String deleteUserMessageSuccess();
+    String deleteAllUserMessage();
+    String deleteUserMessage();
 }

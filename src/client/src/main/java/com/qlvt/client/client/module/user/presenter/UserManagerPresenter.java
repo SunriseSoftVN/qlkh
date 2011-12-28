@@ -20,8 +20,13 @@
 package com.qlvt.client.client.module.user.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
 import com.qlvt.client.client.service.UserService;
@@ -30,7 +35,10 @@ import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +62,19 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     protected void doBind() {
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getUsersGrid().getStore().getLoader());
+        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                view.getUsersGrid().getStore().rejectChanges();
+            }
+        });
+        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                view.getUsersGrid().getStore().commitChanges();
+            }
+        });
+        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
     }
 
     private ListStore<BeanModel> createUserListStore() {
@@ -75,5 +96,63 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
+    }
+
+    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
+        @Override
+        public void componentSelected(ButtonEvent ce) {
+            final List<BeanModel> models = view.getUsersGrid().getSelectionModel().getSelectedItems();
+            if (CollectionsUtils.isNotEmpty(models)) {
+                if (models.size() == 1) {
+                    final User user = (User) models.get(0).getBean();
+                    showDeleteTagConform(user.getId(), user.getUserName());
+                } else {
+                    List<Long> userIds = new ArrayList<Long>(models.size());
+                    for (BeanModel model : models) {
+                        final User user = (User) model.getBean();
+                        userIds.add(user.getId());
+                    }
+                    showDeleteTagConform(userIds, null);
+                }
+            }
+        }
+    }
+
+    private void showDeleteTagConform(long tagId, String tagName) {
+        List<Long> tagIds = new ArrayList<Long>(1);
+        tagIds.add(tagId);
+        showDeleteTagConform(tagIds, tagName);
+    }
+
+    private void showDeleteTagConform(final List<Long> userIds, String tagName) {
+        assert userIds != null;
+        String deleteMessage;
+        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                //Reload grid.
+                view.getPagingToolBar().refresh();
+                DiaLogUtils.notify(view.getConstant().deleteUserMessageSuccess());
+            }
+        };
+        final boolean hasManyTag = userIds.size() > 1;
+        if (hasManyTag) {
+            deleteMessage = view.getConstant().deleteAllUserMessage();
+        } else {
+            deleteMessage = StringUtils.substitute(view.getConstant().deleteUserMessage(), tagName);
+        }
+
+        DiaLogUtils.conform(deleteMessage, new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    if (hasManyTag) {
+                        userService.deleteUserByIds(userIds, callback);
+                    } else {
+                        userService.deleteUserById(userIds.get(0), callback);
+                    }
+                }
+            }
+        });
     }
 }

@@ -59,4 +59,14 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
         return new BasePagingLoadResult(subList, config.getOffset(), users.size());
     }
+
+    @Override
+    public void deleteUserById(long userId) {
+        userDao.deleteById(User.class, userId);
+    }
+
+    @Override
+    public void deleteUserByIds(List<Long> userIds) {
+        userDao.deleteByIds(User.class, userIds);
+    }
 }

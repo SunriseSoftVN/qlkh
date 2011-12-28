@@ -29,4 +29,8 @@ import java.util.List;
 
 public interface UserServiceAsync extends RemoteServiceAsync<UserServiceAsync> {
     void getUsersForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<User>>> async);
+
+    void deleteUserById(long userId, AsyncCallback<Void> async);
+
+    void deleteUserByIds(List<Long> userIds, AsyncCallback<Void> async);
 }

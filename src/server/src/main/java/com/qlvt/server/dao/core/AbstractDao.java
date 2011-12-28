@@ -21,6 +21,7 @@ package com.qlvt.server.dao.core;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.util.SessionFactoryUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
@@ -75,6 +76,18 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         List<E> result = criteria.list();
         closeSession();
         return result;
+    }
+
+    @Override
+    public void deleteByIds(Class<E> clazz, List<Long> ids) {
+        List<E> entities = getAll(clazz);
+        if (CollectionUtils.isNotEmpty(entities)) {
+            openSession();
+            for (E entity : entities) {
+                session.delete(entity);
+            }
+            closeSession();
+        }
     }
 
     protected void openSession() {

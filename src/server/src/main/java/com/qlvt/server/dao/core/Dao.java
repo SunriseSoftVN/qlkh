@@ -54,6 +54,14 @@ public interface Dao<E extends AbstractEntity> {
     void deleteById(Class<E> clazz, long id);
 
     /**
+     * Delete a entity by entity ids.
+     *
+     * @param clazz
+     * @param ids
+     */
+    void deleteByIds(Class<E> clazz, List<Long> ids);
+
+    /**
      * Find a entity by id.
      *
      * @param clazz

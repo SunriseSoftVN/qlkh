@@ -38,6 +38,9 @@ import java.util.List;
 @RemoteServiceRelativePath("User")
 public interface UserService extends RemoteService<UserService> {
 
+    void deleteUserById(long userId);
+    void deleteUserByIds(List<Long> userIds);
+
     BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config);
 
     public static class App {

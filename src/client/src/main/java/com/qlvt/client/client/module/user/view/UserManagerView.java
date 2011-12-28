@@ -146,4 +146,20 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     public Button getBtnDelete() {
         return btnDelete;
     }
+
+    public Button getBtnCancel() {
+        return btnCancel;
+    }
+
+    public void setBtnCancel(Button btnCancel) {
+        this.btnCancel = btnCancel;
+    }
+
+    public Button getBtnSave() {
+        return btnSave;
+    }
+
+    public void setBtnSave(Button btnSave) {
+        this.btnSave = btnSave;
+    }
 }
