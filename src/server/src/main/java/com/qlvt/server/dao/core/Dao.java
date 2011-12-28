@@ -17,21 +17,56 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.server.dao.core;
 
-import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.service.TestServiceImpl;
+import com.qlvt.core.client.model.core.AbstractEntity;
+
+import java.util.List;
 
 /**
- * The Class ServletModule.
+ * The Class IDao.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:39 AM
+ * @since 8/16/11, 10:35 AM
  */
-public class ServletModule extends com.google.inject.servlet.ServletModule {
-    @Override
-    protected void configureServlets() {
-        String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Test").with(TestServiceImpl.class);
-    }
+public interface Dao<E extends AbstractEntity> {
+    /**
+     * Save or Update a entity.
+     *
+     * @param entity
+     * @return
+     */
+    E saveOrUpdate(E entity);
+
+    /**
+     * Delete a entity.
+     *
+     * @param entity
+     */
+    void delete(E entity);
+
+    /**
+     * Delete a entity by entity id.
+     *
+     * @param clazz
+     * @param id
+     */
+    void deleteById(Class<E> clazz, long id);
+
+    /**
+     * Find a entity by id.
+     *
+     * @param clazz
+     * @param id
+     * @return
+     */
+    E findById(Class<E> clazz, long id);
+
+    /**
+     * Get all entity in data store.
+     *
+     * @param clazz
+     * @return
+     */
+    List<E> getAll(Class<E> clazz);
 }

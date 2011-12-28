@@ -17,21 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.server.service;
 
-import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.service.TestServiceImpl;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.qlvt.client.client.Test;
+import com.qlvt.core.client.model.User;
+import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.service.core.AbstractService;
 
 /**
- * The Class ServletModule.
+ * The Class TestServiceImpl.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:39 AM
+ * @since 12/27/11, 5:50 PM
  */
-public class ServletModule extends com.google.inject.servlet.ServletModule {
+@Singleton
+public class TestServiceImpl extends AbstractService implements Test {
+
+    @Inject
+    private UserDao userDao;
+
     @Override
-    protected void configureServlets() {
-        String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Test").with(TestServiceImpl.class);
+    public String test(User user) {
+        user = userDao.findByUserName(user.getUserName());
+        return user.getId().toString();
+    }
+
+    @Override
+    public void hello() {
+        System.out.println("hello");
     }
 }

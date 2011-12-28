@@ -20,6 +20,8 @@
 package com.qlvt.server.guice;
 
 import com.google.inject.AbstractModule;
+import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.dao.impl.UserDaoImpl;
 
 /**
  * The Class DaoModule.
@@ -30,6 +32,6 @@ import com.google.inject.AbstractModule;
 public class DaoModule extends AbstractModule {
     @Override
     protected void configure() {
-
+        bind(UserDao.class).to(UserDaoImpl.class);
     }
 }

@@ -17,21 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.server.dao.impl;
 
-import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.service.TestServiceImpl;
+import com.google.inject.Singleton;
+import com.qlvt.core.client.model.User;
+import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.dao.core.AbstractDao;
+import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.List;
 
 /**
- * The Class ServletModule.
+ * The Class UserDaoImpl.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:39 AM
+ * @since 12/27/11, 7:06 PM
  */
-public class ServletModule extends com.google.inject.servlet.ServletModule {
+@Singleton
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
-    protected void configureServlets() {
-        String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Test").with(TestServiceImpl.class);
+    public User findByUserName(String userName) {
+        openSession();
+        Criteria criteria = session.createCriteria(User.class).add(Restrictions.eq("userName", userName));
+        List<User> users = criteria.list();
+        closeSession();
+        if (CollectionsUtils.isNotEmpty(users)) {
+            return users.get(0);
+        }
+        return null;
     }
 }

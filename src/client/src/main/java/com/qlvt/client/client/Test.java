@@ -17,35 +17,36 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.configuration;
+package com.qlvt.client.client;
 
-import com.google.gwt.i18n.client.ConstantsWithLookup;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.model.User;
+import com.smvp4g.mvp.client.core.service.RemoteService;
 
 /**
- * The Class ApplicationConfiguration.
+ * The Class Test.
  *
  * @author Nguyen Duc Dung
- * @since 8/24/11, 7:47 PM
+ * @since 12/27/11, 5:42 PM
  */
-public interface ApplicationConfiguration extends ConstantsWithLookup {
-
+@RemoteServiceRelativePath("Test")
+public interface Test extends RemoteService<Test> {
+    
+    String test(User user);
+    void hello();
+    
     /**
-     * PRODUCTION_MODE
+     * Utility/Convenience class.
+     * Use Test.App.getInstance() to access static instance of TestAsync
      */
-    public static final String PRODUCTION_MODE = "PRODUCTION";
+    public static class App {
+        private static final TestAsync ourInstance = (TestAsync) GWT.create(Test.class);
 
-    /**
-     * DEVELOPMENT_MODE
-     */
-    public static final String DEVELOPMENT_MODE = "DEV";
-
-    String applicationName();
-    String applicationMode();
-    String applicationTitle();
-    String developmentModeClientBaseUrl();
-    String developmentModeClientProxyPath();
-    String developmentModeServerBaseUrl();
-    String developmentModeServerHostName();
-    String developmentModeServerPort();
-    String serverServletRootPath();
+        public static TestAsync getInstance() {
+            ServiceUtils.configureServiceEntryPoint(Test.class, ourInstance);
+            return ourInstance;
+        }
+    }
 }

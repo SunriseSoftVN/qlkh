@@ -19,9 +19,7 @@
 
 package com.qlvt.core.client.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.qlvt.core.client.model.core.AbstractEntity;
 
 /**
  * The Class User.
@@ -29,38 +27,25 @@ import javax.persistence.Id;
  * @author Nguyen Duc Dung
  * @since 12/27/11, 11:18 AM
  */
-@Entity(name = "User")
-public class User {
+public class User extends AbstractEntity {
 
-    @Id
-    @Column(name = "id")
-    private int id;
-    @Column(name = "username")
-    private String username;
-    @Column(name = "password")
-    private String password;
+    private String userName;
 
-    public int getId() {
-        return id;
+    private String passWord;
+
+    public String getUserName() {
+        return userName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPassWord() {
+        return passWord;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
     }
 }

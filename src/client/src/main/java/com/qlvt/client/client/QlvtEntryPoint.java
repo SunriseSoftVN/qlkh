@@ -19,8 +19,16 @@
 
 package com.qlvt.client.client;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.AbstractEntryPoint;
+
+import java.util.Date;
 
 /**
  * The Class QlvtEntryPoint.
@@ -29,8 +37,42 @@ import com.smvp4g.mvp.client.AbstractEntryPoint;
  * @since 12/27/11, 10:31 AM
  */
 public class QlvtEntryPoint extends AbstractEntryPoint {
+
+
     @Override
     public void onModuleLoad() {
-        Window.alert("ok");
+        final User user = new User();
+        user.setUserName("dung");
+        user.setPassWord("ducdung");
+        user.setCreatedDate(new Date());
+        user.setUpdatedDate(new Date());
+        user.setCreateBy(1l);
+        user.setUpdateBy(1l);
+        Button button = new Button("test");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Test.App.getInstance().test(user, new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert(caught.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        Window.alert(result);
+                    }
+                });
+            }
+        });
+
+        Button button1 = new Button("test 2");
+        button1.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+            }
+        });
+
+        RootPanel.get().add(button);
     }
 }

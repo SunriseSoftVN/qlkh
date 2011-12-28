@@ -17,21 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.server.service.core;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.user.server.rpc.SerializationPolicy;
 import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.service.TestServiceImpl;
+import com.qlvt.server.util.fixed.LegacySerializationPolicyFixed;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * The Class ServletModule.
+ * The Class AbstractService.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:39 AM
+ * @since 8/16/11, 10:33 AM
  */
-public class ServletModule extends com.google.inject.servlet.ServletModule {
+public class AbstractService extends RemoteServiceServlet {
     @Override
-    protected void configureServlets() {
-        String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Test").with(TestServiceImpl.class);
+    protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL, String strongName) {
+        if (SystemUtil.isProductionMode()) {
+            return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
+        }
+        return LegacySerializationPolicyFixed.getInstance();
     }
 }

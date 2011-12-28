@@ -17,21 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.server.dao;
 
-import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.service.TestServiceImpl;
+import com.qlvt.core.client.model.User;
+import com.qlvt.server.dao.core.Dao;
 
 /**
- * The Class ServletModule.
+ * The Class UserDao.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:39 AM
+ * @since 12/27/11, 6:42 PM
  */
-public class ServletModule extends com.google.inject.servlet.ServletModule {
-    @Override
-    protected void configureServlets() {
-        String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Test").with(TestServiceImpl.class);
-    }
+public interface UserDao extends Dao<User> {
+    User findByUserName(String userName);
 }

@@ -4,12 +4,10 @@
 body {
     margin: auto !important;
     width: 900px !important;
-    background: #E9E7E0;
 }
 
 #banner_panel {
     width: 100%;
-    background: black;
 }
 
 #top_panel {
@@ -24,11 +22,9 @@ body {
 #content_panel {
     float: left;
     width: 900px;
-    background: white;
 }
 
 #right_panel {
-    background-color: blue;
     float: right;
     width: 200px;
 }
@@ -36,8 +32,6 @@ body {
 #bottom_panel {
     clear: left;
     width: 100%;
-    background: #F9F9F9;
-    border-top: thin solid lightgray;
 }
 
 #loading {
