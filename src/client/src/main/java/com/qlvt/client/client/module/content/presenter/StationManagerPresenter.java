@@ -17,39 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.constant;
+package com.qlvt.client.client.module.content.presenter;
 
-import com.smvp4g.mvp.client.core.security.HasRole;
+import com.qlvt.client.client.module.content.place.StationManagerPlace;
+import com.qlvt.client.client.module.content.view.StationManagerView;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 /**
- * The Class UserRoleEnum.
+ * The Class StationManagerPresenter.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:44 AM
+ * @since 12/29/11, 7:00 AM
  */
-public enum UserRoleEnum implements HasRole {
-    /**
-     * The Admin.
-     */
-    ADMIN("ADMIN"),
-
-    /**
-     * The User.
-     */
-    USER("USER");
-
-    private String role;
-
-    UserRoleEnum() {
-        //For Serializable.
-    }
-
-    UserRoleEnum(String role) {
-        this.role = role;
-    }
-
+@Presenter(view = StationManagerView.class, place = StationManagerPlace.class)
+public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
     @Override
-    public String getRole() {
-        return role;
+    public void onActivate() {
+        view.show();
     }
 }

@@ -23,7 +23,11 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -33,12 +37,14 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.user.view.i18n.UserManagerConstant;
 import com.qlvt.client.client.module.user.view.security.UserManagerSecurity;
+import com.qlvt.core.client.constant.UserRoleEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,11 +58,13 @@ import java.util.List;
 public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     private static final String STT_COLUMN = "id";
-    private static final int STT_COLUMN_WIDTH = 100;
+    private static final int STT_COLUMN_WIDTH = 50;
     private static final String USER_NAME_COLUMN = "userName";
     private static final int USER_NAME_COLUMN_WIDTH = 200;
+    private static final String USER_ROLE_COLUMN = "userRole";
+    private static final int USER_ROLE_COLUMN_WIDTH = 200;
     private static final String USER_PASSWORD_COLUMN = "passWord";
-    private static final int USER_PASSWORD_COLUMN_WIDTH = 300;
+    private static final int USER_PASSWORD_COLUMN_WIDTH = 90;
     private static final int USER_LIST_SIZE = 50;
 
     @I18nField
@@ -71,9 +79,38 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     @I18nField
     Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cross.png"));
 
+    @I18nField
+    TextField<String> txtNewPass = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtConfirmPass = new TextField<String>();
+
+    @I18nField
+    Button btnChangePassWordOk = new Button();
+
+    @I18nField
+    Button btnChangePassWordCancel = new Button();
+
+    @I18nField
+    TextField<String> txtUserName = new TextField<String>();
+
+    @I18nField
+    SimpleComboBox<UserRoleEnum> cbbUserRole = new SimpleComboBox<UserRoleEnum>();
+
+    @I18nField
+    Button btnNewUserOk = new Button();
+
+    @I18nField
+    Button btnNewUserCancel = new Button();
+
     private ContentPanel contentPanel = new ContentPanel();
+    private FormPanel changePasswordPanel;
+    private FormPanel newUserPanel;
+
     private PagingToolBar pagingToolBar;
     private EditorGrid<BeanModel> usersGrid;
+
+    private GridCellRenderer<BeanModel> changePasswordCellRenderer;
 
     @Override
     protected void initializeView() {
@@ -88,7 +125,6 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-
         usersGrid = new EditorGrid<BeanModel>(listStore, cm);
         usersGrid.setBorders(true);
         usersGrid.setLoadMask(true);
@@ -120,15 +156,89 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         columnConfigs.add(new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH));
         ColumnConfig userNameColumnConfig = new ColumnConfig(USER_NAME_COLUMN, getConstant().userNameColumnTitle(),
                 USER_NAME_COLUMN_WIDTH);
-        userNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
         columnConfigs.add(userNameColumnConfig);
 
+        ColumnConfig userRoleColumnConfig = new ColumnConfig(USER_ROLE_COLUMN, getConstant().userRoleColumnTitle(),
+                USER_ROLE_COLUMN_WIDTH);
+        columnConfigs.add(userRoleColumnConfig);
         ColumnConfig passWordColumnConfig = new ColumnConfig(USER_PASSWORD_COLUMN, getConstant().passWordColumnTitle(),
                 USER_PASSWORD_COLUMN_WIDTH);
-        passWordColumnConfig.setEditor(new CellEditor(new TextField<String>()));
+        passWordColumnConfig.setRenderer(getChangePasswordCellRenderer());
+        passWordColumnConfig.setSortable(false);
         columnConfigs.add(passWordColumnConfig);
-
         return columnConfigs;
+    }
+
+    public Window createNewUserWindow() {
+        Window window = new Window();
+        newUserPanel = new FormPanel();
+        newUserPanel.setHeaderVisible(false);
+        newUserPanel.setBodyBorder(false);
+        newUserPanel.setBorders(false);
+        newUserPanel.setLabelWidth(120);
+
+        if (!txtUserName.isRendered()) {
+            txtUserName.setAllowBlank(false);
+            txtUserName.setMinLength(4);
+        }
+        newUserPanel.add(txtUserName);
+        window.setFocusWidget(txtUserName);
+
+        if (!txtNewPass.isRendered()) {
+            txtNewPass.setAllowBlank(false);
+            txtNewPass.setMinLength(4);
+            txtNewPass.setPassword(true);
+        }
+        newUserPanel.add(txtNewPass);
+
+        if (!txtConfirmPass.isRendered()) {
+            txtConfirmPass.setPassword(true);
+            txtConfirmPass.setMinLength(4);
+            txtConfirmPass.setAllowBlank(false);
+        }
+        newUserPanel.add(txtConfirmPass);
+
+        if (!cbbUserRole.isRendered()) {
+            cbbUserRole.add(Arrays.asList(UserRoleEnum.values()));
+            cbbUserRole.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbUserRole.setEditable(false);
+        }
+        cbbUserRole.setSimpleValue(UserRoleEnum.USER);
+        newUserPanel.add(cbbUserRole);
+        window.add(newUserPanel);
+        window.addButton(btnNewUserOk);
+        window.addButton(btnNewUserCancel);
+        window.setSize(380, 200);
+        window.setHeading(getConstant().newUsetWindowTitle());
+        return window;
+    }
+
+    public Window createChangePassWordWindow() {
+        Window window = new Window();
+        changePasswordPanel = new FormPanel();
+        if (!txtNewPass.isRendered()) {
+            txtNewPass.setAllowBlank(false);
+            txtNewPass.setMinLength(4);
+            txtNewPass.setPassword(true);
+        }
+        if (!txtConfirmPass.isRendered()) {
+            txtConfirmPass.setPassword(true);
+            txtConfirmPass.setMinLength(4);
+            txtConfirmPass.setAllowBlank(false);
+        }
+        changePasswordPanel.add(txtNewPass);
+        window.setFocusWidget(txtNewPass);
+        changePasswordPanel.add(txtConfirmPass);
+        changePasswordPanel.setHeaderVisible(false);
+        changePasswordPanel.setBodyBorder(false);
+        changePasswordPanel.setBorders(false);
+        changePasswordPanel.setLabelWidth(120);
+        window.add(changePasswordPanel);
+        window.addButton(btnChangePassWordOk);
+        window.addButton(btnChangePassWordCancel);
+        window.setSize(380, 150);
+        window.setHeading(getConstant().btnChangePassword());
+        return window;
     }
 
     public PagingToolBar getPagingToolBar() {
@@ -151,15 +261,55 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         return btnCancel;
     }
 
-    public void setBtnCancel(Button btnCancel) {
-        this.btnCancel = btnCancel;
-    }
-
     public Button getBtnSave() {
         return btnSave;
     }
 
-    public void setBtnSave(Button btnSave) {
-        this.btnSave = btnSave;
+    public GridCellRenderer<BeanModel> getChangePasswordCellRenderer() {
+        return changePasswordCellRenderer;
+    }
+
+    public void setChangePasswordCellRenderer(GridCellRenderer<BeanModel> changePasswordCellRenderer) {
+        this.changePasswordCellRenderer = changePasswordCellRenderer;
+    }
+
+    public TextField<String> getTxtNewPass() {
+        return txtNewPass;
+    }
+
+    public TextField<String> getTxtConfirmPass() {
+        return txtConfirmPass;
+    }
+
+    public Button getBtnChangePassWordOk() {
+        return btnChangePassWordOk;
+    }
+
+    public Button getBtnChangePassWordCancel() {
+        return btnChangePassWordCancel;
+    }
+
+    public Button getBtnNewUserCancel() {
+        return btnNewUserCancel;
+    }
+
+    public Button getBtnNewUserOk() {
+        return btnNewUserOk;
+    }
+
+    public SimpleComboBox<UserRoleEnum> getCbbUserRole() {
+        return cbbUserRole;
+    }
+
+    public TextField<String> getTxtUserName() {
+        return txtUserName;
+    }
+
+    public FormPanel getChangePasswordPanel() {
+        return changePasswordPanel;
+    }
+
+    public FormPanel getNewUserPanel() {
+        return newUserPanel;
     }
 }

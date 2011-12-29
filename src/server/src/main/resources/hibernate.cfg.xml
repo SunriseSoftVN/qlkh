@@ -15,5 +15,6 @@
         <!-- <property name="hbm2ddl.auto">update</property> -->
 
         <mapping resource="com/qlvt/core/client/model/User.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/Station.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

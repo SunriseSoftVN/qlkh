@@ -17,39 +17,22 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.constant;
+package com.qlvt.client.client.module.content.view;
 
-import com.smvp4g.mvp.client.core.security.HasRole;
+import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.content.view.i18n.StationManagerConstant;
+import com.qlvt.client.client.module.content.view.security.StationManagerSecurity;
+import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.view.AbstractView;
+import com.smvp4g.mvp.client.core.view.annotation.View;
 
 /**
- * The Class UserRoleEnum.
+ * The Class StationManagerView.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:44 AM
+ * @since 12/29/11, 6:57 AM
  */
-public enum UserRoleEnum implements HasRole {
-    /**
-     * The Admin.
-     */
-    ADMIN("ADMIN"),
-
-    /**
-     * The User.
-     */
-    USER("USER");
-
-    private String role;
-
-    UserRoleEnum() {
-        //For Serializable.
-    }
-
-    UserRoleEnum(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public String getRole() {
-        return role;
-    }
+@ViewSecurity(configuratorClass = StationManagerSecurity.class)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = StationManagerConstant.class)
+public class StationManagerView extends AbstractView<StationManagerConstant> {
 }

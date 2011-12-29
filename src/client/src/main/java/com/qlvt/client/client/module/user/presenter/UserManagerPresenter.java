@@ -20,12 +20,14 @@
 package com.qlvt.client.client.module.user.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
@@ -38,9 +40,11 @@ import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,6 +57,7 @@ import java.util.List;
 public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     private UserServiceAsync userService = UserService.App.getInstance();
+    private Window newUserWindow;
 
     @Override
     public void onActivate() {
@@ -62,6 +67,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     @Override
     protected void doBind() {
+        view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getUsersGrid().getStore().getLoader());
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -77,18 +83,62 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 for (Record record : view.getUsersGrid().getStore().getModifiedRecords()) {
                     users.add(((BeanModel) record.getModel()).<User>getBean());
                 }
-                LoadingUtils.showLoading();
-                userService.updateUsers(users, new AbstractAsyncCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void result) {
-                        super.onSuccess(result);
-                        DiaLogUtils.notify("Cap nhat thanh cong");
-                        view.getUsersGrid().getStore().commitChanges();
-                    }
-                });
+                if (CollectionsUtils.isNotEmpty(users)) {
+                    LoadingUtils.showLoading();
+                    userService.updateUsers(users, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            super.onSuccess(result);
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            view.getUsersGrid().getStore().commitChanges();
+                        }
+                    });
+                }
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+        view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                newUserWindow = view.createNewUserWindow();
+                newUserWindow.addWindowListener(new WindowListener(){
+                    @Override
+                    public void windowHide(WindowEvent we) {
+                        view.getNewUserPanel().clear();
+                    }
+                });
+                newUserWindow.show();
+            }
+        });
+        view.getBtnNewUserOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (view.getNewUserPanel().isValid()) {
+                    String newPass = view.getTxtNewPass().getValue();
+                    String comPass = view.getTxtConfirmPass().getValue();
+                    if (StringUtils.isNotBlank(newPass) && newPass.equals(comPass)) {
+                        User user = new User();
+                        user.setUserName(view.getTxtUserName().getValue());
+                        user.setPassWord(LoginUtils.md5hash(newPass));
+                        user.setUserRole(view.getCbbUserRole().getValue().getValue().getRole());
+                        user.setCreateBy(1l);
+                        user.setUpdateBy(1l);
+                        user.setCreatedDate(new Date());
+                        user.setUpdatedDate(new Date());
+                        LoadingUtils.showLoading();
+                        userService.updateUser(user, new AbstractAsyncCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+                                super.onSuccess(result);
+                                DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                newUserWindow.hide();
+                                view.getPagingToolBar().refresh();
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private ListStore<BeanModel> createUserListStore() {
@@ -107,7 +157,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         //Log load exception.
                         DiaLogUtils.logAndShowRpcErrorMessage(t);
                     }
-        };
+                };
 
         return new ListStore<BeanModel>(pagingLoader);
     }
@@ -130,6 +180,62 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 }
             }
         }
+    }
+
+    private class ChangePasswordCellRenderer implements GridCellRenderer<BeanModel> {
+        @Override
+        public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                             ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+            return createChangePassWordButton(model, beanModelListStore);
+        }
+    }
+
+    private Button createChangePassWordButton(final BeanModel model, final ListStore<BeanModel> beanModelListStore) {
+        Button btnChangePassword = new Button(view.getConstant().btnChangePassword());
+        btnChangePassword.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                final Window changePasswordWindow = view.createChangePassWordWindow();
+                changePasswordWindow.show();
+                view.getBtnChangePassWordOk().removeAllListeners();
+                view.getBtnChangePassWordOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        String newPass = view.getTxtNewPass().getValue();
+                        String comPass = view.getTxtConfirmPass().getValue();
+                        if (StringUtils.isNotBlank(newPass) && newPass.equals(comPass)
+                                && view.getChangePasswordPanel().isValid()) {
+                            User user = model.getBean();
+                            user.setPassWord(LoginUtils.md5hash(newPass));
+                            LoadingUtils.showLoading();
+                            userService.updateUser(user, new AbstractAsyncCallback<Void>() {
+                                @Override
+                                public void onSuccess(Void result) {
+                                    super.onSuccess(result);
+                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                    beanModelListStore.update(model);
+                                    changePasswordWindow.hide();
+                                }
+                            });
+                        }
+                    }
+                });
+                view.getBtnChangePassWordCancel().removeAllListeners();
+                view.getBtnChangePassWordCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        changePasswordWindow.hide();
+                    }
+                });
+                changePasswordWindow.addWindowListener(new WindowListener() {
+                    @Override
+                    public void windowHide(WindowEvent we) {
+                        view.getChangePasswordPanel().clear();
+                    }
+                });
+            }
+        });
+        return btnChangePassword;
     }
 
     private void showDeleteTagConform(long tagId, String tagName) {

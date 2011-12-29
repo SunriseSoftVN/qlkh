@@ -17,37 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.user.view.i18n;
+package com.qlvt.client.client.module.content.view.i18n;
 
 import com.smvp4g.mvp.client.core.i18n.Constants;
 
 /**
- * The Class UserManagerConstant.
+ * The Class StationManagerConstant.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 4:52 PM
+ * @since 12/29/11, 6:58 AM
  */
-public interface UserManagerConstant extends Constants {
-    String sttColumnTitle();
-    String userNameColumnTitle();
-    String userRoleColumnTitle();
-    String passWordColumnTitle();
-    String btnDelete();
-    String btnAdd();
-    String btnSave();
-    String btnCancel();
-    String btnChangePassword();
-    String saveMessageSuccess();
-    String deleteUserMessageSuccess();
-    String deleteAllUserMessage();
-    String deleteUserMessage();
-    String txtNewPass();
-    String txtConfirmPass();
-    String btnChangePassWordOk();
-    String btnChangePassWordCancel();
-    String txtUserName();
-    String cbbUserRole();
-    String btnNewUserOk();
-    String btnNewUserCancel();
-    String newUsetWindowTitle();
+public interface StationManagerConstant extends Constants {
 }

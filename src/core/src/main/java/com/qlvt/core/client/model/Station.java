@@ -5,51 +5,37 @@
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 3 of
  * the License, or (at your option) any later version.
- *
+ *  
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- *
+ *  
  * You should have received a copy of the GNU Lesser General Public
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.constant;
+package com.qlvt.core.client.model;
 
-import com.smvp4g.mvp.client.core.security.HasRole;
+import com.qlvt.core.client.model.core.AbstractEntity;
 
 /**
- * The Class UserRoleEnum.
+ * The Class Station.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:44 AM
+ * @since 12/29/11, 6:52 AM
  */
-public enum UserRoleEnum implements HasRole {
-    /**
-     * The Admin.
-     */
-    ADMIN("ADMIN"),
+public class Station extends AbstractEntity {
 
-    /**
-     * The User.
-     */
-    USER("USER");
+    private String name;
 
-    private String role;
-
-    UserRoleEnum() {
-        //For Serializable.
+    public String getName() {
+        return name;
     }
 
-    UserRoleEnum(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public String getRole() {
-        return role;
+    public void setName(String name) {
+        this.name = name;
     }
 }
