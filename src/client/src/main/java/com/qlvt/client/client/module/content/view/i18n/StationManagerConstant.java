@@ -28,4 +28,10 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 12/29/11, 6:58 AM
  */
 public interface StationManagerConstant extends Constants {
+    String btnDelete();
+    String btnAdd();
+    String btnSave();
+    String btnCancel();
+    String stationNameColumnTitle();
+    String sttColumnTitle();
 }

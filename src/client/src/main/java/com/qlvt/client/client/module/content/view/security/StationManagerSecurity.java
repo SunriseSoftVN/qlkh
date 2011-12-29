@@ -19,6 +19,7 @@
 
 package com.qlvt.client.client.module.content.view.security;
 
+import com.qlvt.core.client.constant.UserRoleEnum;
 import com.smvp4g.mvp.client.core.security.HasRole;
 import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 
@@ -31,6 +32,6 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 public class StationManagerSecurity implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
-        return new HasRole[0];
+        return new HasRole[]{UserRoleEnum.ADMIN};
     }
 }

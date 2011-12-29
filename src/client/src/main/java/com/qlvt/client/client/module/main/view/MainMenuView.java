@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.main.view.i18n.MainMenuConstant;
 import com.qlvt.client.client.module.main.view.security.MainMenuViewSecutiry;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
@@ -56,6 +57,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     MenuLink mnlUserManager = new MenuLink(UserManagerPlace.class);
 
     @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mnlStationManage = new MenuLink(StationManagerPlace.class);
+
+    @FieldSecurity
     @I18nField
     Anchor ancLogout = new Anchor("");
 
@@ -72,7 +78,8 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         layout.setPadding(new Padding(5));
         layout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
         mainPanel.setLayout(layout);
-        mainPanel.add(mnlUserManager);
+        mainPanel.add(mnlUserManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mainPanel.add(mnlStationManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);

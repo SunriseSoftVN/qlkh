@@ -19,10 +19,19 @@
 
 package com.qlvt.client.client.module.content.presenter;
 
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.view.StationManagerView;
+import com.qlvt.client.client.service.StationService;
+import com.qlvt.client.client.service.StationServiceAsync;
+import com.qlvt.client.client.utils.DiaLogUtils;
+import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+
+import java.util.List;
 
 /**
  * The Class StationManagerPresenter.
@@ -32,8 +41,39 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
  */
 @Presenter(view = StationManagerView.class, place = StationManagerPlace.class)
 public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
+
+    private StationServiceAsync stationService = StationService.App.getInstance();
+
     @Override
     public void onActivate() {
         view.show();
+        view.getPagingToolBar().refresh();
+    }
+
+    @Override
+    protected void doBind() {
+        view.createGrid(createUserListStore());
+        view.getPagingToolBar().bind((PagingLoader<?>) view.getStationsGird().getStore().getLoader());
+    }
+
+    private ListStore<BeanModel> createUserListStore() {
+        RpcProxy<BasePagingLoadResult<List<Station>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<Station>>>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<Station>>> callback) {
+                stationService.getStationsForGrid((BasePagingLoadConfig) loadConfig, callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<Station>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Station>>(rpcProxy, new BeanModelReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 }

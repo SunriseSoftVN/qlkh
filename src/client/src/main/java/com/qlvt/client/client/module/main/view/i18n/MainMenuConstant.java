@@ -29,6 +29,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  */
 public interface MainMenuConstant extends Constants {
     String mnlUserManager();
+    String mnlStationManage();
     String ancLogout();
     String lblWelcome();
 }

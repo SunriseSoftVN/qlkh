@@ -12,6 +12,6 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
-        <property name="name" column="userName" not-null="true"/>
+        <property name="name" column="name" not-null="true"/>
     </class>
 </hibernate-mapping>
