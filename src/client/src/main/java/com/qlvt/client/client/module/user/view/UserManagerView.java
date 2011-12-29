@@ -77,7 +77,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cross.png"));
+    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
 
     @I18nField
     TextField<String> txtNewPass = new TextField<String>();
@@ -209,6 +209,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         window.addButton(btnNewUserOk);
         window.addButton(btnNewUserCancel);
         window.setSize(380, 200);
+        window.setResizable(false);
         window.setHeading(getConstant().newUsetWindowTitle());
         return window;
     }
@@ -237,6 +238,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         window.addButton(btnChangePassWordOk);
         window.addButton(btnChangePassWordCancel);
         window.setSize(380, 150);
+        window.setResizable(false);
         window.setHeading(getConstant().btnChangePassword());
         return window;
     }

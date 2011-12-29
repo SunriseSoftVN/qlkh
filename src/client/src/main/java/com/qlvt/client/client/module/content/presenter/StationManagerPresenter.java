@@ -20,17 +20,25 @@
 package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.service.StationService;
 import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
+import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,6 +62,46 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
     protected void doBind() {
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getStationsGird().getStore().getLoader());
+        view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Station station = new Station();
+                station.setCreatedDate(new Date());
+                station.setUpdatedDate(new Date());
+                station.setCreateBy(1l);
+                station.setUpdateBy(1l);
+                BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+                BeanModel model = factory.createModel(station);
+                view.getStationsGird().getStore().insert(model, view.getStationsGird().getStore().getCount());
+            }
+        });
+        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<Station> stations = new ArrayList<Station>();
+                for (Record record : view.getStationsGird().getStore().getModifiedRecords()) {
+                    BeanModel model = (BeanModel) record.getModel();
+                    stations.add(model.<Station>getBean());
+                }
+                if (CollectionsUtils.isNotEmpty(stations)) {
+                    LoadingUtils.showLoading();
+                    stationService.updateStations(stations, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            super.onSuccess(result);
+                            view.getStationsGird().getStore().commitChanges();
+                            DiaLogUtils.notify("cap nhat thanh cong");
+                        }
+                    });
+                }
+            }
+        });
+        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                view.getStationsGird().getStore().rejectChanges();
+            }
+        });
     }
 
     private ListStore<BeanModel> createUserListStore() {

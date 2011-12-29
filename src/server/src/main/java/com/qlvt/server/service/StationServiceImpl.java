@@ -59,4 +59,9 @@ public class StationServiceImpl extends AbstractService implements StationServic
 
         return new BasePagingLoadResult(subList, config.getOffset(), stations.size());
     }
+
+    @Override
+    public void updateStations(List<Station> stations) {
+        stationDao.saveOrUpdate(stations);
+    }
 }

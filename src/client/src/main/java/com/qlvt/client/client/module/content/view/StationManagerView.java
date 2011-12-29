@@ -24,10 +24,8 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.CheckBoxSelectionModel;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -69,7 +67,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cross.png"));
+    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
 
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
@@ -96,7 +94,6 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         stationsGird.addPlugin(selectionModel);
 
         pagingToolBar = new PagingToolBar(STATION_LIST_SIZE);
-
         ToolBar toolBar = new ToolBar();
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
@@ -119,6 +116,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         columnConfigs.add(new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH));
         ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
                 STATION_NAME_WIDTH);
+        stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
         columnConfigs.add(stationNameColumnConfig);
         return columnConfigs;
     }

@@ -29,4 +29,6 @@ import java.util.List;
 
 public interface StationServiceAsync extends RemoteServiceAsync<StationServiceAsync> {
     void getStationsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<Station>>> async);
+
+    void updateStations(List<Station> stations, AsyncCallback<Void> async);
 }
