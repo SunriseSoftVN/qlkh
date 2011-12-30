@@ -28,7 +28,6 @@ import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,14 +44,10 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Override
     public BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config) {
-        return getUsersForGrid(config, Collections.<String>emptyList());
+        return new BasePagingLoadResult(userDao.getByBeanConfig(User.class, config),
+                config.getOffset(), userDao.count(User.class));
     }
 
-    @Override
-    public BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config, List<String> additionEntities) {
-        return new BasePagingLoadResult(userDao.getByBeanConfig(User.class, config, additionEntities),
-                        config.getOffset(), userDao.count(User.class));
-    }
 
     @Override
     public void deleteUserById(long userId) {

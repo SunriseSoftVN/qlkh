@@ -42,10 +42,7 @@ public interface UserService extends RemoteService<UserService> {
     void updateUser(User user);
     void deleteUserById(long userId);
     void deleteUserByIds(List<Long> userIds);
-
     BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config);
-
-    BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config, List<String> additionEntities);
 
     public static class App {
         private static final UserServiceAsync ourInstance = (UserServiceAsync) GWT.create(UserService.class);

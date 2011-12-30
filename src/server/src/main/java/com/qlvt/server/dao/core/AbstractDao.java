@@ -123,19 +123,9 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
 
     @Override
     public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config) {
-        return getByBeanConfig(clazz, config, Collections.<String>emptyList());
-    }
-
-    @Override
-    public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, List<String> additionEntities) {
         openSession();
         Criteria criteria = session.createCriteria(clazz)
                 .setFirstResult(config.getOffset()).setMaxResults(config.getLimit());
-        if (CollectionUtils.isNotEmpty(additionEntities)) {
-            for (String entityName : additionEntities) {
-                criteria.createAlias(entityName, entityName);
-            }
-        }
         if (StringUtils.isNotBlank(config.getSortField())) {
             if (config.getSortDir() == Style.SortDir.ASC) {
                 criteria.addOrder(Order.asc(config.getSortField()));
