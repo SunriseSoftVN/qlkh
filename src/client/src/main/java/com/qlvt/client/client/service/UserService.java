@@ -45,6 +45,8 @@ public interface UserService extends RemoteService<UserService> {
 
     BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config);
 
+    BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config, List<String> additionEntities);
+
     public static class App {
         private static final UserServiceAsync ourInstance = (UserServiceAsync) GWT.create(UserService.class);
 

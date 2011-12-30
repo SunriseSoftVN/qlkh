@@ -32,6 +32,7 @@ public class User extends AbstractEntity {
     private String userName;
     private String passWord;
     private String userRole;
+    private Station station;
 
     public String getUserName() {
         return userName;
@@ -55,5 +56,13 @@ public class User extends AbstractEntity {
 
     public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public Station getStation() {
+        return station;
+    }
+
+    public void setStation(Station station) {
+        this.station = station;
     }
 }

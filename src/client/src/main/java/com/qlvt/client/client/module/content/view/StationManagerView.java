@@ -53,12 +53,12 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = StationManagerConstant.class)
 public class StationManagerView extends AbstractView<StationManagerConstant> {
 
-    private static final String ID_COLUMN = "id";
-    private static final String STT_COLUMN = "stt";
-    private static final int STT_COLUMN_WIDTH = 50;
-    private static final String STATION_NAME_COLUMN = "name";
-    private static final int STATION_NAME_WIDTH = 300;
-    private static final int STATION_LIST_SIZE = 50;
+    public static final String ID_COLUMN = "id";
+    public static final String STT_COLUMN = "stt";
+    public static final int STT_COLUMN_WIDTH = 50;
+    public static final String STATION_NAME_COLUMN = "name";
+    public static final int STATION_NAME_WIDTH = 300;
+    public static final int STATION_LIST_SIZE = 50;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));

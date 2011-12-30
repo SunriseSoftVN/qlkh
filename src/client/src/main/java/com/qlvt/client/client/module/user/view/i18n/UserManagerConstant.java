@@ -30,6 +30,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface UserManagerConstant extends Constants {
     String sttColumnTitle();
     String userNameColumnTitle();
+    String userStationColumnTitle();
     String userRoleColumnTitle();
     String passWordColumnTitle();
     String btnDelete();

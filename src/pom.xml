@@ -24,6 +24,7 @@
         <hibernateVersion>4.0.0.Final</hibernateVersion>
         <hibernateValidatorVersion>4.2.0.Final</hibernateValidatorVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
+        <dozerVersion>5.3.2</dozerVersion>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

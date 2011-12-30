@@ -40,6 +40,7 @@ import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.user.view.i18n.UserManagerConstant;
 import com.qlvt.client.client.module.user.view.security.UserManagerSecurity;
 import com.qlvt.core.client.constant.UserRoleEnum;
+import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -59,16 +60,18 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = UserManagerConstant.class)
 public class UserManagerView extends AbstractView<UserManagerConstant> {
 
-    private static final String ID_COLUMN = "id";
-    private static final String STT_COLUMN = "stt";
-    private static final int STT_COLUMN_WIDTH = 50;
-    private static final String USER_NAME_COLUMN = "userName";
-    private static final int USER_NAME_COLUMN_WIDTH = 200;
-    private static final String USER_ROLE_COLUMN = "userRole";
-    private static final int USER_ROLE_COLUMN_WIDTH = 200;
-    private static final String USER_PASSWORD_COLUMN = "passWord";
-    private static final int USER_PASSWORD_COLUMN_WIDTH = 90;
-    private static final int USER_LIST_SIZE = 50;
+    public static final String ID_COLUMN = "id";
+    public static final String STT_COLUMN = "stt";
+    public static final int STT_COLUMN_WIDTH = 50;
+    public static final String USER_NAME_COLUMN = "userName";
+    public static final int USER_NAME_COLUMN_WIDTH = 200;
+    public static final String USER_STATION_COLUMN = "station";
+    public static final int USER_STATION_COLUMN_WIDTH = 200;
+    public static final String USER_ROLE_COLUMN = "userRole";
+    public static final int USER_ROLE_COLUMN_WIDTH = 200;
+    public static final String USER_PASSWORD_COLUMN = "passWord";
+    public static final int USER_PASSWORD_COLUMN_WIDTH = 90;
+    public static final int USER_LIST_SIZE = 50;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
@@ -173,6 +176,17 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         ColumnConfig userNameColumnConfig = new ColumnConfig(USER_NAME_COLUMN, getConstant().userNameColumnTitle(),
                 USER_NAME_COLUMN_WIDTH);
         columnConfigs.add(userNameColumnConfig);
+        
+        ColumnConfig userStationColumnConfig = new ColumnConfig(USER_STATION_COLUMN, getConstant().userStationColumnTitle(),
+                USER_STATION_COLUMN_WIDTH);
+        userStationColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                User user = model.getBean();
+                return new Text(user.getStation().getName());
+            }
+        });
+        columnConfigs.add(userStationColumnConfig);
 
         ColumnConfig userRoleColumnConfig = new ColumnConfig(USER_ROLE_COLUMN, getConstant().userRoleColumnTitle(),
                 USER_ROLE_COLUMN_WIDTH);

@@ -37,4 +37,6 @@ public interface UserServiceAsync extends RemoteServiceAsync<UserServiceAsync> {
     void updateUser(User user, AsyncCallback<Void> async);
 
     void updateUsers(List<User> users, AsyncCallback<Void> async);
+
+    void getUsersForGrid(BasePagingLoadConfig config, List<String> additionEntities, AsyncCallback<BasePagingLoadResult<List<User>>> async);
 }

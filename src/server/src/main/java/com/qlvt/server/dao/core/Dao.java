@@ -98,5 +98,7 @@ public interface Dao<E extends AbstractEntity> {
 
     List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config);
 
+    List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, List<String> additionEntities);
+
     int count(Class<E> clazz);
 }
