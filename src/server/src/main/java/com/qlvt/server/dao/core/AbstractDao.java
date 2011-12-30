@@ -19,11 +19,16 @@
 
 package com.qlvt.server.dao.core;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.util.SessionFactoryUtil;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Collections;
@@ -88,7 +93,7 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         openSession();
         Criteria criteria = session.createCriteria(clazz).add(Restrictions.in("id", ids));
         List<E> entities = criteria.list();
-        if(CollectionUtils.isNotEmpty(entities)) {
+        if (CollectionUtils.isNotEmpty(entities)) {
             return entities;
         }
         closeSession();
@@ -114,6 +119,32 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
             }
             closeSession();
         }
+    }
+
+    @Override
+    public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config) {
+        openSession();
+        Criteria criteria = session.createCriteria(clazz)
+                .setFirstResult(config.getOffset()).setMaxResults(config.getLimit());
+        if (StringUtils.isNotBlank(config.getSortField())) {
+            if (config.getSortDir() == Style.SortDir.ASC) {
+                criteria.addOrder(Order.asc(config.getSortField()));
+            } else if (config.getSortDir() == Style.SortDir.DESC) {
+                criteria.addOrder(Order.desc(config.getSortField()));
+            }
+        }
+        List<E> result = criteria.list();
+        closeSession();
+        return result;
+    }
+
+    @Override
+    public int count(Class<E> clazz) {
+        openSession();
+        Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
+        int count = ((Long) criteria.uniqueResult()).intValue();
+        closeSession();
+        return count;
     }
 
     protected void openSession() {

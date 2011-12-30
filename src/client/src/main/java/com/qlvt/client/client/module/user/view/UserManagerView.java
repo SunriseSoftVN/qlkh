@@ -19,10 +19,12 @@
 
 package com.qlvt.client.client.module.user.view;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -57,7 +59,8 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = UserManagerConstant.class)
 public class UserManagerView extends AbstractView<UserManagerConstant> {
 
-    private static final String STT_COLUMN = "id";
+    private static final String ID_COLUMN = "id";
+    private static final String STT_COLUMN = "stt";
     private static final int STT_COLUMN_WIDTH = 50;
     private static final String USER_NAME_COLUMN = "userName";
     private static final int USER_NAME_COLUMN_WIDTH = 200;
@@ -131,6 +134,8 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         usersGrid.setStripeRows(true);
         usersGrid.setSelectionModel(selectionModel);
         usersGrid.addPlugin(selectionModel);
+        usersGrid.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        usersGrid.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(USER_LIST_SIZE);
 
@@ -153,7 +158,18 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
-        columnConfigs.add(new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH));
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, 
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get("stt")));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
         ColumnConfig userNameColumnConfig = new ColumnConfig(USER_NAME_COLUMN, getConstant().userNameColumnTitle(),
                 USER_NAME_COLUMN_WIDTH);
         columnConfigs.add(userNameColumnConfig);

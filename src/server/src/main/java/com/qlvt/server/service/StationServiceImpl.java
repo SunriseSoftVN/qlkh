@@ -28,7 +28,6 @@ import com.qlvt.core.client.model.Station;
 import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.service.core.AbstractService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,19 +44,8 @@ public class StationServiceImpl extends AbstractService implements StationServic
 
     @Override
     public BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config) {
-        List<Station> stations = stationDao.getAll(Station.class);
-
-        ArrayList<Station> subList = new ArrayList<Station>();
-        int start = config.getOffset();
-        int limit = stations.size();
-        if (config.getLimit() > 0) {
-            limit = Math.min(start + config.getLimit(), limit);
-        }
-        for (int i = config.getOffset(); i < limit; i++) {
-            subList.add(stations.get(i));
-        }
-
-        return new BasePagingLoadResult(subList, config.getOffset(), stations.size());
+        List<Station> stations = stationDao.getByBeanConfig(Station.class, config);
+        return new BasePagingLoadResult(stations, config.getOffset(), stationDao.count(Station.class));
     }
 
     @Override

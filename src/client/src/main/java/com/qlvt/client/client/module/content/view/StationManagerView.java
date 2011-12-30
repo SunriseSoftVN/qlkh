@@ -19,10 +19,12 @@
 
 package com.qlvt.client.client.module.content.view;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -51,7 +53,8 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = StationManagerConstant.class)
 public class StationManagerView extends AbstractView<StationManagerConstant> {
 
-    private static final String STT_COLUMN = "id";
+    private static final String ID_COLUMN = "id";
+    private static final String STT_COLUMN = "stt";
     private static final int STT_COLUMN_WIDTH = 50;
     private static final String STATION_NAME_COLUMN = "name";
     private static final int STATION_NAME_WIDTH = 300;
@@ -92,6 +95,8 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         stationsGird.setStripeRows(true);
         stationsGird.setSelectionModel(selectionModel);
         stationsGird.addPlugin(selectionModel);
+        stationsGird.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        stationsGird.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(STATION_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
@@ -113,7 +118,18 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
-        columnConfigs.add(new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH));
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
         ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
                 STATION_NAME_WIDTH);
         stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
