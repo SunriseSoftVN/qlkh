@@ -39,6 +39,7 @@ import java.util.List;
 public interface StationService extends RemoteService<StationService> {
 
     void updateStations(List<Station> stations);
+    List<Station> getAllStation();
     BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config);
 
     public static class App {

@@ -43,6 +43,11 @@ public class StationServiceImpl extends AbstractService implements StationServic
     private StationDao stationDao;
 
     @Override
+    public List<Station> getAllStation() {
+        return stationDao.getAll(Station.class);
+    }
+
+    @Override
     public BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config) {
         List<Station> stations = stationDao.getByBeanConfig(Station.class, config);
         return new BasePagingLoadResult(stations, config.getOffset(), stationDao.count(Station.class));

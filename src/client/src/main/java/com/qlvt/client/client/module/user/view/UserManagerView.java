@@ -118,6 +118,8 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     private GridCellRenderer<BeanModel> changePasswordCellRenderer;
 
+    private CellEditor stationCellEditor;
+
     @Override
     protected void initializeView() {
         contentPanel.setHeaderVisible(false);
@@ -186,6 +188,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
                 return new Text(user.getStation().getName());
             }
         });
+        userStationColumnConfig.setEditor(getStationCellEditor());
         columnConfigs.add(userStationColumnConfig);
 
         ColumnConfig userRoleColumnConfig = new ColumnConfig(USER_ROLE_COLUMN, getConstant().userRoleColumnTitle(),
@@ -343,5 +346,13 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     public FormPanel getNewUserPanel() {
         return newUserPanel;
+    }
+
+    public CellEditor getStationCellEditor() {
+        return stationCellEditor;
+    }
+
+    public void setStationCellEditor(CellEditor stationCellEditor) {
+        this.stationCellEditor = stationCellEditor;
     }
 }

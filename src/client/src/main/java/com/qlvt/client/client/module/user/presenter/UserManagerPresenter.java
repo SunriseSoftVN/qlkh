@@ -24,18 +24,26 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
+import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
+import com.qlvt.client.client.service.StationService;
+import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.service.UserService;
 import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -57,6 +65,8 @@ import java.util.List;
 public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     private UserServiceAsync userService = UserService.App.getInstance();
+    private StationServiceAsync stationService = StationService.App.getInstance();
+
     private Window newUserWindow;
 
     @Override
@@ -68,6 +78,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     @Override
     protected void doBind() {
         view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
+        view.setStationCellEditor(createStationCellEditor());
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getUsersGrid().getStore().getLoader());
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -101,7 +112,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 newUserWindow = view.createNewUserWindow();
-                newUserWindow.addWindowListener(new WindowListener(){
+                newUserWindow.addWindowListener(new WindowListener() {
                     @Override
                     public void windowHide(WindowEvent we) {
                         view.getNewUserPanel().clear();
@@ -188,56 +199,58 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         @Override
         public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
                              ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
-            return createChangePassWordButton(model, beanModelListStore);
+            return createChangePassWordAnchor(model, beanModelListStore);
         }
     }
 
-    private Button createChangePassWordButton(final BeanModel model, final ListStore<BeanModel> beanModelListStore) {
-        Button btnChangePassword = new Button(view.getConstant().btnChangePassword());
-        btnChangePassword.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    private Anchor createChangePassWordAnchor(final BeanModel model, final ListStore<BeanModel> beanModelListStore) {
+        Anchor ancChangePassword = new Anchor(view.getConstant().btnChangePassword());
+        ancChangePassword.addClickHandler(new ClickHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                final Window changePasswordWindow = view.createChangePassWordWindow();
-                changePasswordWindow.show();
-                view.getBtnChangePassWordOk().removeAllListeners();
-                view.getBtnChangePassWordOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        String newPass = view.getTxtNewPass().getValue();
-                        String comPass = view.getTxtConfirmPass().getValue();
-                        if (StringUtils.isNotBlank(newPass) && newPass.equals(comPass)
-                                && view.getChangePasswordPanel().isValid()) {
-                            User user = model.getBean();
-                            user.setPassWord(LoginUtils.md5hash(newPass));
-                            LoadingUtils.showLoading();
-                            userService.updateUser(user, new AbstractAsyncCallback<Void>() {
-                                @Override
-                                public void onSuccess(Void result) {
-                                    super.onSuccess(result);
-                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                                    beanModelListStore.update(model);
-                                    changePasswordWindow.hide();
-                                }
-                            });
+            public void onClick(ClickEvent event) {
+                {
+                    final Window changePasswordWindow = view.createChangePassWordWindow();
+                    changePasswordWindow.show();
+                    view.getBtnChangePassWordOk().removeAllListeners();
+                    view.getBtnChangePassWordOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            String newPass = view.getTxtNewPass().getValue();
+                            String comPass = view.getTxtConfirmPass().getValue();
+                            if (StringUtils.isNotBlank(newPass) && newPass.equals(comPass)
+                                    && view.getChangePasswordPanel().isValid()) {
+                                User user = model.getBean();
+                                user.setPassWord(LoginUtils.md5hash(newPass));
+                                LoadingUtils.showLoading();
+                                userService.updateUser(user, new AbstractAsyncCallback<Void>() {
+                                    @Override
+                                    public void onSuccess(Void result) {
+                                        super.onSuccess(result);
+                                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                        beanModelListStore.update(model);
+                                        changePasswordWindow.hide();
+                                    }
+                                });
+                            }
                         }
-                    }
-                });
-                view.getBtnChangePassWordCancel().removeAllListeners();
-                view.getBtnChangePassWordCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        changePasswordWindow.hide();
-                    }
-                });
-                changePasswordWindow.addWindowListener(new WindowListener() {
-                    @Override
-                    public void windowHide(WindowEvent we) {
-                        view.getChangePasswordPanel().clear();
-                    }
-                });
+                    });
+                    view.getBtnChangePassWordCancel().removeAllListeners();
+                    view.getBtnChangePassWordCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        @Override
+                        public void componentSelected(ButtonEvent ce) {
+                            changePasswordWindow.hide();
+                        }
+                    });
+                    changePasswordWindow.addWindowListener(new WindowListener() {
+                        @Override
+                        public void windowHide(WindowEvent we) {
+                            view.getChangePasswordPanel().clear();
+                        }
+                    });
+                }
             }
         });
-        return btnChangePassword;
+        return ancChangePassword;
     }
 
     private void showDeleteTagConform(long tagId, String tagName) {
@@ -278,5 +291,24 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 }
             }
         });
+    }
+
+    private CellEditor createStationCellEditor() {
+        final ListStore<BeanModel> store = new ListStore<BeanModel>();
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+        LoadingUtils.showLoading();
+        stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
+            @Override
+            public void onSuccess(List<Station> result) {
+                super.onSuccess(result);
+                store.add(factory.createModel(result));
+            }
+        });
+        final ComboBox<BeanModel> ccbStation = new ComboBox<BeanModel>();
+        ccbStation.setStore(store);
+        ccbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+        ccbStation.setForceSelection(true);
+        ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
+        return new CellEditor(ccbStation);
     }
 }
