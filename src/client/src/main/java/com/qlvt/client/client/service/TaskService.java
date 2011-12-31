@@ -38,6 +38,10 @@ import java.util.List;
 @RemoteServiceRelativePath("Task")
 public interface TaskService extends RemoteService<TaskService> {
 
+    void deleteTask(long taskId);
+    void deleteTasks(List<Long> taskIds);
+    void updateTask(Task task);
+    void updateTasks(List<Task> tasks);
     BasePagingLoadResult<List<Task>> getTasksForGrid(BasePagingLoadConfig loadConfig);
 
     public static class App {

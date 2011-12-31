@@ -56,8 +56,14 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 50;
+    public static final String TASK_CODE_COLUMN = "code";
+    public static final int TASK_CODE_WIDTH = 100;
     public static final String TASK_NAME_COLUMN = "name";
     public static final int TASK_NAME_WIDTH = 300;
+    public static final String TASK_UNIT_COLUMN = "unit";
+    public static final int TASK_UNIT_WIDTH = 300;
+    public static final String TASK_DEFAULT_VALUE_COLUMN = "defaultValue";
+    public static final int TASK_DEFAULT_VALUE_WIDTH = 300;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -130,10 +136,16 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
             }
         });
         columnConfigs.add(sttColumnConfig);
+
+        columnConfigs.add(new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle() , TASK_CODE_WIDTH));
         ColumnConfig stationNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
                 TASK_NAME_WIDTH);
         stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
         columnConfigs.add(stationNameColumnConfig);
+
+        columnConfigs.add(new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(), TASK_UNIT_WIDTH));
+        columnConfigs.add(new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
+                TASK_DEFAULT_VALUE_WIDTH));
         return columnConfigs;
     }
 

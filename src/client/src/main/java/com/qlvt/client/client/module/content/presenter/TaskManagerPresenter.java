@@ -20,6 +20,8 @@
 package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
@@ -31,6 +33,7 @@ import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,6 +57,19 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     protected void doBind() {
         view.createGrid(createTaskListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
+        view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Task task = new Task();
+                task.setCreateBy(1l);
+                task.setUpdateBy(1l);
+                task.setCreatedDate(new Date());
+                task.setUpdatedDate(new Date());
+                BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
+                BeanModel model = factory.createModel(task);
+                view.getTaskGird().getStore().insert(model, view.getTaskGird().getStore().getCount());
+            }
+        });
     }
 
     private ListStore<BeanModel> createTaskListStore() {

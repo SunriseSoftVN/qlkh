@@ -47,4 +47,24 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
         return new BasePagingLoadResult(taskDao.getByBeanConfig(Task.class, loadConfig),
                 loadConfig.getOffset(), taskDao.count(Task.class));
     }
+
+    @Override
+    public void updateTask(Task task) {
+        taskDao.saveOrUpdate(task);
+    }
+
+    @Override
+    public void updateTasks(List<Task> tasks) {
+        taskDao.saveOrUpdate(tasks);
+    }
+
+    @Override
+    public void deleteTask(long taskId) {
+        taskDao.deleteById(Task.class, taskId);
+    }
+
+    @Override
+    public void deleteTasks(List<Long> taskIds) {
+        taskDao.deleteByIds(Task.class, taskIds);
+    }
 }

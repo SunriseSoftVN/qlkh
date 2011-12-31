@@ -34,4 +34,7 @@ public interface TaskManagerConstant extends Constants {
     String btnCancel();
     String sttColumnTitle();
     String taskNameColumnTitle();
+    String taskCodeColumnTitle();
+    String taskUnitColumnTitle();
+    String taskDefaultValueColumnTitle();
 }
