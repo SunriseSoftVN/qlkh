@@ -48,7 +48,6 @@ public class UserServiceImpl extends AbstractService implements UserService {
                 config.getOffset(), userDao.count(User.class));
     }
 
-
     @Override
     public void deleteUserById(long userId) {
         userDao.deleteById(User.class, userId);

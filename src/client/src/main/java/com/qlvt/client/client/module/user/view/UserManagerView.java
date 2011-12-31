@@ -43,6 +43,7 @@ import com.qlvt.core.client.constant.UserRoleEnum;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
@@ -185,7 +186,11 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
             @Override
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
                 User user = model.getBean();
-                return new Text(user.getStation().getName());
+                String st = StringUtils.EMPTY;
+                if (user.getStation() != null) {
+                    st = user.getStation().getName();
+                }
+                return new Text(st);
             }
         });
         userStationColumnConfig.setEditor(getStationCellEditor());

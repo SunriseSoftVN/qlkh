@@ -19,16 +19,12 @@
 
 package com.qlvt.server.dao.impl;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.google.inject.Singleton;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -51,22 +47,5 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
             return users.get(0);
         }
         return null;
-    }
-
-    @Override
-    public List<User> getByBeanConfig(Class<User> clazz, BasePagingLoadConfig config) {
-        openSession();
-        Criteria criteria = session.createCriteria(clazz).createAlias("station", "station")
-                .setFirstResult(config.getOffset()).setMaxResults(config.getLimit());
-        if (StringUtils.isNotBlank(config.getSortField())) {
-            if (config.getSortDir() == Style.SortDir.ASC) {
-                criteria.addOrder(Order.asc(config.getSortField()));
-            } else if (config.getSortDir() == Style.SortDir.DESC) {
-                criteria.addOrder(Order.desc(config.getSortField()));
-            }
-        }
-        List<User> result = criteria.list();
-        closeSession();
-        return result;
     }
 }

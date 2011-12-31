@@ -156,9 +156,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         RpcProxy<BasePagingLoadResult<List<User>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<User>>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<User>>> callback) {
-                List<String> additionEntities = new ArrayList<String>();
-                additionEntities.add(UserManagerView.USER_STATION_COLUMN);
-                userService.getUsersForGrid((BasePagingLoadConfig) loadConfig, additionEntities, callback);
+                userService.getUsersForGrid((BasePagingLoadConfig) loadConfig, callback);
             }
         };
 
