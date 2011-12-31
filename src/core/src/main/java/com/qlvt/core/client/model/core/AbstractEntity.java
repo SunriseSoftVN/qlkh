@@ -33,13 +33,9 @@ import java.util.Date;
 public abstract class AbstractEntity implements Serializable, BeanModelTag {
 
     private Long id;
-
     private Date createdDate;
-
     private Date updatedDate;
-
     private Long createBy;
-
     private Long updateBy;
 
     public Long getId() {

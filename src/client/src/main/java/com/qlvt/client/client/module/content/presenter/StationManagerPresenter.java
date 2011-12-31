@@ -21,6 +21,8 @@ package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -36,6 +38,7 @@ import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,6 +105,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 view.getStationsGird().getStore().rejectChanges();
             }
         });
+        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
     }
 
     private ListStore<BeanModel> createUserListStore() {
@@ -123,5 +127,65 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
+    }
+
+    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
+        @Override
+        public void componentSelected(ButtonEvent ce) {
+            final List<BeanModel> models = view.getStationsGird().getSelectionModel().getSelectedItems();
+            if (CollectionsUtils.isNotEmpty(models)) {
+                if (models.size() == 1) {
+                    final Station station = (Station) models.get(0).getBean();
+                    showDeleteTagConform(station.getId(), station.getName());
+                } else {
+                    List<Long> stationIds = new ArrayList<Long>(models.size());
+                    for (BeanModel model : models) {
+                        final Station station = (Station) model.getBean();
+                        stationIds.add(station.getId());
+                    }
+                    showDeleteTagConform(stationIds, null);
+                }
+            }
+        }
+    }
+
+    private void showDeleteTagConform(long tagId, String tagName) {
+        List<Long> tagIds = new ArrayList<Long>(1);
+        tagIds.add(tagId);
+        showDeleteTagConform(tagIds, tagName);
+    }
+
+    private void showDeleteTagConform(final List<Long> userIds, String tagName) {
+        assert userIds != null;
+        String deleteMessage;
+        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                super.onSuccess(result);
+                //Reload grid.
+                view.getPagingToolBar().refresh();
+                DiaLogUtils.notify(view.getConstant().deleteStationMessageSuccess());
+            }
+        };
+        final boolean hasManyTag = userIds.size() > 1;
+        if (hasManyTag) {
+            deleteMessage = view.getConstant().deleteAllStationMessage();
+        } else {
+            deleteMessage = StringUtils.substitute(view.getConstant().deleteStationMessage(), tagName);
+        }
+
+        DiaLogUtils.conform(deleteMessage, new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    LoadingUtils.showLoading();
+                    if (hasManyTag) {
+                        stationService.deleteStationByIds(userIds, callback);
+                    } else {
+                        stationService.deleteStationById(userIds.get(0), callback);
+                    }
+                }
+            }
+        });
     }
 }

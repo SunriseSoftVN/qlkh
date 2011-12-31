@@ -38,6 +38,8 @@ import java.util.List;
 @RemoteServiceRelativePath("Station")
 public interface StationService extends RemoteService<StationService> {
 
+    void deleteStationById(long stationId);
+    void deleteStationByIds(List<Long> stationIds);
     void updateStations(List<Station> stations);
     List<Station> getAllStation();
     BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config);

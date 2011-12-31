@@ -48,4 +48,22 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         }
         return null;
     }
+
+    @Override
+    public List<User> findByStationId(long stationId) {
+        openSession();
+        Criteria criteria = session.createCriteria(User.class).add(Restrictions.eq("station.id", stationId));
+        List<User> users = criteria.list();
+        closeSession();
+        return users;
+    }
+
+    @Override
+    public List<User> findByStationIds(List<Long> stationIds) {
+        openSession();
+        Criteria criteria = session.createCriteria(User.class).add(Restrictions.in("station.id",stationIds));
+        List<User> users = criteria.list();
+        closeSession();
+        return users;
+    }
 }

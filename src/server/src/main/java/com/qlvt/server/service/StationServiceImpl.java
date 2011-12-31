@@ -24,9 +24,12 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.StationService;
+import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.server.dao.StationDao;
+import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
@@ -42,6 +45,9 @@ public class StationServiceImpl extends AbstractService implements StationServic
     @Inject
     private StationDao stationDao;
 
+    @Inject
+    private UserDao userDao;
+
     @Override
     public List<Station> getAllStation() {
         return stationDao.getAll(Station.class);
@@ -56,5 +62,23 @@ public class StationServiceImpl extends AbstractService implements StationServic
     @Override
     public void updateStations(List<Station> stations) {
         stationDao.saveOrUpdate(stations);
+    }
+
+    @Override
+    public void deleteStationById(long stationId) {
+        if (CollectionUtils.isEmpty(userDao.findByStationId(stationId))) {
+            stationDao.deleteById(Station.class, stationId);
+        } else {
+            throw new DeleteException();
+        }
+    }
+
+    @Override
+    public void deleteStationByIds(List<Long> stationIds) {
+        if (CollectionUtils.isEmpty(userDao.findByStationIds(stationIds))) {
+            stationDao.deleteByIds(Station.class, stationIds);
+        } else {
+            throw new DeleteException();
+        }
     }
 }
