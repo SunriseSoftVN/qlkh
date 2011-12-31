@@ -37,6 +37,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.module.user.view.i18n.UserManagerConstant;
 import com.qlvt.client.client.module.user.view.security.UserManagerSecurity;
 import com.qlvt.core.client.constant.UserRoleEnum;
@@ -103,6 +104,9 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     @I18nField
     SimpleComboBox<UserRoleEnum> cbbUserRole = new SimpleComboBox<UserRoleEnum>();
+    
+    @I18nField
+    ComboBox<BeanModel> cbbUserStation = new ComboBox<BeanModel>();
 
     @I18nField
     Button btnNewUserOk = new Button();
@@ -236,17 +240,25 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         }
         newUserPanel.add(txtConfirmPass);
 
+        if (!cbbUserStation.isRendered()) {
+            cbbUserStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbUserStation.setForceSelection(true);
+            cbbUserStation.setAllowBlank(false);
+            cbbUserStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
+        }
+        newUserPanel.add(cbbUserStation);
+        
         if (!cbbUserRole.isRendered()) {
             cbbUserRole.add(Arrays.asList(UserRoleEnum.values()));
             cbbUserRole.setTriggerAction(ComboBox.TriggerAction.ALL);
-            cbbUserRole.setEditable(false);
+            cbbUserRole.setEnabled(false);
         }
         cbbUserRole.setSimpleValue(UserRoleEnum.USER);
         newUserPanel.add(cbbUserRole);
         window.add(newUserPanel);
         window.addButton(btnNewUserOk);
         window.addButton(btnNewUserCancel);
-        window.setSize(380, 200);
+        window.setSize(380, 220);
         window.setResizable(false);
         window.setHeading(getConstant().newUsetWindowTitle());
         return window;
@@ -359,5 +371,9 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     public void setStationCellEditor(CellEditor stationCellEditor) {
         this.stationCellEditor = stationCellEditor;
+    }
+
+    public ComboBox<BeanModel> getCbbUserStation() {
+        return cbbUserStation;
     }
 }

@@ -132,6 +132,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         user.setUserName(view.getTxtUserName().getValue());
                         user.setPassWord(LoginUtils.md5hash(newPass));
                         user.setUserRole(view.getCbbUserRole().getValue().getValue().getRole());
+                        user.setStation(view.getCbbUserStation().getValue().<Station>getBean());
                         user.setCreateBy(1l);
                         user.setUpdateBy(1l);
                         user.setCreatedDate(new Date());
@@ -150,6 +151,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 }
             }
         });
+        view.getCbbUserStation().setStore(createStationListStore());
     }
 
     private ListStore<BeanModel> createUserListStore() {
@@ -308,5 +310,21 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         ccbStation.setForceSelection(true);
         ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
         return new CellEditor(ccbStation);
+    }
+    
+    private ListStore<BeanModel> createStationListStore() {
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+        final ListStore<BeanModel> store = new ListStore<BeanModel>();
+        LoadingUtils.showLoading();
+        stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
+            @Override
+            public void onSuccess(List<Station> result) {
+                super.onSuccess(result);
+                for (Station station : result) {
+                    store.add(factory.createModel(station));
+                }
+            }
+        });
+        return store;
     }
 }
