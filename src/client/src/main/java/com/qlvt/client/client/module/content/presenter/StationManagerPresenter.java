@@ -102,7 +102,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getStationsGird().getStore().rejectChanges();
+                view.getPagingToolBar().refresh();
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());

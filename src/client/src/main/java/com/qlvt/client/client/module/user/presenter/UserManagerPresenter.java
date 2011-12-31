@@ -84,7 +84,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getUsersGrid().getStore().rejectChanges();
+                view.getPagingToolBar().refresh();
             }
         });
         view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -149,6 +149,12 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         });
                     }
                 }
+            }
+        });
+        view.getBtnNewUserCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                newUserWindow.hide();
             }
         });
         view.getCbbUserStation().setStore(createStationListStore());

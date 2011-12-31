@@ -142,9 +142,12 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     public int count(Class<E> clazz) {
         openSession();
         Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
-        int count = ((Long) criteria.uniqueResult()).intValue();
+        Object result = criteria.uniqueResult();
+        if (result != null) {
+            return ((Long) result).intValue();
+        }
         closeSession();
-        return count;
+        return 0;
     }
 
     protected void openSession() {

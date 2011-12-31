@@ -17,27 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.client.client.module.content.view.security;
 
-import com.google.inject.AbstractModule;
-import com.qlvt.server.dao.StationDao;
-import com.qlvt.server.dao.TaskDao;
-import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.dao.impl.StationDaoImpl;
-import com.qlvt.server.dao.impl.TaskDaoImpl;
-import com.qlvt.server.dao.impl.UserDaoImpl;
+import com.qlvt.core.client.constant.UserRoleEnum;
+import com.smvp4g.mvp.client.core.security.HasRole;
+import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 
 /**
- * The Class DaoModule.
+ * The Class TaskManagerSecurity.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:41 AM
+ * @since 12/31/11, 2:50 PM
  */
-public class DaoModule extends AbstractModule {
+public class TaskManagerSecurity implements ViewSecurityConfigurator {
     @Override
-    protected void configure() {
-        bind(UserDao.class).to(UserDaoImpl.class);
-        bind(StationDao.class).to(StationDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
+    public HasRole[] getRoles() {
+        return new HasRole[]{UserRoleEnum.MANAGER};
     }
 }

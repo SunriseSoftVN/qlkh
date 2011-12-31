@@ -17,27 +17,52 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.core.client.model;
 
-import com.google.inject.AbstractModule;
-import com.qlvt.server.dao.StationDao;
-import com.qlvt.server.dao.TaskDao;
-import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.dao.impl.StationDaoImpl;
-import com.qlvt.server.dao.impl.TaskDaoImpl;
-import com.qlvt.server.dao.impl.UserDaoImpl;
+import com.qlvt.core.client.model.core.AbstractEntity;
 
 /**
- * The Class DaoModule.
+ * The Class Task.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:41 AM
+ * @since 12/31/11, 2:28 PM
  */
-public class DaoModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(UserDao.class).to(UserDaoImpl.class);
-        bind(StationDao.class).to(StationDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
+public class Task extends AbstractEntity {
+
+    private String name;
+    private int code;
+    private int defaultValue;
+    private String unit;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public int getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(int defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

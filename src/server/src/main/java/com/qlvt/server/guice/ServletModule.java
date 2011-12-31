@@ -22,6 +22,7 @@ package com.qlvt.server.guice;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.service.LoginServiceImpl;
 import com.qlvt.server.service.StationServiceImpl;
+import com.qlvt.server.service.TaskServiceImpl;
 import com.qlvt.server.service.UserServiceImpl;
 
 /**
@@ -37,5 +38,6 @@ public class ServletModule extends com.google.inject.servlet.ServletModule {
         serve(servletRootPath + "/Login").with(LoginServiceImpl.class);
         serve(servletRootPath + "/User").with(UserServiceImpl.class);
         serve(servletRootPath + "/Station").with(StationServiceImpl.class);
+        serve(servletRootPath + "/Task").with(TaskServiceImpl.class);
     }
 }

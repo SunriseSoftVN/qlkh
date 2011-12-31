@@ -34,6 +34,11 @@ public enum UserRoleEnum implements HasRole {
     ADMIN("ADMIN"),
 
     /**
+     * The Manager
+     */
+    MANAGER("MANAGER"),
+
+    /**
      * The User.
      */
     USER("USER");
