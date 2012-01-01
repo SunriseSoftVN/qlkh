@@ -57,4 +57,14 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     public void deleteTaskDetails(List<Long> taskDetailIds) {
         taskDetailDao.deleteByIds(TaskDetail.class, taskDetailIds);
     }
+
+    @Override
+    public void updateTaskDetail(TaskDetail taskDetail) {
+        taskDetailDao.saveOrUpdate(taskDetail);
+    }
+
+    @Override
+    public void updateTaskDetails(List<TaskDetail> taskDetails) {
+        taskDetailDao.saveOrUpdate(taskDetails);
+    }
 }

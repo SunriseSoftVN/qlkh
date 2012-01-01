@@ -40,4 +40,5 @@ public interface TaskManagerConstant extends Constants {
     String deleteTaskMessageSuccess();
     String deleteAllTaskMessage();
     String deleteTaskMessage();
+    String saveMessageSuccess();
 }

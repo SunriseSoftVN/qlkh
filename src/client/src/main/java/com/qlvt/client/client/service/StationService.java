@@ -38,6 +38,7 @@ import java.util.List;
 @RemoteServiceRelativePath("Station")
 public interface StationService extends RemoteService<StationService> {
 
+    Station getStationByUserName(String userName);
     void deleteStationById(long stationId);
     void deleteStationByIds(List<Long> stationIds);
     void updateStations(List<Station> stations);

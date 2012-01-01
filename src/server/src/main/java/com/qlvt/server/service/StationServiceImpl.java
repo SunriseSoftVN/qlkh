@@ -26,6 +26,7 @@ import com.google.inject.Singleton;
 import com.qlvt.client.client.service.StationService;
 import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
@@ -80,5 +81,14 @@ public class StationServiceImpl extends AbstractService implements StationServic
         } else {
             throw new DeleteException();
         }
+    }
+
+    @Override
+    public Station getStationByUserName(String userName) {
+        User user = userDao.findByUserName(userName);
+        if (user != null) {
+            return user.getStation();
+        }
+        return null;
     }
 }

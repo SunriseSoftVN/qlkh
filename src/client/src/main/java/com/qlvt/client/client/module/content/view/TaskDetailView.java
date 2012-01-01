@@ -147,9 +147,9 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, 
                                  ListStore<BeanModel> textListStore, Grid<BeanModel> textGrid) {
                 String code = StringUtils.EMPTY;
-                TaskDetail task = model.getBean();
-                if (task != null) {
-                    code = String.valueOf(task.getTask().getCode());
+                TaskDetail taskDetail = model.getBean();
+                if (taskDetail != null && taskDetail.getTask() != null) {
+                    code = String.valueOf(taskDetail.getTask().getCode());
                 }
                 return new Text(code);
             }

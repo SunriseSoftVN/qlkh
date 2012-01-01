@@ -40,4 +40,6 @@ public interface TaskDetailConstant extends Constants {
     String deleteTaskMessageSuccess();
     String deleteAllTaskMessage();
     String deleteTaskMessage();
+    String saveMessageSuccess();
+    String loadStationError();
 }

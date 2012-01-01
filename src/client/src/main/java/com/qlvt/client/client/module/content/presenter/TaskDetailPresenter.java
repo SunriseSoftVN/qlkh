@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -32,20 +33,20 @@ import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.module.content.view.TaskManagerView;
-import com.qlvt.client.client.service.TaskDetailService;
-import com.qlvt.client.client.service.TaskDetailServiceAsync;
-import com.qlvt.client.client.service.TaskService;
-import com.qlvt.client.client.service.TaskServiceAsync;
+import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +60,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
     private TaskServiceAsync taskService = TaskService.App.getInstance();
+    private StationServiceAsync stationService = StationService.App.getInstance();
+    private Station currentStation;
 
     @Override
     public void onActivate() {
@@ -68,10 +71,57 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     @Override
     protected void doBind() {
+        LoadingUtils.showLoading();
+        stationService.getStationByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
+            @Override
+            public void onSuccess(Station result) {
+                super.onSuccess(result);
+                currentStation = result;
+            }
+        });
         view.setTaskCodeCellEditor(createTaskCodeCellEditor());
         view.createGrid(createTaskListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+        view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (currentStation != null) {
+                    TaskDetail taskDetail = new TaskDetail();
+                    taskDetail.setStation(currentStation);
+                    taskDetail.setCreateBy(1l);
+                    taskDetail.setUpdateBy(1l);
+                    taskDetail.setCreatedDate(new Date());
+                    taskDetail.setUpdatedDate(new Date());
+                    BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
+                    BeanModel model = factory.createModel(taskDetail);
+                    view.getTaskDetailGird().getStore().insert(model,
+                            view.getTaskDetailGird().getStore().getCount());
+                } else {
+                    DiaLogUtils.notify(view.getConstant().loadStationError());
+                }
+            }
+        });
+        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<TaskDetail> taskDetails = new ArrayList<TaskDetail>();
+                for (Record record : view.getTaskDetailGird().getStore().getModifiedRecords()) {
+                    taskDetails.add(((BeanModel) record.getModel()).<TaskDetail>getBean());
+                }
+                if (CollectionsUtils.isNotEmpty(taskDetails)) {
+                    LoadingUtils.showLoading();
+                    taskDetailService.updateTaskDetails(taskDetails, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            super.onSuccess(result);
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            view.getTaskDetailGird().getStore().commitChanges();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private ListStore<BeanModel> createTaskListStore() {
@@ -125,8 +175,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 } else {
                     List<Long> taskDetailIds = new ArrayList<Long>(models.size());
                     for (BeanModel model : models) {
-                        final Task task = (Task) model.getBean();
-                        taskDetailIds.add(task.getId());
+                        final TaskDetail taskDetail = (TaskDetail) model.getBean();
+                        taskDetailIds.add(taskDetail.getId());
                     }
                     showDeleteTagConform(taskDetailIds, null);
                 }
