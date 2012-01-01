@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -61,9 +62,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final String TASK_NAME_COLUMN = "name";
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "unit";
-    public static final int TASK_UNIT_WIDTH = 300;
+    public static final int TASK_UNIT_WIDTH = 70;
     public static final String TASK_DEFAULT_VALUE_COLUMN = "defaultValue";
-    public static final int TASK_DEFAULT_VALUE_WIDTH = 300;
+    public static final int TASK_DEFAULT_VALUE_WIDTH = 70;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -137,15 +138,28 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        columnConfigs.add(new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle() , TASK_CODE_WIDTH));
+        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle() , TASK_CODE_WIDTH);
+        taskCodeColumnConfig.setEditor(new CellEditor(new NumberField()){
+            @Override
+            public Object getValue() {
+                return ((Double)super.getValue()).intValue();
+            }
+        });
+        columnConfigs.add(taskCodeColumnConfig);
         ColumnConfig stationNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
                 TASK_NAME_WIDTH);
         stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
         columnConfigs.add(stationNameColumnConfig);
 
-        columnConfigs.add(new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(), TASK_UNIT_WIDTH));
-        columnConfigs.add(new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
-                TASK_DEFAULT_VALUE_WIDTH));
+        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
+                TASK_UNIT_WIDTH);
+        unitColumnConfig.setEditor(new CellEditor(new TextField<String>()));
+        columnConfigs.add(unitColumnConfig);
+
+        ColumnConfig defaultValueColumnConfig = new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
+                        TASK_DEFAULT_VALUE_WIDTH);
+        defaultValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+        columnConfigs.add(defaultValueColumnConfig);
         return columnConfigs;
     }
 

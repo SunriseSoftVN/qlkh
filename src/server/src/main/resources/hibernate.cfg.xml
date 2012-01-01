@@ -17,5 +17,6 @@
         <mapping resource="com/qlvt/core/client/model/User.hbm.xml"/>
         <mapping resource="com/qlvt/core/client/model/Station.hbm.xml"/>
         <mapping resource="com/qlvt/core/client/model/Task.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/TaskDetail.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

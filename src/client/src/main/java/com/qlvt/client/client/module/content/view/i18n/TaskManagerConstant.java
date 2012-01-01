@@ -37,4 +37,7 @@ public interface TaskManagerConstant extends Constants {
     String taskCodeColumnTitle();
     String taskUnitColumnTitle();
     String taskDefaultValueColumnTitle();
+    String deleteTaskMessageSuccess();
+    String deleteAllTaskMessage();
+    String deleteTaskMessage();
 }

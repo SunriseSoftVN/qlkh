@@ -31,7 +31,7 @@ public class Task extends AbstractEntity {
 
     private String name;
     private int code;
-    private int defaultValue;
+    private Double defaultValue;
     private String unit;
 
     public String getName() {
@@ -50,11 +50,11 @@ public class Task extends AbstractEntity {
         this.code = code;
     }
 
-    public int getDefaultValue() {
+    public Double getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(int defaultValue) {
+    public void setDefaultValue(Double defaultValue) {
         this.defaultValue = defaultValue;
     }
 

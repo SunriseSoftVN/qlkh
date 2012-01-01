@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.qlvt.core.client.model.TaskDetail" table="TaskDetail" schema="" catalog="qlvt">
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="createdDate" column="createdDate" not-null="true"/>
+        <property name="updatedDate" column="updatedDate" not-null="true"/>
+        <property name="createBy" column="createBy" not-null="true"/>
+        <property name="updateBy" column="updateBy" not-null="true"/>
+
+        <property name="q1" column="q1" not-null="false"/>
+        <property name="q2" column="q2" not-null="false"/>
+        <property name="q3" column="q3" not-null="false"/>
+        <property name="q4" column="q4" not-null="false"/>
+        <property name="year" column="year" not-null="true"/>
+        <many-to-one name="task" class="com.qlvt.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
+            <column name="taskId" not-null="true"/>
+        </many-to-one>
+        <many-to-one name="station" class="com.qlvt.core.client.model.Station" lazy="false" fetch="join" outer-join="auto">
+            <column name="stationId" not-null="true"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>
