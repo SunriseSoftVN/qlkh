@@ -19,11 +19,16 @@
 
 package com.qlvt.server.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskDetailService;
+import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+
+import java.util.List;
 
 /**
  * The Class TaskDetailServiceImpl.
@@ -37,4 +42,19 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Inject
     private TaskDetailDao taskDetailDao;
 
+    @Override
+    public BasePagingLoadResult<List<TaskDetail>> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig) {
+        return new BasePagingLoadResult(taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig),
+                loadConfig.getOffset(), taskDetailDao.count(TaskDetail.class));
+    }
+
+    @Override
+    public void deleteTaskDetail(long taskDetailId) {
+        taskDetailDao.deleteById(TaskDetail.class, taskDetailId);
+    }
+
+    @Override
+    public void deleteTaskDetails(List<Long> taskDetailIds) {
+        taskDetailDao.deleteByIds(TaskDetail.class, taskDetailIds);
+    }
 }

@@ -38,6 +38,7 @@ import java.util.List;
 @RemoteServiceRelativePath("Task")
 public interface TaskService extends RemoteService<TaskService> {
 
+    List<Task> getAllTasks();
     void deleteTask(long taskId);
     void deleteTasks(List<Long> taskIds);
     void updateTask(Task task);

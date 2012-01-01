@@ -67,4 +67,9 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
     public void deleteTasks(List<Long> taskIds) {
         taskDao.deleteByIds(Task.class, taskIds);
     }
+
+    @Override
+    public List<Task> getAllTasks() {
+        return taskDao.getAll(Task.class);
+    }
 }

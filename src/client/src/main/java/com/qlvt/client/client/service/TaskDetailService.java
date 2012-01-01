@@ -19,10 +19,15 @@
 
 package com.qlvt.client.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.service.RemoteService;
+
+import java.util.List;
 
 /**
  * The Class TaskDetailService.
@@ -33,6 +38,10 @@ import com.smvp4g.mvp.client.core.service.RemoteService;
 @RemoteServiceRelativePath("TaskDetail")
 public interface TaskDetailService extends RemoteService<TaskDetailService> {
 
+    void deleteTaskDetail(long taskDetailId);
+    void deleteTaskDetails(List<Long> taskDetailIds);
+
+    BasePagingLoadResult<List<TaskDetail>> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig);
 
     public static class App {
         private static final TaskDetailServiceAsync ourInstance = (TaskDetailServiceAsync) GWT.create(TaskDetailService.class);
