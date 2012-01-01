@@ -22,9 +22,11 @@ package com.qlvt.server.guice;
 import com.google.inject.AbstractModule;
 import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.dao.TaskDao;
+import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.dao.impl.StationDaoImpl;
 import com.qlvt.server.dao.impl.TaskDaoImpl;
+import com.qlvt.server.dao.impl.TaskDetailDaoImpl;
 import com.qlvt.server.dao.impl.UserDaoImpl;
 
 /**
@@ -39,5 +41,6 @@ public class DaoModule extends AbstractModule {
         bind(UserDao.class).to(UserDaoImpl.class);
         bind(StationDao.class).to(StationDaoImpl.class);
         bind(TaskDao.class).to(TaskDaoImpl.class);
+        bind(TaskDetailDao.class).to(TaskDetailDaoImpl.class);
     }
 }

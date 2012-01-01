@@ -17,21 +17,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.client.client.service;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
-/**
- * The Class MainMenuConstant.
- *
- * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
- */
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManage();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String ancLogout();
-    String lblWelcome();
+public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailServiceAsync> {
 }

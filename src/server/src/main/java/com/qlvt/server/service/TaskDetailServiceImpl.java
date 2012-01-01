@@ -17,21 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.server.service;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.qlvt.client.client.service.TaskDetailService;
+import com.qlvt.server.dao.TaskDetailDao;
+import com.qlvt.server.service.core.AbstractService;
 
 /**
- * The Class MainMenuConstant.
+ * The Class TaskDetailServiceImpl.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 1/1/12, 3:53 PM
  */
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManage();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String ancLogout();
-    String lblWelcome();
+@Singleton
+public class TaskDetailServiceImpl extends AbstractService implements TaskDetailService {
+
+    @Inject
+    private TaskDetailDao taskDetailDao;
+
 }

@@ -17,21 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.client.client.module.content.place;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.smvp4g.mvp.client.core.place.AbstractPlace;
+import com.smvp4g.mvp.client.core.place.Place;
 
 /**
- * The Class MainMenuConstant.
+ * The Class TaskDetailPlace.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 1/1/12, 3:35 PM
  */
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManage();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String ancLogout();
-    String lblWelcome();
+@Place(defaultPlace = true)
+public class TaskDetailPlace extends AbstractPlace {
 }

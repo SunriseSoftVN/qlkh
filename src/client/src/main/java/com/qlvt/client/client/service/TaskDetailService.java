@@ -17,21 +17,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.client.client.service;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.qlvt.client.client.utils.ServiceUtils;
+import com.smvp4g.mvp.client.core.service.RemoteService;
 
 /**
- * The Class MainMenuConstant.
+ * The Class TaskDetailService.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 1/1/12, 3:51 PM
  */
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManage();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String ancLogout();
-    String lblWelcome();
+@RemoteServiceRelativePath("TaskDetail")
+public interface TaskDetailService extends RemoteService<TaskDetailService> {
+
+
+    public static class App {
+        private static final TaskDetailServiceAsync ourInstance = (TaskDetailServiceAsync) GWT.create(TaskDetailService.class);
+
+        public static TaskDetailServiceAsync getInstance() {
+            ServiceUtils.configureServiceEntryPoint(TaskDetailService.class, ourInstance);
+            return ourInstance;
+        }
+    }
 }

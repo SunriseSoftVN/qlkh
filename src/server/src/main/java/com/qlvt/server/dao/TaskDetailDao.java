@@ -17,21 +17,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.server.dao;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.server.dao.core.Dao;
 
 /**
- * The Class MainMenuConstant.
+ * The Class TaskDetailDao.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 1/1/12, 3:49 PM
  */
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManage();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String ancLogout();
-    String lblWelcome();
+public interface TaskDetailDao extends Dao<TaskDetail> {
 }

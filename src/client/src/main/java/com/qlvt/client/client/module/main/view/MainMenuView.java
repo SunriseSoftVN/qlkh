@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
+import com.qlvt.client.client.module.content.place.TaskDetailPlace;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
 import com.qlvt.client.client.module.main.view.i18n.MainMenuConstant;
 import com.qlvt.client.client.module.main.view.security.MainMenuViewSecutiry;
@@ -68,6 +69,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     MenuLink mnlTaskManage = new MenuLink(TaskManagerPlace.class);
 
     @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mnlTaskDetail = new MenuLink(TaskDetailPlace.class);
+
+    @FieldSecurity
     @I18nField
     Anchor ancLogout = new Anchor("");
 
@@ -87,6 +93,7 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mainPanel.add(mnlUserManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlStationManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlTaskManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mainPanel.add(mnlTaskDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);
