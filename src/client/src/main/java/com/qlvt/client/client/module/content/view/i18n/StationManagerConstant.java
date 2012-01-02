@@ -37,4 +37,5 @@ public interface StationManagerConstant extends Constants {
     String deleteStationMessageSuccess();
     String deleteAllStationMessage();
     String deleteStationMessage();
+    String saveMessageSuccess();
 }

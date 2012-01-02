@@ -93,7 +93,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             view.getStationsGird().getStore().commitChanges();
-                            DiaLogUtils.notify("cap nhat thanh cong");
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                         }
                     });
                 }
@@ -149,14 +149,14 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
         }
     }
 
-    private void showDeleteTagConform(long tagId, String tagName) {
-        List<Long> tagIds = new ArrayList<Long>(1);
-        tagIds.add(tagId);
-        showDeleteTagConform(tagIds, tagName);
+    private void showDeleteTagConform(long stationId, String tagName) {
+        List<Long> stationIds = new ArrayList<Long>(1);
+        stationIds.add(stationId);
+        showDeleteTagConform(stationIds, tagName);
     }
 
-    private void showDeleteTagConform(final List<Long> userIds, String tagName) {
-        assert userIds != null;
+    private void showDeleteTagConform(final List<Long> stationIds, String tagName) {
+        assert stationIds != null;
         String deleteMessage;
         final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
             @Override
@@ -167,7 +167,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 DiaLogUtils.notify(view.getConstant().deleteStationMessageSuccess());
             }
         };
-        final boolean hasManyTag = userIds.size() > 1;
+        final boolean hasManyTag = stationIds.size() > 1;
         if (hasManyTag) {
             deleteMessage = view.getConstant().deleteAllStationMessage();
         } else {
@@ -180,9 +180,9 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        stationService.deleteStationByIds(userIds, callback);
+                        stationService.deleteStationByIds(stationIds, callback);
                     } else {
-                        stationService.deleteStationById(userIds.get(0), callback);
+                        stationService.deleteStationById(stationIds.get(0), callback);
                     }
                 }
             }

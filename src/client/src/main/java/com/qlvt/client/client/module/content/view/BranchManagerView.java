@@ -35,8 +35,10 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.BranchManagerConstant;
 import com.qlvt.client.client.module.content.view.security.BranchManagerSecurity;
+import com.qlvt.core.client.model.Branch;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
@@ -58,7 +60,7 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
     public static final int STT_COLUMN_WIDTH = 50;
     public static final String BRANCH_NAME_COLUMN = "name";
     public static final int BRANCH_NAME_WIDTH = 300;
-    public static final String STATION_NAME_COLUMN = "station.name";
+    public static final String STATION_NAME_COLUMN = "station";
     public static final int STATION_NAME_WIDTH = 300;
     public static final int BRANCH_LIST_SIZE = 50;
 
@@ -77,6 +79,8 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
     private EditorGrid<BeanModel> branchsGird;
+
+    private CellEditor stationCellEditor;
 
     @Override
     protected void initializeView() {
@@ -139,6 +143,18 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
 
         ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
                 STATION_NAME_WIDTH);
+        stationNameColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                Branch branch = model.getBean();
+                String st = StringUtils.EMPTY;
+                if (branch.getStation() != null) {
+                    st = branch.getStation().getName();
+                }
+                return new Text(st);
+            }
+        });
+        stationNameColumnConfig.setEditor(getStationCellEditor());
         columnConfigs.add(stationNameColumnConfig);
         return columnConfigs;
     }
@@ -165,5 +181,13 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
 
     public EditorGrid<BeanModel> getBranchsGird() {
         return branchsGird;
+    }
+
+    public CellEditor getStationCellEditor() {
+        return stationCellEditor;
+    }
+
+    public void setStationCellEditor(CellEditor stationCellEditor) {
+        this.stationCellEditor = stationCellEditor;
     }
 }
