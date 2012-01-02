@@ -37,5 +37,6 @@ public class ServletModule extends com.google.inject.servlet.ServletModule {
         serve(servletRootPath + "/Station").with(StationServiceImpl.class);
         serve(servletRootPath + "/Task").with(TaskServiceImpl.class);
         serve(servletRootPath + "/TaskDetail").with(TaskDetailServiceImpl.class);
+        serve(servletRootPath + "/Branch").with(BranchServiceImpl.class);
     }
 }

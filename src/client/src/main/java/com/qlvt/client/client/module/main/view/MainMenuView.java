@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.content.place.BranchManagerPlace;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.place.TaskDetailPlace;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
@@ -61,7 +62,13 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mnlStationManage = new MenuLink(StationManagerPlace.class);
+    MenuLink mnlStationManager = new MenuLink(StationManagerPlace.class);
+
+
+    @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mnlBranchManager = new MenuLink(BranchManagerPlace.class);
 
     @FieldSecurity
     @HistoryHandler
@@ -91,7 +98,8 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         layout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
         mainPanel.setLayout(layout);
         mainPanel.add(mnlUserManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
-        mainPanel.add(mnlStationManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mainPanel.add(mnlStationManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mainPanel.add(mnlBranchManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlTaskManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlTaskDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 

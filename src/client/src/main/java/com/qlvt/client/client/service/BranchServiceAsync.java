@@ -17,25 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.client.client.service;
 
-import com.google.inject.AbstractModule;
-import com.qlvt.server.dao.*;
-import com.qlvt.server.dao.impl.*;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.core.client.model.Branch;
+import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
-/**
- * The Class DaoModule.
- *
- * @author Nguyen Duc Dung
- * @since 8/16/11, 9:41 AM
- */
-public class DaoModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(UserDao.class).to(UserDaoImpl.class);
-        bind(StationDao.class).to(StationDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
-        bind(TaskDetailDao.class).to(TaskDetailDaoImpl.class);
-        bind(BranchDao.class).to(BranchDaoImpl.class);
-    }
+import java.util.List;
+
+public interface BranchServiceAsync extends RemoteServiceAsync<BranchServiceAsync> {
+    void deleteBranchById(long branchId, AsyncCallback<Void> async);
+
+    void deleteBranchByIds(List<Long> branchIds, AsyncCallback<Void> async);
+
+    void updateBranchs(List<Branch> branchs, AsyncCallback<Void> async);
+
+    void getAllBranch(AsyncCallback<List<Branch>> async);
+
+    void getBranchsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<Branch>>> async);
 }

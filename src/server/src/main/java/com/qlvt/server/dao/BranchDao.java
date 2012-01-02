@@ -17,21 +17,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.security;
+package com.qlvt.server.dao;
 
-import com.qlvt.core.client.constant.UserRoleEnum;
-import com.smvp4g.mvp.client.core.security.HasRole;
-import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
+import com.qlvt.core.client.model.Branch;
+import com.qlvt.server.dao.core.Dao;
 
 /**
- * The Class TaskDetailSecurity.
+ * The Class BranchDao.
  *
  * @author Nguyen Duc Dung
- * @since 1/1/12, 3:38 PM
+ * @since 1/2/12, 12:53 PM
  */
-public class TaskDetailSecurity implements ViewSecurityConfigurator {
-    @Override
-    public HasRole[] getRoles() {
-        return new HasRole[]{UserRoleEnum.USER};
-    }
+public interface BranchDao extends Dao<Branch> {
 }
