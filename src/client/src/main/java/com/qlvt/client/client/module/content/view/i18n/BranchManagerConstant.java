@@ -33,6 +33,7 @@ public interface BranchManagerConstant extends Constants {
     String btnSave();
     String btnCancel();
     String branchNameColumnTitle();
+    String stationNameColumnTitle();
     String sttColumnTitle();
     String deleteBranchMessageSuccess();
     String deleteAllBranchMessage();
