@@ -23,6 +23,10 @@ import com.google.inject.Singleton;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.core.AbstractDao;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.List;
 
 /**
  * The Class BranchDaoImpl.
@@ -32,4 +36,13 @@ import com.qlvt.server.dao.core.AbstractDao;
  */
 @Singleton
 public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
+    @Override
+    public List<Branch> getBranchsByStationId(long stationId) {
+        openSession();
+        Criteria criteria = session.createCriteria(Branch.class)
+                .add(Restrictions.eq("station.id", stationId));
+        List<Branch> branches = criteria.list();
+        closeSession();
+        return branches;
+    }
 }

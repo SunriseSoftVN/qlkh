@@ -41,6 +41,7 @@ public interface BranchService extends RemoteService<BranchService> {
     void deleteBranchById(long branchId);
     void deleteBranchByIds(List<Long> branchIds);
     void updateBranchs(List<Branch> branchs);
+    List<Branch> getBranchByStationId(long stationId);
     List<Branch> getAllBranch();
     BasePagingLoadResult<List<Branch>> getBranchsForGrid(BasePagingLoadConfig config);
 

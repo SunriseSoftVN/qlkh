@@ -67,4 +67,9 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
         List<Branch> branches = branchDao.getByBeanConfig(Branch.class, config);
         return new BasePagingLoadResult(branches, config.getOffset(), branchDao.count(Branch.class));
     }
+
+    @Override
+    public List<Branch> getBranchByStationId(long stationId) {
+        return branchDao.getBranchsByStationId(stationId);
+    }
 }

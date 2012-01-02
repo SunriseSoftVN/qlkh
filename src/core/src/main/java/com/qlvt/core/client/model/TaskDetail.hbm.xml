@@ -12,10 +12,6 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
-        <property name="q1" column="q1" not-null="false"/>
-        <property name="q2" column="q2" not-null="false"/>
-        <property name="q3" column="q3" not-null="false"/>
-        <property name="q4" column="q4" not-null="false"/>
         <property name="year" column="year" not-null="true"/>
         <many-to-one name="task" class="com.qlvt.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
             <column name="taskId" not-null="true"/>

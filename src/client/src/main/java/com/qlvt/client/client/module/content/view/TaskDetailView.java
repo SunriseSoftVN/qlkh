@@ -82,8 +82,8 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
     private EditorGrid<BeanModel> taskDetailGird;
-
     private CellEditor taskCodeCellEditor;
+    private ColumnModel columnModel;
 
     @Override
     protected void initializeView() {
@@ -97,8 +97,9 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
      */
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        taskDetailGird = new EditorGrid<BeanModel>(listStore, cm);
+        columnModel = new ColumnModel(createColumnConfig(selectionModel));
+        columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(getConstant().taskHeaderGroup(), 1, 5));
+        taskDetailGird = new EditorGrid<BeanModel>(listStore, columnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
         taskDetailGird.setStripeRows(true);
@@ -144,7 +145,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         taskCodeColumnConfig.setEditor(getTaskCodeCellEditor());
         taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, 
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
                                  ListStore<BeanModel> textListStore, Grid<BeanModel> textGrid) {
                 String code = StringUtils.EMPTY;
                 TaskDetail taskDetail = model.getBean();

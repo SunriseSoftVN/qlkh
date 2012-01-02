@@ -22,6 +22,8 @@ package com.qlvt.server.dao;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.server.dao.core.Dao;
 
+import java.util.List;
+
 /**
  * The Class BranchDao.
  *
@@ -29,4 +31,5 @@ import com.qlvt.server.dao.core.Dao;
  * @since 1/2/12, 12:53 PM
  */
 public interface BranchDao extends Dao<Branch> {
+    List<Branch> getBranchsByStationId(long stationId);
 }
