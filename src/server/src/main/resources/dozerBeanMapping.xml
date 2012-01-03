@@ -13,4 +13,9 @@
         </field-exclude>
     </mapping>
 
+    <mapping>
+        <class-a>com.qlvt.core.client.model.TaskDetail</class-a>
+        <class-b>com.qlvt.core.client.dto.TaskDetailDto</class-b>
+    </mapping>
+
 </mappings>

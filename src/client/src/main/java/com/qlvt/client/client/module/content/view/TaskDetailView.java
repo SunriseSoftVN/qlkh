@@ -34,7 +34,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskDetailSecurity;
-import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.core.client.dto.TaskDetailDto;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -63,8 +63,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "task.unit";
     public static final int TASK_UNIT_WIDTH = 70;
-    public static final String TASK_DEFAULT_VALUE_COLUMN = "task.defaultValue";
-    public static final int TASK_DEFAULT_VALUE_WIDTH = 70;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -148,7 +146,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
                                  ListStore<BeanModel> textListStore, Grid<BeanModel> textGrid) {
                 String code = StringUtils.EMPTY;
-                TaskDetail taskDetail = model.getBean();
+                TaskDetailDto taskDetail = model.getBean();
                 if (taskDetail != null && taskDetail.getTask() != null) {
                     code = String.valueOf(taskDetail.getTask().getCode());
                 }
@@ -163,10 +161,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
                 TASK_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
-
-        ColumnConfig defaultValueColumnConfig = new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
-                TASK_DEFAULT_VALUE_WIDTH);
-        columnConfigs.add(defaultValueColumnConfig);
         return columnConfigs;
     }
 

@@ -36,6 +36,7 @@ import com.qlvt.client.client.module.content.view.TaskManagerView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
@@ -127,15 +128,15 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     }
 
     private ListStore<BeanModel> createTaskListStore() {
-        RpcProxy<BasePagingLoadResult<List<TaskDetail>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<TaskDetail>>>() {
+        RpcProxy<BasePagingLoadResult<TaskDetailDto>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetailDto>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<TaskDetail>>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> callback) {
                 taskDetailService.getTaskDetailsForGrid((BasePagingLoadConfig) loadConfig, callback);
             }
         };
 
-        PagingLoader<PagingLoadResult<TaskDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new BeanModelReader()) {
+        PagingLoader<PagingLoadResult<TaskDetailDto>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<TaskDetailDto>>(rpcProxy, new BeanModelReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);

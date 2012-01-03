@@ -24,10 +24,13 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskDetailService;
+import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+import org.dozer.DozerBeanMapperSingletonWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,9 +46,15 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     private TaskDetailDao taskDetailDao;
 
     @Override
-    public BasePagingLoadResult<List<TaskDetail>> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig) {
-        return new BasePagingLoadResult(taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig),
-                loadConfig.getOffset(), taskDetailDao.count(TaskDetail.class));
+    public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig) {
+        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig);
+        List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
+        for (TaskDetail taskDetail : taskDetails) {
+            taskDetailDtos.add(DozerBeanMapperSingletonWrapper.
+                    getInstance().map(taskDetail, TaskDetailDto.class));
+        }
+        return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
+                taskDetailDao.count(TaskDetail.class));
     }
 
     @Override
