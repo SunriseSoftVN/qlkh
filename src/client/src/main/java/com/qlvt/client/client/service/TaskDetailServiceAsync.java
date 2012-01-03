@@ -34,4 +34,5 @@ public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailSer
     void deleteTaskDetails(List<Long> taskDetailIds, AsyncCallback<Void> async);
     void updateTaskDetail(TaskDetail taskDetail, AsyncCallback<Void> async);
     void updateTaskDetails(List<TaskDetail> taskDetails, AsyncCallback<Void> async);
+    void updateTaskDetailDtos(List<TaskDetailDto> taskDetails, AsyncCallback<Void> async);
 }

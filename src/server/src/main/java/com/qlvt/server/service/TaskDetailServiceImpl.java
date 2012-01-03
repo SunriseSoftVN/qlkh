@@ -77,4 +77,13 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     public void updateTaskDetails(List<TaskDetail> taskDetails) {
         taskDetailDao.saveOrUpdate(taskDetails);
     }
+
+    @Override
+    public void updateTaskDetailDtos(List<TaskDetailDto> taskDetailDtos) {
+        List<TaskDetail> taskDetails = new ArrayList<TaskDetail>(taskDetailDtos.size());
+        for (TaskDetailDto taskDetailDto : taskDetailDtos) {
+            taskDetails.add(DozerBeanMapperSingletonWrapper.getInstance().map(taskDetailDto, TaskDetail.class));
+        }
+        updateTaskDetails(taskDetails);
+    }
 }
