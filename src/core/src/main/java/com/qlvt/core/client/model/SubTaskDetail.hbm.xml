@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.qlvt.core.client.model.SubTaskDetail" table="SubTaskDetail" schema="" catalog="qlvt">
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="createdDate" column="createdDate" not-null="true"/>
+        <property name="updatedDate" column="updatedDate" not-null="true"/>
+        <property name="createBy" column="createBy" not-null="true"/>
+        <property name="updateBy" column="updateBy" not-null="true"/>
+
+        <property name="q1" column="q1"/>
+        <property name="q2" column="q2"/>
+        <property name="q3" column="q3"/>
+        <property name="q4" column="q4"/>
+        <many-to-one name="taskDetail" class="com.qlvt.core.client.model.TaskDetail" lazy="false" fetch="join" outer-join="auto">
+            <column name="taskDetailId" not-null="true"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>
