@@ -163,16 +163,16 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         
         
         for (String branchName : branchNames) {
-            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + ".q1", "q1", 50);
+            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + ".q1", "q1", 45);
             columnConfigs.add(q1ColumnConfig);
 
-            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + ".q2", "q2", 50);
+            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + ".q2", "q2", 45);
             columnConfigs.add(q2ColumnConfig);
 
-            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + ".q3", "q3", 50);
+            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + ".q3", "q3", 45);
             columnConfigs.add(q3ColumnConfig);
 
-            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + ".q4", "q4", 50);
+            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + ".q4", "q4", 45);
             columnConfigs.add(q4ColumnConfig);
         }
         
