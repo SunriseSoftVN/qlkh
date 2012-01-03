@@ -21,6 +21,7 @@ package com.qlvt.server.dao.core;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.qlvt.core.client.model.core.AbstractEntity;
+import org.hibernate.criterion.Criterion;
 
 import java.util.List;
 
@@ -95,7 +96,7 @@ public interface Dao<E extends AbstractEntity> {
      */
     List<E> getAll(Class<E> clazz);
 
-    List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config);
+    List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions);
 
     int count(Class<E> clazz);
 }

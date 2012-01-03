@@ -27,6 +27,7 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -122,7 +123,7 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     }
 
     @Override
-    public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config) {
+    public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
         openSession();
         Criteria criteria = session.createCriteria(clazz)
                 .setFirstResult(config.getOffset()).setMaxResults(config.getLimit());
@@ -131,6 +132,11 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
                 criteria.addOrder(Order.asc(config.getSortField()));
             } else if (config.getSortDir() == Style.SortDir.DESC) {
                 criteria.addOrder(Order.desc(config.getSortField()));
+            }
+        }
+        if (criterions != null && criterions.length > 0) {
+            for (Criterion criterion : criterions) {
+                criteria.add(criterion);
             }
         }
         List<E> result = criteria.list();

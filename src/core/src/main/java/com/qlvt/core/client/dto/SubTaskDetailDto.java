@@ -17,70 +17,55 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.model;
+package com.qlvt.core.client.dto;
 
-import com.qlvt.core.client.model.core.AbstractEntity;
+import com.qlvt.core.client.model.TaskDetail;
 
 /**
- * The Class SubTaskDetail.
+ * The Class SubTaskDetailDto.
  *
  * @author Nguyen Duc Dung
- * @since 1/3/12, 8:59 AM
+ * @since 1/3/12, 8:44 PM
  */
-public class SubTaskDetail extends AbstractEntity {
-
-    private TaskDetail taskDetail;
-    private Branch branch;
-    private Double q1;
-    private Double q2;
-    private Double q3;
-    private Double q4;
+public class SubTaskDetailDto extends AbstractDto {
 
     public TaskDetail getTaskDetail() {
-        return taskDetail;
+        return get("taskDetail");
     }
 
     public void setTaskDetail(TaskDetail taskDetail) {
-        this.taskDetail = taskDetail;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+        set("taskDetail", taskDetail);
     }
 
     public Double getQ1() {
-        return q1;
+        return get("q1");
     }
 
     public void setQ1(Double q1) {
-        this.q1 = q1;
+        set("q1", q1);
     }
 
     public Double getQ2() {
-        return q2;
+        return get("q2");
     }
 
     public void setQ2(Double q2) {
-        this.q2 = q2;
+        set("q2", q2);
     }
 
     public Double getQ3() {
-        return q3;
+        return get("q3");
     }
 
     public void setQ3(Double q3) {
-        this.q3 = q3;
+        set("q3", q3);
     }
 
     public Double getQ4() {
-        return q4;
+        return get("q4");
     }
 
     public void setQ4(Double q4) {
-        this.q4 = q4;
+        set("q4", q4);
     }
 }

@@ -25,8 +25,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.StationService;
 import com.qlvt.core.client.exception.DeleteException;
+import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
+import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
@@ -48,6 +50,9 @@ public class StationServiceImpl extends AbstractService implements StationServic
 
     @Inject
     private UserDao userDao;
+
+    @Inject
+    private BranchDao branchDao;
 
     @Override
     public List<Station> getAllStation() {
@@ -84,10 +89,13 @@ public class StationServiceImpl extends AbstractService implements StationServic
     }
 
     @Override
-    public Station getStationByUserName(String userName) {
+    public Station getStationAndBranchByUserName(String userName) {
         User user = userDao.findByUserName(userName);
         if (user != null) {
-            return user.getStation();
+            Station station = user.getStation();
+            List<Branch> branches = branchDao.getBranchsByStationId(station.getId());
+            station.setBranches(branches);
+            return station;
         }
         return null;
     }

@@ -37,5 +37,6 @@ public class DaoModule extends AbstractModule {
         bind(TaskDao.class).to(TaskDaoImpl.class);
         bind(TaskDetailDao.class).to(TaskDetailDaoImpl.class);
         bind(BranchDao.class).to(BranchDaoImpl.class);
+        bind(SubTaskDetailDao.class).to(SubTaskDetailDaoImpl.class);
     }
 }

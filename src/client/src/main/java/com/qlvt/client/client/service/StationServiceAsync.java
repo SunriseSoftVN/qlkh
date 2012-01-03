@@ -31,10 +31,7 @@ public interface StationServiceAsync extends RemoteServiceAsync<StationServiceAs
     void getStationsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<Station>>> async);
     void updateStations(List<Station> stations, AsyncCallback<Void> async);
     void getAllStation(AsyncCallback<List<Station>> async);
-
     void deleteStationById(long stationId, AsyncCallback<Void> async);
-
     void deleteStationByIds(List<Long> stationIds, AsyncCallback<Void> async);
-
-    void getStationByUserName(String userName, AsyncCallback<Station> async);
+    void getStationAndBranchByUserName(String userName, AsyncCallback<Station> async);
 }

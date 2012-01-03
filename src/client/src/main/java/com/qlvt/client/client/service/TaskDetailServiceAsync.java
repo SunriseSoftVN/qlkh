@@ -29,7 +29,7 @@ import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 import java.util.List;
 
 public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailServiceAsync> {
-    void getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> async);
+    void getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long staionId, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> async);
     void deleteTaskDetail(long taskDetailId, AsyncCallback<Void> async);
     void deleteTaskDetails(List<Long> taskDetailIds, AsyncCallback<Void> async);
     void updateTaskDetail(TaskDetail taskDetail, AsyncCallback<Void> async);

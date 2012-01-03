@@ -38,6 +38,7 @@ import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.dto.TaskDto;
+import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -68,22 +69,29 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     @Override
     public void onActivate() {
         view.show();
-        view.getPagingToolBar().refresh();
+        if (currentStation != null) {
+            view.getPagingToolBar().refresh();
+        }
     }
 
     @Override
     protected void doBind() {
         LoadingUtils.showLoading();
-        stationService.getStationByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
+        stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
             @Override
             public void onSuccess(Station result) {
                 super.onSuccess(result);
                 currentStation = result;
+                view.setTaskCodeCellEditor(createTaskCodeCellEditor());
+                List<String> branchNames = new ArrayList<String>(currentStation.getBranches().size());
+                for (Branch branch : currentStation.getBranches()) {
+                    branchNames.add(branch.getName());
+                }
+                view.createGrid(createTaskListStore(), branchNames);
+                view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+                view.getPagingToolBar().refresh();
             }
         });
-        view.setTaskCodeCellEditor(createTaskCodeCellEditor());
-        view.createGrid(createTaskListStore());
-        view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -134,7 +142,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         RpcProxy<BasePagingLoadResult<TaskDetailDto>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetailDto>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> callback) {
-                taskDetailService.getTaskDetailsForGrid((BasePagingLoadConfig) loadConfig, callback);
+                taskDetailService.getTaskDetailsForGrid((BasePagingLoadConfig) loadConfig, currentStation.getId(), callback);
             }
         };
 

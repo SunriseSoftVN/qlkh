@@ -44,8 +44,7 @@ public interface TaskDetailService extends RemoteService<TaskDetailService> {
     void updateTaskDetailDtos(List<TaskDetailDto> taskDetails);
     void deleteTaskDetail(long taskDetailId);
     void deleteTaskDetails(List<Long> taskDetailIds);
-
-    BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig);
+    BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
 
     public static class App {
         private static final TaskDetailServiceAsync ourInstance = (TaskDetailServiceAsync) GWT.create(TaskDetailService.class);

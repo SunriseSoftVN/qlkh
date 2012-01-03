@@ -23,5 +23,9 @@
         <class-b>com.qlvt.core.client.dto.TaskDto</class-b>
     </mapping>
 
+    <mapping>
+        <class-a>com.qlvt.core.client.model.SubTaskDetail</class-a>
+        <class-b>com.qlvt.core.client.dto.SubTaskDetailDto</class-b>
+    </mapping>
 
 </mappings>

@@ -24,11 +24,17 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskDetailService;
+import com.qlvt.core.client.dto.SubTaskDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
+import com.qlvt.core.client.model.Branch;
+import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.server.dao.BranchDao;
+import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
 import org.dozer.DozerBeanMapperSingletonWrapper;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +51,28 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Inject
     private TaskDetailDao taskDetailDao;
 
+    @Inject
+    private SubTaskDetailDao subTaskDetailDao;
+
+    @Inject
+    private BranchDao branchDao;
+
     @Override
-    public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig) {
-        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig);
+    public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
+        List<Branch> branches = branchDao.getBranchsByStationId(stationId);
+        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig, Restrictions.eq("station.id", stationId));
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
         for (TaskDetail taskDetail : taskDetails) {
             TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
                     getInstance().map(taskDetail, TaskDetailDto.class);
+            for (Branch branch : branches) {
+                SubTaskDetail subTaskDetail = subTaskDetailDao.
+                        getSubTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+                if (subTaskDetail != null) {
+                    taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
+                            map(subTaskDetail, SubTaskDetailDto.class));
+                }
+            }
             taskDetailDtos.add(taskDetailDto);
         }
         return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),

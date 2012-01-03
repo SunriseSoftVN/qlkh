@@ -82,20 +82,18 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     private CellEditor taskCodeCellEditor;
     private ColumnModel columnModel;
 
-    @Override
-    protected void initializeView() {
-        contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
-        setWidget(contentPanel);
-    }
-
     /**
      * Create Grid on View.
      */
-    public void createGrid(ListStore<TaskDetailDto> listStore) {
+    public void createGrid(ListStore<TaskDetailDto> listStore, List<String> branchNames) {
         CheckBoxSelectionModel<TaskDetailDto> selectionModel = new CheckBoxSelectionModel<TaskDetailDto>();
-        columnModel = new ColumnModel(createColumnConfig(selectionModel));
+        columnModel = new ColumnModel(createColumnConfig(selectionModel, branchNames));
         columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(getConstant().taskHeaderGroup(), 1, 5));
+        int column = 5;
+        for (String branchName : branchNames) {
+            columnModel.addHeaderGroup(0, column, new HeaderGroupConfig(branchName,1, 4));
+            column += 4;
+        }
         taskDetailGird = new EditorGrid<TaskDetailDto>(listStore, columnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
@@ -115,14 +113,17 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnCancel);
 
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(500);
         contentPanel.setLayout(new FitLayout());
         contentPanel.add(taskDetailGird);
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
-        contentPanel.layout();
+        setWidget(contentPanel);
     }
 
-    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<TaskDetailDto> selectionModel) {
+    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<TaskDetailDto> selectionModel, 
+                                                  List<String> branchNames) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -159,6 +160,22 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
                 TASK_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
+        
+        
+        for (String branchName : branchNames) {
+            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + ".q1", "q1", 50);
+            columnConfigs.add(q1ColumnConfig);
+
+            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + ".q2", "q2", 50);
+            columnConfigs.add(q2ColumnConfig);
+
+            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + ".q3", "q3", 50);
+            columnConfigs.add(q3ColumnConfig);
+
+            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + ".q4", "q4", 50);
+            columnConfigs.add(q4ColumnConfig);
+        }
+        
         return columnConfigs;
     }
 
