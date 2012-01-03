@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
@@ -39,6 +40,7 @@ import java.util.List;
 public interface TaskService extends RemoteService<TaskService> {
 
     List<Task> getAllTasks();
+    List<TaskDto> getAllTaskDtos();
     void deleteTask(long taskId);
     void deleteTasks(List<Long> taskIds);
     void updateTask(Task task);

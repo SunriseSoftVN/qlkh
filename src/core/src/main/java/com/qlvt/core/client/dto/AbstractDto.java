@@ -19,7 +19,7 @@
 
 package com.qlvt.core.client.dto;
 
-import com.extjs.gxt.ui.client.data.BeanModelTag;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,51 +30,45 @@ import java.util.Date;
  * @author Nguyen Duc Dung
  * @since 1/3/12, 2:38 PM
  */
-public class AbstractDto implements BeanModelTag, Serializable {
-
-    private Long id;
-    private Date createdDate;
-    private Date updatedDate;
-    private Long createBy;
-    private Long updateBy;
+public class AbstractDto extends BaseModelData implements Serializable {
 
     public Long getId() {
-        return id;
+        return get("id");
     }
 
     public void setId(Long id) {
-        this.id = id;
+        set("id", id);
     }
 
     public Date getCreatedDate() {
-        return createdDate;
+        return get("createdDate");
     }
 
     public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+        set("createdDate", createdDate);
     }
 
     public Date getUpdatedDate() {
-        return updatedDate;
+        return get("updatedDate");
     }
 
     public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
+        set("updatedDate", updatedDate);
     }
 
     public Long getCreateBy() {
-        return createBy;
+        return get("createBy");
     }
 
     public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
+        set("createBy", createBy);
     }
 
     public Long getUpdateBy() {
-        return updateBy;
+        return get("updateBy");
     }
 
     public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
+        set("updateBy", updateBy);
     }
 }

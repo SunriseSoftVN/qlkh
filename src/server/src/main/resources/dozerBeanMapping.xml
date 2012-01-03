@@ -18,4 +18,10 @@
         <class-b>com.qlvt.core.client.dto.TaskDetailDto</class-b>
     </mapping>
 
+    <mapping>
+        <class-a>com.qlvt.core.client.model.Task</class-a>
+        <class-b>com.qlvt.core.client.dto.TaskDto</class-b>
+    </mapping>
+
+
 </mappings>

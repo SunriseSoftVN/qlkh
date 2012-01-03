@@ -22,6 +22,7 @@ package com.qlvt.client.client.service;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
@@ -34,4 +35,5 @@ public interface TaskServiceAsync extends RemoteServiceAsync<TaskServiceAsync> {
     void deleteTask(long taskId, AsyncCallback<Void> async);
     void deleteTasks(List<Long> taskIds, AsyncCallback<Void> async);
     void getAllTasks(AsyncCallback<List<Task>> async);
+    void getAllTaskDtos(AsyncCallback<List<TaskDto>> async);
 }

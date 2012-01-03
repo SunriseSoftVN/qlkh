@@ -24,10 +24,13 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskService;
+import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.service.core.AbstractService;
+import org.dozer.DozerBeanMapperSingletonWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,5 +74,15 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
     @Override
     public List<Task> getAllTasks() {
         return taskDao.getAll(Task.class);
+    }
+
+    @Override
+    public List<TaskDto> getAllTaskDtos() {
+        List<Task> tasks = taskDao.getAll(Task.class);
+        List<TaskDto> taskDtos = new ArrayList<TaskDto>(tasks.size());
+        for (Task task : tasks) {
+            taskDtos.add(DozerBeanMapperSingletonWrapper.getInstance().map(task, TaskDto.class));
+        }
+        return taskDtos;
     }
 }

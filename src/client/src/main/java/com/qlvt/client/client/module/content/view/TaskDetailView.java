@@ -20,7 +20,6 @@
 package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -79,7 +78,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
-    private EditorGrid<BeanModel> taskDetailGird;
+    private EditorGrid<TaskDetailDto> taskDetailGird;
     private CellEditor taskCodeCellEditor;
     private ColumnModel columnModel;
 
@@ -93,11 +92,11 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     /**
      * Create Grid on View.
      */
-    public void createGrid(ListStore<BeanModel> listStore) {
-        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
+    public void createGrid(ListStore<TaskDetailDto> listStore) {
+        CheckBoxSelectionModel<TaskDetailDto> selectionModel = new CheckBoxSelectionModel<TaskDetailDto>();
         columnModel = new ColumnModel(createColumnConfig(selectionModel));
         columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(getConstant().taskHeaderGroup(), 1, 5));
-        taskDetailGird = new EditorGrid<BeanModel>(listStore, columnModel);
+        taskDetailGird = new EditorGrid<TaskDetailDto>(listStore, columnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
         taskDetailGird.setStripeRows(true);
@@ -123,14 +122,14 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         contentPanel.layout();
     }
 
-    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
+    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<TaskDetailDto> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
-        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+        sttColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
             @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+            public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<TaskDetailDto> beanModelListStore, Grid<TaskDetailDto> beanModelGrid) {
                 if (model.get(STT_COLUMN) == null) {
                     model.set(STT_COLUMN, rowIndex + 1);
                 }
@@ -141,22 +140,21 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
         taskCodeColumnConfig.setEditor(getTaskCodeCellEditor());
-        taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+        taskCodeColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
             @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<BeanModel> textListStore, Grid<BeanModel> textGrid) {
+            public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<TaskDetailDto> taskDetailDtoListStore, Grid<TaskDetailDto> taskDetailDtoGrid) {
                 String code = StringUtils.EMPTY;
-                TaskDetailDto taskDetail = model.getBean();
-                if (taskDetail != null && taskDetail.getTask() != null) {
-                    code = String.valueOf(taskDetail.getTask().getCode());
+                if (model.getTask() != null) {
+                    code = String.valueOf(model.getTask().getCode());
                 }
                 return new Text(code);
             }
         });
+
         columnConfigs.add(taskCodeColumnConfig);
-        ColumnConfig stationNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
+        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
                 TASK_NAME_WIDTH);
-        columnConfigs.add(stationNameColumnConfig);
+        columnConfigs.add(taskNameColumnConfig);
 
         ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
                 TASK_UNIT_WIDTH);
@@ -164,11 +162,11 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return columnConfigs;
     }
 
-    public EditorGrid<BeanModel> getTaskDetailGird() {
+    public EditorGrid<TaskDetailDto> getTaskDetailGird() {
         return taskDetailGird;
     }
 
-    public void setTaskDetailGird(EditorGrid<BeanModel> taskDetailGird) {
+    public void setTaskDetailGird(EditorGrid<TaskDetailDto> taskDetailGird) {
         this.taskDetailGird = taskDetailGird;
     }
 

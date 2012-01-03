@@ -37,8 +37,8 @@ import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.dto.TaskDetailDto;
+import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Station;
-import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -85,7 +85,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.setTaskCodeCellEditor(createTaskCodeCellEditor());
         view.createGrid(createTaskListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+//        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -98,8 +98,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     taskDetail.setUpdatedDate(new Date());
                     BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
                     BeanModel model = factory.createModel(taskDetail);
-                    view.getTaskDetailGird().getStore().insert(model,
-                            view.getTaskDetailGird().getStore().getCount());
+//                    view.getTaskDetailGird().getStore().insert(model,
+//                            view.getTaskDetailGird().getStore().getCount());
                 } else {
                     DiaLogUtils.notify(view.getConstant().loadStationError());
                 }
@@ -127,7 +127,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         });
     }
 
-    private ListStore<BeanModel> createTaskListStore() {
+    private ListStore<TaskDetailDto> createTaskListStore() {
         RpcProxy<BasePagingLoadResult<TaskDetailDto>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetailDto>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> callback) {
@@ -136,7 +136,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         };
 
         PagingLoader<PagingLoadResult<TaskDetailDto>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetailDto>>(rpcProxy, new BeanModelReader()) {
+                new BasePagingLoader<PagingLoadResult<TaskDetailDto>>(rpcProxy, new ModelReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -145,47 +145,46 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     }
                 };
 
-        return new ListStore<BeanModel>(pagingLoader);
+        return new ListStore<TaskDetailDto>(pagingLoader);
     }
 
     private CellEditor createTaskCodeCellEditor() {
-        final ListStore<BeanModel> store = new ListStore<BeanModel>();
-        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
+        final ListStore<TaskDto> taskDtos = new ListStore<TaskDto>();
         LoadingUtils.showLoading();
-        taskService.getAllTasks(new AbstractAsyncCallback<List<Task>>() {
+        taskService.getAllTaskDtos(new AbstractAsyncCallback<List<TaskDto>>() {
             @Override
-            public void onSuccess(List<Task> result) {
+            public void onSuccess(List<TaskDto> result) {
                 super.onSuccess(result);
-                store.add(factory.createModel(result));
+                taskDtos.add(result);
             }
         });
-        final ComboBox<BeanModel> ccbTask = new ComboBox<BeanModel>();
-        ccbTask.setStore(store);
+        final ComboBox<TaskDto> ccbTask = new ComboBox<TaskDto>();
+        ccbTask.setStore(taskDtos);
         ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
         ccbTask.setForceSelection(true);
         ccbTask.setDisplayField(TaskManagerView.TASK_CODE_COLUMN);
         return new CellEditor(ccbTask);
     }
 
-    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
-        @Override
-        public void componentSelected(ButtonEvent ce) {
-            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
-            if (CollectionsUtils.isNotEmpty(models)) {
-                if (models.size() == 1) {
-                    final TaskDetail taskDetail = (TaskDetail) models.get(0).getBean();
-                    showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
-                } else {
-                    List<Long> taskDetailIds = new ArrayList<Long>(models.size());
-                    for (BeanModel model : models) {
-                        final TaskDetail taskDetail = (TaskDetail) model.getBean();
-                        taskDetailIds.add(taskDetail.getId());
-                    }
-                    showDeleteTagConform(taskDetailIds, null);
-                }
-            }
-        }
-    }
+//    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
+//        @Override
+//        public void componentSelected(ButtonEvent ce) {
+//            final List<TaskDetailDto> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
+//            if (CollectionsUtils.isNotEmpty(models)) {
+//                if (models.size() == 1) {
+//                    final TaskDetail taskDetail = (TaskDetail) models.get(0).getBean();
+//                    showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
+//                } else {
+//                    List<Long> taskDetailIds = new ArrayList<Long>(models.size());
+//                    for (BeanModel model : models) {
+//                        final TaskDetail taskDetail = (TaskDetail) model.getBean();
+//                        taskDetailIds.add(taskDetail.getId());
+//                    }
+//                    showDeleteTagConform(taskDetailIds, null);
+//                }
+//            }
+//        }
+//    }
 
     private void showDeleteTagConform(long tagDetailId, String tagName) {
         List<Long> tagIds = new ArrayList<Long>(1);

@@ -50,8 +50,9 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig);
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
         for (TaskDetail taskDetail : taskDetails) {
-            taskDetailDtos.add(DozerBeanMapperSingletonWrapper.
-                    getInstance().map(taskDetail, TaskDetailDto.class));
+            TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
+                    getInstance().map(taskDetail, TaskDetailDto.class);
+            taskDetailDtos.add(taskDetailDto);
         }
         return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
                 taskDetailDao.count(TaskDetail.class));
