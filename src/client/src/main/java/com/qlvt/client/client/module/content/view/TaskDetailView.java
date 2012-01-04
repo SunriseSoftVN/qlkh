@@ -66,6 +66,14 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "task.unit";
     public static final int TASK_UNIT_WIDTH = 70;
+    public static final String Q1_UNIT_COLUMN = ".q1";
+    public static final int Q1_UNIT_WIDTH = 45;
+    public static final String Q2_UNIT_COLUMN = ".q2";
+    public static final int Q2_UNIT_WIDTH = 45;
+    public static final String Q3_UNIT_COLUMN = ".q3";
+    public static final int Q3_UNIT_WIDTH = 45;
+    public static final String Q4_UNIT_COLUMN = ".q4";
+    public static final int Q4_UNIT_WIDTH = 45;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -92,10 +100,12 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public void createGrid(ListStore<TaskDetailDto> listStore, List<String> branchNames) {
         CheckBoxSelectionModel<TaskDetailDto> selectionModel = new CheckBoxSelectionModel<TaskDetailDto>();
         columnModel = new ColumnModel(createColumnConfig(selectionModel, branchNames));
-        columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(getConstant().taskHeaderGroup(), 1, 5));
+        columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(
+                "<b>" + getConstant().taskHeaderGroup() + "</b>", 1, 5));
         int column = 5;
         for (String branchName : branchNames) {
-            columnModel.addHeaderGroup(0, column, new HeaderGroupConfig(branchName,1, 4));
+            columnModel.addHeaderGroup(0, column,
+                    new HeaderGroupConfig("<b>" + branchName + "</b>",1, 4));
             column += 4;
         }
         taskDetailGird = new EditorGrid<TaskDetailDto>(listStore, columnModel);
@@ -170,22 +180,29 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
                 TASK_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
         
-        
         for (String branchName : branchNames) {
-            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + ".q1", "q1", 45);
+            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + Q1_UNIT_COLUMN,
+                    getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
             q1ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q1ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q1ColumnConfig);
 
-            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + ".q2", "q2", 45);
+            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + Q2_UNIT_COLUMN,
+                    getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
             q2ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q2ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q2ColumnConfig);
 
-            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + ".q3", "q3", 45);
+            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + Q2_UNIT_COLUMN,
+                    getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
             q3ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q3ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q3ColumnConfig);
 
-            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + ".q4", "q4", 45);
+            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + Q3_UNIT_COLUMN,
+                    getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
             q4ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q4ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q4ColumnConfig);
         }
         
