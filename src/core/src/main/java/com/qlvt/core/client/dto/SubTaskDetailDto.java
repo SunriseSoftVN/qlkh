@@ -19,7 +19,7 @@
 
 package com.qlvt.core.client.dto;
 
-import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.core.client.model.Branch;
 
 /**
  * The Class SubTaskDetailDto.
@@ -29,12 +29,25 @@ import com.qlvt.core.client.model.TaskDetail;
  */
 public class SubTaskDetailDto extends AbstractDto {
 
-    public TaskDetail getTaskDetail() {
+    /**
+     * This variable declare for Serializable.
+     */
+    private TaskDetailDto taskDetailDto;
+    
+    public TaskDetailDto getTaskDetail() {
         return get("taskDetail");
     }
 
-    public void setTaskDetail(TaskDetail taskDetail) {
+    public void setTaskDetail(TaskDetailDto taskDetail) {
         set("taskDetail", taskDetail);
+    }
+
+    public Branch getBranch() {
+        return get("branch");
+    }
+
+    public void setBranch(Branch branch) {
+        set("branch", branch);
     }
 
     public Double getQ1() {

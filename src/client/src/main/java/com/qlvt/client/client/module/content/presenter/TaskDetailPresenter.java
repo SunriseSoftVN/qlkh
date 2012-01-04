@@ -36,6 +36,7 @@ import com.qlvt.client.client.module.content.view.TaskManagerView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.dto.SubTaskDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Branch;
@@ -65,6 +66,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private BranchServiceAsync branchService = BranchService.App.getInstance();
 
     private Station currentStation;
+    private List<String> branchNames = new ArrayList<String>();
 
     @Override
     public void onActivate() {
@@ -83,7 +85,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 super.onSuccess(result);
                 currentStation = result;
                 view.setTaskCodeCellEditor(createTaskCodeCellEditor());
-                List<String> branchNames = new ArrayList<String>(currentStation.getBranches().size());
                 for (Branch branch : currentStation.getBranches()) {
                     branchNames.add(branch.getName());
                 }
@@ -103,6 +104,15 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     taskDetail.setUpdateBy(1l);
                     taskDetail.setCreatedDate(new Date());
                     taskDetail.setUpdatedDate(new Date());
+                    for (Branch branch : currentStation.getBranches()) {
+                        SubTaskDetailDto subTaskDetailDto = new SubTaskDetailDto();
+                        subTaskDetailDto.setTaskDetail(taskDetail);
+                        subTaskDetailDto.setBranch(branch);
+                        subTaskDetailDto.setCreateBy(1l);
+                        subTaskDetailDto.setUpdateBy(1l);
+                        subTaskDetailDto.setCreatedDate(new Date());
+                        subTaskDetailDto.setUpdatedDate(new Date());
+                    }
                     view.getTaskDetailGird().getStore().insert(taskDetail,
                             view.getTaskDetailGird().getStore().getCount());
                 } else {

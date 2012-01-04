@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -164,15 +165,19 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         
         for (String branchName : branchNames) {
             ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + ".q1", "q1", 45);
+            q1ColumnConfig.setEditor(new CellEditor(new NumberField()));
             columnConfigs.add(q1ColumnConfig);
 
             ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + ".q2", "q2", 45);
+            q2ColumnConfig.setEditor(new CellEditor(new NumberField()));
             columnConfigs.add(q2ColumnConfig);
 
             ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + ".q3", "q3", 45);
+            q3ColumnConfig.setEditor(new CellEditor(new NumberField()));
             columnConfigs.add(q3ColumnConfig);
 
             ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + ".q4", "q4", 45);
+            q4ColumnConfig.setEditor(new CellEditor(new NumberField()));
             columnConfigs.add(q4ColumnConfig);
         }
         

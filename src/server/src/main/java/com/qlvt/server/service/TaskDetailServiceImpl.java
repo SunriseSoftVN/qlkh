@@ -37,6 +37,7 @@ import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,10 +69,17 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
             for (Branch branch : branches) {
                 SubTaskDetail subTaskDetail = subTaskDetailDao.
                         getSubTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                if (subTaskDetail != null) {
-                    taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
-                            map(subTaskDetail, SubTaskDetailDto.class));
+                if (subTaskDetail == null) {
+                    subTaskDetail = new SubTaskDetail();
+                    subTaskDetail.setTaskDetail(taskDetail);
+                    subTaskDetail.setBranch(branch);
+                    subTaskDetail.setCreateBy(1l);
+                    subTaskDetail.setUpdateBy(1l);
+                    subTaskDetail.setCreatedDate(new Date());
+                    subTaskDetail.setUpdatedDate(new Date());
                 }
+                taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
+                        map(subTaskDetail, SubTaskDetailDto.class));
             }
             taskDetailDtos.add(taskDetailDto);
         }
@@ -102,9 +110,17 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Override
     public void updateTaskDetailDtos(List<TaskDetailDto> taskDetailDtos) {
         List<TaskDetail> taskDetails = new ArrayList<TaskDetail>(taskDetailDtos.size());
+        List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>(taskDetails.size());
         for (TaskDetailDto taskDetailDto : taskDetailDtos) {
             taskDetails.add(DozerBeanMapperSingletonWrapper.getInstance().map(taskDetailDto, TaskDetail.class));
+            List<Branch> branches = branchDao.getBranchsByStationId(taskDetailDto.getStation().getId());
+            for (Branch branch : branches) {
+                SubTaskDetailDto subTaskDetailDto = taskDetailDto.get(branch.getName());
+                subTaskDetails.add(DozerBeanMapperSingletonWrapper.getInstance().
+                        map(subTaskDetailDto, SubTaskDetail.class));
+            }
         }
         updateTaskDetails(taskDetails);
+        subTaskDetailDao.saveOrUpdate(subTaskDetails);
     }
 }
