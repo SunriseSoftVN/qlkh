@@ -12,8 +12,18 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
+        <property name="lastYear" column="lastYear" not-null="true"/>
+        <property name="lastYearValue" column="lastYearValue" not-null="true"/>
+        <property name="currentYear" column="currentYear" not-null="true"/>
+        <property name="increaseValue" column="increaseValue" not-null="true"/>
+        <property name="decreaseValue" column="decreaseValue" not-null="true"/>
+        <property name="realValue" column="realValue" not-null="true"/>
+
         <many-to-one name="taskDetail" class="com.qlvt.core.client.model.TaskDetail" lazy="false" fetch="join" outer-join="auto">
             <column name="taskDetailId" not-null="true"/>
+        </many-to-one>
+        <many-to-one name="branch" class="com.qlvt.core.client.model.Branch">
+            <column name="branchId" not-null="true"/>
         </many-to-one>
     </class>
 </hibernate-mapping>

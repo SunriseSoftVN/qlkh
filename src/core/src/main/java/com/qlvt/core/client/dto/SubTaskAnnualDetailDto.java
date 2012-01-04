@@ -17,88 +17,84 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.model;
+package com.qlvt.core.client.dto;
 
-import com.qlvt.core.client.model.core.AbstractEntity;
+import com.qlvt.core.client.model.Branch;
 
 /**
- * The Class SubTaskAnnualDetail.
+ * The Class SubTaskAnnualDetailDto.
  *
  * @author Nguyen Duc Dung
- * @since 1/3/12, 9:00 AM
+ * @since 1/4/12, 8:55 PM
  */
-public class SubTaskAnnualDetail extends AbstractEntity {
+public class SubTaskAnnualDetailDto extends AbstractDto {
 
-    private TaskDetail taskDetail;
-    private Branch branch;
-    private int lastYear;
-    private int currentYear;
-    private Double lastYearValue;
-    private Double increaseValue;
-    private Double decreaseValue;
-    private Double realValue;
+    /**
+     * This variable declare for Serializable.
+     */
+    private TaskDetailDto taskDetailDto;
 
-    public TaskDetail getTaskDetail() {
-        return taskDetail;
+    public TaskDetailDto getTaskDetail() {
+        return get("taskDetail");
     }
 
-    public void setTaskDetail(TaskDetail taskDetail) {
-        this.taskDetail = taskDetail;
+    public void setTaskDetail(TaskDetailDto taskDetail) {
+        set("taskDetail", taskDetail);
     }
 
     public Branch getBranch() {
-        return branch;
+        return get("branch");
     }
 
     public void setBranch(Branch branch) {
-        this.branch = branch;
+        set("branch", branch);
     }
 
-    public int getLastYear() {
-        return lastYear;
+    public Integer getLastYear() {
+        return get("lastYear");
     }
 
-    public void setLastYear(int lastYear) {
-        this.lastYear = lastYear;
+    public void setLastYear(Integer lastYear) {
+        set("lastYear", lastYear);
     }
 
-    public int getCurrentYear() {
-        return currentYear;
+    public Integer getCurrentYear() {
+        return get("currentYear");
     }
 
-    public void setCurrentYear(int currentYear) {
-        this.currentYear = currentYear;
+    public void setCurrentYear(Integer currentYear) {
+        set("currentYear", currentYear);
     }
 
     public Double getLastYearValue() {
-        return lastYearValue;
+        return get("lastYearValue");
     }
 
     public void setLastYearValue(Double lastYearValue) {
-        this.lastYearValue = lastYearValue;
+        set("lastYearValue", lastYearValue);
     }
 
     public Double getIncreaseValue() {
-        return increaseValue;
+        return get("increaseValue");
     }
 
     public void setIncreaseValue(Double increaseValue) {
-        this.increaseValue = increaseValue;
+        set("increaseValue", increaseValue);
     }
 
     public Double getDecreaseValue() {
-        return decreaseValue;
+        return get("decreaseValue");
     }
 
     public void setDecreaseValue(Double decreaseValue) {
-        this.decreaseValue = decreaseValue;
+        set("decreaseValue", decreaseValue);
     }
 
     public Double getRealValue() {
-        return realValue;
+        return get("realValue");
     }
 
     public void setRealValue(Double realValue) {
-        this.realValue = realValue;
+        set("realValue", realValue);
     }
 }

@@ -17,27 +17,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.client.client.module.content.place;
 
-import com.google.inject.AbstractModule;
-import com.qlvt.server.dao.*;
-import com.qlvt.server.dao.impl.*;
+import com.smvp4g.mvp.client.core.place.AbstractPlace;
+import com.smvp4g.mvp.client.core.place.Place;
 
 /**
- * The Class DaoModule.
+ * The Class TaskAnnualDetailPlace.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:41 AM
+ * @since 1/4/12, 9:13 PM
  */
-public class DaoModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(UserDao.class).to(UserDaoImpl.class);
-        bind(StationDao.class).to(StationDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
-        bind(TaskDetailDao.class).to(TaskDetailDaoImpl.class);
-        bind(BranchDao.class).to(BranchDaoImpl.class);
-        bind(SubTaskDetailDao.class).to(SubTaskDetailDaoImpl.class);
-        bind(SubTaskAnnualDetailDao.class).to(SubTaskAnnualDetailDaoImpl.class);
-    }
+@Place
+public class TaskAnnualDetailPlace extends AbstractPlace {
 }

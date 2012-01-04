@@ -17,54 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.security;
+package com.qlvt.client.client.module.content.view.security;
 
 import com.qlvt.core.client.constant.UserRoleEnum;
 import com.smvp4g.mvp.client.core.security.HasRole;
 import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 
 /**
- * The Class MainMenuViewSecutiry.
+ * The Class TaskAnnualDetailSecurity.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:48 AM
+ * @since 1/4/12, 9:17 PM
  */
-public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
-
+public class TaskAnnualDetailSecurity implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
-        return new HasRole[0];
-    }
-
-    public HasRole[] mnlUserManager() {
-        return new HasRole[]{UserRoleEnum.ADMIN};
-    }
-
-    public HasRole[] mnlStationManager() {
-        return new HasRole[]{UserRoleEnum.ADMIN};
-    }
-
-    public HasRole[] mnlBranchManager() {
-        return new HasRole[]{UserRoleEnum.ADMIN};
-    }
-
-    public HasRole[] mnlTaskManage() {
-        return new HasRole[]{UserRoleEnum.MANAGER};
-    }
-
-    public HasRole[] mnlTaskDetail() {
         return new HasRole[]{UserRoleEnum.USER};
-    }
-
-    public HasRole[] mnlTaskAnnualDetail() {
-        return new HasRole[]{UserRoleEnum.USER};
-    }
-
-    public HasRole[] ancLogout() {
-        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN, UserRoleEnum.MANAGER};
-    }
-
-    public HasRole[] lblWelcome() {
-        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN, UserRoleEnum.MANAGER};
     }
 }

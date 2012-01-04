@@ -17,27 +17,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.guice;
+package com.qlvt.server.dao;
 
-import com.google.inject.AbstractModule;
-import com.qlvt.server.dao.*;
-import com.qlvt.server.dao.impl.*;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.server.dao.core.Dao;
 
 /**
- * The Class DaoModule.
+ * The Class SubTaskAnnualDetailDao.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:41 AM
+ * @since 1/4/12, 9:08 PM
  */
-public class DaoModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(UserDao.class).to(UserDaoImpl.class);
-        bind(StationDao.class).to(StationDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
-        bind(TaskDetailDao.class).to(TaskDetailDaoImpl.class);
-        bind(BranchDao.class).to(BranchDaoImpl.class);
-        bind(SubTaskDetailDao.class).to(SubTaskDetailDaoImpl.class);
-        bind(SubTaskAnnualDetailDao.class).to(SubTaskAnnualDetailDaoImpl.class);
-    }
+public interface SubTaskAnnualDetailDao extends Dao<SubTaskAnnualDetail> {
 }
