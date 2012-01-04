@@ -89,12 +89,24 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
 
     @Override
     public void deleteTaskDetail(long taskDetailId) {
+        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
+        List<Branch> branches = branchDao.getBranchsByStationId(taskDetail.getStation().getId());
+
+        //Delete SubTask First
+        List<Long> branchIds = new ArrayList<Long>(branches.size());
+        for (Branch branch : branches) {
+            branchIds.add(branch.getId());
+        }
+        subTaskDetailDao.deleteSubTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
+        //Delete TaskDetail
         taskDetailDao.deleteById(TaskDetail.class, taskDetailId);
     }
 
     @Override
     public void deleteTaskDetails(List<Long> taskDetailIds) {
-        taskDetailDao.deleteByIds(TaskDetail.class, taskDetailIds);
+        for (Long taskId : taskDetailIds) {
+            deleteTaskDetail(taskId);
+        }
     }
 
     @Override
@@ -112,12 +124,17 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         List<TaskDetail> taskDetails = new ArrayList<TaskDetail>(taskDetailDtos.size());
         List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>(taskDetails.size());
         for (TaskDetailDto taskDetailDto : taskDetailDtos) {
-            taskDetails.add(DozerBeanMapperSingletonWrapper.getInstance().map(taskDetailDto, TaskDetail.class));
+            TaskDetail taskDetail = DozerBeanMapperSingletonWrapper.getInstance().map(taskDetailDto, TaskDetail.class);
+            taskDetails.add(taskDetail);
             List<Branch> branches = branchDao.getBranchsByStationId(taskDetailDto.getStation().getId());
             for (Branch branch : branches) {
                 SubTaskDetailDto subTaskDetailDto = taskDetailDto.get(branch.getName());
-                subTaskDetails.add(DozerBeanMapperSingletonWrapper.getInstance().
-                        map(subTaskDetailDto, SubTaskDetail.class));
+                if (subTaskDetailDto != null) {
+                    SubTaskDetail subTaskDetail = DozerBeanMapperSingletonWrapper.getInstance().
+                            map(subTaskDetailDto, SubTaskDetail.class);
+                    subTaskDetail.setTaskDetail(taskDetail);
+                    subTaskDetails.add(subTaskDetail);
+                }
             }
         }
         updateTaskDetails(taskDetails);

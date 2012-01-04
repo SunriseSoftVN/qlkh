@@ -22,6 +22,8 @@ package com.qlvt.server.dao;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.server.dao.core.Dao;
 
+import java.util.List;
+
 /**
  * The Class SubTaskDetailDao.
  *
@@ -31,5 +33,7 @@ import com.qlvt.server.dao.core.Dao;
 public interface SubTaskDetailDao extends Dao<SubTaskDetail> {
 
     SubTaskDetail getSubTaskByTaskDetaiIdAndBranchId(long taskDetailId, long branchId);
+
+    void deleteSubTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds);
 
 }

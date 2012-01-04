@@ -112,6 +112,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                         subTaskDetailDto.setUpdateBy(1l);
                         subTaskDetailDto.setCreatedDate(new Date());
                         subTaskDetailDto.setUpdatedDate(new Date());
+                        taskDetail.set(branch.getName(), subTaskDetailDto);
                     }
                     view.getTaskDetailGird().getStore().insert(taskDetail,
                             view.getTaskDetailGird().getStore().getCount());

@@ -50,4 +50,16 @@ public class SubTaskDetailDaoImpl extends AbstractDao<SubTaskDetail> implements 
         closeSession();
         return null;
     }
+
+    @Override
+    public void deleteSubTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
+        openSession();
+        Criteria criteria = session.createCriteria(SubTaskDetail.class).
+                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
+        List<SubTaskDetail> subTaskDetails = criteria.list();
+        for (SubTaskDetail subTaskDetail : subTaskDetails) {
+            session.delete(subTaskDetail);
+        }
+        closeSession();
+    }
 }
