@@ -32,14 +32,16 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.module.user.view.i18n.UserManagerConstant;
 import com.qlvt.client.client.module.user.view.security.UserManagerSecurity;
+import com.qlvt.client.client.widget.MyFitLayout;
 import com.qlvt.core.client.constant.UserRoleEnum;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -104,7 +106,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     @I18nField
     SimpleComboBox<UserRoleEnum> cbbUserRole = new SimpleComboBox<UserRoleEnum>();
-    
+
     @I18nField
     ComboBox<BeanModel> cbbUserStation = new ComboBox<BeanModel>();
 
@@ -124,13 +126,6 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     private GridCellRenderer<BeanModel> changePasswordCellRenderer;
 
     private CellEditor stationCellEditor;
-
-    @Override
-    protected void initializeView() {
-        contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
-        setWidget(contentPanel);
-    }
 
     /**
      * Create Grid on View.
@@ -158,11 +153,19 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnCancel);
 
-        contentPanel.setLayout(new FitLayout());
+        contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(usersGrid);
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
-        contentPanel.layout();
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(500);
+        com.google.gwt.user.client.Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                contentPanel.layout(true);
+            }
+        });
+        setWidget(contentPanel);
     }
 
     private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
@@ -171,7 +174,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
         sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, 
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
                                  ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
                 if (model.get(STT_COLUMN) == null) {
                     model.set(STT_COLUMN, rowIndex + 1);
@@ -183,7 +186,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         ColumnConfig userNameColumnConfig = new ColumnConfig(USER_NAME_COLUMN, getConstant().userNameColumnTitle(),
                 USER_NAME_COLUMN_WIDTH);
         columnConfigs.add(userNameColumnConfig);
-        
+
         ColumnConfig userStationColumnConfig = new ColumnConfig(USER_STATION_COLUMN, getConstant().userStationColumnTitle(),
                 USER_STATION_COLUMN_WIDTH);
         userStationColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
@@ -247,7 +250,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
             cbbUserStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
         }
         newUserPanel.add(cbbUserStation);
-        
+
         if (!cbbUserRole.isRendered()) {
             cbbUserRole.add(Arrays.asList(UserRoleEnum.values()));
             cbbUserRole.setTriggerAction(ComboBox.TriggerAction.ALL);

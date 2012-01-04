@@ -25,6 +25,9 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
@@ -110,6 +113,12 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         lblWelcome.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
         mainPanel.add(lblWelcome, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(ancLogout);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                mainPanel.setWidth(event.getWidth() - 5);
+            }
+        });
         setWidget(mainPanel);
         setStyleName("topmenu");
     }

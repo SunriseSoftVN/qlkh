@@ -28,13 +28,16 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.BranchManagerConstant;
 import com.qlvt.client.client.module.content.view.security.BranchManagerSecurity;
+import com.qlvt.client.client.widget.MyFitLayout;
 import com.qlvt.core.client.model.Branch;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
@@ -82,13 +85,6 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
 
     private CellEditor stationCellEditor;
 
-    @Override
-    protected void initializeView() {
-        contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
-        setWidget(contentPanel);
-    }
-
     /**
      * Create Grid on View.
      */
@@ -114,11 +110,19 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnCancel);
 
-        contentPanel.setLayout(new FitLayout());
+        contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(branchsGird);
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
-        contentPanel.layout();
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(500);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                contentPanel.layout(true);
+            }
+        });
+        setWidget(contentPanel);
     }
 
     private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {

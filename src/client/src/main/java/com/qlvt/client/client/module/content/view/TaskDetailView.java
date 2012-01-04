@@ -27,13 +27,16 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskDetailSecurity;
+import com.qlvt.client.client.widget.MyFitLayout;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
@@ -113,13 +116,18 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         toolBar.add(btnSave);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnCancel);
-
         contentPanel.setHeaderVisible(false);
         contentPanel.setHeight(500);
-        contentPanel.setLayout(new FitLayout());
+        contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(taskDetailGird);
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                contentPanel.layout(true);
+            }
+        });
         setWidget(contentPanel);
     }
 
@@ -238,5 +246,9 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     public CellEditor getTaskCodeCellEditor() {
         return taskCodeCellEditor;
+    }
+
+    public ContentPanel getContentPanel() {
+        return contentPanel;
     }
 }
