@@ -90,22 +90,26 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Override
     public void deleteTaskDetail(long taskDetailId) {
         TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
-        List<Branch> branches = branchDao.getBranchsByStationId(taskDetail.getStation().getId());
+        if (taskDetail != null) {
+            List<Branch> branches = branchDao.getBranchsByStationId(taskDetail.getStation().getId());
 
-        //Delete SubTask First
-        List<Long> branchIds = new ArrayList<Long>(branches.size());
-        for (Branch branch : branches) {
-            branchIds.add(branch.getId());
+            //Delete SubTask First
+            List<Long> branchIds = new ArrayList<Long>(branches.size());
+            for (Branch branch : branches) {
+                branchIds.add(branch.getId());
+            }
+            subTaskDetailDao.deleteSubTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
+            //Delete TaskDetail
+            taskDetailDao.deleteById(TaskDetail.class, taskDetailId);
         }
-        subTaskDetailDao.deleteSubTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
-        //Delete TaskDetail
-        taskDetailDao.deleteById(TaskDetail.class, taskDetailId);
     }
 
     @Override
     public void deleteTaskDetails(List<Long> taskDetailIds) {
         for (Long taskId : taskDetailIds) {
-            deleteTaskDetail(taskId);
+            if (taskId != null) {
+                deleteTaskDetail(taskId);
+            }
         }
     }
 

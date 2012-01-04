@@ -100,6 +100,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 if (currentStation != null) {
                     TaskDetailDto taskDetail = new TaskDetailDto();
                     taskDetail.setStation(currentStation);
+                    taskDetail.setYear(1900 + new Date().getYear());
                     taskDetail.setCreateBy(1l);
                     taskDetail.setUpdateBy(1l);
                     taskDetail.setCreatedDate(new Date());
@@ -135,7 +136,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getTaskDetailGird().getStore().commitChanges();
+                            view.getPagingToolBar().refresh();
                         }
                     });
                 }

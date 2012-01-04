@@ -193,13 +193,13 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
             q2ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q2ColumnConfig);
 
-            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + Q2_UNIT_COLUMN,
+            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + Q3_UNIT_COLUMN,
                     getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
             q3ColumnConfig.setEditor(new CellEditor(new NumberField()));
             q3ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q3ColumnConfig);
 
-            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + Q3_UNIT_COLUMN,
+            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + Q4_UNIT_COLUMN,
                     getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
             q4ColumnConfig.setEditor(new CellEditor(new NumberField()));
             q4ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
