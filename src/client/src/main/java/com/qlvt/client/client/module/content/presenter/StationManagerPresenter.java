@@ -92,7 +92,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                         @Override
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
-                            view.getStationsGird().getStore().commitChanges();
+                            view.getPagingToolBar().refresh();
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                         }
                     });

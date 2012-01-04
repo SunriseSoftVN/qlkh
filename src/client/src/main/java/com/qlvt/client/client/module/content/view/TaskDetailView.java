@@ -114,7 +114,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         taskDetailGird.setStripeRows(true);
         taskDetailGird.setSelectionModel(selectionModel);
         taskDetailGird.addPlugin(selectionModel);
-        taskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        taskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         taskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);

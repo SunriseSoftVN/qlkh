@@ -139,7 +139,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         usersGrid.setStripeRows(true);
         usersGrid.setSelectionModel(selectionModel);
         usersGrid.addPlugin(selectionModel);
-        usersGrid.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        usersGrid.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         usersGrid.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(USER_LIST_SIZE);

@@ -91,7 +91,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         stationsGird.setStripeRows(true);
         stationsGird.setSelectionModel(selectionModel);
         stationsGird.addPlugin(selectionModel);
-        stationsGird.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        stationsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         stationsGird.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(STATION_LIST_SIZE);

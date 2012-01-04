@@ -101,7 +101,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getUsersGrid().getStore().commitChanges();
+                            view.getPagingToolBar().refresh();
                         }
                     });
                 }

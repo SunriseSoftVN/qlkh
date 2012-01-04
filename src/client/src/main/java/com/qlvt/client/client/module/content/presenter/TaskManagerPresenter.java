@@ -98,7 +98,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getTaskGird().getStore().commitChanges();
+                            view.getPagingToolBar().refresh();
                         }
                     });
                 }

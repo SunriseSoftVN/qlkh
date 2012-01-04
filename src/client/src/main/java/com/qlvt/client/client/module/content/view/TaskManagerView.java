@@ -98,7 +98,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         taskGird.setStripeRows(true);
         taskGird.setSelectionModel(selectionModel);
         taskGird.addPlugin(selectionModel);
-        taskGird.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        taskGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         taskGird.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);

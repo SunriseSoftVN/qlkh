@@ -107,7 +107,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                         @Override
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
-                            view.getBranchsGird().getStore().commitChanges();
+                            view.getPagingToolBar().refresh();
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                         }
                     });

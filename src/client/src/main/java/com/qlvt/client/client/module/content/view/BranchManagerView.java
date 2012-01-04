@@ -97,7 +97,7 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         branchsGird.setStripeRows(true);
         branchsGird.setSelectionModel(selectionModel);
         branchsGird.addPlugin(selectionModel);
-        branchsGird.getStore().getLoader().setSortDir(Style.SortDir.DESC);
+        branchsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         branchsGird.getStore().getLoader().setSortField(ID_COLUMN);
 
         pagingToolBar = new PagingToolBar(BRANCH_LIST_SIZE);
