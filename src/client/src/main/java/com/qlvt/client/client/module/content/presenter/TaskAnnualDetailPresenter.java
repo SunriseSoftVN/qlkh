@@ -101,6 +101,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     TaskDetailDto taskDetail = new TaskDetailDto();
                     taskDetail.setStation(currentStation);
                     taskDetail.setYear(1900 + new Date().getYear());
+                    taskDetail.setAnnual(true);
                     taskDetail.setCreateBy(1l);
                     taskDetail.setUpdateBy(1l);
                     taskDetail.setCreatedDate(new Date());

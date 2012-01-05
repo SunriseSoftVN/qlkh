@@ -32,6 +32,7 @@ public class TaskDetail extends AbstractEntity {
     private Task task;
     private int year;
     private Station station;
+    private Boolean annual;
 
     public Task getTask() {
         return task;
@@ -55,5 +56,13 @@ public class TaskDetail extends AbstractEntity {
 
     public void setStation(Station station) {
         this.station = station;
+    }
+
+    public Boolean getAnnual() {
+        return annual;
+    }
+
+    public void setAnnual(Boolean annual) {
+        this.annual = annual;
     }
 }

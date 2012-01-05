@@ -68,7 +68,8 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Override
     public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         List<Branch> branches = branchDao.getBranchsByStationId(stationId);
-        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig, Restrictions.eq("station.id", stationId));
+        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
+                Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
         for (TaskDetail taskDetail : taskDetails) {
             TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
@@ -97,7 +98,8 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Override
     public BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         List<Branch> branches = branchDao.getBranchsByStationId(stationId);
-        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig, Restrictions.eq("station.id", stationId));
+        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
+                Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
         for (TaskDetail taskDetail : taskDetails) {
             TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.

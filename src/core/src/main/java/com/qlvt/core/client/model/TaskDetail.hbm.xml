@@ -13,6 +13,7 @@
         <property name="updateBy" column="updateBy" not-null="true"/>
 
         <property name="year" column="year" not-null="true"/>
+        <property name="annual" column="annual" not-null="true"/>
         <many-to-one name="task" class="com.qlvt.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
             <column name="taskId" not-null="true"/>
         </many-to-one>

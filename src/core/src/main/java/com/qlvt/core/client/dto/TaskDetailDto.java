@@ -67,4 +67,12 @@ public class TaskDetailDto extends AbstractDto {
     public void setStation(Station station) {
         set("station", station);
     }
+
+    public Boolean getAnnual() {
+        return get("annual");
+    }
+
+    public void setAnnual(Boolean annual) {
+        set("annual", annual);
+    }
 }
