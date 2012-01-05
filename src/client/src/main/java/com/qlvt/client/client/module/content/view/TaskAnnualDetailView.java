@@ -185,7 +185,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                 TASK_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
-        for (String branchName : branchNames) {
+        for (final String branchName : branchNames) {
             String year = "</br>" + String.valueOf((1900 + new Date().getYear() - 1));
             ColumnConfig lastYearValueColumnConfig = new ColumnConfig(branchName + LAST_YEAR_VALUE_COLUMN,
                     getConstant().lastYearValueColumnTitle() + year, LAST_YEAR_VALUE_WIDTH);
@@ -205,10 +205,28 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
             decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(decreaseValueColumnConfig);
 
-            ColumnConfig realValueColumnConfig = new ColumnConfig(branchName + REAL_VALUE_COLUMN,
+            SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(branchName + REAL_VALUE_COLUMN,
                     getConstant().realValueColumnTitle(), REAL_VALUE_WIDTH);
-            realValueColumnConfig.setEditor(new CellEditor(new NumberField()));
             realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            realValueColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
+                @Override
+                public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex,
+                                     ListStore<TaskDetailDto> taskDetailDtoListStore, Grid<TaskDetailDto> taskDetailDtoGrid) {
+                    Double increaseValue =  model.get(branchName + INCREASE_VALUE_COLUMN);
+                    if (increaseValue == null) {
+                        increaseValue = 0d;
+                    }
+                    Double decreaseValue = model.get(branchName + DECREASE_VALUE_COLUMN);
+                    if (decreaseValue == null) {
+                        decreaseValue = 0d;
+                    }
+                    Double lastYearValue = model.get(branchName + LAST_YEAR_VALUE_COLUMN);
+                    if (lastYearValue == null) {
+                        lastYearValue = 0d;
+                    }
+                    return lastYearValue + increaseValue - decreaseValue;
+                }
+            });
             columnConfigs.add(realValueColumnConfig);
         }
 

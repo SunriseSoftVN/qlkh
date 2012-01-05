@@ -107,9 +107,12 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     taskDetail.setCreatedDate(new Date());
                     taskDetail.setUpdatedDate(new Date());
                     for (Branch branch : currentStation.getBranches()) {
+                        int year = 1900 + new Date().getYear();
                         SubTaskAnnualDetailDto subTaskAnnualDetailDto = new SubTaskAnnualDetailDto();
                         subTaskAnnualDetailDto.setTaskDetail(taskDetail);
                         subTaskAnnualDetailDto.setBranch(branch);
+                        subTaskAnnualDetailDto.setCurrentYear(year);
+                        subTaskAnnualDetailDto.setLastYear(year - 1);
                         subTaskAnnualDetailDto.setCreateBy(1l);
                         subTaskAnnualDetailDto.setUpdateBy(1l);
                         subTaskAnnualDetailDto.setCreatedDate(new Date());
