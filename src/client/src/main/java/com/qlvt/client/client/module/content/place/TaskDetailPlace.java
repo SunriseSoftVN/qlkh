@@ -28,6 +28,6 @@ import com.smvp4g.mvp.client.core.place.Place;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:35 PM
  */
-@Place(defaultPlace = true)
+@Place
 public class TaskDetailPlace extends AbstractPlace {
 }

@@ -19,16 +19,33 @@
 
 package com.qlvt.client.client.module.content.view;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecurity;
+import com.qlvt.client.client.widget.MyFitLayout;
 import com.qlvt.core.client.dto.TaskDetailDto;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class TaskAnnualDetailView.
@@ -40,14 +57,216 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = TaskAnnualDetailConstant.class)
 public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant> {
 
+
+    public static final String ID_COLUMN = "id";
+    public static final String STT_COLUMN = "stt";
+    public static final int STT_COLUMN_WIDTH = 50;
+    public static final String TASK_CODE_COLUMN = "task";
+    public static final int TASK_CODE_WIDTH = 100;
+    public static final String TASK_NAME_COLUMN = "task.name";
+    public static final int TASK_NAME_WIDTH = 300;
+    public static final String TASK_UNIT_COLUMN = "task.unit";
+    public static final int TASK_UNIT_WIDTH = 70;
+    public static final String Q1_UNIT_COLUMN = ".q1";
+    public static final int Q1_UNIT_WIDTH = 45;
+    public static final String Q2_UNIT_COLUMN = ".q2";
+    public static final int Q2_UNIT_WIDTH = 45;
+    public static final String Q3_UNIT_COLUMN = ".q3";
+    public static final int Q3_UNIT_WIDTH = 45;
+    public static final String Q4_UNIT_COLUMN = ".q4";
+    public static final int Q4_UNIT_WIDTH = 45;
+    public static final int TASK_LIST_SIZE = 50;
+
+    @I18nField
+    Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
+
+    @I18nField
+    Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
+
+    @I18nField
+    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+
+    @I18nField
+    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
     private EditorGrid<TaskDetailDto> taskDetailGird;
+    private CellEditor taskCodeCellEditor;
+    private ColumnModel columnModel;
 
-    @Override
-    protected void initializeView() {
+    /**
+     * Create Grid on View.
+     */
+    public void createGrid(ListStore<TaskDetailDto> listStore, List<String> branchNames) {
+        CheckBoxSelectionModel<TaskDetailDto> selectionModel = new CheckBoxSelectionModel<TaskDetailDto>();
+        columnModel = new ColumnModel(createColumnConfig(selectionModel, branchNames));
+        columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(
+                "<b>" + getConstant().taskHeaderGroup() + "</b>", 1, 5));
+        int column = 5;
+        for (String branchName : branchNames) {
+            columnModel.addHeaderGroup(0, column,
+                    new HeaderGroupConfig("<b>" + branchName + "</b>", 1, 4));
+            column += 4;
+        }
+        taskDetailGird = new EditorGrid<TaskDetailDto>(listStore, columnModel);
+        taskDetailGird.setBorders(true);
+        taskDetailGird.setLoadMask(true);
+        taskDetailGird.setStripeRows(true);
+        taskDetailGird.setSelectionModel(selectionModel);
+        taskDetailGird.addPlugin(selectionModel);
+        taskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        taskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
+
+        pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(btnAdd);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnDelete);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnSave);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnCancel);
         contentPanel.setHeaderVisible(false);
         contentPanel.setHeight(500);
+        contentPanel.setLayout(new MyFitLayout());
+        contentPanel.add(taskDetailGird);
+        contentPanel.setTopComponent(toolBar);
+        contentPanel.setBottomComponent(pagingToolBar);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                contentPanel.layout(true);
+            }
+        });
         setWidget(contentPanel);
+    }
+
+    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<TaskDetailDto> selectionModel,
+                                                  List<String> branchNames) {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+        columnConfigs.add(selectionModel.getColumn());
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
+            @Override
+            public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<TaskDetailDto> beanModelListStore, Grid<TaskDetailDto> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
+
+        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
+        taskCodeColumnConfig.setEditor(getTaskCodeCellEditor());
+        taskCodeColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
+            @Override
+            public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<TaskDetailDto> taskDetailDtoListStore, Grid<TaskDetailDto> taskDetailDtoGrid) {
+                String code = StringUtils.EMPTY;
+                if (model.getTask() != null) {
+                    code = String.valueOf(model.getTask().getCode());
+                }
+                return new Text(code);
+            }
+        });
+
+        columnConfigs.add(taskCodeColumnConfig);
+        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
+                TASK_NAME_WIDTH);
+        columnConfigs.add(taskNameColumnConfig);
+
+        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
+                TASK_UNIT_WIDTH);
+        columnConfigs.add(unitColumnConfig);
+
+        for (String branchName : branchNames) {
+            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + Q1_UNIT_COLUMN,
+                    getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
+            q1ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q1ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(q1ColumnConfig);
+
+            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + Q2_UNIT_COLUMN,
+                    getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
+            q2ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q2ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(q2ColumnConfig);
+
+            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + Q3_UNIT_COLUMN,
+                    getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
+            q3ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q3ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(q3ColumnConfig);
+
+            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + Q4_UNIT_COLUMN,
+                    getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
+            q4ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            q4ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(q4ColumnConfig);
+        }
+
+        return columnConfigs;
+    }
+
+    public EditorGrid<TaskDetailDto> getTaskDetailGird() {
+        return taskDetailGird;
+    }
+
+    public void setTaskDetailGird(EditorGrid<TaskDetailDto> taskDetailGird) {
+        this.taskDetailGird = taskDetailGird;
+    }
+
+    public Button getBtnAdd() {
+        return btnAdd;
+    }
+
+    public void setBtnAdd(Button btnAdd) {
+        this.btnAdd = btnAdd;
+    }
+
+    public Button getBtnDelete() {
+        return btnDelete;
+    }
+
+    public void setBtnDelete(Button btnDelete) {
+        this.btnDelete = btnDelete;
+    }
+
+    public Button getBtnSave() {
+        return btnSave;
+    }
+
+    public void setBtnSave(Button btnSave) {
+        this.btnSave = btnSave;
+    }
+
+    public Button getBtnCancel() {
+        return btnCancel;
+    }
+
+    public void setBtnCancel(Button btnCancel) {
+        this.btnCancel = btnCancel;
+    }
+
+    public PagingToolBar getPagingToolBar() {
+        return pagingToolBar;
+    }
+
+    public void setPagingToolBar(PagingToolBar pagingToolBar) {
+        this.pagingToolBar = pagingToolBar;
+    }
+
+    public void setTaskCodeCellEditor(CellEditor taskCodeCellEditor) {
+        this.taskCodeCellEditor = taskCodeCellEditor;
+    }
+
+    public CellEditor getTaskCodeCellEditor() {
+        return taskCodeCellEditor;
+    }
+
+    public ContentPanel getContentPanel() {
+        return contentPanel;
     }
 }

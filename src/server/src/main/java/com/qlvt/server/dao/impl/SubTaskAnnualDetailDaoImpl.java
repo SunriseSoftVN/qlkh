@@ -21,8 +21,14 @@ package com.qlvt.server.dao.impl;
 
 import com.google.inject.Singleton;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.List;
 
 /**
  * The Class SubTaskAnnualDetailDaoImpl.
@@ -32,4 +38,29 @@ import com.qlvt.server.dao.core.AbstractDao;
  */
 @Singleton
 public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail> implements SubTaskAnnualDetailDao {
+
+    @Override
+    public SubTaskAnnualDetail getSubAnnualTaskByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
+        openSession();
+        Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
+                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = criteria.list();
+        if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
+            return subTaskAnnualDetails.get(0);
+        }
+        closeSession();
+        return null;
+    }
+
+    @Override
+    public void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
+        openSession();
+        Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
+                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
+        List<SubTaskDetail> subTaskAnnualDetails = criteria.list();
+        for (SubTaskDetail subTaskDetail : subTaskAnnualDetails) {
+            session.delete(subTaskDetail);
+        }
+        closeSession();
+    }
 }

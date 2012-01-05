@@ -106,8 +106,8 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mainPanel.add(mnlStationManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlBranchManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlTaskManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
-        mainPanel.add(mnlTaskDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mainPanel.add(mnlTaskAnnualDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mainPanel.add(mnlTaskDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);

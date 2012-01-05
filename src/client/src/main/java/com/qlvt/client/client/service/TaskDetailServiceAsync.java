@@ -35,4 +35,6 @@ public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailSer
     void updateTaskDetail(TaskDetail taskDetail, AsyncCallback<Void> async);
     void updateTaskDetails(List<TaskDetail> taskDetails, AsyncCallback<Void> async);
     void updateTaskDetailDtos(List<TaskDetailDto> taskDetails, AsyncCallback<Void> async);
+
+    void getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> async);
 }

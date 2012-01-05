@@ -39,6 +39,11 @@ public class TaskDetailDto extends AbstractDto {
      */
     private SubTaskDetailDto subTaskDetailDto;
 
+    /**
+     * This variable declare for Serializable.
+     */
+    private SubTaskAnnualDetailDto subTaskAnnualDetailDto;
+
     public TaskDto getTask() {
         return get("task");
     }

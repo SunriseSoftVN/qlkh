@@ -24,12 +24,15 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskDetailService;
+import com.qlvt.core.client.dto.SubTaskAnnualDetailDto;
 import com.qlvt.core.client.dto.SubTaskDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.Branch;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.BranchDao;
+import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
@@ -56,6 +59,9 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     private SubTaskDetailDao subTaskDetailDao;
 
     @Inject
+    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+
+    @Inject
     private BranchDao branchDao;
 
     @Override
@@ -80,6 +86,35 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                 }
                 taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
                         map(subTaskDetail, SubTaskDetailDto.class));
+            }
+            taskDetailDtos.add(taskDetailDto);
+        }
+        return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
+                taskDetailDao.count(TaskDetail.class));
+    }
+
+    @Override
+    public BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
+        List<Branch> branches = branchDao.getBranchsByStationId(stationId);
+        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig, Restrictions.eq("station.id", stationId));
+        List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
+        for (TaskDetail taskDetail : taskDetails) {
+            TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
+                    getInstance().map(taskDetail, TaskDetailDto.class);
+            for (Branch branch : branches) {
+                SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
+                        getSubAnnualTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+                if (subTaskAnnualDetail == null) {
+                    subTaskAnnualDetail = new SubTaskAnnualDetail();
+                    subTaskAnnualDetail.setTaskDetail(taskDetail);
+                    subTaskAnnualDetail.setBranch(branch);
+                    subTaskAnnualDetail.setCreateBy(1l);
+                    subTaskAnnualDetail.setUpdateBy(1l);
+                    subTaskAnnualDetail.setCreatedDate(new Date());
+                    subTaskAnnualDetail.setUpdatedDate(new Date());
+                }
+                taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
+                        map(subTaskAnnualDetail, SubTaskAnnualDetailDto.class));
             }
             taskDetailDtos.add(taskDetailDto);
         }

@@ -28,4 +28,23 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 1/4/12, 9:15 PM
  */
 public interface TaskAnnualDetailConstant extends Constants {
+    String btnDelete();
+    String btnAdd();
+    String btnSave();
+    String btnCancel();
+    String sttColumnTitle();
+    String taskNameColumnTitle();
+    String taskCodeColumnTitle();
+    String taskUnitColumnTitle();
+    String taskDefaultValueColumnTitle();
+    String deleteTaskMessageSuccess();
+    String deleteAllTaskMessage();
+    String deleteTaskMessage();
+    String saveMessageSuccess();
+    String loadStationError();
+    String taskHeaderGroup();
+    String q1ColumnTitle();
+    String q2ColumnTitle();
+    String q3ColumnTitle();
+    String q4ColumnTitle();
 }
