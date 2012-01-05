@@ -28,4 +28,9 @@
         <class-b>com.qlvt.core.client.dto.SubTaskDetailDto</class-b>
     </mapping>
 
+    <mapping>
+        <class-a>com.qlvt.core.client.model.SubTaskAnnualDetail</class-a>
+        <class-b>com.qlvt.core.client.dto.SubTaskAnnualDetailDto</class-b>
+    </mapping>
+
 </mappings>

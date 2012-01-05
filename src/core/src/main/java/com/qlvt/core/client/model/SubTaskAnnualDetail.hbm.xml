@@ -13,11 +13,11 @@
         <property name="updateBy" column="updateBy" not-null="true"/>
 
         <property name="lastYear" column="lastYear" not-null="true"/>
-        <property name="lastYearValue" column="lastYearValue" not-null="true"/>
+        <property name="lastYearValue" column="lastYearValue"/>
         <property name="currentYear" column="currentYear" not-null="true"/>
-        <property name="increaseValue" column="increaseValue" not-null="true"/>
-        <property name="decreaseValue" column="decreaseValue" not-null="true"/>
-        <property name="realValue" column="realValue" not-null="true"/>
+        <property name="increaseValue" column="increaseValue"/>
+        <property name="decreaseValue" column="decreaseValue"/>
+        <property name="realValue" column="realValue"/>
 
         <many-to-one name="taskDetail" class="com.qlvt.core.client.model.TaskDetail" lazy="false" fetch="join" outer-join="auto">
             <column name="taskDetailId" not-null="true"/>

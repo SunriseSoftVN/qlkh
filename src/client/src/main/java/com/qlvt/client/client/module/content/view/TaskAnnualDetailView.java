@@ -45,6 +45,7 @@ import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -67,14 +68,14 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "task.unit";
     public static final int TASK_UNIT_WIDTH = 70;
-    public static final String Q1_UNIT_COLUMN = ".q1";
-    public static final int Q1_UNIT_WIDTH = 45;
-    public static final String Q2_UNIT_COLUMN = ".q2";
-    public static final int Q2_UNIT_WIDTH = 45;
-    public static final String Q3_UNIT_COLUMN = ".q3";
-    public static final int Q3_UNIT_WIDTH = 45;
-    public static final String Q4_UNIT_COLUMN = ".q4";
-    public static final int Q4_UNIT_WIDTH = 45;
+    public static final String LAST_YEAR_VALUE_COLUMN = ".lastYearValue";
+    public static final int LAST_YEAR_VALUE_WIDTH = 55;
+    public static final String INCREASE_VALUE_COLUMN = ".increaseValue";
+    public static final int INCREASE_VALUE_WIDTH = 55;
+    public static final String DECREASE_VALUE_COLUMN = ".decreaseValue";
+    public static final int DECREASE_VALUE_WIDTH = 55;
+    public static final String REAL_VALUE_COLUMN = ".realValue";
+    public static final int REAL_VALUE_WIDTH = 60;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -107,6 +108,9 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         for (String branchName : branchNames) {
             columnModel.addHeaderGroup(0, column,
                     new HeaderGroupConfig("<b>" + branchName + "</b>", 1, 4));
+            String currentYear = getConstant().lastYearValueColumnTitle() + " "
+                    + String.valueOf(1990 + new Date().getYear());
+            columnModel.addHeaderGroup(1, column + 1, new HeaderGroupConfig(currentYear, 1, 3));
             column += 4;
         }
         taskDetailGird = new EditorGrid<TaskDetailDto>(listStore, columnModel);
@@ -182,29 +186,34 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         columnConfigs.add(unitColumnConfig);
 
         for (String branchName : branchNames) {
-            ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + Q1_UNIT_COLUMN,
-                    getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
-            q1ColumnConfig.setEditor(new CellEditor(new NumberField()));
-            q1ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
-            columnConfigs.add(q1ColumnConfig);
+            String year = "</br>" + String.valueOf((1900 + new Date().getYear() - 1));
+            ColumnConfig lastYearValueColumnConfig = new ColumnConfig(branchName + LAST_YEAR_VALUE_COLUMN,
+                    getConstant().lastYearValueColumnTitle() + year, LAST_YEAR_VALUE_WIDTH);
+            lastYearValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            lastYearValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(lastYearValueColumnConfig);
 
-            ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + Q2_UNIT_COLUMN,
-                    getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
-            q2ColumnConfig.setEditor(new CellEditor(new NumberField()));
-            q2ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
-            columnConfigs.add(q2ColumnConfig);
+            ColumnConfig increaseValueColumnConfig = new ColumnConfig(branchName + INCREASE_VALUE_COLUMN,
+                    getConstant().increaseValueColumnTitle(), INCREASE_VALUE_WIDTH);
+            increaseValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            increaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(increaseValueColumnConfig);
 
-            ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + Q3_UNIT_COLUMN,
-                    getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
-            q3ColumnConfig.setEditor(new CellEditor(new NumberField()));
-            q3ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
-            columnConfigs.add(q3ColumnConfig);
+            ColumnConfig decreaseValueColumnConfig = new ColumnConfig(branchName + DECREASE_VALUE_COLUMN,
+                    getConstant().decreaseValueColumnTitle(), DECREASE_VALUE_WIDTH);
+            decreaseValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(decreaseValueColumnConfig);
 
-            ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + Q4_UNIT_COLUMN,
-                    getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
-            q4ColumnConfig.setEditor(new CellEditor(new NumberField()));
-            q4ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
-            columnConfigs.add(q4ColumnConfig);
+            ColumnConfig realValueColumnConfig = new ColumnConfig(branchName + REAL_VALUE_COLUMN,
+                    getConstant().realValueColumnTitle(), REAL_VALUE_WIDTH);
+            realValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+            columnConfigs.add(realValueColumnConfig);
+        }
+
+        for (ColumnConfig columnConfig : columnConfigs) {
+            columnConfig.setMenuDisabled(true);
         }
 
         return columnConfigs;

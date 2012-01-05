@@ -36,7 +36,7 @@ import com.qlvt.client.client.module.content.view.TaskManagerView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.dto.SubTaskDetailDto;
+import com.qlvt.core.client.dto.SubTaskAnnualDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Branch;
@@ -106,14 +106,14 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     taskDetail.setCreatedDate(new Date());
                     taskDetail.setUpdatedDate(new Date());
                     for (Branch branch : currentStation.getBranches()) {
-                        SubTaskDetailDto subTaskDetailDto = new SubTaskDetailDto();
-                        subTaskDetailDto.setTaskDetail(taskDetail);
-                        subTaskDetailDto.setBranch(branch);
-                        subTaskDetailDto.setCreateBy(1l);
-                        subTaskDetailDto.setUpdateBy(1l);
-                        subTaskDetailDto.setCreatedDate(new Date());
-                        subTaskDetailDto.setUpdatedDate(new Date());
-                        taskDetail.set(branch.getName(), subTaskDetailDto);
+                        SubTaskAnnualDetailDto subTaskAnnualDetailDto = new SubTaskAnnualDetailDto();
+                        subTaskAnnualDetailDto.setTaskDetail(taskDetail);
+                        subTaskAnnualDetailDto.setBranch(branch);
+                        subTaskAnnualDetailDto.setCreateBy(1l);
+                        subTaskAnnualDetailDto.setUpdateBy(1l);
+                        subTaskAnnualDetailDto.setCreatedDate(new Date());
+                        subTaskAnnualDetailDto.setUpdatedDate(new Date());
+                        taskDetail.set(branch.getName(), subTaskAnnualDetailDto);
                     }
                     view.getTaskDetailGird().getStore().insert(taskDetail,
                             view.getTaskDetailGird().getStore().getCount());

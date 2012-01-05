@@ -21,7 +21,6 @@ package com.qlvt.server.dao.impl;
 
 import com.google.inject.Singleton;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
-import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import org.apache.commons.collections.CollectionUtils;
@@ -57,9 +56,9 @@ public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail>
         openSession();
         Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
-        List<SubTaskDetail> subTaskAnnualDetails = criteria.list();
-        for (SubTaskDetail subTaskDetail : subTaskAnnualDetails) {
-            session.delete(subTaskDetail);
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = criteria.list();
+        for (SubTaskAnnualDetail subTaskAnnualDetail : subTaskAnnualDetails) {
+            session.delete(subTaskAnnualDetail);
         }
         closeSession();
     }

@@ -36,6 +36,7 @@ import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+import org.apache.commons.collections.CollectionUtils;
 import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.criterion.Restrictions;
 
@@ -134,6 +135,8 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                 branchIds.add(branch.getId());
             }
             subTaskDetailDao.deleteSubTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
+
+            subTaskAnnualDetailDao.deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
             //Delete TaskDetail
             taskDetailDao.deleteById(TaskDetail.class, taskDetailId);
         }
@@ -162,21 +165,38 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     public void updateTaskDetailDtos(List<TaskDetailDto> taskDetailDtos) {
         List<TaskDetail> taskDetails = new ArrayList<TaskDetail>(taskDetailDtos.size());
         List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>(taskDetails.size());
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>(taskDetails.size());
         for (TaskDetailDto taskDetailDto : taskDetailDtos) {
             TaskDetail taskDetail = DozerBeanMapperSingletonWrapper.getInstance().map(taskDetailDto, TaskDetail.class);
             taskDetails.add(taskDetail);
             List<Branch> branches = branchDao.getBranchsByStationId(taskDetailDto.getStation().getId());
             for (Branch branch : branches) {
-                SubTaskDetailDto subTaskDetailDto = taskDetailDto.get(branch.getName());
-                if (subTaskDetailDto != null) {
-                    SubTaskDetail subTaskDetail = DozerBeanMapperSingletonWrapper.getInstance().
-                            map(subTaskDetailDto, SubTaskDetail.class);
-                    subTaskDetail.setTaskDetail(taskDetail);
-                    subTaskDetails.add(subTaskDetail);
+                Object dto = taskDetailDto.get(branch.getName());
+                if (dto instanceof SubTaskDetailDto) {
+                    SubTaskDetailDto subTaskDetailDto = (SubTaskDetailDto) dto;
+                    if (subTaskDetailDto != null) {
+                        SubTaskDetail subTaskDetail = DozerBeanMapperSingletonWrapper.getInstance().
+                                map(subTaskDetailDto, SubTaskDetail.class);
+                        subTaskDetail.setTaskDetail(taskDetail);
+                        subTaskDetails.add(subTaskDetail);
+                    }
+                } else if (dto instanceof SubTaskAnnualDetailDto) {
+                    SubTaskAnnualDetailDto subTaskAnnualDetailDto = (SubTaskAnnualDetailDto) dto;
+                    if (subTaskAnnualDetailDto != null) {
+                        SubTaskAnnualDetail subTaskAnnualDetail = DozerBeanMapperSingletonWrapper.getInstance()
+                                .map(subTaskAnnualDetailDto, SubTaskAnnualDetail.class);
+                        subTaskAnnualDetail.setTaskDetail(taskDetail);
+                        subTaskAnnualDetails.add(subTaskAnnualDetail);
+                    }
                 }
             }
         }
         updateTaskDetails(taskDetails);
-        subTaskDetailDao.saveOrUpdate(subTaskDetails);
+        if (CollectionUtils.isNotEmpty(subTaskDetails)) {
+            subTaskDetailDao.saveOrUpdate(subTaskDetails);
+        }
+        if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
+            subTaskAnnualDetailDao.saveOrUpdate(subTaskAnnualDetails);
+        }
     }
 }

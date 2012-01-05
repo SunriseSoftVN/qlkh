@@ -43,8 +43,8 @@ public interface TaskAnnualDetailConstant extends Constants {
     String saveMessageSuccess();
     String loadStationError();
     String taskHeaderGroup();
-    String q1ColumnTitle();
-    String q2ColumnTitle();
-    String q3ColumnTitle();
-    String q4ColumnTitle();
+    String lastYearValueColumnTitle();
+    String increaseValueColumnTitle();
+    String decreaseValueColumnTitle();
+    String realValueColumnTitle();
 }
