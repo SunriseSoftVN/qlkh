@@ -59,7 +59,8 @@ public class ServiceUtils {
 
     public static String getServiceEntryPoint() {
         if (SystemUtil.isProductionMode()) {
-            return StringUtils.EMPTY;
+            return SystemUtil.getServerBaseUrl()
+                    + SystemUtil.getConfiguration().serverServletRootPath();
         }
         //Set proxy servlet for development mode, to split up gwt server and gwt client to 2 projects.
         return SystemUtil.getConfiguration().developmentModeClientBaseUrl()

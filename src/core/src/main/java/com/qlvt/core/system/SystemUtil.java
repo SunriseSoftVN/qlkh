@@ -21,7 +21,6 @@ package com.qlvt.core.system;
 
 import com.google.gwt.core.client.GWT;
 import com.qlvt.core.configuration.ApplicationConfiguration;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 /**
  * The Class SystemUtil.
@@ -78,8 +77,7 @@ public final class SystemUtil {
      */
     public static String getServerBaseUrl() {
         if (isProductionMode()) {
-            //In production mode, client and server are in same location, we just return empty string.
-            return StringUtils.EMPTY;
+            return getConfiguration().productionModeServerBaseUrl();
         }
         return getConfiguration().developmentModeServerBaseUrl();
     }

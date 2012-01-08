@@ -47,5 +47,6 @@ public interface ApplicationConfiguration extends ConstantsWithLookup {
     String developmentModeServerBaseUrl();
     String developmentModeServerHostName();
     String developmentModeServerPort();
+    String productionModeServerBaseUrl();
     String serverServletRootPath();
 }

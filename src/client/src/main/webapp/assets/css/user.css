@@ -2,8 +2,13 @@
     background: #1C3D7A;
 }
 
-.topmenu .active {
+#top_panel .active {
     background: #EFD137;
+}
+
+#top_panel a, a:visited {
+    text-decoration: none;
+    color: #0000EE;
 }
 
 #loading_container {
