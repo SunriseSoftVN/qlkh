@@ -19,12 +19,13 @@
 
 package com.qlvt.client.client.module.main.view;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.PasswordField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -40,30 +41,28 @@ import com.smvp4g.mvp.client.widget.TextField;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL)
 public class LoginView extends AbstractView {
 
-    private ContentPanel contentPanel = new ContentPanel(new CenterLayout());
-    private FormPanel loginPanel = new FormPanel();
+    private ContentPanel contentPanel = new ContentPanel();
+    private FramedPanel loginPanel = new FramedPanel();
 
-    private TextField<String> txtUserName = new TextField<String>();
-    private TextField<String> txtPassWord = new TextField<String>();
+    private TextField txtUserName = new TextField();
+    private FieldLabel lblUserName = new FieldLabel(txtUserName, "Username");
 
-    private Button btnOk = new Button("Ok");
-    private Button btnCancel = new Button("Cancel");
+    private PasswordField txtPassWord = new PasswordField();
+    private FieldLabel lblPassword = new FieldLabel(txtPassWord, "Password");
+
+    private TextButton btnOk = new TextButton("Ok");
+    private TextButton btnCancel = new TextButton("Cancel");
     
     @Override
     protected void initializeView() {
-        txtUserName.setFieldLabel("Username");
-        txtPassWord.setFieldLabel("Password");
-        txtPassWord.setPassword(true);
+        loginPanel.setHeadingText("User Login");
 
-        loginPanel.setFrame(true);
-        loginPanel.setHeading("User Login");
-
-        loginPanel.add(txtUserName);
-        loginPanel.add(txtPassWord);
+        loginPanel.add(lblUserName);
+        loginPanel.add(lblPassword);
 
         loginPanel.addButton(btnOk);
         loginPanel.addButton(btnCancel);
-        loginPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        loginPanel.setButtonAlign(BoxLayoutContainer.BoxLayoutPack.CENTER);
 
         contentPanel.add(loginPanel);
         contentPanel.setHeight(500);
@@ -71,19 +70,19 @@ public class LoginView extends AbstractView {
         setWidget(contentPanel);
     }
 
-    public Button getBtnOk() {
+    public TextButton getBtnOk() {
         return btnOk;
     }
 
-    public Button getBtnCancel() {
+    public TextButton getBtnCancel() {
         return btnCancel;
     }
 
-    public TextField<String> getTxtUserName() {
+    public TextField getTxtUserName() {
         return txtUserName;
     }
 
-    public TextField<String> getTxtPassWord() {
+    public PasswordField getTxtPassWord() {
         return txtPassWord;
     }
 }

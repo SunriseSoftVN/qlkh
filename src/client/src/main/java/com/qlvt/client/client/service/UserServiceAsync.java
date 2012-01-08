@@ -19,16 +19,16 @@
 
 package com.qlvt.client.client.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.core.client.model.User;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
 import java.util.List;
 
 public interface UserServiceAsync extends RemoteServiceAsync<UserServiceAsync> {
-    void getUsersForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<User>>> async);
+    void getUsersForGrid(PagingLoadConfig config, AsyncCallback<PagingLoadResult<List<User>>> async);
     void deleteUserById(long userId, AsyncCallback<Void> async);
     void deleteUserByIds(List<Long> userIds, AsyncCallback<Void> async);
     void updateUser(User user, AsyncCallback<Void> async);

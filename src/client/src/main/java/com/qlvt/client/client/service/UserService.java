@@ -19,12 +19,12 @@
 
 package com.qlvt.client.client.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.model.User;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public interface UserService extends RemoteService<UserService> {
     void updateUser(User user);
     void deleteUserById(long userId);
     void deleteUserByIds(List<Long> userIds);
-    BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config);
+    PagingLoadResult<List<User>> getUsersForGrid(PagingLoadConfig config);
 
     public static class App {
         private static final UserServiceAsync ourInstance = (UserServiceAsync) GWT.create(UserService.class);

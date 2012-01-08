@@ -19,24 +19,14 @@
 
 package com.qlvt.client.client.module.main.presenter;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
-import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.main.place.LoginPlace;
 import com.qlvt.client.client.module.main.view.LoginView;
 import com.qlvt.client.client.service.LoginService;
 import com.qlvt.client.client.service.LoginServiceAsync;
-import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.UrlUtils;
-import com.qlvt.core.client.exception.UserAuthenticationException;
-import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-import com.smvp4g.mvp.client.core.utils.LoginUtils;
 
 /**
  * The Class LoginPresenter.
@@ -54,55 +44,55 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
         view.show();
         view.getTxtUserName().focus();
     }
-
-    @Override
-    protected void doBind() {
-        view.getBtnOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                checkLogin(view.getTxtUserName().getValue(),
-                        LoginUtils.md5hash(view.getTxtPassWord().getValue()));
-            }
-        });
-        view.getTxtPassWord().addKeyListener(new KeyListener() {
-            @Override
-            public void componentKeyPress(ComponentEvent event) {
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    checkLogin(view.getTxtUserName().getValue(),
-                            LoginUtils.md5hash(view.getTxtPassWord().getValue()));
-                }
-            }
-        });
-        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                view.getTxtPassWord().clear();
-                view.getTxtUserName().clear();
-            }
-        });
-    }
-
-    public void checkLogin(final String userName, final String passWord) {
-        loginService.checkLogin(userName, passWord, new AbstractAsyncCallback<User>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                if (caught instanceof UserAuthenticationException) {
-                    DiaLogUtils.showMessage("The username or password you entered is incorrect");
-                } else {
-                    super.onFailure(caught);
-                }
-            }
-
-            @Override
-            public void onSuccess(User user) {
-                if (user != null) {
-                    LoginUtils.login(userName, user.getUserRole());
-                    //Reload page and go to home page.
-                    goToHomePage();
-                }
-            }
-        });
-    }
+//
+//    @Override
+//    protected void doBind() {
+//        view.getBtnOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent buttonEvent) {
+//                checkLogin(view.getTxtUserName().getValue(),
+//                        LoginUtils.md5hash(view.getTxtPassWord().getValue()));
+//            }
+//        });
+//        view.getTxtPassWord().addKeyListener(new KeyListener() {
+//            @Override
+//            public void componentKeyPress(ComponentEvent event) {
+//                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+//                    checkLogin(view.getTxtUserName().getValue(),
+//                            LoginUtils.md5hash(view.getTxtPassWord().getValue()));
+//                }
+//            }
+//        });
+//        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                view.getTxtPassWord().clear();
+//                view.getTxtUserName().clear();
+//            }
+//        });
+//    }
+//
+//    public void checkLogin(final String userName, final String passWord) {
+//        loginService.checkLogin(userName, passWord, new AbstractAsyncCallback<User>() {
+//            @Override
+//            public void onFailure(Throwable caught) {
+//                if (caught instanceof UserAuthenticationException) {
+//                    DiaLogUtils.showMessage("The username or password you entered is incorrect");
+//                } else {
+//                    super.onFailure(caught);
+//                }
+//            }
+//
+//            @Override
+//            public void onSuccess(User user) {
+//                if (user != null) {
+//                    LoginUtils.login(userName, user.getUserRole());
+//                    //Reload page and go to home page.
+//                    goToHomePage();
+//                }
+//            }
+//        });
+//    }
 
     private void goToHomePage() {
         String url = UrlUtils

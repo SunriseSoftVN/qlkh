@@ -19,16 +19,16 @@
 
 package com.qlvt.client.client.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.core.client.model.Station;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
 import java.util.List;
 
 public interface StationServiceAsync extends RemoteServiceAsync<StationServiceAsync> {
-    void getStationsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<Station>>> async);
+    void getStationsForGrid(PagingLoadConfig config, AsyncCallback<PagingLoadResult<List<Station>>> async);
     void updateStations(List<Station> stations, AsyncCallback<Void> async);
     void getAllStation(AsyncCallback<List<Station>> async);
     void deleteStationById(long stationId, AsyncCallback<Void> async);

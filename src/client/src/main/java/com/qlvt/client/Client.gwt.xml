@@ -2,7 +2,10 @@
 <module rename-to='Client'>
 
     <inherits name='com.smvp4g.mvp.Mvp'/>
+
     <inherits name='com.qlvt.core.Core'/>
+
+    <inherits name='com.sencha.gxt.ui.GXT' />
 
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.qlvt.client.client.QlvtEntryPoint'/>

@@ -19,17 +19,17 @@
 
 package com.qlvt.client.client.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Task;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
 import java.util.List;
 
 public interface TaskServiceAsync extends RemoteServiceAsync<TaskServiceAsync> {
-    void getTasksForGrid(BasePagingLoadConfig loadConfig, AsyncCallback<BasePagingLoadResult<List<Task>>> callback);
+    void getTasksForGrid(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<List<Task>>> callback);
     void updateTask(Task task, AsyncCallback<Void> async);
     void updateTasks(List<Task> tasks, AsyncCallback<Void> async);
     void deleteTask(long taskId, AsyncCallback<Void> async);

@@ -19,12 +19,12 @@
 
 package com.qlvt.client.client.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.model.Branch;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public interface BranchService extends RemoteService<BranchService> {
     void updateBranchs(List<Branch> branchs);
     List<Branch> getBranchByStationId(long stationId);
     List<Branch> getAllBranch();
-    BasePagingLoadResult<List<Branch>> getBranchsForGrid(BasePagingLoadConfig config);
+    PagingLoadResult<List<Branch>> getBranchsForGrid(PagingLoadConfig config);
 
     public static class App {
         private static final BranchServiceAsync ourInstance = (BranchServiceAsync) GWT.create(BranchService.class);
