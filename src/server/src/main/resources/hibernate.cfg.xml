@@ -4,7 +4,9 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="connection.url">jdbc:mysql://localhost/qlvt</property>
+        <property name="connection.url">
+            jdbc:mysql://localhost/qlvt?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8
+        </property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="show_sql">true</property>
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
