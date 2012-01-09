@@ -26,6 +26,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.main.view.i18n.LoginConstants;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -38,29 +40,34 @@ import com.smvp4g.mvp.client.widget.TextField;
  * @since 12/28/11, 9:51 AM
  */
 @ViewSecurity(showOnlyGuest = true)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL)
-public class LoginView extends AbstractView {
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = LoginConstants.class)
+public class LoginView extends AbstractView<LoginConstants> {
 
     private ContentPanel contentPanel = new ContentPanel(new CenterLayout());
-    private FormPanel loginPanel = new FormPanel();
 
-    private TextField<String> txtUserName = new TextField<String>();
-    private TextField<String> txtPassWord = new TextField<String>();
+    @I18nField
+    FormPanel loginPanel = new FormPanel();
 
-    private Button btnOk = new Button("Ok");
-    private Button btnCancel = new Button("Cancel");
+    @I18nField
+    TextField<String> txtUserName = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtPassWord = new TextField<String>();
+
+    @I18nField
+    Button btnOk = new Button();
+
+    @I18nField
+    Button btnCancel = new Button();
     
     @Override
     protected void initializeView() {
-        txtUserName.setFieldLabel("Username");
-        txtPassWord.setFieldLabel("Password");
         txtPassWord.setPassword(true);
-
         loginPanel.setFrame(true);
-        loginPanel.setHeading("User Login");
 
         loginPanel.add(txtUserName);
         loginPanel.add(txtPassWord);
+        loginPanel.setLabelWidth(90);
 
         loginPanel.addButton(btnOk);
         loginPanel.addButton(btnCancel);
