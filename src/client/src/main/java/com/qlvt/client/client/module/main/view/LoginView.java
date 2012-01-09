@@ -19,13 +19,17 @@
 
 package com.qlvt.client.client.module.main.view;
 
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
-import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.qlvt.client.client.module.main.view.i18n.LoginConstant;
+import com.qlvt.client.client.widget.MyCenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.PasswordField;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -38,37 +42,54 @@ import com.smvp4g.mvp.client.widget.TextField;
  * @since 12/28/11, 9:51 AM
  */
 @ViewSecurity(showOnlyGuest = true)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL)
-public class LoginView extends AbstractView {
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = LoginConstant.class)
+public class LoginView extends AbstractView<LoginConstant> {
 
-    private ContentPanel contentPanel = new ContentPanel();
-    private FramedPanel loginPanel = new FramedPanel();
+    private MyCenterLayoutContainer centerLayoutContainer = new MyCenterLayoutContainer();
+    private VerticalLayoutContainer loginPanel = new VerticalLayoutContainer();
 
     private TextField txtUserName = new TextField();
-    private FieldLabel lblUserName = new FieldLabel(txtUserName, "Username");
 
     private PasswordField txtPassWord = new PasswordField();
-    private FieldLabel lblPassword = new FieldLabel(txtPassWord, "Password");
 
-    private TextButton btnOk = new TextButton("Ok");
-    private TextButton btnCancel = new TextButton("Cancel");
+    @I18nField
+    FramedPanel contentPanel = new FramedPanel();
+
+    @I18nField
+    FieldLabel lblUserName = new FieldLabel(txtUserName);
+
+    @I18nField
+    FieldLabel lblPassword = new FieldLabel(txtPassWord);
+
+    @I18nField
+    TextButton btnOk = new TextButton();
+
+    @I18nField
+    TextButton btnCancel = new TextButton();
     
     @Override
     protected void initializeView() {
-        loginPanel.setHeadingText("User Login");
-
-        loginPanel.add(lblUserName);
-        loginPanel.add(lblPassword);
-
-        loginPanel.addButton(btnOk);
-        loginPanel.addButton(btnCancel);
-        loginPanel.setButtonAlign(BoxLayoutContainer.BoxLayoutPack.CENTER);
+        loginPanel.add(lblUserName, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+        loginPanel.add(lblPassword, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 
         contentPanel.add(loginPanel);
-        contentPanel.setHeight(500);
-        contentPanel.setHeaderVisible(false);
-        setWidget(contentPanel);
+        btnOk.setWidth(50);
+        contentPanel.addButton(btnOk);
+        btnCancel.setWidth(50);
+        contentPanel.addButton(btnCancel);
+        contentPanel.setButtonAlign(BoxLayoutContainer.BoxLayoutPack.CENTER);
+        contentPanel.setBodyStyle("padding: 6px");
+        contentPanel.setWidth(250);
+
+        centerLayoutContainer.add(contentPanel);
+        centerLayoutContainer.setPixelSize(Window.getClientWidth(), Window.getClientHeight() - 80);
+        centerLayoutContainer.setFlexibleHeight(-80);
+        centerLayoutContainer.setBorders(true);
+
+        setWidget(centerLayoutContainer);
     }
+
+
 
     public TextButton getBtnOk() {
         return btnOk;

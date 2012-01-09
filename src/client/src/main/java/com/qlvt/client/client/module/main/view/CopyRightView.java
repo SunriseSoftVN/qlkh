@@ -19,17 +19,25 @@
 
 package com.qlvt.client.client.module.main.view;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.widget.MyCenterLayoutContainer;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
 @View(parentDomId = DomIdConstant.BOTTOM_PANEL)
 public class CopyRightView extends AbstractView {
+
+    MyCenterLayoutContainer layoutContainer = new MyCenterLayoutContainer();
+
     @Override
     protected void initializeView() {
         HTML html = new HTML("<p style='text-align:center'>" +
                 "Copyright 2012 <a href='http://smvp4g.com'>smvp4g.com</a></p>");
-        setWidget(html);
+        layoutContainer.add(html);
+        layoutContainer.setPixelSize(Window.getClientWidth(), 100);
+        layoutContainer.setFixedHeight(100);
+        setWidget(layoutContainer);
     }
 }
