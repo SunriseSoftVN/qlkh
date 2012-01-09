@@ -158,7 +158,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
         contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
+        contentPanel.setHeight(com.google.gwt.user.client.Window.getClientHeight() - 90);
         com.google.gwt.user.client.Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {

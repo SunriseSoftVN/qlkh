@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -66,7 +67,7 @@ public class LoginView extends AbstractView {
         loginPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
 
         contentPanel.add(loginPanel);
-        contentPanel.setHeight(500);
+        contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setHeaderVisible(false);
         setWidget(contentPanel);
     }

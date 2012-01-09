@@ -127,7 +127,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnCancel);
         contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
+        contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(taskDetailGird);
         contentPanel.setTopComponent(toolBar);

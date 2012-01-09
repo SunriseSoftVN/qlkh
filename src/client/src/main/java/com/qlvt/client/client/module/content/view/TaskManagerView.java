@@ -116,7 +116,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
         contentPanel.setHeaderVisible(false);
-        contentPanel.setHeight(500);
+        contentPanel.setHeight(Window.getClientHeight() - 90);
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
