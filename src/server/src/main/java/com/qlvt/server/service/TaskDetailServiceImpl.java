@@ -19,8 +19,6 @@
 
 package com.qlvt.server.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskDetailService;
@@ -36,6 +34,9 @@ import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.criterion.Restrictions;
@@ -66,7 +67,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     private BranchDao branchDao;
 
     @Override
-    public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
+    public PagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(PagingLoadConfig loadConfig, long stationId) {
         List<Branch> branches = branchDao.getBranchsByStationId(stationId);
         List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
@@ -91,12 +92,12 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
             }
             taskDetailDtos.add(taskDetailDto);
         }
-        return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
+        return new PagingLoadResultBean<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
                 taskDetailDao.count(TaskDetail.class));
     }
 
     @Override
-    public BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
+    public PagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(PagingLoadConfig loadConfig, long stationId) {
         List<Branch> branches = branchDao.getBranchsByStationId(stationId);
         List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
@@ -121,7 +122,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
             }
             taskDetailDtos.add(taskDetailDto);
         }
-        return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
+        return new PagingLoadResultBean<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
                 taskDetailDao.count(TaskDetail.class));
     }
 

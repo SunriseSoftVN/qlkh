@@ -19,16 +19,13 @@
 
 package com.qlvt.server.dao.core;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.util.SessionFactoryUtil;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -123,17 +120,17 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     }
 
     @Override
-    public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
+    public List<E> getByBeanConfig(Class<E> clazz, PagingLoadConfig config, Criterion... criterions) {
         openSession();
         Criteria criteria = session.createCriteria(clazz)
                 .setFirstResult(config.getOffset()).setMaxResults(config.getLimit());
-        if (StringUtils.isNotBlank(config.getSortField())) {
-            if (config.getSortDir() == Style.SortDir.ASC) {
-                criteria.addOrder(Order.asc(config.getSortField()));
-            } else if (config.getSortDir() == Style.SortDir.DESC) {
-                criteria.addOrder(Order.desc(config.getSortField()));
-            }
-        }
+//        if (StringUtils.isNotBlank(config.getSortField())) {
+//            if (config.getSortDir() == SortDir.ASC) {
+//                criteria.addOrder(Order.asc(config.getSortField()));
+//            } else if (config.getSortDir() == SortDir.DESC) {
+//                criteria.addOrder(Order.desc(config.getSortField()));
+//            }
+//        }
         if (criterions != null && criterions.length > 0) {
             for (Criterion criterion : criterions) {
                 criteria.add(criterion);

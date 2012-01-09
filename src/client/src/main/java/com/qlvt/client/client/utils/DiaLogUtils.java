@@ -20,12 +20,13 @@
 package com.qlvt.client.client.utils;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.Info;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.Window;
 import com.qlvt.core.system.SystemUtil;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
+import com.sencha.gxt.widget.core.client.info.Info;
+
+import static com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 /**
  * The Class DiaLogUtils.
@@ -75,7 +76,9 @@ public final class DiaLogUtils {
      * @param message
      */
     public static void showMessage(String title, Object message) {
-        MessageBox.alert(title, String.valueOf(message), null);
+        MessageBox messageBox = new MessageBox(title, String.valueOf(message));
+        messageBox.setIcon(MessageBox.ICONS.info());
+        messageBox.show();
     }
 
     /**
@@ -84,8 +87,10 @@ public final class DiaLogUtils {
      * @param message
      * @param listener
      */
-    public static void conform(Object message, Listener<MessageBoxEvent> listener) {
-        MessageBox.confirm(APP_MESSAGE_TITLE, String.valueOf(message), listener);
+    public static void conform(Object message, HideHandler listener) {
+        ConfirmMessageBox confirmMessageBox = new ConfirmMessageBox(APP_MESSAGE_TITLE, String.valueOf(message));
+        confirmMessageBox.addHideHandler(listener);
+        confirmMessageBox.show();
     }
 
     /**

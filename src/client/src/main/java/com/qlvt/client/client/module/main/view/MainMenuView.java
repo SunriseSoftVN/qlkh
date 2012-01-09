@@ -19,6 +19,9 @@
 
 package com.qlvt.client.client.module.main.view;
 
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
@@ -105,14 +108,15 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         lblWelcome.setWidth("200px");
         lblWelcome.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
         mainPanel.add(lblWelcome, new BoxLayoutData(new Margins(0, 5, 0, 0)));
-        mainPanel.add(ancLogout);
+        mainPanel.add(ancLogout, new BoxLayoutData(new Margins(0,5,0,0)));
         mainPanel.setHeight(22);
-//        Window.addResizeHandler(new ResizeHandler() {
-//            @Override
-//            public void onResize(ResizeEvent event) {
-//                mainPanel.setWidth(event.getWidth() - 5);
-//            }
-//        });
+        mainPanel.setEnableOverflow(false);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                mainPanel.setPixelSize(event.getWidth(), 22);
+            }
+        });
         setWidget(mainPanel);
         setStyleName("top_menu");
     }

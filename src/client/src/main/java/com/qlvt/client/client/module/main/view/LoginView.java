@@ -71,7 +71,6 @@ public class LoginView extends AbstractView<LoginConstant> {
     protected void initializeView() {
         loginPanel.add(lblUserName, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
         loginPanel.add(lblPassword, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-
         contentPanel.add(loginPanel);
         btnOk.setWidth(50);
         contentPanel.addButton(btnOk);

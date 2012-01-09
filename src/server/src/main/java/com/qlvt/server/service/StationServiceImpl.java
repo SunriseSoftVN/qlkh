@@ -19,8 +19,6 @@
 
 package com.qlvt.server.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.StationService;
@@ -32,6 +30,9 @@ import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
@@ -60,9 +61,9 @@ public class StationServiceImpl extends AbstractService implements StationServic
     }
 
     @Override
-    public BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config) {
+    public PagingLoadResult<List<Station>> getStationsForGrid(PagingLoadConfig config) {
         List<Station> stations = stationDao.getByBeanConfig(Station.class, config);
-        return new BasePagingLoadResult(stations, config.getOffset(), stationDao.count(Station.class));
+        return new PagingLoadResultBean(stations, config.getOffset(), stationDao.count(Station.class));
     }
 
     @Override

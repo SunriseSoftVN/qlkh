@@ -19,14 +19,15 @@
 
 package com.qlvt.server.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.UserService;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 import java.util.List;
 
@@ -43,8 +44,8 @@ public class UserServiceImpl extends AbstractService implements UserService {
     private UserDao userDao;
 
     @Override
-    public BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config) {
-        return new BasePagingLoadResult(userDao.getByBeanConfig(User.class, config),
+    public PagingLoadResult<List<User>> getUsersForGrid(PagingLoadConfig config) {
+        return new PagingLoadResultBean(userDao.getByBeanConfig(User.class, config),
                 config.getOffset(), userDao.count(User.class));
     }
 
