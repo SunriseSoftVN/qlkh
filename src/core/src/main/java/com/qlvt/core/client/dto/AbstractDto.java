@@ -19,6 +19,8 @@
 
 package com.qlvt.core.client.dto;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,7 +30,7 @@ import java.util.Date;
  * @author Nguyen Duc Dung
  * @since 1/3/12, 2:38 PM
  */
-public class AbstractDto implements Serializable {
+public class AbstractDto extends BaseModelData implements Serializable {
 
     public Long getId() {
         return get("id");
@@ -68,13 +70,5 @@ public class AbstractDto implements Serializable {
 
     public void setUpdateBy(Long updateBy) {
         set("updateBy", updateBy);
-    }
-    
-    public <X> X get(String st) {
-        return null;
-    }
-
-    public void set(String st, Object o) {
-
     }
 }

@@ -19,12 +19,12 @@
 
 package com.qlvt.client.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.model.Station;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public interface StationService extends RemoteService<StationService> {
     void deleteStationByIds(List<Long> stationIds);
     void updateStations(List<Station> stations);
     List<Station> getAllStation();
-    PagingLoadResult<List<Station>> getStationsForGrid(PagingLoadConfig config);
+    BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config);
 
     public static class App {
         private static final StationServiceAsync ourInstance = (StationServiceAsync) GWT.create(StationService.class);

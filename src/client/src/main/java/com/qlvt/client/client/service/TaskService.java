@@ -19,13 +19,13 @@
 
 package com.qlvt.client.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Task;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public interface TaskService extends RemoteService<TaskService> {
     void deleteTasks(List<Long> taskIds);
     void updateTask(Task task);
     void updateTasks(List<Task> tasks);
-    PagingLoadResult<List<Task>> getTasksForGrid(PagingLoadConfig loadConfig);
+    BasePagingLoadResult<List<Task>> getTasksForGrid(BasePagingLoadConfig loadConfig);
 
     public static class App {
         private static final TaskServiceAsync ourInstance = (TaskServiceAsync) GWT.create(TaskService.class);

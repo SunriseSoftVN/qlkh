@@ -19,17 +19,12 @@
 
 package com.qlvt.client.client.module.main.view;
 
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.qlvt.client.client.constant.DomIdConstant;
-import com.qlvt.client.client.module.main.view.i18n.LoginConstant;
-import com.qlvt.client.client.widget.MyCenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.FramedPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
-import com.sencha.gxt.widget.core.client.form.PasswordField;
-import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -42,67 +37,53 @@ import com.smvp4g.mvp.client.widget.TextField;
  * @since 12/28/11, 9:51 AM
  */
 @ViewSecurity(showOnlyGuest = true)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = LoginConstant.class)
-public class LoginView extends AbstractView<LoginConstant> {
+@View(parentDomId = DomIdConstant.CONTENT_PANEL)
+public class LoginView extends AbstractView {
 
-    private MyCenterLayoutContainer centerLayoutContainer = new MyCenterLayoutContainer();
-    private VerticalLayoutContainer loginPanel = new VerticalLayoutContainer();
+    private ContentPanel contentPanel = new ContentPanel(new CenterLayout());
+    private FormPanel loginPanel = new FormPanel();
 
-    private TextField txtUserName = new TextField();
+    private TextField<String> txtUserName = new TextField<String>();
+    private TextField<String> txtPassWord = new TextField<String>();
 
-    private PasswordField txtPassWord = new PasswordField();
-
-    @I18nField
-    FramedPanel contentPanel = new FramedPanel();
-
-    @I18nField
-    FieldLabel lblUserName = new FieldLabel(txtUserName);
-
-    @I18nField
-    FieldLabel lblPassword = new FieldLabel(txtPassWord);
-
-    @I18nField
-    TextButton btnOk = new TextButton();
-
-    @I18nField
-    TextButton btnCancel = new TextButton();
+    private Button btnOk = new Button("Ok");
+    private Button btnCancel = new Button("Cancel");
     
     @Override
     protected void initializeView() {
-        loginPanel.add(lblUserName, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
-        loginPanel.add(lblPassword, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
+        txtUserName.setFieldLabel("Username");
+        txtPassWord.setFieldLabel("Password");
+        txtPassWord.setPassword(true);
+
+        loginPanel.setFrame(true);
+        loginPanel.setHeading("User Login");
+
+        loginPanel.add(txtUserName);
+        loginPanel.add(txtPassWord);
+
+        loginPanel.addButton(btnOk);
+        loginPanel.addButton(btnCancel);
+        loginPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
+
         contentPanel.add(loginPanel);
-        btnOk.setWidth(50);
-        contentPanel.addButton(btnOk);
-        btnCancel.setWidth(50);
-        contentPanel.addButton(btnCancel);
-        contentPanel.setButtonAlign(BoxLayoutContainer.BoxLayoutPack.CENTER);
-        contentPanel.setBodyStyle("padding: 6px");
-        contentPanel.setWidth(250);
-
-        centerLayoutContainer.add(contentPanel);
-        centerLayoutContainer.setPixelSize(Window.getClientWidth(), Window.getClientHeight() - 80);
-        centerLayoutContainer.setFlexibleHeight(-80);
-        centerLayoutContainer.setBorders(true);
-
-        setWidget(centerLayoutContainer);
+        contentPanel.setHeight(500);
+        contentPanel.setHeaderVisible(false);
+        setWidget(contentPanel);
     }
 
-
-
-    public TextButton getBtnOk() {
+    public Button getBtnOk() {
         return btnOk;
     }
 
-    public TextButton getBtnCancel() {
+    public Button getBtnCancel() {
         return btnCancel;
     }
 
-    public TextField getTxtUserName() {
+    public TextField<String> getTxtUserName() {
         return txtUserName;
     }
 
-    public PasswordField getTxtPassWord() {
+    public TextField<String> getTxtPassWord() {
         return txtPassWord;
     }
 }

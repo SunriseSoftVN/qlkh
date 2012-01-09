@@ -56,6 +56,19 @@
             <version>${gxtVersion}</version>
         </dependency>
 
+        <!--SmartGWT-->
+        <dependency>
+            <groupId>com.smartgwt</groupId>
+            <artifactId>smartgwt</artifactId>
+            <version>${smartgwtVerion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.smartgwt</groupId>
+            <artifactId>smartgwt-skins</artifactId>
+            <version>${smartgwtVerion}</version>
+        </dependency>
+
         <!--Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>

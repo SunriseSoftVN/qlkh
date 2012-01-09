@@ -19,9 +19,11 @@
 
 package com.qlvt.client.client.module.main.presenter;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.main.place.LoginPlace;
@@ -32,7 +34,6 @@ import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.UrlUtils;
 import com.qlvt.core.client.exception.UserAuthenticationException;
 import com.qlvt.core.client.model.User;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
@@ -54,28 +55,27 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
         view.getTxtUserName().focus();
     }
 
-
     @Override
     protected void doBind() {
-        view.getBtnOk().addSelectHandler(new SelectEvent.SelectHandler() {
+        view.getBtnOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent buttonEvent) {
                 checkLogin(view.getTxtUserName().getValue(),
                         LoginUtils.md5hash(view.getTxtPassWord().getValue()));
             }
         });
-        view.getTxtPassWord().addKeyPressHandler(new KeyPressHandler() {
+        view.getTxtPassWord().addKeyListener(new KeyListener() {
             @Override
-            public void onKeyPress(KeyPressEvent event) {
-                if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-                    checkLogin(view.getTxtUserName().getText(),
-                            LoginUtils.md5hash(view.getTxtPassWord().getText()));
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    checkLogin(view.getTxtUserName().getValue(),
+                            LoginUtils.md5hash(view.getTxtPassWord().getValue()));
                 }
             }
         });
-        view.getBtnCancel().addSelectHandler(new SelectEvent.SelectHandler() {
+        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void componentSelected(ButtonEvent ce) {
                 view.getTxtPassWord().clear();
                 view.getTxtUserName().clear();
             }

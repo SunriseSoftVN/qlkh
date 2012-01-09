@@ -19,10 +19,10 @@
 
 package com.qlvt.client.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.core.client.model.Branch;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public interface BranchServiceAsync extends RemoteServiceAsync<BranchServiceAsyn
 
     void getAllBranch(AsyncCallback<List<Branch>> async);
 
-    void getBranchsForGrid(PagingLoadConfig config, AsyncCallback<PagingLoadResult<List<Branch>>> async);
+    void getBranchsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<List<Branch>>> async);
 
     void getBranchByStationId(long stationId, AsyncCallback<List<Branch>> async);
 }

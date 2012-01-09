@@ -19,7 +19,6 @@
 
 package com.qlvt.client.client.module.main;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.smvp4g.mvp.client.core.module.AbstractModule;
 import com.smvp4g.mvp.client.core.module.annotation.Module;
@@ -34,8 +33,6 @@ import com.smvp4g.mvp.client.core.module.annotation.Module;
 public class MainModule extends AbstractModule {
     @Override
     public void configure() {
-        //Disable Window scroll's.
-        Window.enableScrolling(false);
     }
 
     @Override

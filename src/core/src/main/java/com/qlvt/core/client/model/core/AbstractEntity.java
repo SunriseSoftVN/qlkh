@@ -19,6 +19,8 @@
 
 package com.qlvt.core.client.model.core;
 
+import com.extjs.gxt.ui.client.data.BeanModelTag;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,7 +30,7 @@ import java.util.Date;
  * @author dungvn3000
  * @since 2/26/11, 6:33 PM
  */
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable, BeanModelTag {
 
     private Long id;
     private Date createdDate;

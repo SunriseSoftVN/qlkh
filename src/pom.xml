@@ -16,8 +16,9 @@
 
     <properties>
         <smvp4gVerion>0.1</smvp4gVerion>
-        <gwtVersion>2.4.0</gwtVersion>
-        <gxtVersion>3.0.0-beta2</gxtVersion>
+        <gwtVersion>2.3.0</gwtVersion>
+        <gxtVersion>2.2.5</gxtVersion>
+        <smartgwtVerion>3.0</smartgwtVerion>
         <guiceVersion>3.0</guiceVersion>
         <seleniumVersion>2.2.0</seleniumVersion>
         <slf4jVersion>1.6.1</slf4jVersion>

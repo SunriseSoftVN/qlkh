@@ -19,15 +19,14 @@
 
 package com.qlvt.server.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.BranchService;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.service.core.AbstractService;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.PagingLoadResult;
-import com.sencha.gxt.data.shared.loader.PagingLoadResultBean;
 
 import java.util.List;
 
@@ -64,9 +63,9 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
     }
 
     @Override
-    public PagingLoadResult<List<Branch>> getBranchsForGrid(PagingLoadConfig config) {
+    public BasePagingLoadResult<List<Branch>> getBranchsForGrid(BasePagingLoadConfig config) {
         List<Branch> branches = branchDao.getByBeanConfig(Branch.class, config);
-        return new PagingLoadResultBean(branches, config.getOffset(), branchDao.count(Branch.class));
+        return new BasePagingLoadResult(branches, config.getOffset(), branchDao.count(Branch.class));
     }
 
     @Override

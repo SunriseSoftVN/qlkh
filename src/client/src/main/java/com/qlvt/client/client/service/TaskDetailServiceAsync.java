@@ -19,22 +19,22 @@
 
 package com.qlvt.client.client.service;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.TaskDetail;
-import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
-import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
 import java.util.List;
 
 public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailServiceAsync> {
-    void getTaskDetailsForGrid(PagingLoadConfig loadConfig, long staionId, AsyncCallback<PagingLoadResult<TaskDetailDto>> async);
+    void getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long staionId, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> async);
     void deleteTaskDetail(long taskDetailId, AsyncCallback<Void> async);
     void deleteTaskDetails(List<Long> taskDetailIds, AsyncCallback<Void> async);
     void updateTaskDetail(TaskDetail taskDetail, AsyncCallback<Void> async);
     void updateTaskDetails(List<TaskDetail> taskDetails, AsyncCallback<Void> async);
     void updateTaskDetailDtos(List<TaskDetailDto> taskDetails, AsyncCallback<Void> async);
 
-    void getTaskAnnualDetailsForGrid(PagingLoadConfig loadConfig, long stationId, AsyncCallback<PagingLoadResult<TaskDetailDto>> async);
+    void getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> async);
 }

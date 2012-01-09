@@ -40,7 +40,6 @@ public interface ApplicationConfiguration extends ConstantsWithLookup {
     public static final String DEVELOPMENT_MODE = "DEV";
 
     String applicationName();
-    String applicationVersion();
     String applicationMode();
     String applicationTitle();
     String developmentModeClientBaseUrl();

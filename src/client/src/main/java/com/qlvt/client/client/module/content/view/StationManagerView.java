@@ -19,12 +19,32 @@
 
 package com.qlvt.client.client.module.content.view;
 
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.IconHelper;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.StationManagerConstant;
 import com.qlvt.client.client.module.content.view.security.StationManagerSecurity;
+import com.qlvt.client.client.widget.MyFitLayout;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class StationManagerView.
@@ -43,105 +63,105 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     public static final int STATION_NAME_WIDTH = 300;
     public static final int STATION_LIST_SIZE = 50;
 
-//    @I18nField
-//    Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
-//
-//    @I18nField
-//    Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
-//
-//    @I18nField
-//    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
-//
-//    @I18nField
-//    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
-//
-//    private ContentPanel contentPanel = new ContentPanel();
-//    private PagingToolBar pagingToolBar;
-//    private EditorGrid<BeanModel> stationsGird;
-//
-//    /**
-//     * Create Grid on View.
-//     */
-//    public void createGrid(ListStore<BeanModel> listStore) {
-//        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-//        ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-//        stationsGird = new EditorGrid<BeanModel>(listStore, cm);
-//        stationsGird.setBorders(true);
-//        stationsGird.setLoadMask(true);
-//        stationsGird.setStripeRows(true);
-//        stationsGird.setSelectionModel(selectionModel);
-//        stationsGird.addPlugin(selectionModel);
-//        stationsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-//        stationsGird.getStore().getLoader().setSortField(ID_COLUMN);
-//
-//        pagingToolBar = new PagingToolBar(STATION_LIST_SIZE);
-//        ToolBar toolBar = new ToolBar();
-//        toolBar.add(btnAdd);
-//        toolBar.add(new SeparatorToolItem());
-//        toolBar.add(btnDelete);
-//        toolBar.add(new SeparatorToolItem());
-//        toolBar.add(btnSave);
-//        toolBar.add(new SeparatorToolItem());
-//        toolBar.add(btnCancel);
-//
-//        contentPanel.setLayout(new MyFitLayout());
-//        contentPanel.add(stationsGird);
-//        contentPanel.setTopComponent(toolBar);
-//        contentPanel.setBottomComponent(pagingToolBar);
-//        contentPanel.setHeaderVisible(false);
-//        contentPanel.setHeight(500);
-//        Window.addResizeHandler(new ResizeHandler() {
-//            @Override
-//            public void onResize(ResizeEvent event) {
-//                contentPanel.layout(true);
-//            }
-//        });
-//        setWidget(contentPanel);
-//    }
-//
-//    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
-//        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-//        columnConfigs.add(selectionModel.getColumn());
-//        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
-//        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
-//            @Override
-//            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
-//                if (model.get(STT_COLUMN) == null) {
-//                    model.set(STT_COLUMN, rowIndex + 1);
-//                }
-//                return new Text(String.valueOf(model.get(STT_COLUMN)));
-//            }
-//        });
-//        columnConfigs.add(sttColumnConfig);
-//        ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
-//                STATION_NAME_WIDTH);
-//        stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
-//        columnConfigs.add(stationNameColumnConfig);
-//        return columnConfigs;
-//    }
-//
-//    public Button getBtnCancel() {
-//        return btnCancel;
-//    }
-//
-//    public Button getBtnAdd() {
-//        return btnAdd;
-//    }
-//
-//    public Button getBtnDelete() {
-//        return btnDelete;
-//    }
-//
-//    public Button getBtnSave() {
-//        return btnSave;
-//    }
-//
-//    public PagingToolBar getPagingToolBar() {
-//        return pagingToolBar;
-//    }
-//
-//    public EditorGrid<BeanModel> getStationsGird() {
-//        return stationsGird;
-//    }
+    @I18nField
+    Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
+
+    @I18nField
+    Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
+
+    @I18nField
+    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+
+    @I18nField
+    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+
+    private ContentPanel contentPanel = new ContentPanel();
+    private PagingToolBar pagingToolBar;
+    private EditorGrid<BeanModel> stationsGird;
+
+    /**
+     * Create Grid on View.
+     */
+    public void createGrid(ListStore<BeanModel> listStore) {
+        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
+        ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
+        stationsGird = new EditorGrid<BeanModel>(listStore, cm);
+        stationsGird.setBorders(true);
+        stationsGird.setLoadMask(true);
+        stationsGird.setStripeRows(true);
+        stationsGird.setSelectionModel(selectionModel);
+        stationsGird.addPlugin(selectionModel);
+        stationsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        stationsGird.getStore().getLoader().setSortField(ID_COLUMN);
+
+        pagingToolBar = new PagingToolBar(STATION_LIST_SIZE);
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(btnAdd);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnDelete);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnSave);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnCancel);
+
+        contentPanel.setLayout(new MyFitLayout());
+        contentPanel.add(stationsGird);
+        contentPanel.setTopComponent(toolBar);
+        contentPanel.setBottomComponent(pagingToolBar);
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(500);
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                contentPanel.layout(true);
+            }
+        });
+        setWidget(contentPanel);
+    }
+
+    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+        columnConfigs.add(selectionModel.getColumn());
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
+        ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
+                STATION_NAME_WIDTH);
+        stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
+        columnConfigs.add(stationNameColumnConfig);
+        return columnConfigs;
+    }
+
+    public Button getBtnCancel() {
+        return btnCancel;
+    }
+
+    public Button getBtnAdd() {
+        return btnAdd;
+    }
+
+    public Button getBtnDelete() {
+        return btnDelete;
+    }
+
+    public Button getBtnSave() {
+        return btnSave;
+    }
+
+    public PagingToolBar getPagingToolBar() {
+        return pagingToolBar;
+    }
+
+    public EditorGrid<BeanModel> getStationsGird() {
+        return stationsGird;
+    }
 }
