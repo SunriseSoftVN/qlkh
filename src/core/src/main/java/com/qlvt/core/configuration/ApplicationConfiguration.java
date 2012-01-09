@@ -42,6 +42,7 @@ public interface ApplicationConfiguration extends ConstantsWithLookup {
     String applicationName();
     String applicationMode();
     String applicationTitle();
+    String applicationVersion();
     String developmentModeClientBaseUrl();
     String developmentModeClientProxyPath();
     String developmentModeServerBaseUrl();
