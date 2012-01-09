@@ -254,6 +254,8 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         if (!cbbUserRole.isRendered()) {
             cbbUserRole.add(Arrays.asList(UserRoleEnum.values()));
             cbbUserRole.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbUserRole.setSimpleValue(UserRoleEnum.USER);
+            cbbUserRole.setEnabled(false);
         }
         cbbUserRole.setSimpleValue(UserRoleEnum.USER);
         newUserPanel.add(cbbUserRole);

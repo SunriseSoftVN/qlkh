@@ -67,16 +67,26 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     private UserServiceAsync userService = UserService.App.getInstance();
     private StationServiceAsync stationService = StationService.App.getInstance();
 
+    private ListStore<BeanModel> stationListStore;
+
     private Window newUserWindow;
 
     @Override
     public void onActivate() {
         view.show();
+        if (stationListStore != null) {
+            //reload stations list.
+            stationListStore = createStationListStore();
+            view.getCbbUserStation().setStore(stationListStore);
+            ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
+        }
         view.getPagingToolBar().refresh();
     }
 
     @Override
     protected void doBind() {
+        stationListStore = createStationListStore();
+        view.getCbbUserStation().setStore(stationListStore);
         view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
         view.setStationCellEditor(createStationCellEditor());
         view.createGrid(createUserListStore());
@@ -111,13 +121,15 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                newUserWindow = view.createNewUserWindow();
-                newUserWindow.addWindowListener(new WindowListener() {
-                    @Override
-                    public void windowHide(WindowEvent we) {
-                        view.getNewUserPanel().clear();
-                    }
-                });
+                if (newUserWindow == null) {
+                    newUserWindow = view.createNewUserWindow();
+                    newUserWindow.addWindowListener(new WindowListener() {
+                        @Override
+                        public void windowHide(WindowEvent we) {
+                            view.getNewUserPanel().clear();
+                        }
+                    });
+                }
                 newUserWindow.show();
             }
         });
@@ -157,7 +169,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 newUserWindow.hide();
             }
         });
-        view.getCbbUserStation().setStore(createStationListStore());
     }
 
     private ListStore<BeanModel> createUserListStore() {
@@ -300,24 +311,14 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     }
 
     private CellEditor createStationCellEditor() {
-        final ListStore<BeanModel> store = new ListStore<BeanModel>();
-        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
-        LoadingUtils.showLoading();
-        stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
-            @Override
-            public void onSuccess(List<Station> result) {
-                super.onSuccess(result);
-                store.add(factory.createModel(result));
-            }
-        });
         final ComboBox<BeanModel> ccbStation = new ComboBox<BeanModel>();
-        ccbStation.setStore(store);
+        ccbStation.setStore(stationListStore);
         ccbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
         ccbStation.setForceSelection(true);
         ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
         return new CellEditor(ccbStation);
     }
-    
+
     private ListStore<BeanModel> createStationListStore() {
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
         final ListStore<BeanModel> store = new ListStore<BeanModel>();
@@ -333,4 +334,5 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         });
         return store;
     }
+
 }

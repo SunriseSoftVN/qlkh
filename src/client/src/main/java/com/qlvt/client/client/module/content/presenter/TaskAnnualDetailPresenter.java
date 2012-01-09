@@ -68,10 +68,17 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private Station currentStation;
     private List<String> branchNames = new ArrayList<String>();
 
+    private ListStore<TaskDto> taskDtoListStore;
+
     @Override
     public void onActivate() {
         view.show();
         if (currentStation != null) {
+            if (taskDtoListStore != null) {
+                //Reload task dto list.
+                taskDtoListStore = createTaskDtoListStore();
+                ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
+            }
             view.getPagingToolBar().refresh();
         }
     }
@@ -79,6 +86,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     @Override
     protected void doBind() {
         LoadingUtils.showLoading();
+        taskDtoListStore = createTaskDtoListStore();
         stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
             @Override
             public void onSuccess(Station result) {
@@ -176,22 +184,26 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     }
 
     private CellEditor createTaskCodeCellEditor() {
+        ComboBox<TaskDto> ccbTask = new ComboBox<TaskDto>();
+        ccbTask.setStore(taskDtoListStore);
+        ccbTask.setLazyRender(false);
+        ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
+        ccbTask.setForceSelection(true);
+        ccbTask.setDisplayField(TaskManagerView.TASK_CODE_COLUMN);
+        return new CellEditor(ccbTask);
+    }
+
+    private ListStore<TaskDto> createTaskDtoListStore() {
         final ListStore<TaskDto> taskDtos = new ListStore<TaskDto>();
-        final ComboBox<TaskDto> ccbTask = new ComboBox<TaskDto>();
         LoadingUtils.showLoading();
         taskService.getAllTaskDtos(new AbstractAsyncCallback<List<TaskDto>>() {
             @Override
             public void onSuccess(List<TaskDto> result) {
                 super.onSuccess(result);
                 taskDtos.add(result);
-                ccbTask.setStore(taskDtos);
             }
         });
-        ccbTask.setLazyRender(false);
-        ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
-        ccbTask.setForceSelection(true);
-        ccbTask.setDisplayField(TaskManagerView.TASK_CODE_COLUMN);
-        return new CellEditor(ccbTask);
+        return taskDtos;
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {

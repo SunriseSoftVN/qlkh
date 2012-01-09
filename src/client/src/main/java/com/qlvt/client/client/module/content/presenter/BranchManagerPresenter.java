@@ -62,14 +62,22 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     private BranchServiceAsync branchService = BranchService.App.getInstance();
     private StationServiceAsync stationService = StationService.App.getInstance();
 
+    private ListStore<BeanModel> stationListStore;
+
     @Override
     public void onActivate() {
         view.show();
+        if (stationListStore != null) {
+            //reload stations list.
+            stationListStore = createStationListStore();
+            ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
+        }
         view.getPagingToolBar().refresh();
     }
 
     @Override
     protected void doBind() {
+        stationListStore = createStationListStore();
         view.setStationCellEditor(createStationCellEditor());
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getBranchsGird().getStore().getLoader());
@@ -198,21 +206,27 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     }
 
     private CellEditor createStationCellEditor() {
-        final ListStore<BeanModel> store = new ListStore<BeanModel>();
+        ComboBox<BeanModel> ccbStation = new ComboBox<BeanModel>();
+        ccbStation.setStore(stationListStore);
+        ccbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+        ccbStation.setForceSelection(true);
+        ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
+        return new CellEditor(ccbStation);
+    }
+
+    private ListStore<BeanModel> createStationListStore() {
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+        final ListStore<BeanModel> store = new ListStore<BeanModel>();
         LoadingUtils.showLoading();
         stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
             @Override
             public void onSuccess(List<Station> result) {
                 super.onSuccess(result);
-                store.add(factory.createModel(result));
+                for (Station station : result) {
+                    store.add(factory.createModel(station));
+                }
             }
         });
-        final ComboBox<BeanModel> ccbStation = new ComboBox<BeanModel>();
-        ccbStation.setStore(store);
-        ccbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
-        ccbStation.setForceSelection(true);
-        ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
-        return new CellEditor(ccbStation);
+        return store;
     }
 }
