@@ -29,8 +29,8 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Label;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.place.*;
 import com.qlvt.client.client.module.main.view.i18n.MainMenuConstant;
@@ -91,7 +91,7 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
 
     @FieldSecurity
     @I18nField
-    Label lblWelcome = new Label();
+    HTML lblWelcome = new HTML();
 
     private LayoutContainer mainPanel = new LayoutContainer();
 
@@ -134,7 +134,7 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         return ancLogout;
     }
 
-    public Label getLblWelcome() {
+    public HTML getLblWelcome() {
         return lblWelcome;
     }
 }

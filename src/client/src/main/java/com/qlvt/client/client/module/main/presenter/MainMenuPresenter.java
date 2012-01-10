@@ -40,8 +40,10 @@ public class MainMenuPresenter extends AbstractPresenter<MainMenuView> {
     public void onActivate() {
         view.show();
         if (LoginUtils.getLogin()) {
-            view.getLblWelcome().setText(view.getLblWelcome().getText() + " "
-                    + LoginUtils.getUserName());
+            view.getLblWelcome().setHTML(view.getLblWelcome().getText() +
+                    " <b>" +
+                        LoginUtils.getUserName() +
+                    "</b>");
             view.getLayout().layout();
         }
     }
