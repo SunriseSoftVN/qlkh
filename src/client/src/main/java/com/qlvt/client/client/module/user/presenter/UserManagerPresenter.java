@@ -43,6 +43,7 @@ import com.qlvt.client.client.service.UserService;
 import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.constant.UserRoleEnum;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
@@ -127,6 +128,8 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         @Override
                         public void windowHide(WindowEvent we) {
                             view.getNewUserPanel().clear();
+                            view.getCbbUserRole().setSimpleValue(UserRoleEnum.USER);
+                            view.getUsersGrid().focus();
                         }
                     });
                 }

@@ -21,6 +21,9 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -93,6 +96,19 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         stationsGird.addPlugin(selectionModel);
         stationsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         stationsGird.getStore().getLoader().setSortField(ID_COLUMN);
+        stationsGird.addListener(Events.OnKeyDown, new KeyListener() {
+            @Override
+            public void handleEvent(ComponentEvent e) {
+                if (e.getKeyCode() == 112) {
+                    btnAdd.fireEvent(Events.Select);
+                    stationsGird.startEditing(stationsGird.getStore().getCount() - 1, 2);
+                } else if (e.getKeyCode() == 113) {
+                    btnSave.fireEvent(Events.Select);
+                } else if (e.getKeyCode() == 115) {
+                    btnCancel.fireEvent(Events.Select);
+                }
+            }
+        });
 
         pagingToolBar = new PagingToolBar(STATION_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
