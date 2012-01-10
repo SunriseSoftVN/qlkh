@@ -62,4 +62,14 @@ public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail>
         }
         closeSession();
     }
+
+    @Override
+    public List<SubTaskAnnualDetail> findBrandId(long brandId) {
+        openSession();
+        Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
+                add(Restrictions.eq("branch.id", brandId));
+        List<SubTaskAnnualDetail> subTaskDetails = criteria.list();
+        closeSession();
+        return subTaskDetails;
+    }
 }

@@ -86,11 +86,9 @@ public class StationServiceImpl extends AbstractService implements StationServic
     }
 
     @Override
-    public void deleteStationByIds(List<Long> stationIds) {
-        if (CollectionUtils.isEmpty(userDao.findByStationIds(stationIds))) {
-            stationDao.deleteByIds(Station.class, stationIds);
-        } else {
-            throw new DeleteException();
+    public void deleteStationByIds(List<Long> stationIds) throws DeleteException {
+        for (Long stationId : stationIds) {
+            deleteStationById(stationId);
         }
     }
 

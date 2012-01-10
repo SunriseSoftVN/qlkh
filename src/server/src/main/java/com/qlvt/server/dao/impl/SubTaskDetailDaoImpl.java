@@ -39,7 +39,7 @@ import java.util.List;
 public class SubTaskDetailDaoImpl extends AbstractDao<SubTaskDetail> implements SubTaskDetailDao {
 
     @Override
-    public SubTaskDetail getSubTaskByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
+    public SubTaskDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
         openSession();
         Criteria criteria = session.createCriteria(SubTaskDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
@@ -61,5 +61,15 @@ public class SubTaskDetailDaoImpl extends AbstractDao<SubTaskDetail> implements 
             session.delete(subTaskDetail);
         }
         closeSession();
+    }
+
+    @Override
+    public List<SubTaskDetail> findBrandId(long brandId) {
+        openSession();
+        Criteria criteria = session.createCriteria(SubTaskDetail.class).
+                add(Restrictions.eq("branch.id", brandId));
+        List<SubTaskDetail> subTaskDetails = criteria.list();
+        closeSession();
+        return subTaskDetails;
     }
 }

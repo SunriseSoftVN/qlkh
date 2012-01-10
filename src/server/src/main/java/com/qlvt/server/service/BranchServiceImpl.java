@@ -24,9 +24,13 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.BranchService;
+import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.server.dao.BranchDao;
+import com.qlvt.server.dao.SubTaskAnnualDetailDao;
+import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
@@ -42,14 +46,27 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
     @Inject
     private BranchDao branchDao;
 
+    @Inject
+    private SubTaskDetailDao subTaskDetailDao;
+
+    @Inject
+    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+
     @Override
-    public void deleteBranchById(long branchId) {
-        branchDao.deleteById(Branch.class, branchId);
+    public void deleteBranchById(long branchId) throws DeleteException {
+        if(CollectionUtils.isEmpty(subTaskDetailDao.findBrandId(branchId))
+                && CollectionUtils.isEmpty(subTaskAnnualDetailDao.findBrandId(branchId))) {
+            branchDao.deleteById(Branch.class, branchId);
+        } else {
+            throw new DeleteException();
+        }
     }
 
     @Override
-    public void deleteBranchByIds(List<Long> branchIds) {
-        branchDao.deleteByIds(Branch.class, branchIds);
+    public void deleteBranchByIds(List<Long> branchIds) throws DeleteException {
+        for (Long brandId : branchIds) {
+            deleteBranchById(brandId);
+        }
     }
 
     @Override

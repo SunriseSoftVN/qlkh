@@ -41,7 +41,7 @@ public interface StationService extends RemoteService<StationService> {
 
     Station getStationAndBranchByUserName(String userName);
     void deleteStationById(long stationId) throws DeleteException;
-    void deleteStationByIds(List<Long> stationIds);
+    void deleteStationByIds(List<Long> stationIds) throws DeleteException;
     void updateStations(List<Station> stations);
     List<Station> getAllStation();
     BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config);

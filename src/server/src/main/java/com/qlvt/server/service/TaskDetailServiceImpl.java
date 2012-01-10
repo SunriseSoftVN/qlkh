@@ -76,7 +76,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                     getInstance().map(taskDetail, TaskDetailDto.class);
             for (Branch branch : branches) {
                 SubTaskDetail subTaskDetail = subTaskDetailDao.
-                        getSubTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+                        findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
                 if (subTaskDetail == null) {
                     subTaskDetail = new SubTaskDetail();
                     subTaskDetail.setTaskDetail(taskDetail);

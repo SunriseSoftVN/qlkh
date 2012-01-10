@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Branch;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
@@ -38,8 +39,8 @@ import java.util.List;
 @RemoteServiceRelativePath("Branch")
 public interface BranchService extends RemoteService<BranchService> {
     
-    void deleteBranchById(long branchId);
-    void deleteBranchByIds(List<Long> branchIds);
+    void deleteBranchById(long branchId) throws DeleteException;
+    void deleteBranchByIds(List<Long> branchIds) throws DeleteException;
     void updateBranchs(List<Branch> branchs);
     List<Branch> getBranchByStationId(long stationId);
     List<Branch> getAllBranch();

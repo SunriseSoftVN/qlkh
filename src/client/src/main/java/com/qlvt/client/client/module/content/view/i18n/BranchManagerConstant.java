@@ -38,5 +38,6 @@ public interface BranchManagerConstant extends Constants {
     String deleteBranchMessageSuccess();
     String deleteAllBranchMessage();
     String deleteBranchMessage();
+    String deleteErrorMessage();
     String saveMessageSuccess();
 }
