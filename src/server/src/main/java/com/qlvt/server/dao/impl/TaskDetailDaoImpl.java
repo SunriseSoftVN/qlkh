@@ -23,6 +23,10 @@ import com.google.inject.Singleton;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.List;
 
 /**
  * The Class TaskDetailDaoImpl.
@@ -32,4 +36,13 @@ import com.qlvt.server.dao.core.AbstractDao;
  */
 @Singleton
 public class TaskDetailDaoImpl extends AbstractDao<TaskDetail> implements TaskDetailDao {
+    @Override
+    public List<TaskDetail> findByStationId(long stationId) {
+        openSession();
+        Criteria criteria = session.createCriteria(TaskDetail.class).
+                add(Restrictions.eq("station.id", stationId));
+        List<TaskDetail> taskDetails = criteria.list();
+        closeSession();
+        return taskDetails;
+    }
 }

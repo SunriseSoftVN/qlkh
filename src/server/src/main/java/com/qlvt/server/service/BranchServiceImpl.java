@@ -70,6 +70,6 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
 
     @Override
     public List<Branch> getBranchByStationId(long stationId) {
-        return branchDao.getBranchsByStationId(stationId);
+        return branchDao.findByStationId(stationId);
     }
 }

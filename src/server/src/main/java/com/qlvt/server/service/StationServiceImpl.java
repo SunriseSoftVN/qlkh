@@ -30,6 +30,7 @@ import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.StationDao;
+import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
 import org.apache.commons.collections.CollectionUtils;
@@ -54,6 +55,9 @@ public class StationServiceImpl extends AbstractService implements StationServic
     @Inject
     private BranchDao branchDao;
 
+    @Inject
+    private TaskDetailDao taskDetailDao;
+
     @Override
     public List<Station> getAllStation() {
         return stationDao.getAll(Station.class);
@@ -71,8 +75,10 @@ public class StationServiceImpl extends AbstractService implements StationServic
     }
 
     @Override
-    public void deleteStationById(long stationId) {
-        if (CollectionUtils.isEmpty(userDao.findByStationId(stationId))) {
+    public void deleteStationById(long stationId) throws DeleteException {
+        if (CollectionUtils.isEmpty(userDao.findByStationId(stationId))
+                && CollectionUtils.isEmpty(branchDao.findByStationId(stationId))
+                && CollectionUtils.isEmpty(taskDetailDao.findByStationId(stationId))) {
             stationDao.deleteById(Station.class, stationId);
         } else {
             throw new DeleteException();
@@ -93,7 +99,7 @@ public class StationServiceImpl extends AbstractService implements StationServic
         User user = userDao.findByUserName(userName);
         if (user != null) {
             Station station = user.getStation();
-            List<Branch> branches = branchDao.getBranchsByStationId(station.getId());
+            List<Branch> branches = branchDao.findByStationId(station.getId());
             station.setBranches(branches);
             return station;
         }

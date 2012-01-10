@@ -67,7 +67,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
 
     @Override
     public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
-        List<Branch> branches = branchDao.getBranchsByStationId(stationId);
+        List<Branch> branches = branchDao.findByStationId(stationId);
         List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
@@ -97,7 +97,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
 
     @Override
     public BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
-        List<Branch> branches = branchDao.getBranchsByStationId(stationId);
+        List<Branch> branches = branchDao.findByStationId(stationId);
         List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
@@ -129,7 +129,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     public void deleteTaskDetail(long taskDetailId) {
         TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
         if (taskDetail != null) {
-            List<Branch> branches = branchDao.getBranchsByStationId(taskDetail.getStation().getId());
+            List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
 
             //Delete SubTask First
             List<Long> branchIds = new ArrayList<Long>(branches.size());
@@ -171,7 +171,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         for (TaskDetailDto taskDetailDto : taskDetailDtos) {
             TaskDetail taskDetail = DozerBeanMapperSingletonWrapper.getInstance().map(taskDetailDto, TaskDetail.class);
             taskDetails.add(taskDetail);
-            List<Branch> branches = branchDao.getBranchsByStationId(taskDetailDto.getStation().getId());
+            List<Branch> branches = branchDao.findByStationId(taskDetailDto.getStation().getId());
             for (Branch branch : branches) {
                 Object dto = taskDetailDto.get(branch.getName());
                 if (dto instanceof SubTaskDetailDto) {

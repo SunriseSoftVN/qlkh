@@ -37,7 +37,7 @@ import java.util.List;
 @Singleton
 public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
     @Override
-    public List<Branch> getBranchsByStationId(long stationId) {
+    public List<Branch> findByStationId(long stationId) {
         openSession();
         Criteria criteria = session.createCriteria(Branch.class)
                 .add(Restrictions.eq("station.id", stationId));

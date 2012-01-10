@@ -31,5 +31,5 @@ import java.util.List;
  * @since 1/2/12, 12:53 PM
  */
 public interface BranchDao extends Dao<Branch> {
-    List<Branch> getBranchsByStationId(long stationId);
+    List<Branch> findByStationId(long stationId);
 }

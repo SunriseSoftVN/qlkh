@@ -34,6 +34,7 @@ import com.qlvt.client.client.service.StationService;
 import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -159,6 +160,16 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
         assert stationIds != null;
         String deleteMessage;
         final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof DeleteException) {
+                    DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
+                    LoadingUtils.hideLoading();
+                } else {
+                    super.onFailure(caught);
+                }
+            }
+
             @Override
             public void onSuccess(Void result) {
                 super.onSuccess(result);

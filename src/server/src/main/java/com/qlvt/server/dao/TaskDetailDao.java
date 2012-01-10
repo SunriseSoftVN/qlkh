@@ -22,6 +22,8 @@ package com.qlvt.server.dao;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.core.Dao;
 
+import java.util.List;
+
 /**
  * The Class TaskDetailDao.
  *
@@ -29,4 +31,5 @@ import com.qlvt.server.dao.core.Dao;
  * @since 1/1/12, 3:49 PM
  */
 public interface TaskDetailDao extends Dao<TaskDetail> {
+    List<TaskDetail> findByStationId(long stationId);
 }

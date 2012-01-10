@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
@@ -39,7 +40,7 @@ import java.util.List;
 public interface StationService extends RemoteService<StationService> {
 
     Station getStationAndBranchByUserName(String userName);
-    void deleteStationById(long stationId);
+    void deleteStationById(long stationId) throws DeleteException;
     void deleteStationByIds(List<Long> stationIds);
     void updateStations(List<Station> stations);
     List<Station> getAllStation();
