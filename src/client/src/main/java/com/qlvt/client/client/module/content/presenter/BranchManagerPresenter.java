@@ -181,6 +181,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
             public void onFailure(Throwable caught) {
                 if (caught instanceof DeleteException) {
                     DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
+                    LoadingUtils.hideLoading();
                 } else {
                     super.onFailure(caught);
                 }
