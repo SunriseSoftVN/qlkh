@@ -76,8 +76,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         if (currentStation != null) {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
-                taskDtoListStore = createTaskDtoListStore();
-                ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
+                taskDtoListStore.removeAll();
+                taskDtoListStore.add(createTaskDtoListStore().getModels());
             }
             view.getPagingToolBar().refresh();
         }

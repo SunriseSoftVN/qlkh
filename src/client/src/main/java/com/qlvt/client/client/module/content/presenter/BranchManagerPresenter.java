@@ -69,8 +69,8 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = createStationListStore();
-            ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
+            stationListStore.removeAll();
+            stationListStore.add(createUserListStore().getModels());
         }
         view.getPagingToolBar().refresh();
     }
