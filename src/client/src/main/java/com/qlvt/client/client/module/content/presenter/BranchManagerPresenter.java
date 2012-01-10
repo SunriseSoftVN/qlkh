@@ -70,8 +70,8 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore.removeAll();
-            stationListStore.add(createUserListStore().getModels());
+            stationListStore = createStationListStore();
+            ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
     }
