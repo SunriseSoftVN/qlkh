@@ -60,6 +60,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
     public void onActivate() {
         view.show();
         view.getPagingToolBar().refresh();
+        view.getStationsGird().focus();
     }
 
     @Override

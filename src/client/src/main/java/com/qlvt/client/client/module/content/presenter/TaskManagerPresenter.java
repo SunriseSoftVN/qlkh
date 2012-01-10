@@ -59,6 +59,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     public void onActivate() {
         view.show();
         view.getPagingToolBar().refresh();
+        view.getTaskGird().focus();
     }
 
     @Override

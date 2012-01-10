@@ -83,6 +83,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
+        view.getUsersGrid().focus();
     }
 
     @Override

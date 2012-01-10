@@ -74,6 +74,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
             ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
+        view.getBranchsGird().focus();
     }
 
     @Override

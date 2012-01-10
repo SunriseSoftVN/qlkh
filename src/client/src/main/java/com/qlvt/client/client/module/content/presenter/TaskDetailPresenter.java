@@ -81,6 +81,9 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             }
             view.getPagingToolBar().refresh();
         }
+        if (view.getTaskDetailGird() != null) {
+            view.getTaskDetailGird().focus();
+        }
     }
 
     @Override
@@ -99,6 +102,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 view.createGrid(createTaskListStore(), branchNames);
                 view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 view.getPagingToolBar().refresh();
+                view.getTaskDetailGird().focus();
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
