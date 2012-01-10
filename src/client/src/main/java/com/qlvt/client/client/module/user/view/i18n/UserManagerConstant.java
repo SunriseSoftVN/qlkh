@@ -52,4 +52,5 @@ public interface UserManagerConstant extends Constants {
     String btnNewUserCancel();
     String newUsetWindowTitle();
     String cbbUserStation();
+    String deleteAdminOrManagerMessage();
 }

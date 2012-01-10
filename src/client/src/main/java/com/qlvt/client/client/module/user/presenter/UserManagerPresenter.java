@@ -19,6 +19,7 @@
 
 package com.qlvt.client.client.module.user.presenter;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -202,11 +203,24 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             if (CollectionsUtils.isNotEmpty(models)) {
                 if (models.size() == 1) {
                     final User user = (User) models.get(0).getBean();
+                    //Check don't allow delete Admin & Manager Users.
+                    if (user.getUserRole().equals(UserRoleEnum.ADMIN.getRole())
+                            || user.getUserRole().equals(UserRoleEnum.MANAGER.getRole())) {
+                        DiaLogUtils.showMessage(view.getConstant().deleteAdminOrManagerMessage());
+                        return;
+                    }
                     showDeleteTagConform(user.getId(), user.getUserName());
                 } else {
                     List<Long> userIds = new ArrayList<Long>(models.size());
                     for (BeanModel model : models) {
                         final User user = (User) model.getBean();
+                        //Check don't allow delete Admin & Manager Users.
+                        if (user.getUserRole().equals(UserRoleEnum.ADMIN.getRole())
+                                || user.getUserRole().equals(UserRoleEnum.MANAGER.getRole())) {
+                            DiaLogUtils.showMessage(view.getConstant().deleteAdminOrManagerMessage());
+                            return;
+                        }
+                        Log.debug(user.getUserRole());
                         userIds.add(user.getId());
                     }
                     showDeleteTagConform(userIds, null);
