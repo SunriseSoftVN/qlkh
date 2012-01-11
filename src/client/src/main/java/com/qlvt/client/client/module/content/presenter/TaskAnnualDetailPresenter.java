@@ -32,7 +32,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskAnnualDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
-import com.qlvt.client.client.module.content.view.TaskManagerView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
@@ -197,7 +196,14 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         ccbTask.setLazyRender(false);
         ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
         ccbTask.setForceSelection(true);
-        ccbTask.setDisplayField(TaskManagerView.TASK_CODE_COLUMN);
+        ccbTask.getView().setModelProcessor(new ModelProcessor<TaskDto>() {
+            @Override
+            public TaskDto prepareData(TaskDto model) {
+                model.set("text", model.getCode() +
+                        " - " + model.getName());
+                return model;
+            }
+        });
         return new CellEditor(ccbTask);
     }
 
