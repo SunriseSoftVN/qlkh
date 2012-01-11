@@ -101,6 +101,10 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                 BeanModelFactory factory = BeanModelLookup.get().getFactory(Branch.class);
                 BeanModel model = factory.createModel(branch);
                 view.getBranchsGird().getStore().insert(model, view.getBranchsGird().getStore().getCount());
+                view.getBranchsGird().getView().ensureVisible(view.getBranchsGird()
+                        .getStore().getCount() - 1, 0, true);
+                view.getBranchsGird().startEditing(view.getBranchsGird().getStore()
+                        .getCount() - 1, 2);
             }
         });
         view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {

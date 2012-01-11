@@ -130,6 +130,10 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     }
                     view.getTaskDetailGird().getStore().insert(taskDetail,
                             view.getTaskDetailGird().getStore().getCount());
+                    view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
+                            .getStore().getCount() - 1, 0, true);
+                    view.getTaskDetailGird().startEditing(view.getTaskDetailGird().getStore()
+                            .getCount() - 1, 2);
                 } else {
                     DiaLogUtils.notify(view.getConstant().loadStationError());
                 }

@@ -39,6 +39,7 @@ import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskDetailSecurity;
+import com.qlvt.client.client.widget.MyCheckBoxSelectionModel;
 import com.qlvt.client.client.widget.MyFitLayout;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -101,7 +102,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
      * Create Grid on View.
      */
     public void createGrid(ListStore<TaskDetailDto> listStore, List<String> branchNames) {
-        CheckBoxSelectionModel<TaskDetailDto> selectionModel = new CheckBoxSelectionModel<TaskDetailDto>();
+        MyCheckBoxSelectionModel<TaskDetailDto> selectionModel = new MyCheckBoxSelectionModel<TaskDetailDto>();
         columnModel = new ColumnModel(createColumnConfig(selectionModel, branchNames));
         columnModel.addHeaderGroup(0, 0, new HeaderGroupConfig(
                 "<b>" + getConstant().taskHeaderGroup() + "</b>", 1, 5));
@@ -124,7 +125,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                    taskDetailGird.startEditing(taskDetailGird.getStore().getCount() - 1,2);
                 } else if (e.getKeyCode() == 113) {
                     btnSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {

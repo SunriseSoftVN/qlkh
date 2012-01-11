@@ -78,6 +78,10 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
                 BeanModel model = factory.createModel(station);
                 view.getStationsGird().getStore().insert(model, view.getStationsGird().getStore().getCount());
+                view.getStationsGird().getView().ensureVisible(view.getStationsGird()
+                        .getStore().getCount() - 1, 0, true);
+                view.getStationsGird().startEditing(view.getStationsGird().getStore()
+                        .getCount() - 1, 2);
             }
         });
         view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {

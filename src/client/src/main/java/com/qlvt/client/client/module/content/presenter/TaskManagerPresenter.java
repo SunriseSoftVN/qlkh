@@ -77,6 +77,10 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
                 BeanModel model = factory.createModel(task);
                 view.getTaskGird().getStore().insert(model, view.getTaskGird().getStore().getCount());
+                view.getTaskGird().getView().ensureVisible(view.getTaskGird()
+                        .getStore().getCount() - 1, 0, true);
+                view.getTaskGird().startEditing(view.getTaskGird().getStore()
+                        .getCount() - 1, 2);
             }
         });
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {

@@ -101,7 +101,6 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                    stationsGird.startEditing(stationsGird.getStore().getCount() - 1, 2);
                 } else if (e.getKeyCode() == 113) {
                     btnSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
