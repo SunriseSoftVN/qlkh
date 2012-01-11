@@ -158,26 +158,34 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         columnConfigs.add(sttColumnConfig);
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
-        taskCodeColumnConfig.setEditor(new CellEditor(new NumberField()) {
+        NumberField taskCodeNumberField = new NumberField() {
             @Override
-            public Object getValue() {
+            public Number getValue() {
                 return ((Double) super.getValue()).intValue();
             }
-        });
+        };
+        taskCodeNumberField.setSelectOnFocus(true);
+        taskCodeColumnConfig.setEditor(new CellEditor(taskCodeNumberField));
         columnConfigs.add(taskCodeColumnConfig);
         ColumnConfig stationNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
                 TASK_NAME_WIDTH);
-        stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
+        TextField<String> stationNameTextField = new TextField<String>();
+        stationNameTextField.setSelectOnFocus(true);
+        stationNameColumnConfig.setEditor(new CellEditor(stationNameTextField));
         columnConfigs.add(stationNameColumnConfig);
 
         ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
                 TASK_UNIT_WIDTH);
-        unitColumnConfig.setEditor(new CellEditor(new TextField<String>()));
+        TextField<String> unitTextField = new TextField<String>();
+        unitTextField.setSelectOnFocus(true);
+        unitColumnConfig.setEditor(new CellEditor(unitTextField));
         columnConfigs.add(unitColumnConfig);
 
         ColumnConfig defaultValueColumnConfig = new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
                 TASK_DEFAULT_VALUE_WIDTH);
-        defaultValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+        NumberField defaultValueNumberField = new NumberField();
+        defaultValueNumberField.setSelectOnFocus(true);
+        defaultValueColumnConfig.setEditor(new CellEditor(defaultValueNumberField));
         columnConfigs.add(defaultValueColumnConfig);
         return columnConfigs;
     }

@@ -204,6 +204,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 return model;
             }
         });
+        ccbTask.setSelectOnFocus(true);
         return new CellEditor(ccbTask);
     }
 

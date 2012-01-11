@@ -205,19 +205,25 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
             String year = "</br>" + String.valueOf((1900 + new Date().getYear() - 1));
             ColumnConfig lastYearValueColumnConfig = new ColumnConfig(branchName + LAST_YEAR_VALUE_COLUMN,
                     getConstant().lastYearValueColumnTitle() + year, LAST_YEAR_VALUE_WIDTH);
-            lastYearValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField lastYearValueNumberField = new NumberField();
+            lastYearValueNumberField.setSelectOnFocus(true);
+            lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
             lastYearValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(lastYearValueColumnConfig);
 
             ColumnConfig increaseValueColumnConfig = new ColumnConfig(branchName + INCREASE_VALUE_COLUMN,
                     getConstant().increaseValueColumnTitle(), INCREASE_VALUE_WIDTH);
-            increaseValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField increaseValueNumberField = new NumberField();
+            increaseValueNumberField.setSelectOnFocus(true);
+            increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
             increaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(increaseValueColumnConfig);
 
             ColumnConfig decreaseValueColumnConfig = new ColumnConfig(branchName + DECREASE_VALUE_COLUMN,
                     getConstant().decreaseValueColumnTitle(), DECREASE_VALUE_WIDTH);
-            decreaseValueColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField decreaseValueNumberField = new NumberField();
+            decreaseValueNumberField.setSelectOnFocus(true);
+            decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
             decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(decreaseValueColumnConfig);
 

@@ -201,6 +201,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 return model;
             }
         });
+        ccbTask.setSelectOnFocus(true);
         return new CellEditor(ccbTask);
     }
 

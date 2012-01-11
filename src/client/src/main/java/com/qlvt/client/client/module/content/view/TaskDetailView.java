@@ -199,25 +199,33 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         for (String branchName : branchNames) {
             ColumnConfig q1ColumnConfig = new ColumnConfig(branchName + Q1_UNIT_COLUMN,
                     getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
-            q1ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField q1NumberField = new NumberField();
+            q1NumberField.setSelectOnFocus(true);
+            q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
             q1ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q1ColumnConfig);
 
             ColumnConfig q2ColumnConfig = new ColumnConfig(branchName + Q2_UNIT_COLUMN,
                     getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
-            q2ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField q2NumberField = new NumberField();
+            q2NumberField.setSelectOnFocus(true);
+            q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
             q2ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q2ColumnConfig);
 
             ColumnConfig q3ColumnConfig = new ColumnConfig(branchName + Q3_UNIT_COLUMN,
                     getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
-            q3ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField q3NumberField = new NumberField();
+            q3NumberField.setSelectOnFocus(true);
+            q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
             q3ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q3ColumnConfig);
 
             ColumnConfig q4ColumnConfig = new ColumnConfig(branchName + Q4_UNIT_COLUMN,
                     getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
-            q4ColumnConfig.setEditor(new CellEditor(new NumberField()));
+            NumberField q4NumberField = new NumberField();
+            q4NumberField.setSelectOnFocus(true);
+            q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
             q4ColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
             columnConfigs.add(q4ColumnConfig);
         }
