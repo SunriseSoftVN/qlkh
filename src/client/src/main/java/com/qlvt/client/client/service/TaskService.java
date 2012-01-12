@@ -25,6 +25,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.dto.TaskDto;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
@@ -43,8 +44,8 @@ public interface TaskService extends RemoteService<TaskService> {
     List<TaskDto> getAllTaskDtos();
     void deleteTask(long taskId);
     void deleteTasks(List<Long> taskIds);
-    void updateTask(Task task);
-    void updateTasks(List<Task> tasks);
+    void updateTask(Task task) throws CodeExistException;
+    void updateTasks(List<Task> tasks) throws CodeExistException;
     BasePagingLoadResult<List<Task>> getTasksForGrid(BasePagingLoadConfig loadConfig);
 
     public static class App {

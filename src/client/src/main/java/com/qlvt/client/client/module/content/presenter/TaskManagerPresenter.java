@@ -34,6 +34,7 @@ import com.qlvt.client.client.service.TaskService;
 import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -99,6 +100,16 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 if (CollectionsUtils.isNotEmpty(tasks)) {
                     LoadingUtils.showLoading();
                     taskService.updateTasks(tasks, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof CodeExistException) {
+                                DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                                LoadingUtils.hideLoading();
+                            } else {
+                                super.onFailure(caught);
+                            }
+                        }
+
                         @Override
                         public void onSuccess(Void result) {
                             super.onSuccess(result);

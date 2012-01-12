@@ -17,29 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.i18n;
+package com.qlvt.core.client.exception;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import java.io.Serializable;
 
 /**
- * The Class TaskManagerConstant.
+ * The Class CodeExistException.
  *
  * @author Nguyen Duc Dung
- * @since 12/31/11, 2:49 PM
+ * @since 1/12/12, 12:48 PM
  */
-public interface TaskManagerConstant extends Constants {
-    String btnDelete();
-    String btnAdd();
-    String btnSave();
-    String btnCancel();
-    String sttColumnTitle();
-    String taskNameColumnTitle();
-    String taskCodeColumnTitle();
-    String taskUnitColumnTitle();
-    String taskDefaultValueColumnTitle();
-    String deleteTaskMessageSuccess();
-    String deleteAllTaskMessage();
-    String deleteTaskMessage();
-    String saveMessageSuccess();
-    String existCodeMessage();
+public class CodeExistException extends RuntimeException implements Serializable {
+    
+    public CodeExistException() {
+        
+    }
+    
+    public CodeExistException(String msg) {
+        super(msg);
+    }
+    
 }

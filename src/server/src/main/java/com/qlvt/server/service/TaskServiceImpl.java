@@ -25,10 +25,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskService;
 import com.qlvt.core.client.dto.TaskDto;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.service.core.AbstractService;
 import org.dozer.DozerBeanMapperSingletonWrapper;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +54,21 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
     }
 
     @Override
-    public void updateTask(Task task) {
-        taskDao.saveOrUpdate(task);
+    public void updateTask(Task task) throws CodeExistException {
+        try {
+            taskDao.saveOrUpdate(task);
+        } catch (ConstraintViolationException ex) {
+            throw new CodeExistException();
+        }
     }
 
     @Override
-    public void updateTasks(List<Task> tasks) {
-        taskDao.saveOrUpdate(tasks);
+    public void updateTasks(List<Task> tasks) throws CodeExistException {
+        try {
+            taskDao.saveOrUpdate(tasks);
+        } catch (ConstraintViolationException ex) {
+            throw new CodeExistException();
+        }
     }
 
     @Override
