@@ -2,13 +2,18 @@
     background: #1C3D7A;
 }
 
-#top_panel .active {
+#top_panel .active a {
     background: #EFD137;
 }
 
 #top_panel a, a:visited {
     text-decoration: none;
     color: #0000EE;
+}
+
+#top_panel .menulink {
+    border-right: #083772 1px solid;
+    padding-right: 6px;
 }
 
 #loading_container {
