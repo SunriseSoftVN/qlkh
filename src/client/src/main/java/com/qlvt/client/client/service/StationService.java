@@ -44,7 +44,7 @@ public interface StationService extends RemoteService<StationService> {
     void deleteStationByIds(List<Long> stationIds) throws DeleteException;
     void updateStations(List<Station> stations);
     List<Station> getAllStation();
-    BasePagingLoadResult<List<Station>> getStationsForGrid(BasePagingLoadConfig config);
+    BasePagingLoadResult<Station> getStationsForGrid(BasePagingLoadConfig config);
 
     public static class App {
         private static final StationServiceAsync ourInstance = (StationServiceAsync) GWT.create(StationService.class);

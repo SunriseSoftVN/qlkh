@@ -20,12 +20,10 @@
 package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
@@ -41,9 +39,7 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * The Class TaskManagerPresenter.
@@ -121,12 +117,27 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+        view.getTxtSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
+                            getStore().getLoadConfig();
+                    loadConfig.set("hasFilter", true);
+                    Map<String, String> filters = new HashMap<String, String>();
+                    filters.put("name", view.getTxtSearch().getValue());
+                    loadConfig.set("filters", filters);
+                    view.getTaskGird().getStore().getLoader().load(loadConfig);
+                    view.getPagingToolBar().clear();
+                }
+            }
+        });
     }
 
     private ListStore<BeanModel> createTaskListStore() {
-        RpcProxy<BasePagingLoadResult<List<Task>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<Task>>>() {
+        RpcProxy<BasePagingLoadResult<Task>> rpcProxy = new RpcProxy<BasePagingLoadResult<Task>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<Task>>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<Task>> callback) {
                 taskService.getTasksForGrid((BasePagingLoadConfig) loadConfig, callback);
             }
         };

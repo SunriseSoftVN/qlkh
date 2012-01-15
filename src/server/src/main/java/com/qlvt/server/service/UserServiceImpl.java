@@ -43,9 +43,8 @@ public class UserServiceImpl extends AbstractService implements UserService {
     private UserDao userDao;
 
     @Override
-    public BasePagingLoadResult<List<User>> getUsersForGrid(BasePagingLoadConfig config) {
-        return new BasePagingLoadResult(userDao.getByBeanConfig(User.class, config),
-                config.getOffset(), userDao.count(User.class));
+    public BasePagingLoadResult<User> getUsersForGrid(BasePagingLoadConfig config) {
+        return userDao.getByBeanConfig(User.class, config);
     }
 
     @Override

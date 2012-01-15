@@ -46,7 +46,7 @@ public interface TaskService extends RemoteService<TaskService> {
     void deleteTasks(List<Long> taskIds);
     void updateTask(Task task) throws CodeExistException;
     void updateTasks(List<Task> tasks) throws CodeExistException;
-    BasePagingLoadResult<List<Task>> getTasksForGrid(BasePagingLoadConfig loadConfig);
+    BasePagingLoadResult<Task> getTasksForGrid(BasePagingLoadConfig loadConfig);
 
     public static class App {
         private static final TaskServiceAsync ourInstance = (TaskServiceAsync) GWT.create(TaskService.class);

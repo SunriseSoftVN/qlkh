@@ -21,19 +21,18 @@ package com.qlvt.server.dao.core;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.util.SessionFactoryUtil;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Class AbstractDao.
@@ -123,10 +122,9 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     }
 
     @Override
-    public List<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
+    public BasePagingLoadResult<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
         openSession();
-        Criteria criteria = session.createCriteria(clazz)
-                .setFirstResult(config.getOffset()).setMaxResults(config.getLimit());
+        Criteria criteria = session.createCriteria(clazz);
         if (StringUtils.isNotBlank(config.getSortField())) {
             if (config.getSortDir() == Style.SortDir.ASC) {
                 criteria.addOrder(Order.asc(config.getSortField()));
@@ -134,20 +132,55 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
                 criteria.addOrder(Order.desc(config.getSortField()));
             }
         }
+        if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+            Map<String, String> filters = config.get("filters");
+            if (filters != null) {
+                for (String filter : filters.keySet()) {
+                    criteria.add(Restrictions.like(filter,
+                            filters.get(filter), MatchMode.ANYWHERE).ignoreCase());
+                }
+            }
+        }
         if (criterions != null && criterions.length > 0) {
             for (Criterion criterion : criterions) {
                 criteria.add(criterion);
             }
         }
-        List<E> result = criteria.list();
+        List<E> result = criteria.setFirstResult(config.getOffset()).
+                setMaxResults(config.getLimit()).list();
         closeSession();
-        return result;
+        return new BasePagingLoadResult<E>(result, config.getOffset(), count(clazz, config, criterions));
     }
 
     @Override
     public int count(Class<E> clazz) {
         openSession();
         Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
+        Object result = criteria.uniqueResult();
+        if (result != null) {
+            return ((Long) result).intValue();
+        }
+        closeSession();
+        return 0;
+    }
+
+    protected int count(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
+        openSession();
+        Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
+        if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+            Map<String, String> filters = config.get("filters");
+            if (filters != null) {
+                for (String filter : filters.keySet()) {
+                    criteria.add(Restrictions.like(filter,
+                            filters.get(filter), MatchMode.ANYWHERE).ignoreCase());
+                }
+            }
+        }
+        if (criterions != null && criterions.length > 0) {
+            for (Criterion criterion : criterions) {
+                criteria.add(criterion);
+            }
+        }
         Object result = criteria.uniqueResult();
         if (result != null) {
             return ((Long) result).intValue();

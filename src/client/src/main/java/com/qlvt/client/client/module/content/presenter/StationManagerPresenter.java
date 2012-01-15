@@ -115,9 +115,9 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
     }
 
     private ListStore<BeanModel> createUserListStore() {
-        RpcProxy<BasePagingLoadResult<List<Station>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<Station>>>() {
+        RpcProxy<BasePagingLoadResult<Station>> rpcProxy = new RpcProxy<BasePagingLoadResult<Station>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<Station>>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<Station>> callback) {
                 stationService.getStationsForGrid((BasePagingLoadConfig) loadConfig, callback);
             }
         };

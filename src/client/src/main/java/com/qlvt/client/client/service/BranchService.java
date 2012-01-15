@@ -44,7 +44,7 @@ public interface BranchService extends RemoteService<BranchService> {
     void updateBranchs(List<Branch> branchs);
     List<Branch> getBranchByStationId(long stationId);
     List<Branch> getAllBranch();
-    BasePagingLoadResult<List<Branch>> getBranchsForGrid(BasePagingLoadConfig config);
+    BasePagingLoadResult<Branch> getBranchsForGrid(BasePagingLoadConfig config);
 
     public static class App {
         private static final BranchServiceAsync ourInstance = (BranchServiceAsync) GWT.create(BranchService.class);

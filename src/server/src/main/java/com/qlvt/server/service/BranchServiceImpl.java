@@ -80,9 +80,8 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
     }
 
     @Override
-    public BasePagingLoadResult<List<Branch>> getBranchsForGrid(BasePagingLoadConfig config) {
-        List<Branch> branches = branchDao.getByBeanConfig(Branch.class, config);
-        return new BasePagingLoadResult(branches, config.getOffset(), branchDao.count(Branch.class));
+    public BasePagingLoadResult<Branch> getBranchsForGrid(BasePagingLoadConfig config) {
+       return branchDao.getByBeanConfig(Branch.class, config);
     }
 
     @Override

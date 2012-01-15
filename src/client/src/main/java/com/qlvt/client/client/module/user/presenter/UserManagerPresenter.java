@@ -177,9 +177,9 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     }
 
     private ListStore<BeanModel> createUserListStore() {
-        RpcProxy<BasePagingLoadResult<List<User>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<User>>>() {
+        RpcProxy<BasePagingLoadResult<User>> rpcProxy = new RpcProxy<BasePagingLoadResult<User>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<User>>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<User>> callback) {
                 userService.getUsersForGrid((BasePagingLoadConfig) loadConfig, callback);
             }
         };

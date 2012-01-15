@@ -68,8 +68,9 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     @Override
     public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         List<Branch> branches = branchDao.findByStationId(stationId);
-        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
+        BasePagingLoadResult<TaskDetail> basePagingLoadResult = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
+        List<TaskDetail> taskDetails = basePagingLoadResult.getData();
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
         for (TaskDetail taskDetail : taskDetails) {
             TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
@@ -92,14 +93,15 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
             taskDetailDtos.add(taskDetailDto);
         }
         return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
-                taskDetailDao.count(TaskDetail.class));
+                basePagingLoadResult.getTotalLength());
     }
 
     @Override
     public BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         List<Branch> branches = branchDao.findByStationId(stationId);
-        List<TaskDetail> taskDetails = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
+        BasePagingLoadResult<TaskDetail> basePagingLoadResult = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
+        List<TaskDetail> taskDetails = basePagingLoadResult.getData();
         List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
         for (TaskDetail taskDetail : taskDetails) {
             TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
@@ -122,7 +124,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
             taskDetailDtos.add(taskDetailDto);
         }
         return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
-                taskDetailDao.count(TaskDetail.class));
+                basePagingLoadResult.getTotalLength());
     }
 
     @Override

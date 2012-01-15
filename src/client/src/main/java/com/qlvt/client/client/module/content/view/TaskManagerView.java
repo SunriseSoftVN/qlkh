@@ -30,7 +30,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -46,6 +45,7 @@ import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
+import com.smvp4g.mvp.client.widget.TextField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +85,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     @I18nField
     Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
 
+    @I18nField(emptyText = true)
+    TextField<String> txtSearch = new TextField<String>();
+
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
     private EditorGrid<BeanModel> taskGird;
@@ -118,6 +121,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
+        txtSearch.setWidth(200);
+        toolBar.add(txtSearch);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
@@ -212,5 +218,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public EditorGrid<BeanModel> getTaskGird() {
         return taskGird;
+    }
+
+    public TextField<String> getTxtSearch() {
+        return txtSearch;
     }
 }

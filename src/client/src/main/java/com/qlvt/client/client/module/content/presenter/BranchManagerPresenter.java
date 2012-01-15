@@ -131,9 +131,9 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     }
 
     private ListStore<BeanModel> createUserListStore() {
-        RpcProxy<BasePagingLoadResult<List<Branch>>> rpcProxy = new RpcProxy<BasePagingLoadResult<List<Branch>>>() {
+        RpcProxy<BasePagingLoadResult<Branch>> rpcProxy = new RpcProxy<BasePagingLoadResult<Branch>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<List<Branch>>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<Branch>> callback) {
                 branchService.getBranchsForGrid((BasePagingLoadConfig) loadConfig, callback);
             }
         };
