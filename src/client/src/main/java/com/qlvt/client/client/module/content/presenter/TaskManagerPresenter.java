@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
@@ -32,6 +33,7 @@ import com.qlvt.client.client.service.TaskService;
 import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.client.client.utils.NumberUtils;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
@@ -83,6 +85,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                resetFilter();
                 view.getPagingToolBar().refresh();
             }
         });
@@ -120,15 +123,35 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getTxtSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyPress(ComponentEvent event) {
+                String st = view.getTxtSearch().getValue();
                 if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
-                            getStore().getLoadConfig();
-                    loadConfig.set("hasFilter", true);
-                    Map<String, String> filters = new HashMap<String, String>();
-                    filters.put("name", view.getTxtSearch().getValue());
-                    loadConfig.set("filters", filters);
-                    view.getTaskGird().getStore().getLoader().load(loadConfig);
-                    view.getPagingToolBar().clear();
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        Integer code = null;
+                        if (NumberUtils.isNumber(st)) {
+                            code = Integer.parseInt(st);
+                        }
+                        filters.put("name", view.getTxtSearch().getValue());
+                        if (code != null) {
+                            filters.put("code", code);
+                        }
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
                 }
             }
         });
@@ -213,5 +236,13 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 }
             }
         });
+    }
+
+    private void resetFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
+                getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtSearch().clear();
     }
 }

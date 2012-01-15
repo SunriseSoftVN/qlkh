@@ -133,11 +133,25 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
             }
         }
         if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
-            Map<String, String> filters = config.get("filters");
+            Map<String, Object> filters = config.get("filters");
             if (filters != null) {
+                Criterion criterion = null;
                 for (String filter : filters.keySet()) {
-                    criteria.add(Restrictions.like(filter,
-                            filters.get(filter), MatchMode.ANYWHERE).ignoreCase());
+                    Criterion likeCriterion = null;
+                    Object filterValue = filters.get(filter);
+                    if (filterValue instanceof String) {
+                        likeCriterion = Restrictions.like(filter, ((String) filterValue).trim(), MatchMode.ANYWHERE).ignoreCase();
+                    } else {
+                        likeCriterion = Restrictions.like(filter, filterValue);
+                    }
+                    if (criterion == null) {
+                        criterion = likeCriterion;
+                    } else {
+                        criterion = Restrictions.or(criterion, likeCriterion);
+                    }
+                }
+                if (criterion != null) {
+                    criteria.add(criterion);
                 }
             }
         }
@@ -168,11 +182,25 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         openSession();
         Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
         if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
-            Map<String, String> filters = config.get("filters");
+            Map<String, Object> filters = config.get("filters");
             if (filters != null) {
+                Criterion criterion = null;
                 for (String filter : filters.keySet()) {
-                    criteria.add(Restrictions.like(filter,
-                            filters.get(filter), MatchMode.ANYWHERE).ignoreCase());
+                    Criterion likeCriterion = null;
+                    Object filterValue = filters.get(filter);
+                    if (filterValue instanceof String) {
+                        likeCriterion = Restrictions.like(filter, ((String) filterValue).trim(), MatchMode.ANYWHERE).ignoreCase();
+                    } else {
+                        likeCriterion = Restrictions.like(filter, filterValue);
+                    }
+                    if (criterion == null) {
+                        criterion = likeCriterion;
+                    } else {
+                        criterion = Restrictions.or(criterion, likeCriterion);
+                    }
+                }
+                if (criterion != null) {
+                    criteria.add(criterion);
                 }
             }
         }
