@@ -47,4 +47,8 @@ public interface TaskAnnualDetailConstant extends Constants {
     String increaseValueColumnTitle();
     String decreaseValueColumnTitle();
     String realValueColumnTitle();
+    String txtSearch();
+    String btnSubTaskSave();
+    String btnSubTaskCancel();
+    String branchNameColumnTitle();
 }

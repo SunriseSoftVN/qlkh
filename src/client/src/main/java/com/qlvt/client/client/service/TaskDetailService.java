@@ -25,6 +25,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.dto.TaskDetailDto;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
@@ -47,6 +48,7 @@ public interface TaskDetailService extends RemoteService<TaskDetailService> {
 
     BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
     BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
+    BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig, long taskDetailId);
 
     public static class App {
         private static final TaskDetailServiceAsync ourInstance = (TaskDetailServiceAsync) GWT.create(TaskDetailService.class);

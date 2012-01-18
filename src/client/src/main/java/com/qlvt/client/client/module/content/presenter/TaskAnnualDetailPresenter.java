@@ -20,10 +20,7 @@
 package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
@@ -40,6 +37,7 @@ import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -65,7 +63,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private BranchServiceAsync branchService = BranchService.App.getInstance();
 
     private Station currentStation;
-    private List<String> branchNames = new ArrayList<String>();
+    private TaskDetailDto currentTaskDetailDto;
 
     private ListStore<TaskDto> taskDtoListStore;
 
@@ -78,7 +76,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 taskDtoListStore = createTaskDtoListStore();
                 ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
             }
-            view.getPagingToolBar().refresh();
+            view.getTaskPagingToolBar().refresh();
         }
         if (view.getTaskDetailGird() != null) {
             view.getTaskDetailGird().focus();
@@ -95,13 +93,20 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 super.onSuccess(result);
                 currentStation = result;
                 view.setTaskCodeCellEditor(createTaskCodeCellEditor());
-                for (Branch branch : currentStation.getBranches()) {
-                    branchNames.add(branch.getName());
-                }
-                view.createGrid(createTaskListStore(), branchNames);
-                view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-                view.getPagingToolBar().refresh();
+                view.createTaskGrid(createTaskListStore());
+                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+                view.getTaskPagingToolBar().refresh();
+                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<TaskDetailDto>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<TaskDetailDto> se) {
+                        currentTaskDetailDto = se.getSelection().get(se.getSelection().size() - 1);
+                        view.getSubTaskPagingToolBar().refresh();
+                    }
+                });
                 view.getTaskDetailGird().focus();
+
+                view.createSubTaskGrid(createSubTaskListStore());
+                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
@@ -155,7 +160,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getPagingToolBar().refresh();
+                            view.getTaskPagingToolBar().refresh();
                         }
                     });
                 }
@@ -164,9 +169,30 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getPagingToolBar().refresh();
+                view.getTaskPagingToolBar().refresh();
             }
         });
+    }
+
+    private ListStore<BeanModel> createSubTaskListStore() {
+        RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<SubTaskAnnualDetail>> callback) {
+                taskDetailService.getSubTaskAnnualDetails((BasePagingLoadConfig) loadConfig, currentTaskDetailDto.getId(), callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<SubTaskAnnualDetail>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<SubTaskAnnualDetail>>(rpcProxy, new BeanModelReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private ListStore<TaskDetailDto> createTaskListStore() {
@@ -254,7 +280,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             public void onSuccess(Void result) {
                 super.onSuccess(result);
                 //Reload grid.
-                view.getPagingToolBar().refresh();
+                view.getTaskPagingToolBar().refresh();
                 DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
             }
         };

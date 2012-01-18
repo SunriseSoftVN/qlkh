@@ -128,6 +128,30 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     }
 
     @Override
+    public BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig,
+                                                                                long taskDetailId) {
+        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
+        List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
+        for (Branch branch : branches) {
+            SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
+                    getSubAnnualTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+            if (subTaskAnnualDetail == null) {
+                subTaskAnnualDetail = new SubTaskAnnualDetail();
+                subTaskAnnualDetail.setTaskDetail(taskDetail);
+                subTaskAnnualDetail.setBranch(branch);
+                subTaskAnnualDetail.setCreateBy(1l);
+                subTaskAnnualDetail.setUpdateBy(1l);
+                subTaskAnnualDetail.setCreatedDate(new Date());
+                subTaskAnnualDetail.setUpdatedDate(new Date());
+            }
+            subTaskAnnualDetails.add(subTaskAnnualDetail);
+        }
+        return new BasePagingLoadResult<SubTaskAnnualDetail>(subTaskAnnualDetails, loadConfig.getOffset(),
+                subTaskAnnualDetails.size());
+    }
+
+    @Override
     public void deleteTaskDetail(long taskDetailId) {
         TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
         if (taskDetail != null) {
