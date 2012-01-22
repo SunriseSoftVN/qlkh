@@ -99,8 +99,11 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<TaskDetailDto>() {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<TaskDetailDto> se) {
-                        currentTaskDetailDto = se.getSelection().get(se.getSelection().size() - 1);
-                        view.getSubTaskPagingToolBar().refresh();
+                        int index = se.getSelection().size() - 1;
+                        if (index >= 0) {
+                            currentTaskDetailDto = se.getSelection().get(index);
+                            view.getSubTaskPagingToolBar().refresh();
+                        }
                     }
                 });
                 view.getTaskDetailGird().focus();
@@ -170,6 +173,22 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             @Override
             public void componentSelected(ButtonEvent ce) {
                 view.getTaskPagingToolBar().refresh();
+            }
+        });
+        view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
+                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
+                    subTaskAnnualDetails.add(((BeanModel)record.getModel()).<SubTaskAnnualDetail>getBean());
+                }
+                taskDetailService.updateSubTaskAnnualDetails(subTaskAnnualDetails, new AbstractAsyncCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                        view.getSubTaskPagingToolBar().refresh();
+                    }
+                });
             }
         });
     }

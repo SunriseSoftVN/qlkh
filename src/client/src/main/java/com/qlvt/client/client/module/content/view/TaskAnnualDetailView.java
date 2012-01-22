@@ -44,6 +44,7 @@ import com.qlvt.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecurity;
 import com.qlvt.client.client.widget.MyCheckBoxSelectionModel;
 import com.qlvt.core.client.dto.TaskDetailDto;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -273,16 +274,16 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
-//        sttColumnConfig.setRenderer(new GridCellRenderer<SubTaskAnnualDetailDto>() {
-//            @Override
-//            public Object render(SubTaskAnnualDetailDto model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore<SubTaskAnnualDetailDto> beanModelListStore, Grid<SubTaskAnnualDetailDto> beanModelGrid) {
-//                if (model.get(STT_COLUMN) == null) {
-//                    model.set(STT_COLUMN, rowIndex + 1);
-//                }
-//                return new Text(String.valueOf(model.get(STT_COLUMN)));
-//            }
-//        });
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
         columnConfigs.add(sttColumnConfig);
 
         ColumnConfig branchNameColumnConfig = new ColumnConfig(BRANCH_NAME_COLUMN, getConstant().branchNameColumnTitle(),
@@ -317,29 +318,30 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(REAL_VALUE_COLUMN,
                 getConstant().realValueColumnTitle(), REAL_VALUE_WIDTH);
         realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
-//        realValueColumnConfig.setRenderer(new GridCellRenderer<SubTaskAnnualDetailDto>() {
-//            @Override
-//            public Object render(SubTaskAnnualDetailDto model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore<SubTaskAnnualDetailDto> taskDetailDtoListStore, Grid<SubTaskAnnualDetailDto> taskDetailDtoGrid) {
-//                Double increaseValue = model.get(INCREASE_VALUE_COLUMN);
-//                if (increaseValue == null) {
-//                    increaseValue = 0d;
-//                }
-//                Double decreaseValue = model.get(DECREASE_VALUE_COLUMN);
-//                if (decreaseValue == null) {
-//                    decreaseValue = 0d;
-//                }
-//                Double lastYearValue = model.get(LAST_YEAR_VALUE_COLUMN);
-//                if (lastYearValue == null) {
-//                    lastYearValue = 0d;
-//                }
-//                Double result = lastYearValue + increaseValue - decreaseValue;
-//                if (result == 0) {
-//                    return "";
-//                }
-//                return result;
-//            }
-//        });
+        realValueColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> taskDetailDtoListStore, Grid<BeanModel> taskDetailDtoGrid) {
+                SubTaskAnnualDetail taskAnnualDetail = model.getBean();
+                Double increaseValue = taskAnnualDetail.getIncreaseValue();
+                if (increaseValue == null) {
+                    increaseValue = 0d;
+                }
+                Double decreaseValue = taskAnnualDetail.getDecreaseValue();
+                if (decreaseValue == null) {
+                    decreaseValue = 0d;
+                }
+                Double lastYearValue = taskAnnualDetail.getLastYearValue();
+                if (lastYearValue == null) {
+                    lastYearValue = 0d;
+                }
+                Double result = lastYearValue + increaseValue - decreaseValue;
+                if (result == 0) {
+                    return "";
+                }
+                return result;
+            }
+        });
         columnConfigs.add(realValueColumnConfig);
         return columnConfigs;
     }
@@ -414,5 +416,13 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public ContentPanel getSubTaskPanel() {
         return subTaskPanel;
+    }
+
+    public Button getBtnSubTaskCancel() {
+        return btnSubTaskCancel;
+    }
+
+    public Button getBtnSubTaskSave() {
+        return btnSubTaskSave;
     }
 }
