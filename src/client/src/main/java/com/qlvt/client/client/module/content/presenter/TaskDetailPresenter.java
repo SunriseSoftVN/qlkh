@@ -35,11 +35,11 @@ import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.dto.SubTaskDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -78,7 +78,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 taskDtoListStore = createTaskDtoListStore();
                 ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
             }
-            view.getPagingToolBar().refresh();
+//            view.getPagingToolBar().refresh();
         }
         if (view.getTaskDetailGird() != null) {
             view.getTaskDetailGird().focus();
@@ -98,9 +98,9 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 for (Branch branch : currentStation.getBranches()) {
                     branchNames.add(branch.getName());
                 }
-                view.createGrid(createTaskListStore(), branchNames);
-                view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-                view.getPagingToolBar().refresh();
+//                view.createGrid(createTaskListStore(), branchNames);
+//                view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+//                view.getPagingToolBar().refresh();
                 view.getTaskDetailGird().focus();
             }
         });
@@ -109,26 +109,16 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
-                    TaskDetailDto taskDetail = new TaskDetailDto();
+                    TaskDetail taskDetail = new TaskDetail();
                     taskDetail.setStation(currentStation);
                     taskDetail.setYear(1900 + new Date().getYear());
-                    taskDetail.setAnnual(false);
+                    taskDetail.setAnnual(true);
                     taskDetail.setCreateBy(1l);
                     taskDetail.setUpdateBy(1l);
                     taskDetail.setCreatedDate(new Date());
                     taskDetail.setUpdatedDate(new Date());
-                    for (Branch branch : currentStation.getBranches()) {
-                        SubTaskDetailDto subTaskDetailDto = new SubTaskDetailDto();
-                        subTaskDetailDto.setTaskDetail(taskDetail);
-                        subTaskDetailDto.setBranch(branch);
-                        subTaskDetailDto.setCreateBy(1l);
-                        subTaskDetailDto.setUpdateBy(1l);
-                        subTaskDetailDto.setCreatedDate(new Date());
-                        subTaskDetailDto.setUpdatedDate(new Date());
-                        taskDetail.set(branch.getName(), subTaskDetailDto);
-                    }
-                    view.getTaskDetailGird().getStore().insert(taskDetail,
-                            view.getTaskDetailGird().getStore().getCount());
+                    BeanModel model = BeanModelLookup.get().getFactory(TaskDetail.class).createModel(taskDetail);
+                    view.getTaskDetailGird().getStore().insert(model, view.getTaskDetailGird().getStore().getCount());
                     view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
                             .getStore().getCount() - 1, 0, true);
                     view.getTaskDetailGird().startEditing(view.getTaskDetailGird().getStore()
@@ -152,7 +142,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getPagingToolBar().refresh();
+//                            view.getPagingToolBar().refresh();
                         }
                     });
                 }
@@ -161,21 +151,21 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getPagingToolBar().refresh();
+//                view.getPagingToolBar().refresh();
             }
         });
     }
 
-    private ListStore<TaskDetailDto> createTaskListStore() {
-        RpcProxy<BasePagingLoadResult<TaskDetailDto>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetailDto>>() {
+    private ListStore<BeanModel> createTaskListStore() {
+        RpcProxy<BasePagingLoadResult<TaskDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetail>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetail>> callback) {
                 taskDetailService.getTaskDetailsForGrid((BasePagingLoadConfig) loadConfig, currentStation.getId(), callback);
             }
         };
 
-        PagingLoader<PagingLoadResult<TaskDetailDto>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetailDto>>(rpcProxy, new ModelReader()) {
+        PagingLoader<PagingLoadResult<TaskDetail>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new BeanModelReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -184,7 +174,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     }
                 };
 
-        return new ListStore<TaskDetailDto>(pagingLoader);
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private CellEditor createTaskCodeCellEditor() {
@@ -221,15 +211,15 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
         @Override
         public void componentSelected(ButtonEvent ce) {
-            final List<TaskDetailDto> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
+            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
             if (CollectionsUtils.isNotEmpty(models)) {
                 if (models.size() == 1) {
-                    final TaskDetailDto taskDetail = models.get(0);
+                    final TaskDetailDto taskDetail = models.get(0).getBean();
                     showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
                 } else {
                     List<Long> taskDetailIds = new ArrayList<Long>(models.size());
-                    for (TaskDetailDto taskDetail : models) {
-                        taskDetailIds.add(taskDetail.getId());
+                    for (BeanModel model : models) {
+                        taskDetailIds.add(model.<TaskDetail>getBean().getId());
                     }
                     showDeleteTagConform(taskDetailIds, null);
                 }
@@ -251,7 +241,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void onSuccess(Void result) {
                 super.onSuccess(result);
                 //Reload grid.
-                view.getPagingToolBar().refresh();
+//                view.getPagingToolBar().refresh();
                 DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
             }
         };

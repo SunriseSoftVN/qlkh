@@ -47,4 +47,7 @@ public interface TaskDetailConstant extends Constants {
     String q2ColumnTitle();
     String q3ColumnTitle();
     String q4ColumnTitle();
+    String btnSubTaskSave();
+    String btnSubTaskCancel();
+    String txtSearch();
 }

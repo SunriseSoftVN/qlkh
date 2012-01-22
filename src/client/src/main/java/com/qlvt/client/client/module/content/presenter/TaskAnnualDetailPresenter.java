@@ -32,10 +32,9 @@ import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.dto.TaskDetailDto;
-import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -64,7 +63,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private Station currentStation;
     private TaskDetail currentTaskDetailDto;
 
-    private ListStore<TaskDto> taskDtoListStore;
+    private ListStore<BeanModel> taskDtoListStore;
 
     @Override
     public void onActivate() {
@@ -138,13 +137,13 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<TaskDetailDto> taskDetails = new ArrayList<TaskDetailDto>();
+                List<TaskDetail> taskDetails = new ArrayList<TaskDetail>();
                 for (Record record : view.getTaskDetailGird().getStore().getModifiedRecords()) {
-                    taskDetails.add((TaskDetailDto) record.getModel());
+                    taskDetails.add(((BeanModel)record.getModel()).<TaskDetail>getBean());
                 }
                 if (CollectionsUtils.isNotEmpty(taskDetails)) {
                     LoadingUtils.showLoading();
-                    taskDetailService.updateTaskDetailDtos(taskDetails, new AbstractAsyncCallback<Void>() {
+                    taskDetailService.updateTaskDetails(taskDetails, new AbstractAsyncCallback<Void>() {
                         @Override
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
@@ -166,7 +165,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             public void componentSelected(ButtonEvent ce) {
                 List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
                 for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
-                    subTaskAnnualDetails.add(((BeanModel)record.getModel()).<SubTaskAnnualDetail>getBean());
+                    subTaskAnnualDetails.add(((BeanModel) record.getModel()).<SubTaskAnnualDetail>getBean());
                 }
                 taskDetailService.updateSubTaskAnnualDetails(subTaskAnnualDetails, new AbstractAsyncCallback<Void>() {
                     @Override
@@ -222,16 +221,17 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     }
 
     private CellEditor createTaskCodeCellEditor() {
-        ComboBox<TaskDto> ccbTask = new ComboBox<TaskDto>();
+        ComboBox<BeanModel> ccbTask = new ComboBox<BeanModel>();
         ccbTask.setStore(taskDtoListStore);
         ccbTask.setLazyRender(false);
         ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
         ccbTask.setForceSelection(true);
-        ccbTask.getView().setModelProcessor(new ModelProcessor<TaskDto>() {
+        ccbTask.getView().setModelProcessor(new ModelProcessor<BeanModel>() {
             @Override
-            public TaskDto prepareData(TaskDto model) {
-                model.set("text", model.getCode() +
-                        " - " + model.getName());
+            public BeanModel prepareData(BeanModel model) {
+                Task task = model.getBean();
+                model.set("text", task.getCode() +
+                        " - " + task.getName());
                 return model;
             }
         });
@@ -239,17 +239,20 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         return new CellEditor(ccbTask);
     }
 
-    private ListStore<TaskDto> createTaskDtoListStore() {
-        final ListStore<TaskDto> taskDtos = new ListStore<TaskDto>();
+    private ListStore<BeanModel> createTaskDtoListStore() {
+        final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
         LoadingUtils.showLoading();
-        taskService.getAllTaskDtos(new AbstractAsyncCallback<List<TaskDto>>() {
+        taskService.getAllTasks(new AbstractAsyncCallback<List<Task>>() {
             @Override
-            public void onSuccess(List<TaskDto> result) {
+            public void onSuccess(List<Task> result) {
                 super.onSuccess(result);
-                taskDtos.add(result);
+                for (Task task : result) {
+                    listStore.add(factory.createModel(task));
+                }
             }
         });
-        return taskDtos;
+        return listStore;
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
@@ -258,7 +261,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
             if (CollectionsUtils.isNotEmpty(models)) {
                 if (models.size() == 1) {
-                    final TaskDetailDto taskDetail = models.get(0).getBean();
+                    final TaskDetail taskDetail = models.get(0).getBean();
                     showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
                 } else {
                     List<Long> taskDetailIds = new ArrayList<Long>(models.size());
