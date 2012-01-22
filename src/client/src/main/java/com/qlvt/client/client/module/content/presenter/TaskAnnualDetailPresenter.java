@@ -58,10 +58,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
     private TaskServiceAsync taskService = TaskService.App.getInstance();
     private StationServiceAsync stationService = StationService.App.getInstance();
-    private BranchServiceAsync branchService = BranchService.App.getInstance();
 
     private Station currentStation;
-    private TaskDetail currentTaskDetailDto;
+    private TaskDetail currentTaskDetail;
 
     private ListStore<BeanModel> taskDtoListStore;
 
@@ -99,7 +98,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
                         int index = se.getSelection().size() - 1;
                         if (index >= 0) {
-                            currentTaskDetailDto = se.getSelection().get(index).getBean();
+                            currentTaskDetail = se.getSelection().get(index).getBean();
                             view.getSubTaskPagingToolBar().refresh();
                         }
                     }
@@ -182,7 +181,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<SubTaskAnnualDetail>> callback) {
-                taskDetailService.getSubTaskAnnualDetails((BasePagingLoadConfig) loadConfig, currentTaskDetailDto.getId(), callback);
+                taskDetailService.getSubTaskAnnualDetails((BasePagingLoadConfig) loadConfig, currentTaskDetail.getId(), callback);
             }
         };
 

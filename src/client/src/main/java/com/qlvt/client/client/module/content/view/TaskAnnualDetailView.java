@@ -352,48 +352,24 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return taskDetailGird;
     }
 
-    public void setTaskDetailGird(EditorGrid<BeanModel> taskDetailGird) {
-        this.taskDetailGird = taskDetailGird;
-    }
-
     public Button getBtnAdd() {
         return btnAdd;
-    }
-
-    public void setBtnAdd(Button btnAdd) {
-        this.btnAdd = btnAdd;
     }
 
     public Button getBtnDelete() {
         return btnDelete;
     }
 
-    public void setBtnDelete(Button btnDelete) {
-        this.btnDelete = btnDelete;
-    }
-
     public Button getBtnSave() {
         return btnSave;
-    }
-
-    public void setBtnSave(Button btnSave) {
-        this.btnSave = btnSave;
     }
 
     public Button getBtnCancel() {
         return btnCancel;
     }
 
-    public void setBtnCancel(Button btnCancel) {
-        this.btnCancel = btnCancel;
-    }
-
     public PagingToolBar getTaskPagingToolBar() {
         return taskPagingToolBar;
-    }
-
-    public void setTaskPagingToolBar(PagingToolBar taskPagingToolBar) {
-        this.taskPagingToolBar = taskPagingToolBar;
     }
 
     public void setTaskCodeCellEditor(CellEditor taskCodeCellEditor) {
@@ -404,24 +380,12 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return taskCodeCellEditor;
     }
 
-    public ContentPanel getTaskPanel() {
-        return taskPanel;
-    }
-
     public EditorGrid<BeanModel> getSubTaskDetailGird() {
         return subTaskDetailGird;
     }
 
     public PagingToolBar getSubTaskPagingToolBar() {
         return subTaskPagingToolBar;
-    }
-
-    public ContentPanel getSubTaskPanel() {
-        return subTaskPanel;
-    }
-
-    public Button getBtnSubTaskCancel() {
-        return btnSubTaskCancel;
     }
 
     public Button getBtnSubTaskSave() {

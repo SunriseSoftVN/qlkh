@@ -39,7 +39,7 @@ import java.util.List;
 public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail> implements SubTaskAnnualDetailDao {
 
     @Override
-    public SubTaskAnnualDetail getSubAnnualTaskByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
+    public SubTaskAnnualDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
         openSession();
         Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));

@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
@@ -42,4 +43,6 @@ public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailSer
     void getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig, long taskDetailId, AsyncCallback<BasePagingLoadResult<SubTaskAnnualDetail>> async);
 
     void updateSubTaskAnnualDetails(List<SubTaskAnnualDetail> subTaskAnnualDetails, AsyncCallback<Void> async);
+
+    void getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId, AsyncCallback<BasePagingLoadResult<SubTaskDetail>> async);
 }

@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -72,14 +73,16 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "task.unit";
     public static final int TASK_UNIT_WIDTH = 70;
-    public static final String Q1_UNIT_COLUMN = ".q1";
-    public static final int Q1_UNIT_WIDTH = 45;
-    public static final String Q2_UNIT_COLUMN = ".q2";
-    public static final int Q2_UNIT_WIDTH = 45;
-    public static final String Q3_UNIT_COLUMN = ".q3";
-    public static final int Q3_UNIT_WIDTH = 45;
-    public static final String Q4_UNIT_COLUMN = ".q4";
-    public static final int Q4_UNIT_WIDTH = 45;
+    public static final String BRANCH_NAME_COLUMN = "branch.name";
+    public static int BRANCH_NAME_WIDTH = 150;
+    public static final String Q1_UNIT_COLUMN = "q1";
+    public static final int Q1_UNIT_WIDTH = 70;
+    public static final String Q2_UNIT_COLUMN = "q2";
+    public static final int Q2_UNIT_WIDTH = 70;
+    public static final String Q3_UNIT_COLUMN = "q3";
+    public static final int Q3_UNIT_WIDTH = 70;
+    public static final String Q4_UNIT_COLUMN = "q4";
+    public static final int Q4_UNIT_WIDTH = 70;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -115,6 +118,14 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
     private ColumnModel subTaskColumnModel;
+
+    @Override
+    protected void initializeView() {
+        contentPanel.setHeaderVisible(false);
+        contentPanel.setHeight(Window.getClientHeight() - 90);
+        contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
+        setWidget(contentPanel);
+    }
 
     /**
      * Create Grid on View.
@@ -270,6 +281,22 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
+        ColumnConfig branchNameColumnConfig = new ColumnConfig(BRANCH_NAME_COLUMN, getConstant().branchNameColumnTitle(),
+                BRANCH_NAME_WIDTH);
+        columnConfigs.add(branchNameColumnConfig);
+
+        ColumnConfig q1ColumnConfig =new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
+        columnConfigs.add(q1ColumnConfig);
+
+        ColumnConfig q2ColumnConfig =new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
+        columnConfigs.add(q2ColumnConfig);
+
+        ColumnConfig q3ColumnConfig =new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
+        columnConfigs.add(q3ColumnConfig);
+
+        ColumnConfig q4ColumnConfig =new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
+        columnConfigs.add(q4ColumnConfig);
+
         return columnConfigs;
     }
 
@@ -277,40 +304,20 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return taskDetailGird;
     }
 
-    public void setTaskDetailGird(EditorGrid<BeanModel> taskDetailGird) {
-        this.taskDetailGird = taskDetailGird;
-    }
-
     public Button getBtnAdd() {
         return btnAdd;
-    }
-
-    public void setBtnAdd(Button btnAdd) {
-        this.btnAdd = btnAdd;
     }
 
     public Button getBtnDelete() {
         return btnDelete;
     }
 
-    public void setBtnDelete(Button btnDelete) {
-        this.btnDelete = btnDelete;
-    }
-
     public Button getBtnSave() {
         return btnSave;
     }
 
-    public void setBtnSave(Button btnSave) {
-        this.btnSave = btnSave;
-    }
-
     public Button getBtnCancel() {
         return btnCancel;
-    }
-
-    public void setBtnCancel(Button btnCancel) {
-        this.btnCancel = btnCancel;
     }
 
     public void setTaskCodeCellEditor(CellEditor taskCodeCellEditor) {
@@ -321,7 +328,15 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return taskCodeCellEditor;
     }
 
-    public ContentPanel getContentPanel() {
-        return contentPanel;
+    public PagingToolBar getSubTaskPagingToolBar() {
+        return subTaskPagingToolBar;
+    }
+
+    public EditorGrid<BeanModel> getSubTaskDetailGird() {
+        return subTaskDetailGird;
+    }
+
+    public PagingToolBar getTaskPagingToolBar() {
+        return taskPagingToolBar;
     }
 }

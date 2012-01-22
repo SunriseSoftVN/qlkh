@@ -19,7 +19,7 @@
         <many-to-one name="taskDetail" class="com.qlvt.core.client.model.TaskDetail" lazy="false" fetch="join" outer-join="auto">
             <column name="taskDetailId" not-null="true"/>
         </many-to-one>
-        <many-to-one name="branch" class="com.qlvt.core.client.model.Branch">
+        <many-to-one name="branch" class="com.qlvt.core.client.model.Branch" lazy="false" fetch="join" outer-join="true">
             <column name="branchId" not-null="true"/>
         </many-to-one>
     </class>

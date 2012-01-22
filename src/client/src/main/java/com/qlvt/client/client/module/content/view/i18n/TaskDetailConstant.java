@@ -50,4 +50,5 @@ public interface TaskDetailConstant extends Constants {
     String btnSubTaskSave();
     String btnSubTaskCancel();
     String txtSearch();
+    String branchNameColumnTitle();
 }

@@ -87,7 +87,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
         for (Branch branch : branches) {
             SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
-                    getSubAnnualTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+                    findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
             if (subTaskAnnualDetail == null) {
                 subTaskAnnualDetail = new SubTaskAnnualDetail();
                 subTaskAnnualDetail.setTaskDetail(taskDetail);
@@ -101,6 +101,29 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         }
         return new BasePagingLoadResult<SubTaskAnnualDetail>(subTaskAnnualDetails, loadConfig.getOffset(),
                 subTaskAnnualDetails.size());
+    }
+
+    @Override
+    public BasePagingLoadResult<SubTaskDetail> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
+        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
+        List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
+        List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
+        for (Branch branch : branches) {
+            SubTaskDetail subTaskDetail = subTaskDetailDao.
+                    findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+            if (subTaskDetail == null) {
+                subTaskDetail = new SubTaskDetail();
+                subTaskDetail.setTaskDetail(taskDetail);
+                subTaskDetail.setBranch(branch);
+                subTaskDetail.setCreateBy(1l);
+                subTaskDetail.setUpdateBy(1l);
+                subTaskDetail.setCreatedDate(new Date());
+                subTaskDetail.setUpdatedDate(new Date());
+            }
+            subTaskDetails.add(subTaskDetail);
+        }
+        return new BasePagingLoadResult<SubTaskDetail>(subTaskDetails, loadConfig.getOffset(),
+                subTaskDetails.size());
     }
 
     @Override
