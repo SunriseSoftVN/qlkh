@@ -47,8 +47,10 @@ public interface TaskDetailService extends RemoteService<TaskDetailService> {
     void deleteTaskDetail(long taskDetailId);
     void deleteTaskDetails(List<Long> taskDetailIds);
 
-    BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
-    BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
+    BasePagingLoadResult<TaskDetail> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
+
+    BasePagingLoadResult<TaskDetail> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
+
     BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig, long taskDetailId);
 
     public static class App {

@@ -66,65 +66,17 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     private BranchDao branchDao;
 
     @Override
-    public BasePagingLoadResult<TaskDetailDto> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
-        List<Branch> branches = branchDao.findByStationId(stationId);
+    public BasePagingLoadResult<TaskDetail> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         BasePagingLoadResult<TaskDetail> basePagingLoadResult = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
-        List<TaskDetail> taskDetails = basePagingLoadResult.getData();
-        List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
-        for (TaskDetail taskDetail : taskDetails) {
-            TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
-                    getInstance().map(taskDetail, TaskDetailDto.class);
-            for (Branch branch : branches) {
-                SubTaskDetail subTaskDetail = subTaskDetailDao.
-                        findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                if (subTaskDetail == null) {
-                    subTaskDetail = new SubTaskDetail();
-                    subTaskDetail.setTaskDetail(taskDetail);
-                    subTaskDetail.setBranch(branch);
-                    subTaskDetail.setCreateBy(1l);
-                    subTaskDetail.setUpdateBy(1l);
-                    subTaskDetail.setCreatedDate(new Date());
-                    subTaskDetail.setUpdatedDate(new Date());
-                }
-                taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
-                        map(subTaskDetail, SubTaskDetailDto.class));
-            }
-            taskDetailDtos.add(taskDetailDto);
-        }
-        return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
-                basePagingLoadResult.getTotalLength());
+        return  basePagingLoadResult;
     }
 
     @Override
-    public BasePagingLoadResult<TaskDetailDto> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
-        List<Branch> branches = branchDao.findByStationId(stationId);
+    public BasePagingLoadResult<TaskDetail> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         BasePagingLoadResult<TaskDetail> basePagingLoadResult = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
-        List<TaskDetail> taskDetails = basePagingLoadResult.getData();
-        List<TaskDetailDto> taskDetailDtos = new ArrayList<TaskDetailDto>(taskDetails.size());
-        for (TaskDetail taskDetail : taskDetails) {
-            TaskDetailDto taskDetailDto = DozerBeanMapperSingletonWrapper.
-                    getInstance().map(taskDetail, TaskDetailDto.class);
-            for (Branch branch : branches) {
-                SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
-                        getSubAnnualTaskByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                if (subTaskAnnualDetail == null) {
-                    subTaskAnnualDetail = new SubTaskAnnualDetail();
-                    subTaskAnnualDetail.setTaskDetail(taskDetail);
-                    subTaskAnnualDetail.setBranch(branch);
-                    subTaskAnnualDetail.setCreateBy(1l);
-                    subTaskAnnualDetail.setUpdateBy(1l);
-                    subTaskAnnualDetail.setCreatedDate(new Date());
-                    subTaskAnnualDetail.setUpdatedDate(new Date());
-                }
-                taskDetailDto.set(branch.getName(), DozerBeanMapperSingletonWrapper.getInstance().
-                        map(subTaskAnnualDetail, SubTaskAnnualDetailDto.class));
-            }
-            taskDetailDtos.add(taskDetailDto);
-        }
-        return new BasePagingLoadResult<TaskDetailDto>(taskDetailDtos, loadConfig.getOffset(),
-                basePagingLoadResult.getTotalLength());
+        return basePagingLoadResult;
     }
 
     @Override

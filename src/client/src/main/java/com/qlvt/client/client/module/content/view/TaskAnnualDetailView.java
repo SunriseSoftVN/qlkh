@@ -43,8 +43,8 @@ import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecurity;
 import com.qlvt.client.client.widget.MyCheckBoxSelectionModel;
-import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -113,7 +113,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
-    private EditorGrid<TaskDetailDto> taskDetailGird;
+    private EditorGrid<BeanModel> taskDetailGird;
     private CellEditor taskCodeCellEditor;
     private ColumnModel taskColumnModel;
 
@@ -133,10 +133,10 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     /**
      * Create Grid on View.
      */
-    public void createTaskGrid(ListStore<TaskDetailDto> listStore) {
-        MyCheckBoxSelectionModel<TaskDetailDto> selectionModel = new MyCheckBoxSelectionModel<TaskDetailDto>();
+    public void createTaskGrid(ListStore<BeanModel> listStore) {
+        MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
         taskColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
-        taskDetailGird = new EditorGrid<TaskDetailDto>(listStore, taskColumnModel);
+        taskDetailGird = new EditorGrid<BeanModel>(listStore, taskColumnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
         taskDetailGird.setStripeRows(true);
@@ -225,14 +225,14 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         contentPanel.layout();
     }
 
-    private List<ColumnConfig> createTaskColumnConfig(CheckBoxSelectionModel<TaskDetailDto> selectionModel) {
+    private List<ColumnConfig> createTaskColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
-        sttColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
-            public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<TaskDetailDto> beanModelListStore, Grid<TaskDetailDto> beanModelGrid) {
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
                 if (model.get(STT_COLUMN) == null) {
                     model.set(STT_COLUMN, rowIndex + 1);
                 }
@@ -243,12 +243,14 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
         taskCodeColumnConfig.setEditor(getTaskCodeCellEditor());
-        taskCodeColumnConfig.setRenderer(new GridCellRenderer<TaskDetailDto>() {
+        taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
-            public Object render(TaskDetailDto model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<TaskDetailDto> taskDetailDtoListStore, Grid<TaskDetailDto> taskDetailDtoGrid) {
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> taskDetailDtoListStore, Grid<BeanModel> taskDetailDtoGrid) {
                 String code = StringUtils.EMPTY;
-                if (model.getTask() != null) {
-                    code = String.valueOf(model.getTask().getCode());
+                TaskDetail taskDetail = model.getBean();
+                if (taskDetail.getTask() != null) {
+                    code = String.valueOf(taskDetail.getTask().getCode());
                 }
                 return new Text(code);
             }
@@ -346,11 +348,11 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return columnConfigs;
     }
 
-    public EditorGrid<TaskDetailDto> getTaskDetailGird() {
+    public EditorGrid<BeanModel> getTaskDetailGird() {
         return taskDetailGird;
     }
 
-    public void setTaskDetailGird(EditorGrid<TaskDetailDto> taskDetailGird) {
+    public void setTaskDetailGird(EditorGrid<BeanModel> taskDetailGird) {
         this.taskDetailGird = taskDetailGird;
     }
 

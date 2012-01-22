@@ -32,12 +32,11 @@ import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.dto.SubTaskAnnualDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.dto.TaskDto;
-import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -63,7 +62,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private BranchServiceAsync branchService = BranchService.App.getInstance();
 
     private Station currentStation;
-    private TaskDetailDto currentTaskDetailDto;
+    private TaskDetail currentTaskDetailDto;
 
     private ListStore<TaskDto> taskDtoListStore;
 
@@ -96,12 +95,12 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 view.createTaskGrid(createTaskListStore());
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 view.getTaskPagingToolBar().refresh();
-                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<TaskDetailDto>() {
+                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                     @Override
-                    public void selectionChanged(SelectionChangedEvent<TaskDetailDto> se) {
+                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
                         int index = se.getSelection().size() - 1;
                         if (index >= 0) {
-                            currentTaskDetailDto = se.getSelection().get(index);
+                            currentTaskDetailDto = se.getSelection().get(index).getBean();
                             view.getSubTaskPagingToolBar().refresh();
                         }
                     }
@@ -117,7 +116,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
-                    TaskDetailDto taskDetail = new TaskDetailDto();
+                    TaskDetail taskDetail = new TaskDetail();
                     taskDetail.setStation(currentStation);
                     taskDetail.setYear(1900 + new Date().getYear());
                     taskDetail.setAnnual(true);
@@ -125,21 +124,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     taskDetail.setUpdateBy(1l);
                     taskDetail.setCreatedDate(new Date());
                     taskDetail.setUpdatedDate(new Date());
-                    for (Branch branch : currentStation.getBranches()) {
-                        int year = 1900 + new Date().getYear();
-                        SubTaskAnnualDetailDto subTaskAnnualDetailDto = new SubTaskAnnualDetailDto();
-                        subTaskAnnualDetailDto.setTaskDetail(taskDetail);
-                        subTaskAnnualDetailDto.setBranch(branch);
-                        subTaskAnnualDetailDto.setCurrentYear(year);
-                        subTaskAnnualDetailDto.setLastYear(year - 1);
-                        subTaskAnnualDetailDto.setCreateBy(1l);
-                        subTaskAnnualDetailDto.setUpdateBy(1l);
-                        subTaskAnnualDetailDto.setCreatedDate(new Date());
-                        subTaskAnnualDetailDto.setUpdatedDate(new Date());
-                        taskDetail.set(branch.getName(), subTaskAnnualDetailDto);
-                    }
-                    view.getTaskDetailGird().getStore().insert(taskDetail,
-                            view.getTaskDetailGird().getStore().getCount());
+                    BeanModel model = BeanModelLookup.get().getFactory(TaskDetail.class).createModel(taskDetail);
+                    view.getTaskDetailGird().getStore().insert(model, view.getTaskDetailGird().getStore().getCount());
                     view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
                             .getStore().getCount() - 1, 0, true);
                     view.getTaskDetailGird().startEditing(view.getTaskDetailGird().getStore()
@@ -214,16 +200,16 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         return new ListStore<BeanModel>(pagingLoader);
     }
 
-    private ListStore<TaskDetailDto> createTaskListStore() {
-        RpcProxy<BasePagingLoadResult<TaskDetailDto>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetailDto>>() {
+    private ListStore<BeanModel> createTaskListStore() {
+        RpcProxy<BasePagingLoadResult<TaskDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetail>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetailDto>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetail>> callback) {
                 taskDetailService.getTaskAnnualDetailsForGrid((BasePagingLoadConfig) loadConfig, currentStation.getId(), callback);
             }
         };
 
-        PagingLoader<PagingLoadResult<TaskDetailDto>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetailDto>>(rpcProxy, new ModelReader()) {
+        PagingLoader<PagingLoadResult<TaskDetail>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new BeanModelReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -232,7 +218,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     }
                 };
 
-        return new ListStore<TaskDetailDto>(pagingLoader);
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private CellEditor createTaskCodeCellEditor() {
@@ -269,15 +255,15 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
         @Override
         public void componentSelected(ButtonEvent ce) {
-            final List<TaskDetailDto> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
+            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
             if (CollectionsUtils.isNotEmpty(models)) {
                 if (models.size() == 1) {
-                    final TaskDetailDto taskDetail = models.get(0);
+                    final TaskDetailDto taskDetail = models.get(0).getBean();
                     showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
                 } else {
                     List<Long> taskDetailIds = new ArrayList<Long>(models.size());
-                    for (TaskDetailDto taskDetail : models) {
-                        taskDetailIds.add(taskDetail.getId());
+                    for (BeanModel model : models) {
+                        taskDetailIds.add(model.<TaskDetail>getBean().getId());
                     }
                     showDeleteTagConform(taskDetailIds, null);
                 }
