@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
@@ -195,12 +196,10 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         subTaskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
-                if (e.getKeyCode() == 112) {
-                    btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                if (e.getKeyCode() == 113) {
+                    btnSubTaskSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnSubTaskCancel.fireEvent(Events.Select);
                 }
             }
         });
@@ -286,15 +285,27 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         columnConfigs.add(branchNameColumnConfig);
 
         ColumnConfig q1ColumnConfig =new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
+        NumberField q1NumberField = new NumberField();
+        q1NumberField.setSelectOnFocus(true);
+        q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
         columnConfigs.add(q1ColumnConfig);
 
         ColumnConfig q2ColumnConfig =new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
+        NumberField q2NumberField = new NumberField();
+        q2NumberField.setSelectOnFocus(true);
+        q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
         columnConfigs.add(q2ColumnConfig);
 
         ColumnConfig q3ColumnConfig =new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
+        NumberField q3NumberField = new NumberField();
+        q3NumberField.setSelectOnFocus(true);
+        q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
         columnConfigs.add(q3ColumnConfig);
 
         ColumnConfig q4ColumnConfig =new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
+        NumberField q4NumberField = new NumberField();
+        q4NumberField.setSelectOnFocus(true);
+        q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
         columnConfigs.add(q4ColumnConfig);
 
         return columnConfigs;
@@ -338,5 +349,13 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     public PagingToolBar getTaskPagingToolBar() {
         return taskPagingToolBar;
+    }
+
+    public Button getBtnSubTaskCancel() {
+        return btnSubTaskCancel;
+    }
+
+    public Button getBtnSubTaskSave() {
+        return btnSubTaskSave;
     }
 }

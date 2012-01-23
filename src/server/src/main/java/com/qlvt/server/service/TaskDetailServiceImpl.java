@@ -209,4 +209,8 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         subTaskAnnualDetailDao.saveOrUpdate(subTaskAnnualDetails);
     }
 
+    @Override
+    public void updateSubTaskDetails(List<SubTaskDetail> subTaskDetails) {
+        subTaskDetailDao.saveOrUpdate(subTaskDetails);
+    }
 }

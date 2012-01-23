@@ -33,9 +33,9 @@ import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.dto.TaskDetailDto;
-import com.qlvt.core.client.dto.TaskDto;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
+import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -64,7 +64,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private Station currentStation;
     private TaskDetail currentTaskDetail;
 
-    private ListStore<TaskDto> taskDtoListStore;
+    private ListStore<BeanModel> taskDtoListStore;
 
     @Override
     public void onActivate() {
@@ -138,13 +138,13 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<TaskDetailDto> taskDetails = new ArrayList<TaskDetailDto>();
+                List<TaskDetail> taskDetails = new ArrayList<TaskDetail>();
                 for (Record record : view.getTaskDetailGird().getStore().getModifiedRecords()) {
-                    taskDetails.add((TaskDetailDto) record.getModel());
+                    taskDetails.add(((BeanModel) record.getModel()).<TaskDetail>getBean());
                 }
                 if (CollectionsUtils.isNotEmpty(taskDetails)) {
                     LoadingUtils.showLoading();
-                    taskDetailService.updateTaskDetailDtos(taskDetails, new AbstractAsyncCallback<Void>() {
+                    taskDetailService.updateTaskDetails(taskDetails, new AbstractAsyncCallback<Void>() {
                         @Override
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
@@ -159,6 +159,22 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 view.getTaskPagingToolBar().refresh();
+            }
+        });
+        view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
+                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
+                    subTaskDetails.add(((BeanModel) record.getModel()).<SubTaskDetail>getBean());
+                }
+                taskDetailService.updateSubTaskDetails(subTaskDetails, new AbstractAsyncCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                        view.getSubTaskPagingToolBar().refresh();
+                    }
+                });
             }
         });
     }
@@ -206,16 +222,17 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     }
 
     private CellEditor createTaskCodeCellEditor() {
-        ComboBox<TaskDto> ccbTask = new ComboBox<TaskDto>();
+        ComboBox<BeanModel> ccbTask = new ComboBox<BeanModel>();
         ccbTask.setStore(taskDtoListStore);
         ccbTask.setLazyRender(false);
         ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
         ccbTask.setForceSelection(true);
-        ccbTask.getView().setModelProcessor(new ModelProcessor<TaskDto>() {
+        ccbTask.getView().setModelProcessor(new ModelProcessor<BeanModel>() {
             @Override
-            public TaskDto prepareData(TaskDto model) {
-                model.set("text", model.getCode() +
-                        " - " + model.getName());
+            public BeanModel prepareData(BeanModel model) {
+                Task task = model.getBean();
+                model.set("text", task.getCode() +
+                        " - " + task.getName());
                 return model;
             }
         });
@@ -223,17 +240,20 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         return new CellEditor(ccbTask);
     }
 
-    private ListStore<TaskDto> createTaskDtoListStore() {
-        final ListStore<TaskDto> taskDtos = new ListStore<TaskDto>();
+    private ListStore<BeanModel> createTaskDtoListStore() {
+        final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
         LoadingUtils.showLoading();
-        taskService.getAllTaskDtos(new AbstractAsyncCallback<List<TaskDto>>() {
+        taskService.getAllTasks(new AbstractAsyncCallback<List<Task>>() {
             @Override
-            public void onSuccess(List<TaskDto> result) {
+            public void onSuccess(List<Task> result) {
                 super.onSuccess(result);
-                taskDtos.add(result);
+                for (Task task : result) {
+                    listStore.add(factory.createModel(task));
+                }
             }
         });
-        return taskDtos;
+        return listStore;
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {

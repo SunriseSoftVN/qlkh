@@ -45,6 +45,7 @@ public interface TaskDetailService extends RemoteService<TaskDetailService> {
     void updateTaskDetails(List<TaskDetail> taskDetails);
     void updateTaskDetailDtos(List<TaskDetailDto> taskDetails);
     void updateSubTaskAnnualDetails(List<SubTaskAnnualDetail> subTaskAnnualDetails);
+    void updateSubTaskDetails(List<SubTaskDetail> subTaskDetails);
     void deleteTaskDetail(long taskDetailId);
     void deleteTaskDetails(List<Long> taskDetailIds);
 

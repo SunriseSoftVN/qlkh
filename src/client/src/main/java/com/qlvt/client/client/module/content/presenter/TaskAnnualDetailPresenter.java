@@ -98,8 +98,13 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
                         int index = se.getSelection().size() - 1;
                         if (index >= 0) {
-                            currentTaskDetail = se.getSelection().get(index).getBean();
-                            view.getSubTaskPagingToolBar().refresh();
+                            TaskDetail taskDetail = se.getSelection().get(index).getBean();
+                            if (taskDetail.getId() != null) {
+                                currentTaskDetail = taskDetail;
+                                view.getSubTaskPagingToolBar().refresh();
+                            } else {
+                                emptySubGird();
+                            }
                         }
                     }
                 });
@@ -157,6 +162,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             @Override
             public void componentSelected(ButtonEvent ce) {
                 view.getTaskPagingToolBar().refresh();
+                emptySubGird();
             }
         });
         view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -311,5 +317,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 }
             }
         });
+    }
+
+    private void emptySubGird() {
+        view.getSubTaskDetailGird().getStore().removeAll();
     }
 }

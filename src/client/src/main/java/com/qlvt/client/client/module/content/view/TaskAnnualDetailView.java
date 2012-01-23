@@ -198,12 +198,10 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         subTaskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
-                if (e.getKeyCode() == 112) {
-                    btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                if (e.getKeyCode() == 113) {
+                    btnSubTaskSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnSubTaskCancel.fireEvent(Events.Select);
                 }
             }
         });
