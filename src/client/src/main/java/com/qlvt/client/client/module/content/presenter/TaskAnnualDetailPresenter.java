@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskAnnualDetailPlace;
@@ -32,6 +33,7 @@ import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.client.client.utils.NumberUtils;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
@@ -42,9 +44,7 @@ import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * The Class TaskAnnualDetailPresenter.
@@ -73,7 +73,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 taskDtoListStore = createTaskDtoListStore();
                 ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
             }
-            view.getTaskPagingToolBar().refresh();
+            resetView();
         }
         if (view.getTaskDetailGird() != null) {
             view.getTaskDetailGird().focus();
@@ -92,7 +92,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 view.setTaskCodeCellEditor(createTaskCodeCellEditor());
                 view.createTaskGrid(createTaskListStore());
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-                view.getTaskPagingToolBar().refresh();
+                resetView();
                 view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
@@ -143,7 +143,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             public void componentSelected(ButtonEvent ce) {
                 List<TaskDetail> taskDetails = new ArrayList<TaskDetail>();
                 for (Record record : view.getTaskDetailGird().getStore().getModifiedRecords()) {
-                    taskDetails.add(((BeanModel)record.getModel()).<TaskDetail>getBean());
+                    taskDetails.add(((BeanModel) record.getModel()).<TaskDetail>getBean());
                 }
                 if (CollectionsUtils.isNotEmpty(taskDetails)) {
                     LoadingUtils.showLoading();
@@ -152,7 +152,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getTaskPagingToolBar().refresh();
+                            resetView();
                         }
                     });
                 }
@@ -161,8 +161,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getTaskPagingToolBar().refresh();
-                emptySubGird();
+                resetView();
             }
         });
         view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -179,6 +178,41 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                         view.getSubTaskPagingToolBar().refresh();
                     }
                 });
+            }
+        });
+        view.getTxtSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                String st = view.getTxtSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskDetailGird().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        Integer code = null;
+                        if (NumberUtils.isNumber(st)) {
+                            code = Integer.parseInt(st);
+                        }
+                        filters.put("task.name", view.getTxtSearch().getValue());
+                        if (code != null) {
+                            filters.put("task.code", code);
+                        }
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    resetView();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new com.google.gwt.user.client.Timer() {
+                        @Override
+                        public void run() {
+                            resetView();
+                        }
+                    };
+                    timer.schedule(100);
+                }
             }
         });
     }
@@ -293,7 +327,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             public void onSuccess(Void result) {
                 super.onSuccess(result);
                 //Reload grid.
-                view.getTaskPagingToolBar().refresh();
+                resetView();
                 DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
             }
         };
@@ -320,6 +354,21 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     }
 
     private void emptySubGird() {
-        view.getSubTaskDetailGird().getStore().removeAll();
+        if (view.getSubTaskDetailGird() != null) {
+            view.getSubTaskDetailGird().getStore().removeAll();
+        }
+    }
+
+    private void resetFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskDetailGird().
+                getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtSearch().clear();
+    }
+
+    private void resetView() {
+        view.getTaskPagingToolBar().refresh();
+        emptySubGird();
     }
 }

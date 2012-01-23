@@ -143,7 +143,6 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
                         joinEntityName = getRootEntityName(filter);
                         if (StringUtils.isNotEmpty(joinEntityName)) {
                             criteria.createAlias(joinEntityName, joinEntityName);
-
                         }
                     }
                     Criterion likeCriterion;
@@ -201,7 +200,6 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
                         joinEntityName = getRootEntityName(filter);
                         if (StringUtils.isNotEmpty(joinEntityName)) {
                             criteria.createAlias(joinEntityName, joinEntityName);
-
                         }
                     }
                     Criterion likeCriterion;

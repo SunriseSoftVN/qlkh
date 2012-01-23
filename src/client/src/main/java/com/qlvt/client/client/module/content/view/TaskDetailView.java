@@ -358,4 +358,8 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public Button getBtnSubTaskSave() {
         return btnSubTaskSave;
     }
+
+    public TextField<String> getTxtSearch() {
+        return txtSearch;
+    }
 }

@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskDetailPlace;
@@ -32,6 +33,7 @@ import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.client.client.utils.NumberUtils;
 import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
@@ -43,9 +45,7 @@ import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * The Class TaskDetailPresenter.
@@ -75,7 +75,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 taskDtoListStore = createTaskDtoListStore();
                 ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
             }
-            view.getTaskPagingToolBar().refresh();
+            resetView();
         }
         if (view.getTaskDetailGird() != null) {
             view.getTaskDetailGird().focus();
@@ -94,7 +94,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 view.setTaskCodeCellEditor(createTaskCodeCellEditor());
                 view.createTaskGrid(createTaskListStore());
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-                view.getTaskPagingToolBar().refresh();
+                resetView();
                 view.getTaskDetailGird().focus();
                 view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                     @Override
@@ -149,7 +149,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getTaskPagingToolBar().refresh();
+                            resetView();
                         }
                     });
                 }
@@ -158,7 +158,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                view.getTaskPagingToolBar().refresh();
+                resetView();
             }
         });
         view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -175,6 +175,41 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                         view.getSubTaskPagingToolBar().refresh();
                     }
                 });
+            }
+        });
+        view.getTxtSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                String st = view.getTxtSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskDetailGird().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        Integer code = null;
+                        if (NumberUtils.isNumber(st)) {
+                            code = Integer.parseInt(st);
+                        }
+                        filters.put("task.name", view.getTxtSearch().getValue());
+                        if (code != null) {
+                            filters.put("task.code", code);
+                        }
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    resetView();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new com.google.gwt.user.client.Timer() {
+                        @Override
+                        public void run() {
+                            resetView();
+                        }
+                    };
+                    timer.schedule(100);
+                }
             }
         });
     }
@@ -289,7 +324,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void onSuccess(Void result) {
                 super.onSuccess(result);
                 //Reload grid.
-                view.getTaskPagingToolBar().refresh();
+                resetView();
                 DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
             }
         };
@@ -313,5 +348,24 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 }
             }
         });
+    }
+
+    private void emptySubGird() {
+        if (view.getSubTaskDetailGird() != null) {
+            view.getSubTaskDetailGird().getStore().removeAll();
+        }
+    }
+
+    private void resetFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskDetailGird().
+                getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtSearch().clear();
+    }
+
+    private void resetView() {
+        view.getTaskPagingToolBar().refresh();
+        emptySubGird();
     }
 }

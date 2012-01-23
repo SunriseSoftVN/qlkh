@@ -389,4 +389,8 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public Button getBtnSubTaskSave() {
         return btnSubTaskSave;
     }
+
+    public TextField<String> getTxtSearch() {
+        return txtSearch;
+    }
 }
