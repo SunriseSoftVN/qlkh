@@ -136,8 +136,17 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
             Map<String, Object> filters = config.get("filters");
             if (filters != null) {
                 Criterion criterion = null;
+                String joinEntityName = null;
                 for (String filter : filters.keySet()) {
-                    Criterion likeCriterion = null;
+                    if (joinEntityName == null 
+                            || !joinEntityName.equals(getRootEntityName(filter))) {
+                        joinEntityName = getRootEntityName(filter);
+                        if (StringUtils.isNotEmpty(joinEntityName)) {
+                            criteria.createAlias(joinEntityName, joinEntityName);
+
+                        }
+                    }
+                    Criterion likeCriterion;
                     Object filterValue = filters.get(filter);
                     if (filterValue instanceof String) {
                         likeCriterion = Restrictions.like(filter, ((String) filterValue).trim(), MatchMode.ANYWHERE).ignoreCase();
@@ -185,8 +194,17 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
             Map<String, Object> filters = config.get("filters");
             if (filters != null) {
                 Criterion criterion = null;
+                String joinEntityName = null;
                 for (String filter : filters.keySet()) {
-                    Criterion likeCriterion = null;
+                    if (joinEntityName == null 
+                            || !joinEntityName.equals(getRootEntityName(filter))) {
+                        joinEntityName = getRootEntityName(filter);
+                        if (StringUtils.isNotEmpty(joinEntityName)) {
+                            criteria.createAlias(joinEntityName, joinEntityName);
+
+                        }
+                    }
+                    Criterion likeCriterion;
                     Object filterValue = filters.get(filter);
                     if (filterValue instanceof String) {
                         likeCriterion = Restrictions.like(filter, ((String) filterValue).trim(), MatchMode.ANYWHERE).ignoreCase();
@@ -215,6 +233,17 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         }
         closeSession();
         return 0;
+    }
+
+    protected String getRootEntityName(String path) {
+        String entityName = StringUtils.EMPTY;
+        if (StringUtils.isNotBlank(path)) {
+            int index = path.indexOf(".");
+            if (index > 0) {
+                entityName = path.substring(0, index);
+            }
+        }
+        return entityName;
     }
 
     protected void openSession() {
