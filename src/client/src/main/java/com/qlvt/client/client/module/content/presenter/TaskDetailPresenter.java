@@ -34,7 +34,6 @@ import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.client.client.utils.NumberUtils;
-import com.qlvt.core.client.dto.TaskDetailDto;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.Task;
@@ -297,7 +296,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
             if (CollectionsUtils.isNotEmpty(models)) {
                 if (models.size() == 1) {
-                    final TaskDetailDto taskDetail = models.get(0).getBean();
+                    final TaskDetail taskDetail = models.get(0).getBean();
                     showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
                 } else {
                     List<Long> taskDetailIds = new ArrayList<Long>(models.size());
