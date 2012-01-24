@@ -21,14 +21,13 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -77,20 +76,41 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
+    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+
+    @I18nField
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    NumberField txtTaskCode = new NumberField();
+
+    @I18nField
+    TextField<String> txtTaskName = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtTaskUnit = new TextField<String>();
+
+    @I18nField
+    NumberField txtTaskDefault = new NumberField();
+
+    @I18nField
+    Button btnTaskEditOk = new Button();
+
+    @I18nField
+    Button btnTaskEditCancel = new Button();
 
     @I18nField(emptyText = true)
     TextField<String> txtSearch = new TextField<String>();
 
+
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
-    private EditorGrid<BeanModel> taskGird;
+    private Grid<BeanModel> taskGird;
+
+    private FormPanel taskEditPanel = new FormPanel();
 
     /**
      * Create Grid on View.
@@ -98,7 +118,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        taskGird = new EditorGrid<BeanModel>(listStore, cm);
+        taskGird = new Grid<BeanModel>(listStore, cm);
         taskGird.setBorders(true);
         taskGird.setLoadMask(true);
         taskGird.setStripeRows(true);
@@ -112,9 +132,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -126,11 +146,11 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnEdit);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnCancel);
+        toolBar.add(btnRefresh);
 
         contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(taskGird);
@@ -164,36 +184,67 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         columnConfigs.add(sttColumnConfig);
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
-        NumberField taskCodeNumberField = new NumberField() {
-            @Override
-            public Number getValue() {
-                return ((Double) super.getValue()).intValue();
-            }
-        };
-        taskCodeNumberField.setSelectOnFocus(true);
-        taskCodeColumnConfig.setEditor(new CellEditor(taskCodeNumberField));
         columnConfigs.add(taskCodeColumnConfig);
         ColumnConfig stationNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
                 TASK_NAME_WIDTH);
-        TextField<String> stationNameTextField = new TextField<String>();
-        stationNameTextField.setSelectOnFocus(true);
-        stationNameColumnConfig.setEditor(new CellEditor(stationNameTextField));
         columnConfigs.add(stationNameColumnConfig);
 
         ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
                 TASK_UNIT_WIDTH);
-        TextField<String> unitTextField = new TextField<String>();
-        unitTextField.setSelectOnFocus(true);
-        unitColumnConfig.setEditor(new CellEditor(unitTextField));
         columnConfigs.add(unitColumnConfig);
 
         ColumnConfig defaultValueColumnConfig = new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
                 TASK_DEFAULT_VALUE_WIDTH);
-        NumberField defaultValueNumberField = new NumberField();
-        defaultValueNumberField.setSelectOnFocus(true);
-        defaultValueColumnConfig.setEditor(new CellEditor(defaultValueNumberField));
         columnConfigs.add(defaultValueColumnConfig);
         return columnConfigs;
+    }
+
+    public com.extjs.gxt.ui.client.widget.Window createNewUserWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!taskEditPanel.isRendered()) {
+            taskEditPanel.setHeaderVisible(false);
+            taskEditPanel.setBodyBorder(false);
+            taskEditPanel.setBorders(false);
+            taskEditPanel.setLabelWidth(120);
+        }
+
+        if (!txtTaskCode.isRendered()) {
+            txtTaskCode.setAllowBlank(false);
+            txtTaskCode.setSelectOnFocus(true);
+        }
+        taskEditPanel.add(txtTaskCode);
+        window.setFocusWidget(txtTaskCode);
+
+        if (!txtTaskName.isRendered()) {
+            txtTaskName.setAllowBlank(false);
+            txtTaskName.setSelectOnFocus(true);
+        }
+        taskEditPanel.add(txtTaskName);
+
+        if (!txtTaskUnit.isRendered()) {
+            txtTaskUnit.setSelectOnFocus(true);
+        }
+        taskEditPanel.add(txtTaskUnit);
+
+        if (!txtTaskDefault.isRendered()) {
+            txtTaskDefault.setSelectOnFocus(true);
+        }
+        taskEditPanel.add(txtTaskDefault);
+
+        window.add(taskEditPanel);
+        window.addButton(btnTaskEditOk);
+        window.addButton(btnTaskEditCancel);
+        window.setSize(380, 200);
+        window.setResizable(false);
+        window.setHeading(getConstant().taskEditPanel());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                taskEditPanel.reset();
+                taskGird.focus();
+            }
+        });
+        return window;
     }
 
     public Button getBtnAdd() {
@@ -204,23 +255,51 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return btnDelete;
     }
 
-    public Button getBtnSave() {
-        return btnSave;
+    public Button getBtnEdit() {
+        return btnEdit;
     }
 
-    public Button getBtnCancel() {
-        return btnCancel;
+    public Button getBtnRefresh() {
+        return btnRefresh;
     }
 
     public PagingToolBar getPagingToolBar() {
         return pagingToolBar;
     }
 
-    public EditorGrid<BeanModel> getTaskGird() {
+    public Grid<BeanModel> getTaskGird() {
         return taskGird;
     }
 
     public TextField<String> getTxtSearch() {
         return txtSearch;
+    }
+
+    public FormPanel getTaskEditPanel() {
+        return taskEditPanel;
+    }
+
+    public Button getBtnTaskEditCancel() {
+        return btnTaskEditCancel;
+    }
+
+    public Button getBtnTaskEditOk() {
+        return btnTaskEditOk;
+    }
+
+    public NumberField getTxtTaskDefault() {
+        return txtTaskDefault;
+    }
+
+    public TextField<String> getTxtTaskUnit() {
+        return txtTaskUnit;
+    }
+
+    public TextField<String> getTxtTaskName() {
+        return txtTaskName;
+    }
+
+    public NumberField getTxtTaskCode() {
+        return txtTaskCode;
     }
 }

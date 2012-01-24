@@ -22,7 +22,7 @@ package com.qlvt.client.client.module.content.presenter;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -54,6 +54,9 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
+    private Window taskEditWindow;
+    private Task currentTask;
+
     @Override
     public void onActivate() {
         view.show();
@@ -68,54 +71,31 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Task task = new Task();
-                task.setCreateBy(1l);
-                task.setUpdateBy(1l);
-                task.setCreatedDate(new Date());
-                task.setUpdatedDate(new Date());
-                BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
-                BeanModel model = factory.createModel(task);
-                view.getTaskGird().getStore().insert(model, view.getTaskGird().getStore().getCount());
-                view.getTaskGird().getView().ensureVisible(view.getTaskGird()
-                        .getStore().getCount() - 1, 0, true);
-                view.getTaskGird().startEditing(view.getTaskGird().getStore()
-                        .getCount() - 1, 2);
+                taskEditWindow = view.createNewUserWindow();
+                view.getTaskEditPanel().clear();
+                currentTask = new Task();
+                taskEditWindow.show();
             }
         });
-        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 resetFilter();
                 view.getPagingToolBar().refresh();
             }
         });
-        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<Task> tasks = new ArrayList<Task>();
-                for (Record record : view.getTaskGird().getStore().getModifiedRecords()) {
-                    tasks.add(((BeanModel) record.getModel()).<Task>getBean());
-                }
-                if (CollectionsUtils.isNotEmpty(tasks)) {
-                    LoadingUtils.showLoading();
-                    taskService.updateTasks(tasks, new AbstractAsyncCallback<Void>() {
-                        @Override
-                        public void onFailure(Throwable caught) {
-                            if (caught instanceof CodeExistException) {
-                                DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
-                                LoadingUtils.hideLoading();
-                            } else {
-                                super.onFailure(caught);
-                            }
-                        }
-
-                        @Override
-                        public void onSuccess(Void result) {
-                            super.onSuccess(result);
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getPagingToolBar().refresh();
-                        }
-                    });
+                if (view.getTaskGird().getSelectionModel().getSelectedItem() != null) {
+                    Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                    taskEditWindow = view.createNewUserWindow();
+                    view.getTxtTaskCode().setValue(selectedTask.getCode());
+                    view.getTxtTaskName().setValue(selectedTask.getName());
+                    view.getTxtTaskUnit().setValue(selectedTask.getUnit());
+                    view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
+                    currentTask = selectedTask;
+                    taskEditWindow.show();
                 }
             }
         });
@@ -152,6 +132,41 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         }
                     };
                     timer.schedule(100);
+                }
+            }
+        });
+
+        view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if(view.getTaskEditPanel().isValid()) {
+                    currentTask.setCode(view.getTxtTaskCode().getValue().intValue());
+                    currentTask.setName(view.getTxtTaskName().getValue());
+                    currentTask.setUnit(view.getTxtTaskUnit().getValue());
+                    if (view.getTxtTaskDefault().getValue() != null) {
+                        currentTask.setDefaultValue(view.getTxtTaskDefault().getValue().doubleValue());
+                    }
+                    currentTask.setCreateBy(1l);
+                    currentTask.setUpdateBy(1l);
+                    currentTask.setCreatedDate(new Date());
+                    currentTask.setUpdatedDate(new Date());
+                    taskService.updateTask(currentTask, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof CodeExistException) {
+                                DiaLogUtils.logAndShowErrorMessage(view.getConstant().existCodeMessage(), caught);
+                            } else {
+                                super.onFailure(caught);
+                            }
+                        }
+
+                        @Override
+                        public void onSuccess(Void result) {
+                            super.onSuccess(result);
+                            view.getPagingToolBar().refresh();
+                            taskEditWindow.hide();
+                        }
+                    });
                 }
             }
         });

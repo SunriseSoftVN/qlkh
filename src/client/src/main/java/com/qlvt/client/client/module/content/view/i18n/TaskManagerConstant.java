@@ -30,8 +30,8 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface TaskManagerConstant extends Constants {
     String btnDelete();
     String btnAdd();
-    String btnSave();
-    String btnCancel();
+    String btnEdit();
+    String btnRefresh();
     String sttColumnTitle();
     String taskNameColumnTitle();
     String taskCodeColumnTitle();
@@ -43,4 +43,11 @@ public interface TaskManagerConstant extends Constants {
     String saveMessageSuccess();
     String existCodeMessage();
     String txtSearch();
+    String taskEditPanel();
+    String btnTaskEditOk();
+    String btnTaskEditCancel();
+    String txtTaskName();
+    String txtTaskCode();
+    String txtTaskUnit();
+    String txtTaskDefault();
 }
