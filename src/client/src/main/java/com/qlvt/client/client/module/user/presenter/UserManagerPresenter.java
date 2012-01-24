@@ -98,9 +98,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (newUserWindow == null) {
-                    newUserWindow = view.createNewUserWindow();
-                }
+                newUserWindow = view.createNewUserWindow();
                 newUserWindow.show();
             }
         });
@@ -221,47 +219,45 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         ancChangePassword.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                {
-                    final Window changePasswordWindow = view.createChangePassWordWindow();
-                    changePasswordWindow.show();
-                    view.getBtnChangePassWordOk().removeAllListeners();
-                    view.getBtnChangePassWordOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            String newPass = view.getTxtNewPass().getValue();
-                            String comPass = view.getTxtConfirmPass().getValue();
-                            if (StringUtils.isNotBlank(newPass) && newPass.equals(comPass)
-                                    && view.getChangePasswordPanel().isValid()) {
-                                User user = model.getBean();
-                                user.setPassWord(LoginUtils.md5hash(newPass));
-                                userService.updateUser(user, new AbstractAsyncCallback<Void>() {
-                                    @Override
-                                    public void onSuccess(Void result) {
-                                        super.onSuccess(result);
-                                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                                        beanModelListStore.update(model);
-                                        changePasswordWindow.hide();
-                                    }
-                                });
-                            } else {
-                                DiaLogUtils.showMessage(view.getConstant().passWordErrorMessage());
-                            }
+                final Window changePasswordWindow = view.createChangePassWordWindow();
+                changePasswordWindow.show();
+                view.getBtnChangePassWordOk().removeAllListeners();
+                view.getBtnChangePassWordOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        String newPass = view.getTxtNewPass().getValue();
+                        String comPass = view.getTxtConfirmPass().getValue();
+                        if (StringUtils.isNotBlank(newPass) && newPass.equals(comPass)
+                                && view.getChangePasswordPanel().isValid()) {
+                            User user = model.getBean();
+                            user.setPassWord(LoginUtils.md5hash(newPass));
+                            userService.updateUser(user, new AbstractAsyncCallback<Void>() {
+                                @Override
+                                public void onSuccess(Void result) {
+                                    super.onSuccess(result);
+                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                    beanModelListStore.update(model);
+                                    changePasswordWindow.hide();
+                                }
+                            });
+                        } else {
+                            DiaLogUtils.showMessage(view.getConstant().passWordErrorMessage());
                         }
-                    });
-                    view.getBtnChangePassWordCancel().removeAllListeners();
-                    view.getBtnChangePassWordCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
-                        @Override
-                        public void componentSelected(ButtonEvent ce) {
-                            changePasswordWindow.hide();
-                        }
-                    });
-                    changePasswordWindow.addWindowListener(new WindowListener() {
-                        @Override
-                        public void windowHide(WindowEvent we) {
-                            view.getChangePasswordPanel().clear();
-                        }
-                    });
-                }
+                    }
+                });
+                view.getBtnChangePassWordCancel().removeAllListeners();
+                view.getBtnChangePassWordCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                    @Override
+                    public void componentSelected(ButtonEvent ce) {
+                        changePasswordWindow.hide();
+                    }
+                });
+                changePasswordWindow.addWindowListener(new WindowListener() {
+                    @Override
+                    public void windowHide(WindowEvent we) {
+                        view.getChangePasswordPanel().clear();
+                    }
+                });
             }
         });
         return ancChangePassword;

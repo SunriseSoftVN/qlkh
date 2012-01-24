@@ -306,6 +306,12 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         window.setSize(380, 150);
         window.setResizable(false);
         window.setHeading(getConstant().btnChangePassword());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                usersGrid.focus();
+            }
+        });
         return window;
     }
 
