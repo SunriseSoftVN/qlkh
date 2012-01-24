@@ -24,9 +24,11 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.UserService;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
 
@@ -58,8 +60,12 @@ public class UserServiceImpl extends AbstractService implements UserService {
     }
 
     @Override
-    public void updateUser(User user) {
-        userDao.saveOrUpdate(user);
+    public void updateUser(User user) throws CodeExistException {
+        try {
+            userDao.saveOrUpdate(user);
+        } catch (ConstraintViolationException ex) {
+            throw new CodeExistException(ex.getMessage());
+        }
     }
 
     @Override

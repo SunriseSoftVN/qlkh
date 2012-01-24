@@ -21,9 +21,7 @@ package com.qlvt.client.client.module.user.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -87,10 +85,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
-
-    @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
     TextField<String> txtNewPass = new TextField<String>();
@@ -121,14 +116,12 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     private ContentPanel contentPanel = new ContentPanel();
     private FormPanel changePasswordPanel;
-    private FormPanel newUserPanel;
+    private FormPanel newUserPanel = new FormPanel();
 
     private PagingToolBar pagingToolBar;
-    private EditorGrid<BeanModel> usersGrid;
+    private Grid<BeanModel> usersGrid;
 
     private GridCellRenderer<BeanModel> changePasswordCellRenderer;
-
-    private CellEditor stationCellEditor;
 
     /**
      * Create Grid on View.
@@ -136,7 +129,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        usersGrid = new EditorGrid<BeanModel>(listStore, cm);
+        usersGrid = new Grid<BeanModel>(listStore, cm);
         usersGrid.setBorders(true);
         usersGrid.setLoadMask(true);
         usersGrid.setStripeRows(true);
@@ -149,10 +142,8 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -164,9 +155,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnCancel);
+        toolBar.add(btnRefresh);
 
         contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(usersGrid);
@@ -215,7 +204,6 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
                 return new Text(st);
             }
         });
-        userStationColumnConfig.setEditor(getStationCellEditor());
         columnConfigs.add(userStationColumnConfig);
 
         ColumnConfig userRoleColumnConfig = new ColumnConfig(USER_ROLE_COLUMN, getConstant().userRoleColumnTitle(),
@@ -231,11 +219,12 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     public Window createNewUserWindow() {
         Window window = new Window();
-        newUserPanel = new FormPanel();
-        newUserPanel.setHeaderVisible(false);
-        newUserPanel.setBodyBorder(false);
-        newUserPanel.setBorders(false);
-        newUserPanel.setLabelWidth(120);
+        if (!newUserPanel.isRendered()) {
+            newUserPanel.setHeaderVisible(false);
+            newUserPanel.setBodyBorder(false);
+            newUserPanel.setBorders(false);
+            newUserPanel.setLabelWidth(120);
+        }
 
         if (!txtUserName.isRendered()) {
             txtUserName.setAllowBlank(false);
@@ -280,6 +269,14 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         window.setSize(380, 220);
         window.setResizable(false);
         window.setHeading(getConstant().newUsetWindowTitle());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                getNewUserPanel().clear();
+                getCbbUserRole().setSimpleValue(UserRoleEnum.USER);
+                getUsersGrid().focus();
+            }
+        });
         return window;
     }
 
@@ -328,12 +325,8 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         return btnDelete;
     }
 
-    public Button getBtnCancel() {
-        return btnCancel;
-    }
-
-    public Button getBtnSave() {
-        return btnSave;
+    public Button getBtnRefresh() {
+        return btnRefresh;
     }
 
     public GridCellRenderer<BeanModel> getChangePasswordCellRenderer() {
@@ -382,14 +375,6 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     public FormPanel getNewUserPanel() {
         return newUserPanel;
-    }
-
-    public CellEditor getStationCellEditor() {
-        return stationCellEditor;
-    }
-
-    public void setStationCellEditor(CellEditor stationCellEditor) {
-        this.stationCellEditor = stationCellEditor;
     }
 
     public ComboBox<BeanModel> getCbbUserStation() {

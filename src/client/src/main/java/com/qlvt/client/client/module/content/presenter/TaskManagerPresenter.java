@@ -71,7 +71,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                taskEditWindow = view.createNewUserWindow();
+                taskEditWindow = view.createTaskEditWindow();
                 view.getTaskEditPanel().clear();
                 currentTask = new Task();
                 taskEditWindow.show();
@@ -89,7 +89,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             public void componentSelected(ButtonEvent ce) {
                 if (view.getTaskGird().getSelectionModel().getSelectedItem() != null) {
                     Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
-                    taskEditWindow = view.createNewUserWindow();
+                    taskEditWindow = view.createTaskEditWindow();
                     view.getTxtTaskCode().setValue(selectedTask.getCode());
                     view.getTxtTaskName().setValue(selectedTask.getName());
                     view.getTxtTaskUnit().setValue(selectedTask.getUnit());

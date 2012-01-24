@@ -35,8 +35,8 @@ public interface UserManagerConstant extends Constants {
     String passWordColumnTitle();
     String btnDelete();
     String btnAdd();
-    String btnSave();
-    String btnCancel();
+    String btnEdit();
+    String btnRefresh();
     String btnChangePassword();
     String saveMessageSuccess();
     String deleteUserMessageSuccess();
@@ -53,4 +53,6 @@ public interface UserManagerConstant extends Constants {
     String newUsetWindowTitle();
     String cbbUserStation();
     String deleteAdminOrManagerMessage();
+    String userExitsErrorMessage();
+    String passWordErrorMessage();
 }

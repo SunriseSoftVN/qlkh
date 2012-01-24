@@ -23,10 +23,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
@@ -35,7 +32,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
 import com.qlvt.client.client.service.StationService;
@@ -45,6 +41,7 @@ import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.constant.UserRoleEnum;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
@@ -70,7 +67,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     private StationServiceAsync stationService = StationService.App.getInstance();
 
     private ListStore<BeanModel> stationListStore;
-
     private Window newUserWindow;
 
     @Override
@@ -80,7 +76,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             //reload stations list.
             stationListStore = createStationListStore();
             view.getCbbUserStation().setStore(stationListStore);
-            ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
         view.getUsersGrid().focus();
@@ -91,33 +86,12 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         stationListStore = createStationListStore();
         view.getCbbUserStation().setStore(stationListStore);
         view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
-        view.setStationCellEditor(createStationCellEditor());
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getUsersGrid().getStore().getLoader());
-        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 view.getPagingToolBar().refresh();
-            }
-        });
-        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                List<User> users = new ArrayList<User>();
-                for (Record record : view.getUsersGrid().getStore().getModifiedRecords()) {
-                    users.add(((BeanModel) record.getModel()).<User>getBean());
-                }
-                if (CollectionsUtils.isNotEmpty(users)) {
-                    LoadingUtils.showLoading();
-                    userService.updateUsers(users, new AbstractAsyncCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            super.onSuccess(result);
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getPagingToolBar().refresh();
-                        }
-                    });
-                }
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
@@ -126,14 +100,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             public void componentSelected(ButtonEvent ce) {
                 if (newUserWindow == null) {
                     newUserWindow = view.createNewUserWindow();
-                    newUserWindow.addWindowListener(new WindowListener() {
-                        @Override
-                        public void windowHide(WindowEvent we) {
-                            view.getNewUserPanel().clear();
-                            view.getCbbUserRole().setSimpleValue(UserRoleEnum.USER);
-                            view.getUsersGrid().focus();
-                        }
-                    });
                 }
                 newUserWindow.show();
             }
@@ -157,6 +123,16 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         LoadingUtils.showLoading();
                         userService.updateUser(user, new AbstractAsyncCallback<Void>() {
                             @Override
+                            public void onFailure(Throwable caught) {
+                                LoadingUtils.hideLoading();
+                                if (caught instanceof CodeExistException) {
+                                    DiaLogUtils.logAndShowErrorMessage(view.getConstant().userExitsErrorMessage(), caught);
+                                } else {
+                                    super.onFailure(caught);
+                                }
+                            }
+
+                            @Override
                             public void onSuccess(Void result) {
                                 super.onSuccess(result);
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
@@ -164,6 +140,8 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                                 view.getPagingToolBar().refresh();
                             }
                         });
+                    } else {
+                        DiaLogUtils.showMessage(view.getConstant().passWordErrorMessage());
                     }
                 }
             }
@@ -256,7 +234,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                                     && view.getChangePasswordPanel().isValid()) {
                                 User user = model.getBean();
                                 user.setPassWord(LoginUtils.md5hash(newPass));
-                                LoadingUtils.showLoading();
                                 userService.updateUser(user, new AbstractAsyncCallback<Void>() {
                                     @Override
                                     public void onSuccess(Void result) {
@@ -266,6 +243,8 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                                         changePasswordWindow.hide();
                                     }
                                 });
+                            } else {
+                                DiaLogUtils.showMessage(view.getConstant().passWordErrorMessage());
                             }
                         }
                     });
@@ -326,15 +305,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 }
             }
         });
-    }
-
-    private CellEditor createStationCellEditor() {
-        final ComboBox<BeanModel> ccbStation = new ComboBox<BeanModel>();
-        ccbStation.setStore(stationListStore);
-        ccbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
-        ccbStation.setForceSelection(true);
-        ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
-        return new CellEditor(ccbStation);
     }
 
     private ListStore<BeanModel> createStationListStore() {

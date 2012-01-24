@@ -199,7 +199,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return columnConfigs;
     }
 
-    public com.extjs.gxt.ui.client.widget.Window createNewUserWindow() {
+    public com.extjs.gxt.ui.client.widget.Window createTaskEditWindow() {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         if (!taskEditPanel.isRendered()) {
             taskEditPanel.setHeaderVisible(false);

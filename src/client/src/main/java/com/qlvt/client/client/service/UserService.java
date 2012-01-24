@@ -24,6 +24,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
@@ -39,7 +40,7 @@ import java.util.List;
 public interface UserService extends RemoteService<UserService> {
 
     void updateUsers(List<User> users);
-    void updateUser(User user);
+    void updateUser(User user) throws CodeExistException;
     void deleteUserById(long userId);
     void deleteUserByIds(List<Long> userIds);
     BasePagingLoadResult<User> getUsersForGrid(BasePagingLoadConfig config);
