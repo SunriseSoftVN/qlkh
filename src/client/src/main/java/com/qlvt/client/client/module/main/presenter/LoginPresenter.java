@@ -87,7 +87,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof UserAuthenticationException) {
-                    DiaLogUtils.showMessage("The username or password you entered is incorrect");
+                    DiaLogUtils.showMessage(view.getConstant().worngUserNameOrPassword());
                 } else {
                     super.onFailure(caught);
                 }
