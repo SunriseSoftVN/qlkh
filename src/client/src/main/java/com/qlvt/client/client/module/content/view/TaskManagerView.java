@@ -223,11 +223,13 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         if (!txtTaskUnit.isRendered()) {
             txtTaskUnit.setSelectOnFocus(true);
+            txtTaskUnit.setAllowBlank(false);
         }
         taskEditPanel.add(txtTaskUnit);
 
         if (!txtTaskDefault.isRendered()) {
             txtTaskDefault.setSelectOnFocus(true);
+            txtTaskDefault.setAllowBlank(false);
         }
         taskEditPanel.add(txtTaskDefault);
 

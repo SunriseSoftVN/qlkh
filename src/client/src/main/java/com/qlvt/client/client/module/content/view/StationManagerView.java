@@ -75,7 +75,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/Sửa.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
     Button btnStationEditOk = new Button();
