@@ -39,4 +39,6 @@ public interface BranchServiceAsync extends RemoteServiceAsync<BranchServiceAsyn
     void getBranchsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<Branch>> async);
 
     void getBranchByStationId(long stationId, AsyncCallback<List<Branch>> async);
+
+    void updateBranch(Branch branch, AsyncCallback<Void> async);
 }

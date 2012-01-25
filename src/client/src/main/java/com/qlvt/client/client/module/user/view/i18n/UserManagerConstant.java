@@ -50,7 +50,7 @@ public interface UserManagerConstant extends Constants {
     String cbbUserRole();
     String btnNewUserOk();
     String btnNewUserCancel();
-    String newUsetWindowTitle();
+    String newUserWindowTitle();
     String cbbUserStation();
     String deleteAdminOrManagerMessage();
     String userExitsErrorMessage();

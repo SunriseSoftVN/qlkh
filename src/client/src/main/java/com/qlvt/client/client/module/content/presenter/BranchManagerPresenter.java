@@ -25,14 +25,11 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.BranchManagerPlace;
 import com.qlvt.client.client.module.content.view.BranchManagerView;
-import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.service.BranchService;
 import com.qlvt.client.client.service.BranchServiceAsync;
 import com.qlvt.client.client.service.StationService;
@@ -64,6 +61,9 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     private StationServiceAsync stationService = StationService.App.getInstance();
 
     private ListStore<BeanModel> stationListStore;
+    private Branch currentBranch;
+
+    private Window branchEditWindow;
 
     @Override
     public void onActivate() {
@@ -71,7 +71,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         if (stationListStore != null) {
             //reload stations list.
             stationListStore = createStationListStore();
-            ((ComboBox) view.getStationCellEditor().getField()).setStore(stationListStore);
+            view.getCbbStation().setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
         view.getBranchsGird().focus();
@@ -80,11 +80,11 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     @Override
     protected void doBind() {
         stationListStore = createStationListStore();
-        view.setStationCellEditor(createStationCellEditor());
+        view.getCbbStation().setStore(stationListStore);
         view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getBranchsGird().getStore().getLoader());
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
-        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 view.getPagingToolBar().refresh();
@@ -93,39 +93,58 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Branch branch = new Branch();
-                branch.setCreatedDate(new Date());
-                branch.setUpdatedDate(new Date());
-                branch.setCreateBy(1l);
-                branch.setUpdateBy(1l);
-                BeanModelFactory factory = BeanModelLookup.get().getFactory(Branch.class);
-                BeanModel model = factory.createModel(branch);
-                view.getBranchsGird().getStore().insert(model, view.getBranchsGird().getStore().getCount());
-                view.getBranchsGird().getView().ensureVisible(view.getBranchsGird()
-                        .getStore().getCount() - 1, 0, true);
-                view.getBranchsGird().startEditing(view.getBranchsGird().getStore()
-                        .getCount() - 1, 2);
+                branchEditWindow = view.createBranchEditWindow();
+                currentBranch = new Branch();
+                branchEditWindow.show();
             }
         });
-        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<Branch> branches = new ArrayList<Branch>();
-                for (Record record : view.getBranchsGird().getStore().getModifiedRecords()) {
-                    BeanModel model = (BeanModel) record.getModel();
-                    branches.add(model.<Branch>getBean());
+                Branch selectBranch = view.getBranchsGird().getSelectionModel().getSelectedItem().getBean();
+                currentBranch = selectBranch;
+                if (selectBranch != null) {
+                    view.getTxtBranchName().setValue(currentBranch.getName());
+                    BeanModel station = null;
+                    for (BeanModel model : view.getCbbStation().getStore().getModels()) {
+                        if(currentBranch.getStation().getId().
+                                equals(model.<Station>getBean().getId())) {
+                            station = model;
+                        }
+                    }
+                    view.getCbbStation().setValue(station);
+
+                    branchEditWindow = view.createBranchEditWindow();
+                    branchEditWindow.show();
                 }
-                if (CollectionsUtils.isNotEmpty(branches)) {
-                    LoadingUtils.showLoading();
-                    branchService.updateBranchs(branches, new AbstractAsyncCallback<Void>() {
+            }
+        });
+        view.getBtnBranchEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (view.getBranchEditPanel().isValid()) {
+                    currentBranch.setName(view.getTxtBranchName().getValue());
+                    currentBranch.setStation(view.getCbbStation().getValue().<Station>getBean());
+                    currentBranch.setUpdateBy(1l);
+                    currentBranch.setCreateBy(1l);
+                    currentBranch.setUpdatedDate(new Date());
+                    currentBranch.setCreatedDate(new Date());
+                    branchService.updateBranch(currentBranch, new AbstractAsyncCallback<Void>() {
                         @Override
                         public void onSuccess(Void result) {
                             super.onSuccess(result);
-                            view.getPagingToolBar().refresh();
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            view.getPagingToolBar().refresh();
+                            branchEditWindow.hide();
                         }
                     });
                 }
+            }
+        });
+        view.getBtnBranchEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                branchEditWindow.hide();
             }
         });
     }
@@ -220,15 +239,6 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                 }
             }
         });
-    }
-
-    private CellEditor createStationCellEditor() {
-        ComboBox<BeanModel> ccbStation = new ComboBox<BeanModel>();
-        ccbStation.setStore(stationListStore);
-        ccbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
-        ccbStation.setForceSelection(true);
-        ccbStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
-        return new CellEditor(ccbStation);
     }
 
     private ListStore<BeanModel> createStationListStore() {

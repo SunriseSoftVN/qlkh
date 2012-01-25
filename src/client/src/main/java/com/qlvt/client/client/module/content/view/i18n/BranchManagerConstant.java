@@ -30,8 +30,8 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface BranchManagerConstant extends Constants {
     String btnDelete();
     String btnAdd();
-    String btnSave();
-    String btnCancel();
+    String btnEdit();
+    String btnRefresh();
     String branchNameColumnTitle();
     String stationNameColumnTitle();
     String sttColumnTitle();
@@ -40,4 +40,9 @@ public interface BranchManagerConstant extends Constants {
     String deleteBranchMessage();
     String deleteErrorMessage();
     String saveMessageSuccess();
+    String btnBranchEditOk();
+    String btnBranchEditCancel();
+    String branchEditPanelTitle();
+    String txtBranchName();
+    String cbbStation();
 }

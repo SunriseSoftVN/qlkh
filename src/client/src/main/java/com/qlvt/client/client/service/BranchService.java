@@ -41,6 +41,7 @@ public interface BranchService extends RemoteService<BranchService> {
     
     void deleteBranchById(long branchId) throws DeleteException;
     void deleteBranchByIds(List<Long> branchIds) throws DeleteException;
+    void updateBranch(Branch branch);
     void updateBranchs(List<Branch> branchs);
     List<Branch> getBranchByStationId(long stationId);
     List<Branch> getAllBranch();

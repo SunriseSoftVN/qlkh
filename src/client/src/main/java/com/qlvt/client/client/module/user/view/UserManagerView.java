@@ -268,7 +268,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         window.addButton(btnNewUserCancel);
         window.setSize(380, 220);
         window.setResizable(false);
-        window.setHeading(getConstant().newUsetWindowTitle());
+        window.setHeading(getConstant().newUserWindowTitle());
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {

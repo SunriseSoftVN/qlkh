@@ -21,14 +21,14 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -77,16 +77,28 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
+
+    @I18nField
+    Button btnBranchEditOk = new Button();
+
+    @I18nField
+    Button btnBranchEditCancel = new Button();
+
+    @I18nField
+    TextField<String> txtBranchName = new TextField<String>();
+
+    @I18nField
+    ComboBox<BeanModel> cbbStation = new ComboBox<BeanModel>();
 
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
-    private EditorGrid<BeanModel> branchsGird;
+    private Grid<BeanModel> branchsGird;
 
-    private CellEditor stationCellEditor;
+    private FormPanel branchEditPanel = new FormPanel();
 
     /**
      * Create Grid on View.
@@ -94,7 +106,7 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        branchsGird = new EditorGrid<BeanModel>(listStore, cm);
+        branchsGird = new Grid<BeanModel>(listStore, cm);
         branchsGird.setBorders(true);
         branchsGird.setLoadMask(true);
         branchsGird.setStripeRows(true);
@@ -108,9 +120,9 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -119,11 +131,11 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         ToolBar toolBar = new ToolBar();
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnEdit);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnCancel);
+        toolBar.add(btnRefresh);
 
         contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(branchsGird);
@@ -157,7 +169,6 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         columnConfigs.add(sttColumnConfig);
         ColumnConfig branchNameColumnConfig = new ColumnConfig(BRANCH_NAME_COLUMN, getConstant().branchNameColumnTitle(),
                 BRANCH_NAME_WIDTH);
-        branchNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
         columnConfigs.add(branchNameColumnConfig);
 
         ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
@@ -173,9 +184,52 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
                 return new Text(st);
             }
         });
-        stationNameColumnConfig.setEditor(getStationCellEditor());
         columnConfigs.add(stationNameColumnConfig);
         return columnConfigs;
+    }
+
+    public com.extjs.gxt.ui.client.widget.Window createBranchEditWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!branchEditPanel.isRendered()) {
+            branchEditPanel.setHeaderVisible(false);
+            branchEditPanel.setBodyBorder(false);
+            branchEditPanel.setBorders(false);
+            branchEditPanel.setLabelWidth(120);
+        }
+
+        if(!txtBranchName.isRendered()) {
+            txtBranchName.setAllowBlank(false);
+            txtBranchName.setSelectOnFocus(true);
+            txtBranchName.setMinLength(4);
+        }
+
+        branchEditPanel.add(txtBranchName);
+        window.setFocusWidget(txtBranchName);
+
+        if (!cbbStation.isRendered()) {
+            cbbStation.setDisplayField("name");
+            cbbStation.setForceSelection(true);
+            cbbStation.setSelectOnFocus(true);
+            cbbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbStation.setAllowBlank(false);
+        }
+
+        branchEditPanel.add(cbbStation);
+
+        window.add(branchEditPanel);
+        window.addButton(btnBranchEditOk);
+        window.addButton(btnBranchEditCancel);
+        window.setSize(380, 150);
+        window.setResizable(false);
+        window.setHeading(getConstant().branchEditPanelTitle());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                branchEditPanel.clear();
+                branchsGird.focus();
+            }
+        });
+        return window;
     }
 
     public Button getBtnAdd() {
@@ -186,27 +240,39 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         return btnDelete;
     }
 
-    public Button getBtnSave() {
-        return btnSave;
+    public Button getBtnEdit() {
+        return btnEdit;
     }
 
-    public Button getBtnCancel() {
-        return btnCancel;
+    public Button getBtnRefresh() {
+        return btnRefresh;
     }
 
     public PagingToolBar getPagingToolBar() {
         return pagingToolBar;
     }
 
-    public EditorGrid<BeanModel> getBranchsGird() {
+    public Grid<BeanModel> getBranchsGird() {
         return branchsGird;
     }
 
-    public CellEditor getStationCellEditor() {
-        return stationCellEditor;
+    public Button getBtnBranchEditOk() {
+        return btnBranchEditOk;
     }
 
-    public void setStationCellEditor(CellEditor stationCellEditor) {
-        this.stationCellEditor = stationCellEditor;
+    public Button getBtnBranchEditCancel() {
+        return btnBranchEditCancel;
+    }
+
+    public TextField<String> getTxtBranchName() {
+        return txtBranchName;
+    }
+
+    public ComboBox<BeanModel> getCbbStation() {
+        return cbbStation;
+    }
+
+    public FormPanel getBranchEditPanel() {
+        return branchEditPanel;
     }
 }
