@@ -231,6 +231,14 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 taskEditWindow.hide();
             }
         });
+        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (currentTaskDetail != null) {
+                    view.getSubTaskPagingToolBar().refresh();
+                }
+            }
+        });
     }
 
     private ListStore<BeanModel> createTaskListStore() {

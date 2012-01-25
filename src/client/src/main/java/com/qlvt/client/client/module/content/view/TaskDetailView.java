@@ -331,6 +331,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         }
 
         if (!cbbTask.isRendered()) {
+            cbbTask.setLazyRender(false);
             cbbTask.setSelectOnFocus(true);
             cbbTask.setForceSelection(true);
             cbbTask.setAllowBlank(false);

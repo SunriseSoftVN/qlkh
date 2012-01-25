@@ -367,6 +367,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         }
 
         if(!cbbTask.isRendered()) {
+            cbbTask.setLazyRender(false);
             cbbTask.setSelectOnFocus(true);
             cbbTask.setForceSelection(true);
             cbbTask.setAllowBlank(false);
