@@ -32,10 +32,15 @@ import java.util.List;
 
 public interface TaskDetailServiceAsync extends RemoteServiceAsync<TaskDetailServiceAsync> {
     void getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long staionId, AsyncCallback<BasePagingLoadResult<TaskDetail>> async);
+
     void deleteTaskDetail(long taskDetailId, AsyncCallback<Void> async);
+
     void deleteTaskDetails(List<Long> taskDetailIds, AsyncCallback<Void> async);
-    void updateTaskDetail(TaskDetail taskDetail, AsyncCallback<Void> async);
+
+    void updateTaskDetail(TaskDetail taskDetail, AsyncCallback<TaskDetail> async);
+
     void updateTaskDetails(List<TaskDetail> taskDetails, AsyncCallback<Void> async);
+
     void updateTaskDetailDtos(List<TaskDetailDto> taskDetails, AsyncCallback<Void> async);
 
     void getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId, AsyncCallback<BasePagingLoadResult<TaskDetail>> async);

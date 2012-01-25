@@ -213,13 +213,13 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     currentTaskDetail.setUpdateBy(1l);
                     currentTaskDetail.setCreatedDate(new Date());
                     currentTaskDetail.setUpdatedDate(new Date());
-                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<Void>() {
+                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<TaskDetail>() {
                         @Override
-                        public void onSuccess(Void result) {
+                        public void onSuccess(TaskDetail result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             taskEditWindow.hide();
-                            resetView();
+                            updateGrid(result);
                         }
                     });
                 }
@@ -239,6 +239,26 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 }
             }
         });
+    }
+
+    private void updateGrid(TaskDetail taskDetail) {
+        boolean isNotFound = true;
+        BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
+        BeanModel updateModel = factory.createModel(taskDetail);
+        for (BeanModel model : view.getTaskDetailGird().getStore().getModels()) {
+            if (taskDetail.getId().equals(model.<TaskDetail>getBean().getId())) {
+                int index = view.getTaskDetailGird().getStore().indexOf(model);
+                view.getTaskDetailGird().getStore().remove(model);
+                view.getTaskDetailGird().getStore().insert(updateModel, index);
+                isNotFound = false;
+            }
+        }
+        if (isNotFound) {
+            view.getTaskDetailGird().getStore().add(updateModel);
+            view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
+                    .getStore().getCount() -1 , 1 , false);
+        }
+        view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
     }
 
     private ListStore<BeanModel> createSubTaskListStore() {

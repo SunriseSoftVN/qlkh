@@ -24,8 +24,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
@@ -213,13 +211,13 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     currentTaskDetail.setUpdateBy(1l);
                     currentTaskDetail.setCreatedDate(new Date());
                     currentTaskDetail.setUpdatedDate(new Date());
-                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<Void>() {
+                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<TaskDetail>() {
                         @Override
-                        public void onSuccess(Void result) {
+                        public void onSuccess(TaskDetail result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             taskEditWindow.hide();
-                            resetView();
+                            updateGrid(result);
                         }
                     });
                 }
@@ -239,6 +237,26 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 }
             }
         });
+    }
+
+    private void updateGrid(TaskDetail taskDetail) {
+        boolean isNotFound = true;
+        BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
+        BeanModel updateModel = factory.createModel(taskDetail);
+        for (BeanModel model : view.getTaskDetailGird().getStore().getModels()) {
+            if (taskDetail.getId().equals(model.<TaskDetail>getBean().getId())) {
+                int index = view.getTaskDetailGird().getStore().indexOf(model);
+                view.getTaskDetailGird().getStore().remove(model);
+                view.getTaskDetailGird().getStore().insert(updateModel, index);
+                isNotFound = false;
+            }
+        }
+        if (isNotFound) {
+            view.getTaskDetailGird().getStore().add(updateModel);
+            view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
+                    .getStore().getCount() -1 , 1 , false);
+        }
+        view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
     }
 
     private ListStore<BeanModel> createTaskListStore() {
@@ -281,25 +299,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
-    }
-
-    private CellEditor createTaskCodeCellEditor() {
-        ComboBox<BeanModel> ccbTask = new ComboBox<BeanModel>();
-        ccbTask.setStore(taskDtoListStore);
-        ccbTask.setLazyRender(false);
-        ccbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
-        ccbTask.setForceSelection(true);
-        ccbTask.getView().setModelProcessor(new ModelProcessor<BeanModel>() {
-            @Override
-            public BeanModel prepareData(BeanModel model) {
-                Task task = model.getBean();
-                model.set("text", task.getCode() +
-                        " - " + task.getName());
-                return model;
-            }
-        });
-        ccbTask.setSelectOnFocus(true);
-        return new CellEditor(ccbTask);
     }
 
     private ListStore<BeanModel> createTaskDtoListStore() {

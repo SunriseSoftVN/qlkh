@@ -389,6 +389,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         window.addButton(btnTaskEditCancel);
         window.setSize(380, 120);
         window.setResizable(false);
+        window.setModal(true);
         window.setHeading(getConstant().taskEditPanelTitle());
         window.addWindowListener(new WindowListener() {
             @Override

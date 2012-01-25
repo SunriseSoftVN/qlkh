@@ -155,8 +155,8 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     }
 
     @Override
-    public void updateTaskDetail(TaskDetail taskDetail) {
-        taskDetailDao.saveOrUpdate(taskDetail);
+    public TaskDetail updateTaskDetail(TaskDetail taskDetail) {
+        return taskDetailDao.saveOrUpdate(taskDetail);
     }
 
     @Override

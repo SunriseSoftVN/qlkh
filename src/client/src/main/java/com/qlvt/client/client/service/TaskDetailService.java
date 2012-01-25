@@ -41,12 +41,18 @@ import java.util.List;
 @RemoteServiceRelativePath("TaskDetail")
 public interface TaskDetailService extends RemoteService<TaskDetailService> {
 
-    void updateTaskDetail(TaskDetail taskDetail);
+    TaskDetail updateTaskDetail(TaskDetail taskDetail);
+
     void updateTaskDetails(List<TaskDetail> taskDetails);
+
     void updateTaskDetailDtos(List<TaskDetailDto> taskDetails);
+
     void updateSubTaskAnnualDetails(List<SubTaskAnnualDetail> subTaskAnnualDetails);
+
     void updateSubTaskDetails(List<SubTaskDetail> subTaskDetails);
+
     void deleteTaskDetail(long taskDetailId);
+
     void deleteTaskDetails(List<Long> taskDetailIds);
 
     BasePagingLoadResult<TaskDetail> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId);
