@@ -30,7 +30,7 @@ import java.util.List;
 
 public interface TaskServiceAsync extends RemoteServiceAsync<TaskServiceAsync> {
     void getTasksForGrid(BasePagingLoadConfig loadConfig, AsyncCallback<BasePagingLoadResult<Task>> callback);
-    void updateTask(Task task, AsyncCallback<Void> async);
+    void updateTask(Task task, AsyncCallback<Task> async);
     void updateTasks(List<Task> tasks, AsyncCallback<Void> async);
     void deleteTask(long taskId, AsyncCallback<Void> async);
     void deleteTasks(List<Long> taskIds, AsyncCallback<Void> async);

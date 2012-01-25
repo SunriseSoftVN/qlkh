@@ -139,7 +139,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if(view.getTaskEditPanel().isValid()) {
+                if (view.getTaskEditPanel().isValid()) {
                     currentTask.setCode(view.getTxtTaskCode().getValue().intValue());
                     currentTask.setName(view.getTxtTaskName().getValue());
                     currentTask.setUnit(view.getTxtTaskUnit().getValue());
@@ -150,7 +150,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     currentTask.setUpdateBy(1l);
                     currentTask.setCreatedDate(new Date());
                     currentTask.setUpdatedDate(new Date());
-                    taskService.updateTask(currentTask, new AbstractAsyncCallback<Void>() {
+                    taskService.updateTask(currentTask, new AbstractAsyncCallback<Task>() {
                         @Override
                         public void onFailure(Throwable caught) {
                             if (caught instanceof CodeExistException) {
@@ -161,15 +161,41 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         }
 
                         @Override
-                        public void onSuccess(Void result) {
+                        public void onSuccess(Task result) {
                             super.onSuccess(result);
-                            view.getPagingToolBar().refresh();
                             taskEditWindow.hide();
+                            updateGrid(result);
                         }
                     });
                 }
             }
         });
+        view.getBtnTaskEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                taskEditWindow.hide();
+            }
+        });
+    }
+
+    private void updateGrid(Task task) {
+        boolean isNotFound = true;
+        BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
+        BeanModel updateModel = factory.createModel(task);
+        for (BeanModel model : view.getTaskGird().getStore().getModels()) {
+            if (task.getId().equals(model.<Task>getBean().getId())) {
+                int index = view.getTaskGird().getStore().indexOf(model);
+                view.getTaskGird().getStore().remove(model);
+                view.getTaskGird().getStore().insert(updateModel, index);
+                isNotFound = false;
+            }
+        }
+        if (isNotFound) {
+            view.getTaskGird().getStore().add(updateModel);
+            view.getTaskGird().getView().ensureVisible(view.getTaskGird()
+                    .getStore().getCount() -1 , 1 , false);
+        }
+        view.getTaskGird().getSelectionModel().select(updateModel, false);
     }
 
     private ListStore<BeanModel> createTaskListStore() {

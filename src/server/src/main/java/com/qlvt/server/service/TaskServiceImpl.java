@@ -53,9 +53,9 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
     }
 
     @Override
-    public void updateTask(Task task) throws CodeExistException {
+    public Task updateTask(Task task) throws CodeExistException {
         try {
-            taskDao.saveOrUpdate(task);
+            return taskDao.saveOrUpdate(task);
         } catch (ConstraintViolationException ex) {
             throw new CodeExistException();
         }

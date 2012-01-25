@@ -44,7 +44,7 @@ public interface TaskService extends RemoteService<TaskService> {
     List<TaskDto> getAllTaskDtos();
     void deleteTask(long taskId);
     void deleteTasks(List<Long> taskIds);
-    void updateTask(Task task) throws CodeExistException;
+    Task updateTask(Task task) throws CodeExistException;
     void updateTasks(List<Task> tasks) throws CodeExistException;
     BasePagingLoadResult<Task> getTasksForGrid(BasePagingLoadConfig loadConfig);
 

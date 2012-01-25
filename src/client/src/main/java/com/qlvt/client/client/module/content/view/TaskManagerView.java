@@ -238,6 +238,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.addButton(btnTaskEditCancel);
         window.setSize(380, 200);
         window.setResizable(false);
+        window.setModal(true);
         window.setHeading(getConstant().taskEditPanel());
         window.addWindowListener(new WindowListener() {
             @Override
