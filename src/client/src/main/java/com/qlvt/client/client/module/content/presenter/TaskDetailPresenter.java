@@ -57,7 +57,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
     private TaskServiceAsync taskService = TaskService.App.getInstance();
     private StationServiceAsync stationService = StationService.App.getInstance();
-    private BranchServiceAsync branchService = BranchService.App.getInstance();
 
     private Station currentStation;
     private TaskDetail currentTaskDetail;
@@ -145,6 +144,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                resetFilter();
                 resetView();
             }
         });
