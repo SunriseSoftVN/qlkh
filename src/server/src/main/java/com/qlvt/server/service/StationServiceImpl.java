@@ -74,8 +74,8 @@ public class StationServiceImpl extends AbstractService implements StationServic
     }
 
     @Override
-    public void updateStation(Station station) {
-        stationDao.saveOrUpdate(station);
+    public Station updateStation(Station station) {
+        return stationDao.saveOrUpdate(station);
     }
 
     @Override

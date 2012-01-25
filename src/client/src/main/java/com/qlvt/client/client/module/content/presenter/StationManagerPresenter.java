@@ -106,13 +106,13 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                     currentStation.setUpdateBy(1l);
                     currentStation.setCreatedDate(new Date());
                     currentStation.setUpdatedDate(new Date());
-                    stationService.updateStation(currentStation, new AbstractAsyncCallback<Void>() {
+                    stationService.updateStation(currentStation, new AbstractAsyncCallback<Station>() {
                         @Override
-                        public void onSuccess(Void result) {
+                        public void onSuccess(Station result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             stationEditWindow.hide();
-                            view.getPagingToolBar().refresh();
+                            updateGrid(result);
                         }
                     });
                 }
@@ -124,6 +124,26 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 stationEditWindow.hide();
             }
         });
+    }
+
+    private void updateGrid(Station station) {
+        boolean isNotFound = true;
+        BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+        BeanModel updateModel = factory.createModel(station);
+        for (BeanModel model : view.getStationsGird().getStore().getModels()) {
+            if (station.getId().equals(model.<Station>getBean().getId())) {
+                int index = view.getStationsGird().getStore().indexOf(model);
+                view.getStationsGird().getStore().remove(model);
+                view.getStationsGird().getStore().insert(updateModel, index);
+                isNotFound = false;
+            }
+        }
+        if (isNotFound) {
+            view.getStationsGird().getStore().add(updateModel);
+            view.getStationsGird().getView().ensureVisible(view.getStationsGird()
+                    .getStore().getCount() -1 , 1 , false);
+        }
+        view.getStationsGird().getSelectionModel().select(updateModel, false);
     }
 
     private ListStore<BeanModel> createUserListStore() {

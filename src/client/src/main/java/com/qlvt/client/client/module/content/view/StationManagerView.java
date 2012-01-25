@@ -175,6 +175,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         }
 
         if (!txtStationName.isRendered()) {
+            txtStationName.setSelectOnFocus(true);
             txtStationName.setAllowBlank(false);
             txtStationName.setMinLength(4);
         }
@@ -184,6 +185,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         window.add(stationEditPanel);
         window.addButton(btnStationEditOk);
         window.addButton(btnStationEditCancel);
+        window.setModal(true);
         window.setSize(380, 120);
         window.setResizable(false);
         window.setHeading(getConstant().stationEditPanelTitle());

@@ -164,6 +164,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         public void onSuccess(Task result) {
                             super.onSuccess(result);
                             taskEditWindow.hide();
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             updateGrid(result);
                         }
                     });

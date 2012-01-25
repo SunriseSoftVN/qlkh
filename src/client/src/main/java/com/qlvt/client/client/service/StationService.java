@@ -45,7 +45,7 @@ public interface StationService extends RemoteService<StationService> {
 
     void deleteStationByIds(List<Long> stationIds) throws DeleteException;
 
-    void updateStation(Station station);
+    Station updateStation(Station station);
 
     void updateStations(List<Station> stations);
 

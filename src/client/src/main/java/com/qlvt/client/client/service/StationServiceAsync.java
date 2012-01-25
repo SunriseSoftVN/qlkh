@@ -29,11 +29,16 @@ import java.util.List;
 
 public interface StationServiceAsync extends RemoteServiceAsync<StationServiceAsync> {
     void getStationsForGrid(BasePagingLoadConfig config, AsyncCallback<BasePagingLoadResult<Station>> async);
+
     void updateStations(List<Station> stations, AsyncCallback<Void> async);
+
     void getAllStation(AsyncCallback<List<Station>> async);
+
     void deleteStationById(long stationId, AsyncCallback<Void> async);
+
     void deleteStationByIds(List<Long> stationIds, AsyncCallback<Void> async);
+
     void getStationAndBranchByUserName(String userName, AsyncCallback<Station> async);
 
-    void updateStation(Station station, AsyncCallback<Void> async);
+    void updateStation(Station station, AsyncCallback<Station> async);
 }
