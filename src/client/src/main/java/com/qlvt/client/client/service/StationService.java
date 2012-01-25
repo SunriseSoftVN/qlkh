@@ -40,10 +40,17 @@ import java.util.List;
 public interface StationService extends RemoteService<StationService> {
 
     Station getStationAndBranchByUserName(String userName);
+
     void deleteStationById(long stationId) throws DeleteException;
+
     void deleteStationByIds(List<Long> stationIds) throws DeleteException;
+
+    void updateStation(Station station);
+
     void updateStations(List<Station> stations);
+
     List<Station> getAllStation();
+
     BasePagingLoadResult<Station> getStationsForGrid(BasePagingLoadConfig config);
 
     public static class App {

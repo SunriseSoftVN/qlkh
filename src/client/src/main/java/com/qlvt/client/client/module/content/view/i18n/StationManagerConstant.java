@@ -30,8 +30,8 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface StationManagerConstant extends Constants {
     String btnDelete();
     String btnAdd();
-    String btnSave();
-    String btnCancel();
+    String btnEdit();
+    String btnRefresh();
     String stationNameColumnTitle();
     String sttColumnTitle();
     String deleteStationMessageSuccess();
@@ -39,4 +39,8 @@ public interface StationManagerConstant extends Constants {
     String deleteStationMessage();
     String deleteErrorMessage();
     String saveMessageSuccess();
+    String stationEditPanelTitle();
+    String btnStationEditOk();
+    String btnStationEditCancel();
+    String txtStationName();
 }

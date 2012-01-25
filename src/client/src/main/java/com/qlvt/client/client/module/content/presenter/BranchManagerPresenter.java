@@ -101,28 +101,30 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Branch selectBranch = view.getBranchsGird().getSelectionModel().getSelectedItem().getBean();
-                currentBranch = selectBranch;
-                if (selectBranch != null) {
-                    view.getTxtBranchName().setValue(currentBranch.getName());
-                    BeanModel station = null;
-                    for (BeanModel model : view.getCbbStation().getStore().getModels()) {
-                        if(currentBranch.getStation().getId().
-                                equals(model.<Station>getBean().getId())) {
-                            station = model;
+                if (view.getBranchsGird().getSelectionModel().getSelectedItem() != null) {
+                    Branch selectBranch = view.getBranchsGird().getSelectionModel().getSelectedItem().getBean();
+                    currentBranch = selectBranch;
+                    if (selectBranch != null) {
+                        view.getTxtBranchName().setValue(currentBranch.getName());
+                        BeanModel station = null;
+                        for (BeanModel model : view.getCbbStation().getStore().getModels()) {
+                            if (currentBranch.getStation().getId().
+                                    equals(model.<Station>getBean().getId())) {
+                                station = model;
+                            }
                         }
-                    }
-                    view.getCbbStation().setValue(station);
+                        view.getCbbStation().setValue(station);
 
-                    branchEditWindow = view.createBranchEditWindow();
-                    branchEditWindow.show();
+                        branchEditWindow = view.createBranchEditWindow();
+                        branchEditWindow.show();
+                    }
                 }
             }
         });
         view.getBtnBranchEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (view.getBranchEditPanel().isValid()) {
+                if (view.getBranchEditPanel().isValid() && currentBranch != null) {
                     currentBranch.setName(view.getTxtBranchName().getValue());
                     currentBranch.setStation(view.getCbbStation().getValue().<Station>getBean());
                     currentBranch.setUpdateBy(1l);

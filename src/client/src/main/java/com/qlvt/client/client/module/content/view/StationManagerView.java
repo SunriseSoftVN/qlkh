@@ -21,14 +21,13 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -73,14 +72,25 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
+
+    @I18nField
+    Button btnStationEditOk = new Button();
+
+    @I18nField
+    Button btnStationEditCancel = new Button();
+
+    @I18nField
+    TextField<String> txtStationName = new TextField<String>();
 
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
-    private EditorGrid<BeanModel> stationsGird;
+    private Grid<BeanModel> stationsGird;
+
+    private FormPanel stationEditPanel = new FormPanel();
 
     /**
      * Create Grid on View.
@@ -88,7 +98,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        stationsGird = new EditorGrid<BeanModel>(listStore, cm);
+        stationsGird = new Grid<BeanModel>(listStore, cm);
         stationsGird.setBorders(true);
         stationsGird.setLoadMask(true);
         stationsGird.setStripeRows(true);
@@ -102,9 +112,9 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -113,11 +123,11 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         ToolBar toolBar = new ToolBar();
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnEdit);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnCancel);
+        toolBar.add(btnRefresh);
 
         contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(stationsGird);
@@ -151,13 +161,44 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         columnConfigs.add(sttColumnConfig);
         ColumnConfig stationNameColumnConfig = new ColumnConfig(STATION_NAME_COLUMN, getConstant().stationNameColumnTitle(),
                 STATION_NAME_WIDTH);
-        stationNameColumnConfig.setEditor(new CellEditor(new TextField<String>()));
         columnConfigs.add(stationNameColumnConfig);
         return columnConfigs;
     }
 
-    public Button getBtnCancel() {
-        return btnCancel;
+    public com.extjs.gxt.ui.client.widget.Window createStationEditWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!stationEditPanel.isRendered()) {
+            stationEditPanel.setHeaderVisible(false);
+            stationEditPanel.setBodyBorder(false);
+            stationEditPanel.setBorders(false);
+            stationEditPanel.setLabelWidth(120);
+        }
+
+        if (!txtStationName.isRendered()) {
+            txtStationName.setAllowBlank(false);
+            txtStationName.setMinLength(4);
+        }
+        stationEditPanel.add(txtStationName);
+        window.setFocusWidget(txtStationName);
+
+        window.add(stationEditPanel);
+        window.addButton(btnStationEditOk);
+        window.addButton(btnStationEditCancel);
+        window.setSize(380, 120);
+        window.setResizable(false);
+        window.setHeading(getConstant().stationEditPanelTitle());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                stationEditPanel.clear();
+                stationsGird.focus();
+            }
+        });
+        return window;
+    }
+
+    public Button getBtnRefresh() {
+        return btnRefresh;
     }
 
     public Button getBtnAdd() {
@@ -168,15 +209,35 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         return btnDelete;
     }
 
-    public Button getBtnSave() {
-        return btnSave;
+    public Button getBtnEdit() {
+        return btnEdit;
     }
 
     public PagingToolBar getPagingToolBar() {
         return pagingToolBar;
     }
 
-    public EditorGrid<BeanModel> getStationsGird() {
+    public Grid<BeanModel> getStationsGird() {
         return stationsGird;
+    }
+
+    public Button getBtnStationEditOk() {
+        return btnStationEditOk;
+    }
+
+    public Button getBtnStationEditCancel() {
+        return btnStationEditCancel;
+    }
+
+    public TextField<String> getTxtStationName() {
+        return txtStationName;
+    }
+
+    public ContentPanel getContentPanel() {
+        return contentPanel;
+    }
+
+    public FormPanel getStationEditPanel() {
+        return stationEditPanel;
     }
 }

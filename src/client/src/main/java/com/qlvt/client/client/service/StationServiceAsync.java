@@ -34,4 +34,6 @@ public interface StationServiceAsync extends RemoteServiceAsync<StationServiceAs
     void deleteStationById(long stationId, AsyncCallback<Void> async);
     void deleteStationByIds(List<Long> stationIds, AsyncCallback<Void> async);
     void getStationAndBranchByUserName(String userName, AsyncCallback<Station> async);
+
+    void updateStation(Station station, AsyncCallback<Void> async);
 }

@@ -25,7 +25,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
@@ -56,6 +56,9 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
 
     private StationServiceAsync stationService = StationService.App.getInstance();
 
+    private Station currentStation;
+    private Window stationEditWindow;
+
     @Override
     public void onActivate() {
         view.show();
@@ -70,48 +73,57 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Station station = new Station();
-                station.setCreatedDate(new Date());
-                station.setUpdatedDate(new Date());
-                station.setCreateBy(1l);
-                station.setUpdateBy(1l);
-                BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
-                BeanModel model = factory.createModel(station);
-                view.getStationsGird().getStore().insert(model, view.getStationsGird().getStore().getCount());
-                view.getStationsGird().getView().ensureVisible(view.getStationsGird()
-                        .getStore().getCount() - 1, 0, true);
-                view.getStationsGird().startEditing(view.getStationsGird().getStore()
-                        .getCount() - 1, 2);
+                stationEditWindow = view.createStationEditWindow();
+                currentStation = new Station();
+                stationEditWindow.show();
             }
         });
-        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<Station> stations = new ArrayList<Station>();
-                for (Record record : view.getStationsGird().getStore().getModifiedRecords()) {
-                    BeanModel model = (BeanModel) record.getModel();
-                    stations.add(model.<Station>getBean());
-                }
-                if (CollectionsUtils.isNotEmpty(stations)) {
-                    LoadingUtils.showLoading();
-                    stationService.updateStations(stations, new AbstractAsyncCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            super.onSuccess(result);
-                            view.getPagingToolBar().refresh();
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                        }
-                    });
+                if (view.getStationsGird().getSelectionModel().getSelectedItem() != null) {
+                    Station selectedSaStation = view.getStationsGird().getSelectionModel().getSelectedItem().<Station>getBean();
+                    currentStation = selectedSaStation;
+                    view.getTxtStationName().setValue(currentStation.getName());
+                    stationEditWindow = view.createStationEditWindow();
+                    stationEditWindow.show();
                 }
             }
         });
-        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 view.getPagingToolBar().refresh();
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+        view.getBtnStationEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (currentStation != null && view.getStationEditPanel().isValid()) {
+                    currentStation.setName(view.getTxtStationName().getValue());
+                    currentStation.setCreateBy(1l);
+                    currentStation.setUpdateBy(1l);
+                    currentStation.setCreatedDate(new Date());
+                    currentStation.setUpdatedDate(new Date());
+                    stationService.updateStation(currentStation, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            super.onSuccess(result);
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            stationEditWindow.hide();
+                            view.getPagingToolBar().refresh();
+                        }
+                    });
+                }
+            }
+        });
+        view.getBtnStationEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                stationEditWindow.hide();
+            }
+        });
     }
 
     private ListStore<BeanModel> createUserListStore() {

@@ -74,6 +74,11 @@ public class StationServiceImpl extends AbstractService implements StationServic
     }
 
     @Override
+    public void updateStation(Station station) {
+        stationDao.saveOrUpdate(station);
+    }
+
+    @Override
     public void deleteStationById(long stationId) throws DeleteException {
         if (CollectionUtils.isEmpty(userDao.findByStationId(stationId))
                 && CollectionUtils.isEmpty(branchDao.findByStationId(stationId))
