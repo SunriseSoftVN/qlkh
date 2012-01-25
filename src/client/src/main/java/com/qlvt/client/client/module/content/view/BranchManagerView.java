@@ -221,6 +221,7 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         window.addButton(btnBranchEditCancel);
         window.setSize(380, 150);
         window.setResizable(false);
+        window.setModal(true);
         window.setHeading(getConstant().branchEditPanelTitle());
         window.addWindowListener(new WindowListener() {
             @Override

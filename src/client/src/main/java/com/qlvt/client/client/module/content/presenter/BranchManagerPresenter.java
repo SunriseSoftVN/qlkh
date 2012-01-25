@@ -131,13 +131,13 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                     currentBranch.setCreateBy(1l);
                     currentBranch.setUpdatedDate(new Date());
                     currentBranch.setCreatedDate(new Date());
-                    branchService.updateBranch(currentBranch, new AbstractAsyncCallback<Void>() {
+                    branchService.updateBranch(currentBranch, new AbstractAsyncCallback<Branch>() {
                         @Override
-                        public void onSuccess(Void result) {
+                        public void onSuccess(Branch result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            view.getPagingToolBar().refresh();
                             branchEditWindow.hide();
+                            updateGrid(result);
                         }
                     });
                 }
@@ -149,6 +149,26 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                 branchEditWindow.hide();
             }
         });
+    }
+
+    private void updateGrid(Branch branch) {
+        boolean isNotFound = true;
+        BeanModelFactory factory = BeanModelLookup.get().getFactory(Branch.class);
+        BeanModel updateModel = factory.createModel(branch);
+        for (BeanModel model : view.getBranchsGird().getStore().getModels()) {
+            if (branch.getId().equals(model.<Branch>getBean().getId())) {
+                int index = view.getBranchsGird().getStore().indexOf(model);
+                view.getBranchsGird().getStore().remove(model);
+                view.getBranchsGird().getStore().insert(updateModel, index);
+                isNotFound = false;
+            }
+        }
+        if (isNotFound) {
+            view.getBranchsGird().getStore().add(updateModel);
+            view.getBranchsGird().getView().ensureVisible(view.getBranchsGird()
+                    .getStore().getCount() -1 , 1 , false);
+        }
+        view.getBranchsGird().getSelectionModel().select(updateModel, false);
     }
 
     private ListStore<BeanModel> createUserListStore() {

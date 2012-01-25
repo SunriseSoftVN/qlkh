@@ -38,13 +38,19 @@ import java.util.List;
  */
 @RemoteServiceRelativePath("Branch")
 public interface BranchService extends RemoteService<BranchService> {
-    
+
     void deleteBranchById(long branchId) throws DeleteException;
+
     void deleteBranchByIds(List<Long> branchIds) throws DeleteException;
-    void updateBranch(Branch branch);
+
+    Branch updateBranch(Branch branch);
+
     void updateBranchs(List<Branch> branchs);
+
     List<Branch> getBranchByStationId(long stationId);
+
     List<Branch> getAllBranch();
+
     BasePagingLoadResult<Branch> getBranchsForGrid(BasePagingLoadConfig config);
 
     public static class App {

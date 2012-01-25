@@ -40,5 +40,5 @@ public interface BranchServiceAsync extends RemoteServiceAsync<BranchServiceAsyn
 
     void getBranchByStationId(long stationId, AsyncCallback<List<Branch>> async);
 
-    void updateBranch(Branch branch, AsyncCallback<Void> async);
+    void updateBranch(Branch branch, AsyncCallback<Branch> async);
 }

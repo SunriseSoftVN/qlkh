@@ -75,8 +75,8 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
     }
 
     @Override
-    public void updateBranch(Branch branch) {
-        branchDao.saveOrUpdate(branch);
+    public Branch updateBranch(Branch branch) {
+        return branchDao.saveOrUpdate(branch);
     }
 
     @Override
