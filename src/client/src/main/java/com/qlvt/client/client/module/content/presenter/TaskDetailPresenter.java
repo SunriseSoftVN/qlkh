@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -64,6 +65,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private TaskDetail currentTaskDetail;
 
     private ListStore<BeanModel> taskDtoListStore;
+    private Window taskEditWindow;
 
     @Override
     public void onActivate() {
@@ -72,7 +74,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
                 taskDtoListStore = createTaskDtoListStore();
-                ((ComboBox) view.getTaskCodeCellEditor().getField()).setStore(taskDtoListStore);
+                view.getCbbTask().setStore(taskDtoListStore);
             }
             resetView();
         }
@@ -85,12 +87,12 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     protected void doBind() {
         LoadingUtils.showLoading();
         taskDtoListStore = createTaskDtoListStore();
+        view.getCbbTask().setStore(taskDtoListStore);
         stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
             @Override
             public void onSuccess(Station result) {
                 super.onSuccess(result);
                 currentStation = result;
-                view.setTaskCodeCellEditor(createTaskCodeCellEditor());
                 view.createTaskGrid(createTaskListStore());
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
@@ -115,46 +117,34 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
-                    TaskDetail taskDetail = new TaskDetail();
-                    taskDetail.setStation(currentStation);
-                    taskDetail.setYear(1900 + new Date().getYear());
-                    taskDetail.setAnnual(true);
-                    taskDetail.setCreateBy(1l);
-                    taskDetail.setUpdateBy(1l);
-                    taskDetail.setCreatedDate(new Date());
-                    taskDetail.setUpdatedDate(new Date());
-                    BeanModel model = BeanModelLookup.get().getFactory(TaskDetail.class).createModel(taskDetail);
-                    view.getTaskDetailGird().getStore().insert(model, view.getTaskDetailGird().getStore().getCount());
-                    view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
-                            .getStore().getCount() - 1, 0, true);
-                    view.getTaskDetailGird().startEditing(view.getTaskDetailGird().getStore()
-                            .getCount() - 1, 2);
+                    taskEditWindow = view.createTaskEditWindow();
+                    currentTaskDetail = new TaskDetail();
+                    taskEditWindow.show();
                 } else {
                     DiaLogUtils.notify(view.getConstant().loadStationError());
                 }
             }
         });
-        view.getBtnSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<TaskDetail> taskDetails = new ArrayList<TaskDetail>();
-                for (Record record : view.getTaskDetailGird().getStore().getModifiedRecords()) {
-                    taskDetails.add(((BeanModel) record.getModel()).<TaskDetail>getBean());
-                }
-                if (CollectionsUtils.isNotEmpty(taskDetails)) {
-                    LoadingUtils.showLoading();
-                    taskDetailService.updateTaskDetails(taskDetails, new AbstractAsyncCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            super.onSuccess(result);
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            resetView();
+                if (view.getTaskDetailGird().getSelectionModel().getSelectedItem() != null) {
+                    currentTaskDetail = view.getTaskDetailGird().getSelectionModel().getSelectedItem().getBean();
+                    taskEditWindow = view.createTaskEditWindow();
+
+                    BeanModel task = null;
+                    for (BeanModel model : view.getCbbTask().getStore().getModels()) {
+                        if (model.<Task>getBean().getId().equals(currentTaskDetail.getTask().getId())) {
+                            task = model;
                         }
-                    });
+                    }
+                    view.getCbbTask().setValue(task);
+
+                    taskEditWindow.show();
                 }
             }
         });
-        view.getBtnCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 resetView();
@@ -209,6 +199,36 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     };
                     timer.schedule(100);
                 }
+            }
+        });
+        view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (currentTaskDetail != null && view.getTaskEditPanel().isValid()) {
+                    Task task = view.getCbbTask().getValue().getBean();
+                    currentTaskDetail.setTask(task);
+                    currentTaskDetail.setAnnual(false);
+                    currentTaskDetail.setStation(currentStation);
+                    currentTaskDetail.setCreateBy(1l);
+                    currentTaskDetail.setUpdateBy(1l);
+                    currentTaskDetail.setCreatedDate(new Date());
+                    currentTaskDetail.setUpdatedDate(new Date());
+                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            super.onSuccess(result);
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            taskEditWindow.hide();
+                            resetView();
+                        }
+                    });
+                }
+            }
+        });
+        view.getBtnTaskEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                taskEditWindow.hide();
             }
         });
     }

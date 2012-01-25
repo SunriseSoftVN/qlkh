@@ -21,15 +21,16 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.data.ModelProcessor;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -93,32 +94,42 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
     Button btnSubTaskSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnSubTaskCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField(emptyText = true)
     TextField<String> txtSearch = new TextField<String>();
+
+    @I18nField
+    Button btnTaskEditOk = new Button();
+
+    @I18nField
+    Button btnTaskEditCancel = new Button();
+
+    @I18nField
+    ComboBox<BeanModel> cbbTask = new ComboBox<BeanModel>();
 
     private ContentPanel contentPanel = new ContentPanel();
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
-    private EditorGrid<BeanModel> taskDetailGird;
-    private CellEditor taskCodeCellEditor;
+    private Grid<BeanModel> taskDetailGird;
     private ColumnModel taskColumnModel;
 
     private ContentPanel subTaskPanel = new ContentPanel();
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
     private ColumnModel subTaskColumnModel;
+
+    private FormPanel taskEditPanel = new FormPanel();
 
     @Override
     protected void initializeView() {
@@ -134,7 +145,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public void createTaskGrid(ListStore<BeanModel> listStore) {
         MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
         taskColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
-        taskDetailGird = new EditorGrid<BeanModel>(listStore, taskColumnModel);
+        taskDetailGird = new Grid<BeanModel>(listStore, taskColumnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
         taskDetailGird.setStripeRows(true);
@@ -149,9 +160,9 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -164,11 +175,11 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnEdit);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnCancel);
+        toolBar.add(btnRefresh);
         taskPanel.setHeaderVisible(false);
         taskPanel.setHeight(Window.getClientHeight() - 90);
         taskPanel.setLayout(new FitLayout());
@@ -199,7 +210,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
                 if (e.getKeyCode() == 113) {
                     btnSubTaskSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnSubTaskCancel.fireEvent(Events.Select);
+                    btnSubTaskRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -208,7 +219,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         ToolBar toolBar = new ToolBar();
         toolBar.add(btnSubTaskSave);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSubTaskCancel);
+        toolBar.add(btnSubTaskRefresh);
         subTaskPanel.setBodyBorder(false);
         subTaskPanel.setHeaderVisible(false);
         subTaskPanel.setHeight(Window.getClientHeight() - 90);
@@ -238,7 +249,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         columnConfigs.add(sttColumnConfig);
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
-        taskCodeColumnConfig.setEditor(getTaskCodeCellEditor());
         taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -284,25 +294,25 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
                 BRANCH_NAME_WIDTH);
         columnConfigs.add(branchNameColumnConfig);
 
-        ColumnConfig q1ColumnConfig =new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
+        ColumnConfig q1ColumnConfig = new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
         NumberField q1NumberField = new NumberField();
         q1NumberField.setSelectOnFocus(true);
         q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
         columnConfigs.add(q1ColumnConfig);
 
-        ColumnConfig q2ColumnConfig =new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
+        ColumnConfig q2ColumnConfig = new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
         NumberField q2NumberField = new NumberField();
         q2NumberField.setSelectOnFocus(true);
         q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
         columnConfigs.add(q2ColumnConfig);
 
-        ColumnConfig q3ColumnConfig =new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
+        ColumnConfig q3ColumnConfig = new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
         NumberField q3NumberField = new NumberField();
         q3NumberField.setSelectOnFocus(true);
         q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
         columnConfigs.add(q3ColumnConfig);
 
-        ColumnConfig q4ColumnConfig =new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
+        ColumnConfig q4ColumnConfig = new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
         NumberField q4NumberField = new NumberField();
         q4NumberField.setSelectOnFocus(true);
         q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
@@ -311,7 +321,49 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return columnConfigs;
     }
 
-    public EditorGrid<BeanModel> getTaskDetailGird() {
+    public com.extjs.gxt.ui.client.widget.Window createTaskEditWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!taskEditPanel.isRendered()) {
+            taskEditPanel.setHeaderVisible(false);
+            taskEditPanel.setBodyBorder(false);
+            taskEditPanel.setBorders(false);
+            taskEditPanel.setLabelWidth(120);
+        }
+
+        if (!cbbTask.isRendered()) {
+            cbbTask.setSelectOnFocus(true);
+            cbbTask.setForceSelection(true);
+            cbbTask.setAllowBlank(false);
+            cbbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbTask.getView().setModelProcessor(new ModelProcessor<BeanModel>() {
+                @Override
+                public BeanModel prepareData(BeanModel model) {
+                    Task task = model.getBean();
+                    model.set("text", task.getCode() + " - " + task.getName());
+                    return model;
+                }
+            });
+        }
+        taskEditPanel.add(cbbTask);
+        window.setFocusWidget(cbbTask);
+
+        window.add(taskEditPanel);
+        window.addButton(btnTaskEditOk);
+        window.addButton(btnTaskEditCancel);
+        window.setSize(380, 120);
+        window.setResizable(false);
+        window.setHeading(getConstant().taskEditPanelTitle());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                taskEditPanel.clear();
+                taskDetailGird.focus();
+            }
+        });
+        return window;
+    }
+
+    public Grid<BeanModel> getTaskDetailGird() {
         return taskDetailGird;
     }
 
@@ -323,20 +375,12 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return btnDelete;
     }
 
-    public Button getBtnSave() {
-        return btnSave;
+    public Button getBtnEdit() {
+        return btnEdit;
     }
 
-    public Button getBtnCancel() {
-        return btnCancel;
-    }
-
-    public void setTaskCodeCellEditor(CellEditor taskCodeCellEditor) {
-        this.taskCodeCellEditor = taskCodeCellEditor;
-    }
-
-    public CellEditor getTaskCodeCellEditor() {
-        return taskCodeCellEditor;
+    public Button getBtnRefresh() {
+        return btnRefresh;
     }
 
     public PagingToolBar getSubTaskPagingToolBar() {
@@ -351,8 +395,8 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return taskPagingToolBar;
     }
 
-    public Button getBtnSubTaskCancel() {
-        return btnSubTaskCancel;
+    public Button getBtnSubTaskRefresh() {
+        return btnSubTaskRefresh;
     }
 
     public Button getBtnSubTaskSave() {
@@ -361,5 +405,21 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     public TextField<String> getTxtSearch() {
         return txtSearch;
+    }
+
+    public FormPanel getTaskEditPanel() {
+        return taskEditPanel;
+    }
+
+    public Button getBtnTaskEditOk() {
+        return btnTaskEditOk;
+    }
+
+    public Button getBtnTaskEditCancel() {
+        return btnTaskEditCancel;
+    }
+
+    public ComboBox<BeanModel> getCbbTask() {
+        return cbbTask;
     }
 }

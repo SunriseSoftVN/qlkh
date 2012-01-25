@@ -21,15 +21,16 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.data.ModelProcessor;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -44,6 +45,7 @@ import com.qlvt.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecurity;
 import com.qlvt.client.client.widget.MyCheckBoxSelectionModel;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
@@ -95,10 +97,10 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField(emptyText = true)
     TextField<String> txtSearch = new TextField<String>();
@@ -107,20 +109,30 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     Button btnSubTaskSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
-    Button btnSubTaskCancel = new Button(null, IconHelper.createPath("assets/images/icons/fam/cancel.png"));
+    Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
+
+    @I18nField
+    Button btnTaskEditOk = new Button();
+
+    @I18nField
+    Button btnTaskEditCancel = new Button();
+
+    @I18nField
+    ComboBox<BeanModel> cbbTask = new ComboBox<BeanModel>();
 
     private ContentPanel contentPanel = new ContentPanel();
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
-    private EditorGrid<BeanModel> taskDetailGird;
-    private CellEditor taskCodeCellEditor;
+    private Grid<BeanModel> taskDetailGird;
     private ColumnModel taskColumnModel;
 
     private ContentPanel subTaskPanel = new ContentPanel();
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
     private ColumnModel subTaskColumnModel;
+
+    private FormPanel taskEditPanel = new FormPanel();
 
     @Override
     protected void initializeView() {
@@ -136,7 +148,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public void createTaskGrid(ListStore<BeanModel> listStore) {
         MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
         taskColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
-        taskDetailGird = new EditorGrid<BeanModel>(listStore, taskColumnModel);
+        taskDetailGird = new Grid<BeanModel>(listStore, taskColumnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
         taskDetailGird.setStripeRows(true);
@@ -151,9 +163,9 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 113) {
-                    btnSave.fireEvent(Events.Select);
+                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnCancel.fireEvent(Events.Select);
+                    btnRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -166,11 +178,11 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnEdit);
+        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnCancel);
+        toolBar.add(btnRefresh);
         taskPanel.setHeaderVisible(false);
         taskPanel.setHeight(Window.getClientHeight() - 90);
         taskPanel.setLayout(new FitLayout());
@@ -201,7 +213,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                 if (e.getKeyCode() == 113) {
                     btnSubTaskSave.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
-                    btnSubTaskCancel.fireEvent(Events.Select);
+                    btnSubTaskRefresh.fireEvent(Events.Select);
                 }
             }
         });
@@ -210,7 +222,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         ToolBar toolBar = new ToolBar();
         toolBar.add(btnSubTaskSave);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSubTaskCancel);
+        toolBar.add(btnSubTaskRefresh);
         subTaskPanel.setBodyBorder(false);
         subTaskPanel.setHeaderVisible(false);
         subTaskPanel.setHeight(Window.getClientHeight() - 90);
@@ -240,7 +252,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         columnConfigs.add(sttColumnConfig);
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
-        taskCodeColumnConfig.setEditor(getTaskCodeCellEditor());
         taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -346,7 +357,49 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return columnConfigs;
     }
 
-    public EditorGrid<BeanModel> getTaskDetailGird() {
+    public com.extjs.gxt.ui.client.widget.Window createTaskEditWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!taskEditPanel.isRendered()) {
+            taskEditPanel.setHeaderVisible(false);
+            taskEditPanel.setBodyBorder(false);
+            taskEditPanel.setBorders(false);
+            taskEditPanel.setLabelWidth(120);
+        }
+
+        if(!cbbTask.isRendered()) {
+            cbbTask.setSelectOnFocus(true);
+            cbbTask.setForceSelection(true);
+            cbbTask.setAllowBlank(false);
+            cbbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbTask.getView().setModelProcessor(new ModelProcessor<BeanModel>() {
+                @Override
+                public BeanModel prepareData(BeanModel model) {
+                    Task task = model.getBean();
+                    model.set("text", task.getCode() + " - " + task.getName());
+                    return model;
+                }
+            });
+        }
+        taskEditPanel.add(cbbTask);
+        window.setFocusWidget(cbbTask);
+
+        window.add(taskEditPanel);
+        window.addButton(btnTaskEditOk);
+        window.addButton(btnTaskEditCancel);
+        window.setSize(380, 120);
+        window.setResizable(false);
+        window.setHeading(getConstant().taskEditPanelTitle());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                taskEditPanel.clear();
+                taskDetailGird.focus();
+            }
+        });
+        return window;
+    }
+
+    public Grid<BeanModel> getTaskDetailGird() {
         return taskDetailGird;
     }
 
@@ -358,24 +411,16 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return btnDelete;
     }
 
-    public Button getBtnSave() {
-        return btnSave;
+    public Button getBtnEdit() {
+        return btnEdit;
     }
 
-    public Button getBtnCancel() {
-        return btnCancel;
+    public Button getBtnRefresh() {
+        return btnRefresh;
     }
 
     public PagingToolBar getTaskPagingToolBar() {
         return taskPagingToolBar;
-    }
-
-    public void setTaskCodeCellEditor(CellEditor taskCodeCellEditor) {
-        this.taskCodeCellEditor = taskCodeCellEditor;
-    }
-
-    public CellEditor getTaskCodeCellEditor() {
-        return taskCodeCellEditor;
     }
 
     public EditorGrid<BeanModel> getSubTaskDetailGird() {
@@ -392,5 +437,33 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public TextField<String> getTxtSearch() {
         return txtSearch;
+    }
+
+    public ComboBox<BeanModel> getCbbTask() {
+        return cbbTask;
+    }
+
+    public FormPanel getTaskEditPanel() {
+        return taskEditPanel;
+    }
+
+    public ColumnModel getSubTaskColumnModel() {
+        return subTaskColumnModel;
+    }
+
+    public ContentPanel getSubTaskPanel() {
+        return subTaskPanel;
+    }
+
+    public Button getBtnTaskEditCancel() {
+        return btnTaskEditCancel;
+    }
+
+    public Button getBtnTaskEditOk() {
+        return btnTaskEditOk;
+    }
+
+    public Button getBtnSubTaskRefresh() {
+        return btnSubTaskRefresh;
     }
 }
