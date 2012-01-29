@@ -41,7 +41,10 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class TaskManagerPresenter.
@@ -148,8 +151,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     }
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
-                    currentTask.setCreatedDate(new Date());
-                    currentTask.setUpdatedDate(new Date());
                     taskService.updateTask(currentTask, new AbstractAsyncCallback<Task>() {
                         @Override
                         public void onFailure(Throwable caught) {

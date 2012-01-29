@@ -45,7 +45,6 @@ import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -129,8 +128,6 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                     currentBranch.setStation(view.getCbbStation().getValue().<Station>getBean());
                     currentBranch.setUpdateBy(1l);
                     currentBranch.setCreateBy(1l);
-                    currentBranch.setUpdatedDate(new Date());
-                    currentBranch.setCreatedDate(new Date());
                     branchService.updateBranch(currentBranch, new AbstractAsyncCallback<Branch>() {
                         @Override
                         public void onSuccess(Branch result) {

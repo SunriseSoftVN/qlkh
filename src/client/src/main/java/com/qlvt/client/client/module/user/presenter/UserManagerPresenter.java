@@ -51,7 +51,6 @@ import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -116,8 +115,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         user.setStation(view.getCbbUserStation().getValue().<Station>getBean());
                         user.setCreateBy(1l);
                         user.setUpdateBy(1l);
-                        user.setCreatedDate(new Date());
-                        user.setUpdatedDate(new Date());
                         LoadingUtils.showLoading();
                         userService.updateUser(user, new AbstractAsyncCallback<Void>() {
                             @Override

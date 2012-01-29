@@ -19,6 +19,7 @@
 
 package com.qlvt.server.util;
 
+import com.qlvt.server.Interceptor.AuditInterceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -45,7 +46,8 @@ public class SessionFactoryUtil {
     }
 
     static {
-        sessionFactory = new Configuration().configure().buildSessionFactory();
+        sessionFactory = new Configuration().setInterceptor(new AuditInterceptor()).
+                configure().buildSessionFactory();
     }
 
     public static SessionFactory getInstance() {

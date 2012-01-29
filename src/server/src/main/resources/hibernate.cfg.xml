@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE hibernate-configuration PUBLIC
         "-//Hibernate/Hibernate Configuration DTD//EN"
-        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
         <property name="connection.url">
@@ -23,5 +23,6 @@
         <mapping resource="com/qlvt/core/client/model/SubTaskDetail.hbm.xml"/>
         <mapping resource="com/qlvt/core/client/model/SubTaskAnnualDetail.hbm.xml"/>
         <mapping resource="com/qlvt/core/client/model/Branch.hbm.xml"/>
+
     </session-factory>
 </hibernate-configuration>

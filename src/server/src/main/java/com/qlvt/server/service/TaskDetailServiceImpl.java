@@ -42,7 +42,6 @@ import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -96,8 +95,6 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                 subTaskAnnualDetail.setBranch(branch);
                 subTaskAnnualDetail.setCreateBy(1l);
                 subTaskAnnualDetail.setUpdateBy(1l);
-                subTaskAnnualDetail.setCreatedDate(new Date());
-                subTaskAnnualDetail.setUpdatedDate(new Date());
             }
             subTaskAnnualDetails.add(subTaskAnnualDetail);
         }
@@ -119,8 +116,6 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                 subTaskDetail.setBranch(branch);
                 subTaskDetail.setCreateBy(1l);
                 subTaskDetail.setUpdateBy(1l);
-                subTaskDetail.setCreatedDate(new Date());
-                subTaskDetail.setUpdatedDate(new Date());
             }
             subTaskDetails.add(subTaskDetail);
         }

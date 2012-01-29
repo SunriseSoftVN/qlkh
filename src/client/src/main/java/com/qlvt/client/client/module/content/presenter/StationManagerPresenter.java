@@ -42,7 +42,6 @@ import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -104,8 +103,6 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                     currentStation.setName(view.getTxtStationName().getValue());
                     currentStation.setCreateBy(1l);
                     currentStation.setUpdateBy(1l);
-                    currentStation.setCreatedDate(new Date());
-                    currentStation.setUpdatedDate(new Date());
                     stationService.updateStation(currentStation, new AbstractAsyncCallback<Station>() {
                         @Override
                         public void onSuccess(Station result) {
