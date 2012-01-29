@@ -33,6 +33,7 @@ import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.qlvt.server.transaction.Transaction;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
@@ -43,6 +44,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/29/11, 1:36 PM
  */
+@Transaction
 @Singleton
 public class StationServiceImpl extends AbstractService implements StationService {
 

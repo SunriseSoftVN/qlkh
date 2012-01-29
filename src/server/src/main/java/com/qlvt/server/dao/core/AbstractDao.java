@@ -42,25 +42,19 @@ import java.util.Map;
  */
 public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
 
-    protected Session session;
-
     @Override
     public E saveOrUpdate(E entity) {
         assert entity != null;
-        openSession();
-        session.saveOrUpdate(entity);
-        closeSession();
+        getCurrentSession().saveOrUpdate(entity);
         return entity;
     }
 
     @Override
     public List<E> saveOrUpdate(List<E> entities) {
         if (CollectionUtils.isNotEmpty(entities)) {
-            openSession();
             for (E entity : entities) {
-                session.saveOrUpdate(entity);
+                getCurrentSession().saveOrUpdate(entity);
             }
-            closeSession();
         }
         return entities;
     }
@@ -68,44 +62,34 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     @Override
     public void delete(E entity) {
         assert entity != null;
-        openSession();
-        session.delete(entity);
-        closeSession();
+        getCurrentSession().delete(entity);
     }
 
     @Override
     public void deleteById(Class<E> clazz, long id) {
-        openSession();
-        session.delete(session.get(clazz, id));
-        closeSession();
+        getCurrentSession().delete(getCurrentSession().get(clazz, id));
     }
 
     @Override
     public E findById(Class<E> clazz, long id) {
-        openSession();
-        E entity = (E) session.get(clazz, id);
-        closeSession();
+        E entity = (E) getCurrentSession().get(clazz, id);
         return entity;
     }
 
     @Override
     public List<E> findByIds(Class<E> clazz, List<Long> ids) {
-        openSession();
-        Criteria criteria = session.createCriteria(clazz).add(Restrictions.in("id", ids));
+        Criteria criteria = getCurrentSession().createCriteria(clazz).add(Restrictions.in("id", ids));
         List<E> entities = criteria.list();
         if (CollectionUtils.isNotEmpty(entities)) {
             return entities;
         }
-        closeSession();
         return Collections.emptyList();
     }
 
     @Override
     public List<E> getAll(Class<E> clazz) {
-        openSession();
-        Criteria criteria = session.createCriteria(clazz);
+        Criteria criteria = getCurrentSession().createCriteria(clazz);
         List<E> result = criteria.list();
-        closeSession();
         return result;
     }
 
@@ -113,18 +97,15 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
     public void deleteByIds(Class<E> clazz, List<Long> ids) {
         List<E> entities = findByIds(clazz, ids);
         if (CollectionUtils.isNotEmpty(entities)) {
-            openSession();
             for (E entity : entities) {
-                session.delete(entity);
+                getCurrentSession().delete(entity);
             }
-            closeSession();
         }
     }
 
     @Override
     public BasePagingLoadResult<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
-        openSession();
-        Criteria criteria = session.createCriteria(clazz);
+        Criteria criteria = getCurrentSession().createCriteria(clazz);
         if (StringUtils.isNotBlank(config.getSortField())) {
             if (config.getSortDir() == Style.SortDir.ASC) {
                 criteria.addOrder(Order.asc(config.getSortField()));
@@ -170,25 +151,21 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         }
         List<E> result = criteria.setFirstResult(config.getOffset()).
                 setMaxResults(config.getLimit()).list();
-        closeSession();
         return new BasePagingLoadResult<E>(result, config.getOffset(), count(clazz, config, criterions));
     }
 
     @Override
     public int count(Class<E> clazz) {
-        openSession();
-        Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
+        Criteria criteria = getCurrentSession().createCriteria(clazz).setProjection(Projections.rowCount());
         Object result = criteria.uniqueResult();
         if (result != null) {
             return ((Long) result).intValue();
         }
-        closeSession();
         return 0;
     }
 
     protected int count(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions) {
-        openSession();
-        Criteria criteria = session.createCriteria(clazz).setProjection(Projections.rowCount());
+        Criteria criteria = getCurrentSession().createCriteria(clazz).setProjection(Projections.rowCount());
         if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
             Map<String, Object> filters = config.get("filters");
             if (filters != null) {
@@ -229,7 +206,6 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         if (result != null) {
             return ((Long) result).intValue();
         }
-        closeSession();
         return 0;
     }
 
@@ -244,13 +220,7 @@ public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
         return entityName;
     }
 
-    protected void openSession() {
-        session = SessionFactoryUtil.getInstance().openSession();
-        session.beginTransaction();
-    }
-
-    protected void closeSession() {
-        session.flush();
-        session.close();
+    protected Session getCurrentSession() {
+        return SessionFactoryUtil.getCurrentSession();
     }
 }

@@ -28,6 +28,7 @@ import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.qlvt.server.transaction.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 5:17 PM
  */
+@Transaction
 @Singleton
 public class UserServiceImpl extends AbstractService implements UserService {
 

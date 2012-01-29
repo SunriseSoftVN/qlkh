@@ -17,30 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao.impl;
+package com.qlvt.server.transaction;
 
-import com.google.inject.Singleton;
-import com.qlvt.core.client.model.Branch;
-import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The Class BranchDaoImpl.
+ * The Class Transaction.
  *
  * @author Nguyen Duc Dung
- * @since 1/2/12, 12:54 PM
+ * @since 1/29/12, 11:22 AM
  */
-@Singleton
-public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
-    @Override
-    public List<Branch> findByStationId(long stationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Branch.class)
-                .add(Restrictions.eq("station.id", stationId));
-        List<Branch> branches = criteria.list();
-        return branches;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Transaction {
+
 }

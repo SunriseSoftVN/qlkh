@@ -38,11 +38,9 @@ import java.util.List;
 public class TaskDetailDaoImpl extends AbstractDao<TaskDetail> implements TaskDetailDao {
     @Override
     public List<TaskDetail> findByStationId(long stationId) {
-        openSession();
-        Criteria criteria = session.createCriteria(TaskDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(TaskDetail.class).
                 add(Restrictions.eq("station.id", stationId));
         List<TaskDetail> taskDetails = criteria.list();
-        closeSession();
         return taskDetails;
     }
 }

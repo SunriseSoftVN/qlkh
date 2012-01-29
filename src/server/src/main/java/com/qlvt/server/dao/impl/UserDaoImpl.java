@@ -39,10 +39,8 @@ import java.util.List;
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User findByUserName(String userName) {
-        openSession();
-        Criteria criteria = session.createCriteria(User.class).add(Restrictions.eq("userName", userName));
+        Criteria criteria = getCurrentSession().createCriteria(User.class).add(Restrictions.eq("userName", userName));
         List<User> users = criteria.list();
-        closeSession();
         if (CollectionsUtils.isNotEmpty(users)) {
             return users.get(0);
         }
@@ -51,19 +49,15 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     @Override
     public List<User> findByStationId(long stationId) {
-        openSession();
-        Criteria criteria = session.createCriteria(User.class).add(Restrictions.eq("station.id", stationId));
+        Criteria criteria = getCurrentSession().createCriteria(User.class).add(Restrictions.eq("station.id", stationId));
         List<User> users = criteria.list();
-        closeSession();
         return users;
     }
 
     @Override
     public List<User> findByStationIds(List<Long> stationIds) {
-        openSession();
-        Criteria criteria = session.createCriteria(User.class).add(Restrictions.in("station.id",stationIds));
+        Criteria criteria = getCurrentSession().createCriteria(User.class).add(Restrictions.in("station.id",stationIds));
         List<User> users = criteria.list();
-        closeSession();
         return users;
     }
 }

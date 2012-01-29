@@ -40,36 +40,30 @@ public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail>
 
     @Override
     public SubTaskAnnualDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
-        openSession();
-        Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
         List<SubTaskAnnualDetail> subTaskAnnualDetails = criteria.list();
         if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
             return subTaskAnnualDetails.get(0);
         }
-        closeSession();
         return null;
     }
 
     @Override
     public void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
-        openSession();
-        Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
         List<SubTaskAnnualDetail> subTaskAnnualDetails = criteria.list();
         for (SubTaskAnnualDetail subTaskAnnualDetail : subTaskAnnualDetails) {
-            session.delete(subTaskAnnualDetail);
+            getCurrentSession().delete(subTaskAnnualDetail);
         }
-        closeSession();
     }
 
     @Override
     public List<SubTaskAnnualDetail> findBrandId(long brandId) {
-        openSession();
-        Criteria criteria = session.createCriteria(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("branch.id", brandId));
         List<SubTaskAnnualDetail> subTaskDetails = criteria.list();
-        closeSession();
         return subTaskDetails;
     }
 }

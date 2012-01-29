@@ -35,6 +35,8 @@ public class SessionFactoryUtil {
      * The single instance of hibernate SessionFactory
      */
     private static org.hibernate.SessionFactory sessionFactory;
+    
+    private static Session session;
 
     /**
      * disable contructor to guaranty a single instance
@@ -55,23 +57,13 @@ public class SessionFactoryUtil {
      *
      * @return the session
      */
-    public Session openSession() {
-        return sessionFactory.openSession();
+    public static Session openSession() {
+        session = sessionFactory.openSession();
+        return session;
     }
 
-    /**
-     * Returns a session from the session context. If there is no session in the context it opens a session,
-     * stores it in the context and returns it.
-     * This factory is intended to be used with a hibernate.cfg.xml
-     * including the following property <property
-     * name="current_session_context_class">thread</property> This would return
-     * the current open session or if this does not exist, will create a new
-     * session
-     *
-     * @return the session
-     */
-    public Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
+    public static Session getCurrentSession() {
+        return session;
     }
 
     /**

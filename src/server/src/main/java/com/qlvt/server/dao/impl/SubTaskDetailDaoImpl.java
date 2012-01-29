@@ -40,36 +40,30 @@ public class SubTaskDetailDaoImpl extends AbstractDao<SubTaskDetail> implements 
 
     @Override
     public SubTaskDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
-        openSession();
-        Criteria criteria = session.createCriteria(SubTaskDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
         List<SubTaskDetail> subTaskDetails = criteria.list();
         if (CollectionUtils.isNotEmpty(subTaskDetails)) {
             return subTaskDetails.get(0);
         }
-        closeSession();
         return null;
     }
 
     @Override
     public void deleteSubTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
-        openSession();
-        Criteria criteria = session.createCriteria(SubTaskDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
         List<SubTaskDetail> subTaskDetails = criteria.list();
         for (SubTaskDetail subTaskDetail : subTaskDetails) {
-            session.delete(subTaskDetail);
+            getCurrentSession().delete(subTaskDetail);
         }
-        closeSession();
     }
 
     @Override
     public List<SubTaskDetail> findBrandId(long brandId) {
-        openSession();
-        Criteria criteria = session.createCriteria(SubTaskDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskDetail.class).
                 add(Restrictions.eq("branch.id", brandId));
         List<SubTaskDetail> subTaskDetails = criteria.list();
-        closeSession();
         return subTaskDetails;
     }
 }

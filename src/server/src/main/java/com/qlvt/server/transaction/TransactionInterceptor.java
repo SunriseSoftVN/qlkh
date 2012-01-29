@@ -17,30 +17,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao.impl;
+package com.qlvt.server.transaction;
 
-import com.google.inject.Singleton;
-import com.qlvt.core.client.model.Branch;
-import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-
-import java.util.List;
+import com.qlvt.server.util.SessionFactoryUtil;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.hibernate.Session;
 
 /**
- * The Class BranchDaoImpl.
+ * The Class TransactionInterceptor.
  *
  * @author Nguyen Duc Dung
- * @since 1/2/12, 12:54 PM
+ * @since 1/29/12, 11:23 AM
  */
-@Singleton
-public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
+public class TransactionInterceptor implements MethodInterceptor {
     @Override
-    public List<Branch> findByStationId(long stationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Branch.class)
-                .add(Restrictions.eq("station.id", stationId));
-        List<Branch> branches = criteria.list();
-        return branches;
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        //Open Session and begin transaction.
+        Session session = SessionFactoryUtil.openSession();
+        session.beginTransaction();
+
+        Object result = invocation.proceed();
+
+        //Commit and close session.
+        session.flush();
+        session.close();
+        return result;
     }
 }

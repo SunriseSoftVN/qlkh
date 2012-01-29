@@ -30,6 +30,7 @@ import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.qlvt.server.transaction.Transaction;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/2/12, 12:59 PM
  */
+@Transaction
 @Singleton
 public class BranchServiceImpl extends AbstractService implements BranchService {
 

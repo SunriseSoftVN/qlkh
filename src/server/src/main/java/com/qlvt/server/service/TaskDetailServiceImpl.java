@@ -36,6 +36,7 @@ import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.qlvt.server.transaction.Transaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.criterion.Restrictions;
@@ -50,6 +51,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:53 PM
  */
+@Transaction
 @Singleton
 public class TaskDetailServiceImpl extends AbstractService implements TaskDetailService {
 

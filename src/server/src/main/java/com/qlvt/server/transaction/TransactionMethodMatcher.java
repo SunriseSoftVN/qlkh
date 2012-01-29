@@ -17,30 +17,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao.impl;
+package com.qlvt.server.transaction;
 
-import com.google.inject.Singleton;
-import com.qlvt.core.client.model.Branch;
-import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import com.google.inject.matcher.AbstractMatcher;
+import com.qlvt.server.service.core.AbstractService;
 
-import java.util.List;
+import java.lang.reflect.Method;
 
 /**
- * The Class BranchDaoImpl.
+ * The Class TransactionMethodMatcher.
  *
  * @author Nguyen Duc Dung
- * @since 1/2/12, 12:54 PM
+ * @since 1/29/12, 11:52 AM
  */
-@Singleton
-public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
+public class TransactionMethodMatcher extends AbstractMatcher<Method> {
     @Override
-    public List<Branch> findByStationId(long stationId) {
-        Criteria criteria = getCurrentSession().createCriteria(Branch.class)
-                .add(Restrictions.eq("station.id", stationId));
-        List<Branch> branches = criteria.list();
-        return branches;
+    public boolean matches(Method method) {
+        if (method != null) {
+            Class clazz = method.getDeclaringClass();
+            if (clazz.getSuperclass() != null
+                    && clazz.getSuperclass().equals(AbstractService.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

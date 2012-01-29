@@ -26,6 +26,7 @@ import com.qlvt.core.client.exception.UserAuthenticationException;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.qlvt.server.transaction.Transaction;
 
 /**
  * The Class LoginServiceImpl.
@@ -34,6 +35,7 @@ import com.qlvt.server.service.core.AbstractService;
  * @since 12/28/11, 10:18 AM
  */
 @Singleton
+@Transaction
 public class LoginServiceImpl extends AbstractService implements LoginService {
 
     @Inject

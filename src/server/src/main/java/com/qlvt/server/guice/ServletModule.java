@@ -19,8 +19,12 @@
 
 package com.qlvt.server.guice;
 
+import com.google.inject.matcher.Matchers;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.service.*;
+import com.qlvt.server.transaction.Transaction;
+import com.qlvt.server.transaction.TransactionInterceptor;
+import com.qlvt.server.transaction.TransactionMethodMatcher;
 
 /**
  * The Class ServletModule.
@@ -38,5 +42,7 @@ public class ServletModule extends com.google.inject.servlet.ServletModule {
         serve(servletRootPath + "/Task").with(TaskServiceImpl.class);
         serve(servletRootPath + "/TaskDetail").with(TaskDetailServiceImpl.class);
         serve(servletRootPath + "/Branch").with(BranchServiceImpl.class);
+        bindInterceptor(Matchers.annotatedWith(Transaction.class), new TransactionMethodMatcher(),
+                new TransactionInterceptor());
     }
 }

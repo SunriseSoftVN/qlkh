@@ -29,6 +29,7 @@ import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.service.core.AbstractService;
+import com.qlvt.server.transaction.Transaction;
 import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -41,6 +42,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/31/11, 2:39 PM
  */
+@Transaction
 @Singleton
 public class TaskServiceImpl extends AbstractService implements TaskService {
 
