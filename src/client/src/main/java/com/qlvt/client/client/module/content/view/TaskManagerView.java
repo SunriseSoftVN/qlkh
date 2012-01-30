@@ -40,6 +40,7 @@ import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskManagerConstant;
 import com.qlvt.client.client.module.content.view.security.TaskManagerSecurity;
 import com.qlvt.client.client.widget.MyFitLayout;
+import com.qlvt.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -94,7 +95,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     TextField<String> txtTaskUnit = new TextField<String>();
 
     @I18nField
-    NumberField txtTaskDefault = new NumberField();
+    MyNumberField txtTaskDefault = new MyNumberField();
 
     @I18nField
     Button btnTaskEditOk = new Button();

@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
@@ -44,6 +43,7 @@ import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskDetailSecurity;
 import com.qlvt.client.client.widget.MyCheckBoxSelectionModel;
+import com.qlvt.client.client.widget.MyNumberField;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -295,25 +295,25 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         columnConfigs.add(branchNameColumnConfig);
 
         ColumnConfig q1ColumnConfig = new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
-        NumberField q1NumberField = new NumberField();
+        MyNumberField q1NumberField = new MyNumberField();
         q1NumberField.setSelectOnFocus(true);
         q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
         columnConfigs.add(q1ColumnConfig);
 
         ColumnConfig q2ColumnConfig = new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
-        NumberField q2NumberField = new NumberField();
+        MyNumberField q2NumberField = new MyNumberField();
         q2NumberField.setSelectOnFocus(true);
         q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
         columnConfigs.add(q2ColumnConfig);
 
         ColumnConfig q3ColumnConfig = new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
-        NumberField q3NumberField = new NumberField();
+        MyNumberField q3NumberField = new MyNumberField();
         q3NumberField.setSelectOnFocus(true);
         q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
         columnConfigs.add(q3ColumnConfig);
 
         ColumnConfig q4ColumnConfig = new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
-        NumberField q4NumberField = new NumberField();
+        MyNumberField q4NumberField = new MyNumberField();
         q4NumberField.setSelectOnFocus(true);
         q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
         columnConfigs.add(q4ColumnConfig);

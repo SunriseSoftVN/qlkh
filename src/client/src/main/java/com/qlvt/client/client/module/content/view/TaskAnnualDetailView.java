@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
@@ -43,6 +42,7 @@ import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecurity;
+import com.qlvt.client.client.widget.MyNumberField;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
@@ -303,7 +303,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         String year = " " + String.valueOf((1900 + new Date().getYear() - 1));
         ColumnConfig lastYearValueColumnConfig = new ColumnConfig(LAST_YEAR_VALUE_COLUMN,
                 getConstant().lastYearValueColumnTitle() + year, LAST_YEAR_VALUE_WIDTH);
-        NumberField lastYearValueNumberField = new NumberField();
+        MyNumberField lastYearValueNumberField = new MyNumberField();
         lastYearValueNumberField.setSelectOnFocus(true);
         lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
         lastYearValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
@@ -311,7 +311,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
         ColumnConfig increaseValueColumnConfig = new ColumnConfig(INCREASE_VALUE_COLUMN,
                 getConstant().increaseValueColumnTitle(), INCREASE_VALUE_WIDTH);
-        NumberField increaseValueNumberField = new NumberField();
+        MyNumberField increaseValueNumberField = new MyNumberField();
         increaseValueNumberField.setSelectOnFocus(true);
         increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
         increaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
@@ -319,7 +319,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
         ColumnConfig decreaseValueColumnConfig = new ColumnConfig(DECREASE_VALUE_COLUMN,
                 getConstant().decreaseValueColumnTitle(), DECREASE_VALUE_WIDTH);
-        NumberField decreaseValueNumberField = new NumberField();
+        MyNumberField decreaseValueNumberField = new MyNumberField();
         decreaseValueNumberField.setSelectOnFocus(true);
         decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
         decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
