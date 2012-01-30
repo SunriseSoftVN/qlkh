@@ -11,7 +11,7 @@
         <property name="show_sql">false</property>
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="connection.username">root</property>
-        <property name="connection.password"></property>
+        <property name="connection.password">sam12345</property>
         <property name="hibernate.connection.pool_size">10</property>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->

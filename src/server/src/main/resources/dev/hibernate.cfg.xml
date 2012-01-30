@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">
+            jdbc:mysql://localhost/qlvt?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8
+        </property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="show_sql">true</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password"></property>
+        <property name="hibernate.connection.pool_size">10</property>
+        <!-- DB schema will be updated if needed -->
+        <!-- <property name="hbm2ddl.auto">update</property> -->
+
+        <mapping resource="com/qlvt/core/client/model/User.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/Station.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/Task.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/TaskDetail.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/SubTaskDetail.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/SubTaskAnnualDetail.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/Branch.hbm.xml"/>
+
+    </session-factory>
+</hibernate-configuration>

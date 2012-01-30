@@ -21,6 +21,7 @@
         <guiceVersion>3.0</guiceVersion>
         <seleniumVersion>2.2.0</seleniumVersion>
         <slf4jVersion>1.6.1</slf4jVersion>
+        <jasperreportsVersion>4.5.0</jasperreportsVersion>
         <hibernateVersion>4.0.0.Final</hibernateVersion>
         <hibernateValidatorVersion>4.2.0.Final</hibernateValidatorVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
@@ -38,12 +39,32 @@
             <properties>
                 <applicationMode>DEV</applicationMode>
             </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/dev</directory>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
         </profile>
         <profile>
             <id>PRODUCTION</id>
             <properties>
                 <applicationMode>PRODUCTION</applicationMode>
             </properties>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/production</directory>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </build>
         </profile>
     </profiles>
 
