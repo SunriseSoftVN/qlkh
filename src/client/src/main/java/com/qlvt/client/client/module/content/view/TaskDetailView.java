@@ -193,7 +193,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     }
 
     public void createSubTaskGrid(ListStore<BeanModel> listStore) {
-        MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
+        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs(selectionModel));
         subTaskDetailGird = new EditorGrid<BeanModel>(listStore, subTaskColumnModel);
         subTaskDetailGird.setBorders(true);

@@ -43,7 +43,6 @@ import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecurity;
-import com.qlvt.client.client.widget.MyCheckBoxSelectionModel;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
@@ -146,7 +145,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
      * Create Grid on View.
      */
     public void createTaskGrid(ListStore<BeanModel> listStore) {
-        MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
+        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         taskColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
         taskDetailGird = new Grid<BeanModel>(listStore, taskColumnModel);
         taskDetailGird.setBorders(true);
@@ -196,7 +195,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     }
 
     public void createSubTaskGrid(ListStore<BeanModel> listStore) {
-        MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
+        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs(selectionModel));
         subTaskDetailGird = new EditorGrid<BeanModel>(listStore, subTaskColumnModel);
         subTaskDetailGird.setBorders(true);
