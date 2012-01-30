@@ -67,7 +67,7 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
-    public static final int STT_COLUMN_WIDTH = 50;
+    public static final int STT_COLUMN_WIDTH = 40;
     public static final String USER_NAME_COLUMN = "userName";
     public static final int USER_NAME_COLUMN_WIDTH = 200;
     public static final String USER_STATION_COLUMN = "station";

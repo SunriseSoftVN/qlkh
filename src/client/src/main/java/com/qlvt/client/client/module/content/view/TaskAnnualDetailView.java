@@ -71,9 +71,9 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
-    public static final int STT_COLUMN_WIDTH = 50;
+    public static final int STT_COLUMN_WIDTH = 40;
     public static final String TASK_CODE_COLUMN = "task";
-    public static final int TASK_CODE_WIDTH = 100;
+    public static final int TASK_CODE_WIDTH = 60;
     public static final String TASK_NAME_COLUMN = "task.name";
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "task.unit";
@@ -81,13 +81,13 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final String BRANCH_NAME_COLUMN = "branch.name";
     public static int BRANCH_NAME_WIDTH = 150;
     public static final String LAST_YEAR_VALUE_COLUMN = "lastYearValue";
-    public static final int LAST_YEAR_VALUE_WIDTH = 100;
+    public static final int LAST_YEAR_VALUE_WIDTH = 70;
     public static final String INCREASE_VALUE_COLUMN = "increaseValue";
-    public static final int INCREASE_VALUE_WIDTH = 100;
+    public static final int INCREASE_VALUE_WIDTH = 70;
     public static final String DECREASE_VALUE_COLUMN = "decreaseValue";
-    public static final int DECREASE_VALUE_WIDTH = 100;
+    public static final int DECREASE_VALUE_WIDTH = 70;
     public static final String REAL_VALUE_COLUMN = "realValue";
-    public static final int REAL_VALUE_WIDTH = 60;
+    public static final int REAL_VALUE_WIDTH = 80;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -173,7 +173,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         taskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
 
-        txtSearch.setWidth(200);
+        txtSearch.setWidth(170);
         toolBar.add(txtSearch);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);

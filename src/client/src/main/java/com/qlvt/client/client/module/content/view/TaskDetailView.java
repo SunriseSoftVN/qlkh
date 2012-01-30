@@ -68,9 +68,9 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
-    public static final int STT_COLUMN_WIDTH = 50;
+    public static final int STT_COLUMN_WIDTH = 40;
     public static final String TASK_CODE_COLUMN = "task";
-    public static final int TASK_CODE_WIDTH = 100;
+    public static final int TASK_CODE_WIDTH = 60;
     public static final String TASK_NAME_COLUMN = "task.name";
     public static final int TASK_NAME_WIDTH = 300;
     public static final String TASK_UNIT_COLUMN = "task.unit";
@@ -170,7 +170,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         taskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
 
-        txtSearch.setWidth(200);
+        txtSearch.setWidth(170);
         toolBar.add(txtSearch);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);

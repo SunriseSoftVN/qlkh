@@ -61,7 +61,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
-    public static final int STT_COLUMN_WIDTH = 50;
+    public static final int STT_COLUMN_WIDTH = 40;
     public static final String TASK_CODE_COLUMN = "code";
     public static final int TASK_CODE_WIDTH = 100;
     public static final String TASK_NAME_COLUMN = "name";

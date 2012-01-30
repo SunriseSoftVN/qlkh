@@ -60,7 +60,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
-    public static final int STT_COLUMN_WIDTH = 50;
+    public static final int STT_COLUMN_WIDTH = 40;
     public static final String STATION_NAME_COLUMN = "name";
     public static final int STATION_NAME_WIDTH = 300;
     public static final int STATION_LIST_SIZE = 50;
