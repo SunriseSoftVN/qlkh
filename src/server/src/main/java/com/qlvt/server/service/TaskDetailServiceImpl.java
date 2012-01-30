@@ -70,7 +70,7 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     public BasePagingLoadResult<TaskDetail> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         BasePagingLoadResult<TaskDetail> basePagingLoadResult = taskDetailDao.getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
-        return  basePagingLoadResult;
+        return basePagingLoadResult;
     }
 
     @Override
@@ -82,21 +82,25 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
 
     @Override
     public BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig,
-                                                                                long taskDetailId) {
-        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
-        List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
+                                                                             long taskDetailId) {
         List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
-        for (Branch branch : branches) {
-            SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
-                    findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-            if (subTaskAnnualDetail == null) {
-                subTaskAnnualDetail = new SubTaskAnnualDetail();
-                subTaskAnnualDetail.setTaskDetail(taskDetail);
-                subTaskAnnualDetail.setBranch(branch);
-                subTaskAnnualDetail.setCreateBy(1l);
-                subTaskAnnualDetail.setUpdateBy(1l);
+        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
+        if (taskDetail != null) {
+            List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
+            if (CollectionUtils.isNotEmpty(branches)) {
+                for (Branch branch : branches) {
+                    SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
+                            findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+                    if (subTaskAnnualDetail == null) {
+                        subTaskAnnualDetail = new SubTaskAnnualDetail();
+                        subTaskAnnualDetail.setTaskDetail(taskDetail);
+                        subTaskAnnualDetail.setBranch(branch);
+                        subTaskAnnualDetail.setCreateBy(1l);
+                        subTaskAnnualDetail.setUpdateBy(1l);
+                    }
+                    subTaskAnnualDetails.add(subTaskAnnualDetail);
+                }
             }
-            subTaskAnnualDetails.add(subTaskAnnualDetail);
         }
         return new BasePagingLoadResult<SubTaskAnnualDetail>(subTaskAnnualDetails, loadConfig.getOffset(),
                 subTaskAnnualDetails.size());
@@ -104,20 +108,24 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
 
     @Override
     public BasePagingLoadResult<SubTaskDetail> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
-        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
-        List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
         List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
-        for (Branch branch : branches) {
-            SubTaskDetail subTaskDetail = subTaskDetailDao.
-                    findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-            if (subTaskDetail == null) {
-                subTaskDetail = new SubTaskDetail();
-                subTaskDetail.setTaskDetail(taskDetail);
-                subTaskDetail.setBranch(branch);
-                subTaskDetail.setCreateBy(1l);
-                subTaskDetail.setUpdateBy(1l);
+        TaskDetail taskDetail = taskDetailDao.findById(TaskDetail.class, taskDetailId);
+        if (taskDetail != null) {
+            List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
+            if (CollectionUtils.isNotEmpty(branches)) {
+                for (Branch branch : branches) {
+                    SubTaskDetail subTaskDetail = subTaskDetailDao.
+                            findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+                    if (subTaskDetail == null) {
+                        subTaskDetail = new SubTaskDetail();
+                        subTaskDetail.setTaskDetail(taskDetail);
+                        subTaskDetail.setBranch(branch);
+                        subTaskDetail.setCreateBy(1l);
+                        subTaskDetail.setUpdateBy(1l);
+                    }
+                    subTaskDetails.add(subTaskDetail);
+                }
             }
-            subTaskDetails.add(subTaskDetail);
         }
         return new BasePagingLoadResult<SubTaskDetail>(subTaskDetails, loadConfig.getOffset(),
                 subTaskDetails.size());

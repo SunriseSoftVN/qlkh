@@ -258,7 +258,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         if (isNotFound) {
             view.getTaskDetailGird().getStore().add(updateModel);
             view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
-                    .getStore().getCount() -1 , 1 , false);
+                    .getStore().getCount() - 1, 1, false);
         }
         view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
     }
@@ -267,7 +267,11 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<SubTaskAnnualDetail>> callback) {
-                taskDetailService.getSubTaskAnnualDetails((BasePagingLoadConfig) loadConfig, currentTaskDetail.getId(), callback);
+                long currentTaskDetailId = -1;
+                if (currentTaskDetail != null) {
+                    currentTaskDetailId = currentTaskDetail.getId();
+                }
+                taskDetailService.getSubTaskAnnualDetails((BasePagingLoadConfig) loadConfig, currentTaskDetailId, callback);
             }
         };
 

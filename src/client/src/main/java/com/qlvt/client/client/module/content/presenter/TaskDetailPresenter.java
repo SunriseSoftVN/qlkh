@@ -255,7 +255,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         if (isNotFound) {
             view.getTaskDetailGird().getStore().add(updateModel);
             view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
-                    .getStore().getCount() -1 , 1 , false);
+                    .getStore().getCount() - 1, 1, false);
         }
         view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
     }
@@ -285,7 +285,11 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         RpcProxy<BasePagingLoadResult<SubTaskDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<SubTaskDetail>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<SubTaskDetail>> callback) {
-                taskDetailService.getSubTaskDetails((BasePagingLoadConfig) loadConfig, currentTaskDetail.getId(), callback);
+                long currentTaskDetailId = -1;
+                if (currentTaskDetail != null) {
+                    currentTaskDetailId = currentTaskDetail.getId();
+                }
+                taskDetailService.getSubTaskDetails((BasePagingLoadConfig) loadConfig, currentTaskDetailId, callback);
             }
         };
 
