@@ -212,6 +212,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         if (!txtTaskCode.isRendered()) {
             txtTaskCode.setAllowBlank(false);
             txtTaskCode.setSelectOnFocus(true);
+            txtTaskCode.setAllowDecimals(false);
+            txtTaskCode.setAllowNegative(false);
         }
         taskEditPanel.add(txtTaskCode);
         window.setFocusWidget(txtTaskCode);
