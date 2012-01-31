@@ -86,7 +86,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
-    NumberField txtTaskCode = new NumberField();
+    TextField<String> txtTaskCode = new TextField<String>();
 
     @I18nField
     TextField<String> txtTaskName = new TextField<String>();
@@ -212,8 +212,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         if (!txtTaskCode.isRendered()) {
             txtTaskCode.setAllowBlank(false);
             txtTaskCode.setSelectOnFocus(true);
-            txtTaskCode.setAllowDecimals(false);
-            txtTaskCode.setAllowNegative(false);
+            txtTaskCode.setMaxLength(11);
         }
         taskEditPanel.add(txtTaskCode);
         window.setFocusWidget(txtTaskCode);
@@ -305,7 +304,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return txtTaskName;
     }
 
-    public NumberField getTxtTaskCode() {
+    public TextField<String> getTxtTaskCode() {
         return txtTaskCode;
     }
 }

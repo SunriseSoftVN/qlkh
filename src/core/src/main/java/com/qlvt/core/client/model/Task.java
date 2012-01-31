@@ -30,7 +30,7 @@ import com.qlvt.core.client.model.core.AbstractEntity;
 public class Task extends AbstractEntity {
 
     private String name;
-    private int code;
+    private String code;
     private Double defaultValue;
     private String unit;
 
@@ -42,11 +42,11 @@ public class Task extends AbstractEntity {
         this.name = name;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

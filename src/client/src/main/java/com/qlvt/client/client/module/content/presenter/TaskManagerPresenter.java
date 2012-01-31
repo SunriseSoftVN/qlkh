@@ -143,7 +143,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (view.getTaskEditPanel().isValid()) {
-                    currentTask.setCode(view.getTxtTaskCode().getValue().intValue());
+                    currentTask.setCode(view.getTxtTaskCode().getValue());
                     currentTask.setName(view.getTxtTaskName().getValue());
                     currentTask.setUnit(view.getTxtTaskUnit().getValue());
                     if (view.getTxtTaskDefault().getValue() != null) {

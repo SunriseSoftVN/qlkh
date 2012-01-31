@@ -1,0 +1,1 @@
+ALTER TABLE `Task` CHANGE `code` `code` VARCHAR(11) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
