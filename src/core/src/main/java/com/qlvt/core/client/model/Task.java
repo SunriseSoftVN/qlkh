@@ -33,6 +33,7 @@ public class Task extends AbstractEntity {
     private String code;
     private Double defaultValue;
     private String unit;
+    private int quota;
 
     public String getName() {
         return name;
@@ -64,5 +65,13 @@ public class Task extends AbstractEntity {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public int getQuota() {
+        return quota;
+    }
+
+    public void setQuota(int quota) {
+        this.quota = quota;
     }
 }

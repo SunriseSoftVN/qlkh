@@ -71,6 +71,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final int TASK_UNIT_WIDTH = 70;
     public static final String TASK_DEFAULT_VALUE_COLUMN = "defaultValue";
     public static final int TASK_DEFAULT_VALUE_WIDTH = 70;
+    public static final String TASK_QUOTA_COLUMN = "quota";
+    public static final int TASK_QUOTA_WIDTH = 70;
     public static final int TASK_LIST_SIZE = 50;
 
     @I18nField
@@ -96,6 +98,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     @I18nField
     MyNumberField txtTaskDefault = new MyNumberField();
+
+    @I18nField
+    MyNumberField txtTaskQuota = new MyNumberField();
 
     @I18nField
     Button btnTaskEditOk = new Button();
@@ -197,6 +202,11 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         ColumnConfig defaultValueColumnConfig = new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
                 TASK_DEFAULT_VALUE_WIDTH);
         columnConfigs.add(defaultValueColumnConfig);
+
+        ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
+                TASK_QUOTA_WIDTH);
+        columnConfigs.add(quotaColumnConfig);
+
         return columnConfigs;
     }
 
@@ -235,10 +245,18 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(txtTaskDefault);
 
+        if (!txtTaskQuota.isRendered()) {
+            txtTaskQuota.setSelectOnFocus(true);
+            txtTaskQuota.setAllowBlank(false);
+            txtTaskQuota.setAllowDecimals(false);
+            txtTaskQuota.setAllowNegative(false);
+        }
+        taskEditPanel.add(txtTaskQuota);
+
         window.add(taskEditPanel);
         window.addButton(btnTaskEditOk);
         window.addButton(btnTaskEditCancel);
-        window.setSize(380, 200);
+        window.setSize(380, 220);
         window.setResizable(false);
         window.setModal(true);
         window.setHeading(getConstant().taskEditPanel());
@@ -306,5 +324,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public TextField<String> getTxtTaskCode() {
         return txtTaskCode;
+    }
+
+    public MyNumberField getTxtTaskQuota() {
+        return txtTaskQuota;
     }
 }

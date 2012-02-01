@@ -97,6 +97,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskName().setValue(selectedTask.getName());
                     view.getTxtTaskUnit().setValue(selectedTask.getUnit());
                     view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
+                    view.getTxtTaskQuota().setValue(selectedTask.getQuota());
                     currentTask = selectedTask;
                     taskEditWindow.show();
                 }
@@ -148,6 +149,9 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     currentTask.setUnit(view.getTxtTaskUnit().getValue());
                     if (view.getTxtTaskDefault().getValue() != null) {
                         currentTask.setDefaultValue(view.getTxtTaskDefault().getValue().doubleValue());
+                    }
+                    if (view.getTxtTaskQuota().getValue() != null) {
+                        currentTask.setQuota(view.getTxtTaskQuota().getValue().intValue());
                     }
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);

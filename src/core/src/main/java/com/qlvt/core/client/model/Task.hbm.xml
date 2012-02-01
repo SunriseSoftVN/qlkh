@@ -16,5 +16,6 @@
         <property name="code" column="code" not-null="true"/>
         <property name="defaultValue" column="defaultValue" not-null="false"/>
         <property name="unit" column="unit" not-null="true"/>
+        <property name="quota" column="quota" not-null="true"/>
     </class>
 </hibernate-mapping>
