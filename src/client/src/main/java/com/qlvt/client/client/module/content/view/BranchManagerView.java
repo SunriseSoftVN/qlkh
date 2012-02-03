@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -119,7 +120,7 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113) {
+                } else if (e.getKeyCode() == 113 || e.getKeyCode() == KeyCodes.KEY_ENTER) {
                     btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
                     btnRefresh.fireEvent(Events.Select);

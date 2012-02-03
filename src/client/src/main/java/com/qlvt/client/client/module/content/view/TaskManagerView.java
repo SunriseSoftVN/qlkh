@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -136,10 +137,13 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
             @Override
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
+                    //F1
                     btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113) {
+                } else if (e.getKeyCode() == 113 || e.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    //F2 or Enter
                     btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
+                    //F4
                     btnRefresh.fireEvent(Events.Select);
                 }
             }

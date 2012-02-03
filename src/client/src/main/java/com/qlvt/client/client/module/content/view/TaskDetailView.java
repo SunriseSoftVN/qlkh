@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.TaskDetailConstant;
@@ -159,7 +160,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113) {
+                } else if (e.getKeyCode() == 113 || e.getKeyCode() == KeyCodes.KEY_ENTER) {
                     btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
                     btnRefresh.fireEvent(Events.Select);
