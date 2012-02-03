@@ -37,6 +37,7 @@ public interface TaskAnnualDetailConstant extends Constants {
     String taskCodeColumnTitle();
     String taskUnitColumnTitle();
     String taskDefaultValueColumnTitle();
+    String taskQuotaColumnTitle();
     String deleteTaskMessageSuccess();
     String deleteAllTaskMessage();
     String deleteTaskMessage();
@@ -55,4 +56,5 @@ public interface TaskAnnualDetailConstant extends Constants {
     String btnTaskEditOk();
     String btnTaskEditCancel();
     String cbbTask();
+    String txtTaskSearch();
 }

@@ -21,16 +21,16 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.ModelProcessor;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
@@ -72,12 +72,24 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
-    public static final String TASK_CODE_COLUMN = "task";
+    public static final String TASK_DETAIL_CODE_COLUMN = "task";
+    public static final int TASK_DETAIL_CODE_WIDTH = 60;
+    public static final String TASK_DETAIL_NAME_COLUMN = "task.name";
+    public static final int TASK_DETAIL_NAME_WIDTH = 300;
+    public static final String TASK_DETAIL_UNIT_COLUMN = "task.unit";
+    public static final int TASK_DETAIL_UNIT_WIDTH = 70;
+
+    public static final String TASK_CODE_COLUMN = "code";
     public static final int TASK_CODE_WIDTH = 60;
-    public static final String TASK_NAME_COLUMN = "task.name";
+    public static final String TASK_NAME_COLUMN = "name";
     public static final int TASK_NAME_WIDTH = 300;
-    public static final String TASK_UNIT_COLUMN = "task.unit";
+    public static final String TASK_UNIT_COLUMN = "unit";
     public static final int TASK_UNIT_WIDTH = 70;
+    public static final String TASK_DEFAULT_COLUMN = "defaultValue";
+    public static final int TASK_DEFAULT_WIDTH = 70;
+    public static final String TASK_QUOTA_COLUMN = "quota";
+    public static final int TASK_QUOTA_WIDTH = 60;
+
     public static final String BRANCH_NAME_COLUMN = "branch.name";
     public static int BRANCH_NAME_WIDTH = 150;
     public static final String LAST_YEAR_VALUE_COLUMN = "lastYearValue";
@@ -117,22 +129,24 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     @I18nField
     Button btnTaskEditCancel = new Button();
 
-    @I18nField
-    ComboBox<BeanModel> cbbTask = new ComboBox<BeanModel>();
+    @I18nField(emptyText = true)
+    TextField<String> txtTaskSearch = new TextField<String>();
 
     private ContentPanel contentPanel = new ContentPanel();
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
     private Grid<BeanModel> taskDetailGird;
-    private ColumnModel taskColumnModel;
+    private ColumnModel taskDetailColumnModel;
 
     private ContentPanel subTaskPanel = new ContentPanel();
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
     private ColumnModel subTaskColumnModel;
 
-    private FormPanel taskEditPanel = new FormPanel();
+    private VerticalPanel taskEditPanel = new VerticalPanel();
+    private Grid<BeanModel> taskGrid;
+    private ColumnModel taskColumnModel;
 
     @Override
     protected void initializeView() {
@@ -147,8 +161,8 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
      */
     public void createTaskGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        taskColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
-        taskDetailGird = new Grid<BeanModel>(listStore, taskColumnModel);
+        taskDetailColumnModel = new ColumnModel(createTaskDetailColumnConfig(selectionModel));
+        taskDetailGird = new Grid<BeanModel>(listStore, taskDetailColumnModel);
         taskDetailGird.setBorders(true);
         taskDetailGird.setLoadMask(true);
         taskDetailGird.setStripeRows(true);
@@ -196,14 +210,11 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     }
 
     public void createSubTaskGrid(ListStore<BeanModel> listStore) {
-        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs(selectionModel));
+        subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs());
         subTaskDetailGird = new EditorGrid<BeanModel>(listStore, subTaskColumnModel);
         subTaskDetailGird.setBorders(true);
         subTaskDetailGird.setLoadMask(true);
         subTaskDetailGird.setStripeRows(true);
-        subTaskDetailGird.setSelectionModel(selectionModel);
-        subTaskDetailGird.addPlugin(selectionModel);
         subTaskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         subTaskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
         subTaskDetailGird.setWidth(500);
@@ -235,7 +246,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         contentPanel.layout();
     }
 
-    private List<ColumnConfig> createTaskColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
+    private List<ColumnConfig> createTaskDetailColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -251,7 +262,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
+        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_DETAIL_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_DETAIL_CODE_WIDTH);
         taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
@@ -266,12 +277,12 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         });
 
         columnConfigs.add(taskCodeColumnConfig);
-        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
-                TASK_NAME_WIDTH);
+        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_DETAIL_NAME_COLUMN, getConstant().taskNameColumnTitle(),
+                TASK_DETAIL_NAME_WIDTH);
         columnConfigs.add(taskNameColumnConfig);
 
-        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
-                TASK_UNIT_WIDTH);
+        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_DETAIL_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
+                TASK_DETAIL_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
         for (ColumnConfig columnConfig : columnConfigs) {
@@ -281,7 +292,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return columnConfigs;
     }
 
-    private List<ColumnConfig> createSubTaskColumnConfigs(CheckBoxSelectionModel<BeanModel> selectionModel) {
+    private List<ColumnConfig> createSubTaskColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -357,44 +368,112 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return columnConfigs;
     }
 
-    public com.extjs.gxt.ui.client.widget.Window createTaskEditWindow() {
-        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
-        if (!taskEditPanel.isRendered()) {
-            taskEditPanel.setHeaderVisible(false);
-            taskEditPanel.setBodyBorder(false);
-            taskEditPanel.setBorders(false);
-            taskEditPanel.setLabelWidth(120);
+    private List<ColumnConfig> createTaskColumnConfigs() {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+
+//        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+//        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+//            @Override
+//            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+//                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+//                if (model.get(STT_COLUMN) == null) {
+//                    model.set(STT_COLUMN, rowIndex + 1);
+//                }
+//                return new Text(String.valueOf(model.get(STT_COLUMN)));
+//            }
+//        });
+//        columnConfigs.add(sttColumnConfig);
+
+        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
+        taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> taskDetailDtoListStore, Grid<BeanModel> taskDetailDtoGrid) {
+                Task task = model.getBean();
+                return new Text(task.getCode());
+            }
+        });
+
+        columnConfigs.add(taskCodeColumnConfig);
+        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
+                TASK_NAME_WIDTH);
+        columnConfigs.add(taskNameColumnConfig);
+
+        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
+                TASK_UNIT_WIDTH);
+        columnConfigs.add(unitColumnConfig);
+
+        ColumnConfig defaultColumnConfig = new ColumnConfig(TASK_DEFAULT_COLUMN, getConstant().taskDefaultValueColumnTitle(),
+                TASK_DEFAULT_WIDTH);
+        columnConfigs.add(defaultColumnConfig);
+
+        ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
+                TASK_QUOTA_WIDTH);
+        columnConfigs.add(quotaColumnConfig);
+
+        for (ColumnConfig columnConfig : columnConfigs) {
+            columnConfig.setMenuDisabled(true);
         }
 
-        if(!cbbTask.isRendered()) {
-            cbbTask.setLazyRender(false);
-            cbbTask.setSelectOnFocus(true);
-            cbbTask.setForceSelection(true);
-            cbbTask.setAllowBlank(false);
-            cbbTask.setTriggerAction(ComboBox.TriggerAction.ALL);
-            cbbTask.getView().setModelProcessor(new ModelProcessor<BeanModel>() {
+        return columnConfigs;
+    }
+
+    public com.extjs.gxt.ui.client.widget.Window createTaskEditWindow(ListStore<BeanModel> taskListStore) {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!taskEditPanel.isRendered()) {
+            taskEditPanel.setBorders(false);
+            taskEditPanel.setSpacing(4);
+            taskEditPanel.setTableHeight("100%");
+            taskEditPanel.setTableWidth("100%");
+        }
+
+        if (!txtTaskSearch.isRendered()) {
+            txtTaskSearch.setSelectOnFocus(true);
+            txtTaskSearch.setWidth(170);
+            taskEditPanel.add(txtTaskSearch);
+        }
+        window.setFocusWidget(txtTaskSearch);
+
+        if (taskGrid == null) {
+            taskColumnModel = new ColumnModel(createTaskColumnConfigs());
+            taskGrid = new Grid<BeanModel>(taskListStore, taskColumnModel);
+            taskGrid.getStore().addFilter(new StoreFilter<BeanModel>() {
                 @Override
-                public BeanModel prepareData(BeanModel model) {
-                    Task task = model.getBean();
-                    model.set("text", task.getCode() + " - " + task.getName());
-                    return model;
+                public boolean select(Store<BeanModel> beanModelStore, BeanModel parent,
+                                      BeanModel item, String property) {
+                    Task task = item.getBean();
+                    String filter = StringUtils.EMPTY;
+                    if (txtTaskSearch.getValue() != null) {
+                        filter = StringUtils.convertNonAscii(txtTaskSearch.getValue().trim().toLowerCase());
+                    }
+                    if (StringUtils.isBlank(filter)) {
+                        return true;
+                    }
+                    if (task != null && (StringUtils.convertNonAscii(task.getName().toLowerCase()).
+                            contains(filter)
+                            || task.getCode().toLowerCase().contains(filter))) {
+                        return true;
+                    }
+                    return false;
                 }
             });
+            taskGrid.setHeight(300);
+            taskGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+            taskEditPanel.add(taskGrid);
         }
-        taskEditPanel.add(cbbTask);
-        window.setFocusWidget(cbbTask);
 
         window.add(taskEditPanel);
         window.addButton(btnTaskEditOk);
         window.addButton(btnTaskEditCancel);
-        window.setSize(380, 120);
+        window.setSize(640, 400);
         window.setResizable(false);
         window.setModal(true);
         window.setHeading(getConstant().taskEditPanelTitle());
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                taskEditPanel.clear();
+                txtTaskSearch.clear();
+                taskGrid.getStore().clearFilters();
                 taskDetailGird.focus();
             }
         });
@@ -441,11 +520,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return txtSearch;
     }
 
-    public ComboBox<BeanModel> getCbbTask() {
-        return cbbTask;
-    }
-
-    public FormPanel getTaskEditPanel() {
+    public VerticalPanel getTaskEditPanel() {
         return taskEditPanel;
     }
 
@@ -467,5 +542,13 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public Button getBtnSubTaskRefresh() {
         return btnSubTaskRefresh;
+    }
+
+    public Grid<BeanModel> getTaskGrid() {
+        return taskGrid;
+    }
+
+    public TextField<String> getTxtTaskSearch() {
+        return txtTaskSearch;
     }
 }

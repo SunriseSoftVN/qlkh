@@ -74,7 +74,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             if (taskDtoListStore != null) {
                 //Reload task dto list.
                 taskDtoListStore = createTaskDtoListStore();
-                view.getCbbTask().setStore(taskDtoListStore);
             }
             resetView();
         }
@@ -87,7 +86,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     protected void doBind() {
         LoadingUtils.showLoading();
         taskDtoListStore = createTaskDtoListStore();
-        view.getCbbTask().setStore(taskDtoListStore);
         stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
             @Override
             public void onSuccess(Station result) {
@@ -122,7 +120,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
-                    taskEditWindow = view.createTaskEditWindow();
+                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
                     currentTaskDetail = new TaskDetail();
                     taskEditWindow.show();
                 } else {
@@ -135,14 +133,16 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             public void componentSelected(ButtonEvent ce) {
                 if (view.getTaskDetailGird().getSelectionModel().getSelectedItem() != null) {
                     currentTaskDetail = view.getTaskDetailGird().getSelectionModel().getSelectedItem().getBean();
+                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
                     BeanModel task = null;
-                    for (BeanModel model : view.getCbbTask().getStore().getModels()) {
+                    for (BeanModel model : view.getTaskGrid().getStore().getModels()) {
                         if (model.<Task>getBean().getId().equals(currentTaskDetail.getTask().getId())) {
                             task = model;
                         }
                     }
-                    taskEditWindow = view.createTaskEditWindow();
-                    view.getCbbTask().setValue(task);
+                    view.getTxtTaskSearch().setValue(currentTaskDetail.getTask().getCode());
+                    view.getTaskGrid().getStore().applyFilters("");
+                    view.getTaskGrid().getSelectionModel().select(task, false);
                     taskEditWindow.show();
                 }
             }
@@ -208,8 +208,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (currentTaskDetail != null && view.getTaskEditPanel().isValid()) {
-                    Task task = view.getCbbTask().getValue().getBean();
+                if (currentTaskDetail != null && view.getTaskGrid().getSelectionModel().getSelectedItem() != null) {
+                    Task task = view.getTaskGrid().getSelectionModel().getSelectedItem().getBean();
                     currentTaskDetail.setTask(task);
                     currentTaskDetail.setAnnual(true);
                     currentTaskDetail.setStation(currentStation);
@@ -239,6 +239,12 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 if (currentTaskDetail != null) {
                     view.getSubTaskPagingToolBar().refresh();
                 }
+            }
+        });
+        view.getTxtTaskSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyUp(ComponentEvent event) {
+                view.getTaskGrid().getStore().applyFilters("");
             }
         });
     }
