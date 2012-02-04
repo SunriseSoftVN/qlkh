@@ -46,7 +46,6 @@ import com.qlvt.client.client.module.content.view.security.TaskAnnualDetailSecur
 import com.qlvt.client.client.widget.MyNumberField;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
-import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -72,7 +71,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
-    public static final String TASK_DETAIL_CODE_COLUMN = "task";
+    public static final String TASK_DETAIL_CODE_COLUMN = "task.code";
     public static final int TASK_DETAIL_CODE_WIDTH = 60;
     public static final String TASK_DETAIL_NAME_COLUMN = "task.name";
     public static final int TASK_DETAIL_NAME_WIDTH = 300;
@@ -263,20 +262,8 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         columnConfigs.add(sttColumnConfig);
 
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_DETAIL_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_DETAIL_CODE_WIDTH);
-        taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
-            @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<BeanModel> taskDetailDtoListStore, Grid<BeanModel> taskDetailDtoGrid) {
-                String code = StringUtils.EMPTY;
-                TaskDetail taskDetail = model.getBean();
-                if (taskDetail.getTask() != null) {
-                    code = String.valueOf(taskDetail.getTask().getCode());
-                }
-                return new Text(code);
-            }
-        });
-
         columnConfigs.add(taskCodeColumnConfig);
+
         ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_DETAIL_NAME_COLUMN, getConstant().taskNameColumnTitle(),
                 TASK_DETAIL_NAME_WIDTH);
         columnConfigs.add(taskNameColumnConfig);
@@ -371,19 +358,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     private List<ColumnConfig> createTaskColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-//        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
-//        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
-//            @Override
-//            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-//                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
-//                if (model.get(STT_COLUMN) == null) {
-//                    model.set(STT_COLUMN, rowIndex + 1);
-//                }
-//                return new Text(String.valueOf(model.get(STT_COLUMN)));
-//            }
-//        });
-//        columnConfigs.add(sttColumnConfig);
-
         ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
         taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override
@@ -455,6 +429,14 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                         return true;
                     }
                     return false;
+                }
+            });
+            taskGrid.addListener(Events.OnKeyDown, new KeyListener() {
+                @Override
+                public void handleEvent(ComponentEvent e) {
+                    if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
+                        btnTaskEditOk.fireEvent(Events.Select);
+                    }
                 }
             });
             taskGrid.setHeight(300);

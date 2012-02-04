@@ -32,7 +32,6 @@ import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.client.client.utils.NumberUtils;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
@@ -180,14 +179,10 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        Integer code = null;
-                        if (NumberUtils.isNumber(st)) {
-                            code = Integer.parseInt(st);
-                        }
-                        filters.put("task.name", view.getTxtSearch().getValue());
-                        if (code != null) {
-                            filters.put("task.code", code);
-                        }
+                        filters.put(TaskAnnualDetailView.TASK_DETAIL_NAME_COLUMN,
+                                view.getTxtSearch().getValue());
+                        filters.put(TaskAnnualDetailView.TASK_DETAIL_CODE_COLUMN,
+                                view.getTxtSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();
@@ -244,7 +239,12 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getTxtTaskSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
-                view.getTaskGrid().getStore().applyFilters("");
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    view.getTaskGrid().getSelectionModel().select(0, false);
+                    view.getTaskGrid().focus();
+                } else {
+                    view.getTaskGrid().getStore().applyFilters("");
+                }
             }
         });
     }
