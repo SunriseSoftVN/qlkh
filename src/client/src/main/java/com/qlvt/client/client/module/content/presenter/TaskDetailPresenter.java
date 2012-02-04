@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
+import com.qlvt.client.client.module.content.place.TaskDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.service.*;
@@ -37,6 +38,7 @@ import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -52,6 +54,7 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:40 PM
  */
+@Presenter(view = TaskDetailView.class, place = TaskDetailPlace.class)
 public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();

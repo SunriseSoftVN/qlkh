@@ -434,7 +434,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                     }
                     if (task != null && (StringUtils.convertNonAscii(task.getName().toLowerCase()).
                             contains(filter)
-                            || task.getCode().toLowerCase().contains(filter))) {
+                            || task.getCode().toLowerCase().startsWith(filter))) {
                         return true;
                     }
                     return false;
