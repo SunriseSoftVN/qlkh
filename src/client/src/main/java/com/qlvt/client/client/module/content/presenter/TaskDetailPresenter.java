@@ -202,7 +202,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 if (currentTaskDetail != null && view.getTaskGrid().getSelectionModel().getSelectedItem() != null) {
                     Task task = view.getTaskGrid().getSelectionModel().getSelectedItem().getBean();
                     currentTaskDetail.setTask(task);
-                    currentTaskDetail.setAnnual(true);
+                    currentTaskDetail.setAnnual(false);
                     currentTaskDetail.setStation(currentStation);
                     currentTaskDetail.setCreateBy(1l);
                     currentTaskDetail.setUpdateBy(1l);
