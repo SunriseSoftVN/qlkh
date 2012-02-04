@@ -210,11 +210,14 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     }
 
     public void createSubTaskGrid(ListStore<BeanModel> listStore) {
+        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs());
         subTaskDetailGird = new EditorGrid<BeanModel>(listStore, subTaskColumnModel);
         subTaskDetailGird.setBorders(true);
         subTaskDetailGird.setLoadMask(true);
         subTaskDetailGird.setStripeRows(true);
+        subTaskDetailGird.setSelectionModel(selectionModel);
+        subTaskDetailGird.addPlugin(selectionModel);
         subTaskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         subTaskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
         subTaskDetailGird.setWidth(500);
