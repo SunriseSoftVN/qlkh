@@ -27,6 +27,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 4:52 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 public interface UserManagerConstant extends Constants {
     String sttColumnTitle();
     String userNameColumnTitle();
@@ -55,4 +56,5 @@ public interface UserManagerConstant extends Constants {
     String deleteAdminOrManagerMessage();
     String userExitsErrorMessage();
     String passWordErrorMessage();
+    String conformExitMessage();
 }

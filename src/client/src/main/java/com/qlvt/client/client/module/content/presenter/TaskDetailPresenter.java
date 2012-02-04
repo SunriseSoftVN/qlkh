@@ -235,7 +235,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getTxtTaskSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER && view.getTxtTaskSearch().isRendered()) {
                     view.getTaskGrid().getSelectionModel().select(0, false);
                     view.getTaskGrid().focus();
                 } else {
@@ -404,4 +404,20 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getTaskPagingToolBar().refresh();
         emptySubGird();
     }
+
+    @Override
+    public String mayStop() {
+        if (taskEditWindow != null && taskEditWindow.isVisible()) {
+            return view.getConstant().conformExitMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public void onCancel() {
+        if (taskEditWindow != null && taskEditWindow.isVisible()) {
+            taskEditWindow.hide();
+        }
+    }
+
 }

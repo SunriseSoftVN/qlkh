@@ -27,6 +27,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @author Nguyen Duc Dung
  * @since 1/2/12, 1:02 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 public interface BranchManagerConstant extends Constants {
     String btnDelete();
     String btnAdd();
@@ -45,4 +46,5 @@ public interface BranchManagerConstant extends Constants {
     String branchEditPanelTitle();
     String txtBranchName();
     String cbbStation();
+    String conformExitMessage();
 }

@@ -239,7 +239,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getTxtTaskSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER && view.getTxtTaskSearch().isRendered()) {
                     view.getTaskGrid().getSelectionModel().select(0, false);
                     view.getTaskGrid().focus();
                 } else {
@@ -407,5 +407,20 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private void resetView() {
         view.getTaskPagingToolBar().refresh();
         emptySubGird();
+    }
+
+    @Override
+    public String mayStop() {
+        if (taskEditWindow != null && taskEditWindow.isVisible()) {
+            return view.getConstant().conformExitMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public void onCancel() {
+        if (taskEditWindow != null && taskEditWindow.isVisible()) {
+            taskEditWindow.hide();
+        }
     }
 }

@@ -275,4 +275,19 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         });
         return store;
     }
+
+    @Override
+    public String mayStop() {
+        if (branchEditWindow != null && branchEditWindow.isVisible()) {
+            return view.getConstant().conformExitMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public void onCancel() {
+        if (branchEditWindow != null && branchEditWindow.isVisible()) {
+            branchEditWindow.hide();
+        }
+    }
 }

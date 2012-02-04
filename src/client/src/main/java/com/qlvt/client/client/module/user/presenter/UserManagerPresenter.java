@@ -67,6 +67,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     private ListStore<BeanModel> stationListStore;
     private Window newUserWindow;
+    private Window changePasswordWindow;
 
     @Override
     public void onActivate() {
@@ -216,7 +217,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         ancChangePassword.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                final Window changePasswordWindow = view.createChangePassWordWindow();
+                changePasswordWindow = view.createChangePassWordWindow();
                 changePasswordWindow.show();
                 view.getBtnChangePassWordOk().removeAllListeners();
                 view.getBtnChangePassWordOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -316,4 +317,23 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         return store;
     }
 
+    @Override
+    public String mayStop() {
+        if ((newUserWindow != null && newUserWindow.isVisible())
+                || (changePasswordWindow != null && changePasswordWindow.isVisible())) {
+            return view.getConstant().conformExitMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public void onCancel() {
+        if (newUserWindow != null && newUserWindow.isVisible()) {
+            newUserWindow.hide();
+        }
+
+        if (changePasswordWindow != null && changePasswordWindow.isVisible()) {
+            changePasswordWindow.hide();
+        }
+    }
 }

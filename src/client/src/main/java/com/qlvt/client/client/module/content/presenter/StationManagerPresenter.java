@@ -81,8 +81,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (view.getStationsGird().getSelectionModel().getSelectedItem() != null) {
-                    Station selectedSaStation = view.getStationsGird().getSelectionModel().getSelectedItem().<Station>getBean();
-                    currentStation = selectedSaStation;
+                    currentStation = view.getStationsGird().getSelectionModel().getSelectedItem().<Station>getBean();
                     view.getTxtStationName().setValue(currentStation.getName());
                     stationEditWindow = view.createStationEditWindow();
                     stationEditWindow.show();
@@ -232,5 +231,20 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 }
             }
         });
+    }
+
+    @Override
+    public String mayStop() {
+        if (stationEditWindow != null && stationEditWindow.isVisible()) {
+            return view.getConstant().conformExitMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public void onCancel() {
+        if (stationEditWindow != null && stationEditWindow.isVisible()) {
+            stationEditWindow.hide();
+        }
     }
 }

@@ -292,4 +292,19 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         loadConfig.set("filters", null);
         view.getTxtSearch().clear();
     }
+
+    @Override
+    public String mayStop() {
+        if (taskEditWindow != null && taskEditWindow.isVisible()) {
+            return view.getConstant().conformExitMessage();
+        }
+        return null;
+    }
+
+    @Override
+    public void onCancel() {
+        if (taskEditWindow != null && taskEditWindow.isVisible()) {
+            taskEditWindow.hide();
+        }
+    }
 }
