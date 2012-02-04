@@ -27,6 +27,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:37 PM
  */
+@SuppressWarnings("UnusedDeclaration")
 public interface TaskDetailConstant extends Constants {
     String btnDelete();
     String btnAdd();
@@ -55,4 +56,7 @@ public interface TaskDetailConstant extends Constants {
     String btnTaskEditOk();
     String btnTaskEditCancel();
     String cbbTask();
+    String taskQuotaColumnTitle();
+    String txtTaskSearch();
+    String lblTaskSearchHint();
 }

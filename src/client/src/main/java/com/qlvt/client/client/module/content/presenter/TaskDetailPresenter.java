@@ -27,18 +27,16 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlvt.client.client.module.content.place.TaskDetailPlace;
+import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.client.client.utils.NumberUtils;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
-import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -54,7 +52,6 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:40 PM
  */
-@Presenter(view = TaskDetailView.class, place = TaskDetailPlace.class)
 public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
@@ -74,7 +71,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
                 taskDtoListStore = createTaskDtoListStore();
-                view.getCbbTask().setStore(taskDtoListStore);
             }
             resetView();
         }
@@ -87,7 +83,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     protected void doBind() {
         LoadingUtils.showLoading();
         taskDtoListStore = createTaskDtoListStore();
-        view.getCbbTask().setStore(taskDtoListStore);
         stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
             @Override
             public void onSuccess(Station result) {
@@ -117,7 +112,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
-                    taskEditWindow = view.createTaskEditWindow();
+                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
                     currentTaskDetail = new TaskDetail();
                     taskEditWindow.show();
                 } else {
@@ -130,16 +125,16 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void componentSelected(ButtonEvent ce) {
                 if (view.getTaskDetailGird().getSelectionModel().getSelectedItem() != null) {
                     currentTaskDetail = view.getTaskDetailGird().getSelectionModel().getSelectedItem().getBean();
-                    taskEditWindow = view.createTaskEditWindow();
-
+                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
                     BeanModel task = null;
-                    for (BeanModel model : view.getCbbTask().getStore().getModels()) {
+                    for (BeanModel model : view.getTaskGrid().getStore().getModels()) {
                         if (model.<Task>getBean().getId().equals(currentTaskDetail.getTask().getId())) {
                             task = model;
                         }
                     }
-                    view.getCbbTask().setValue(task);
-
+                    view.getTxtTaskSearch().setValue(currentTaskDetail.getTask().getCode());
+                    view.getTaskGrid().getStore().applyFilters("");
+                    view.getTaskGrid().getSelectionModel().select(task, false);
                     taskEditWindow.show();
                 }
             }
@@ -177,14 +172,10 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        Integer code = null;
-                        if (NumberUtils.isNumber(st)) {
-                            code = Integer.parseInt(st);
-                        }
-                        filters.put("task.name", view.getTxtSearch().getValue());
-                        if (code != null) {
-                            filters.put("task.code", code);
-                        }
+                        filters.put(TaskAnnualDetailView.TASK_DETAIL_NAME_COLUMN,
+                                view.getTxtSearch().getValue());
+                        filters.put(TaskAnnualDetailView.TASK_DETAIL_CODE_COLUMN,
+                                view.getTxtSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();
@@ -205,10 +196,10 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (currentTaskDetail != null && view.getTaskEditPanel().isValid()) {
-                    Task task = view.getCbbTask().getValue().getBean();
+                if (currentTaskDetail != null && view.getTaskGrid().getSelectionModel().getSelectedItem() != null) {
+                    Task task = view.getTaskGrid().getSelectionModel().getSelectedItem().getBean();
                     currentTaskDetail.setTask(task);
-                    currentTaskDetail.setAnnual(false);
+                    currentTaskDetail.setAnnual(true);
                     currentTaskDetail.setStation(currentStation);
                     currentTaskDetail.setCreateBy(1l);
                     currentTaskDetail.setUpdateBy(1l);
@@ -235,6 +226,17 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void componentSelected(ButtonEvent ce) {
                 if (currentTaskDetail != null) {
                     view.getSubTaskPagingToolBar().refresh();
+                }
+            }
+        });
+        view.getTxtTaskSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyUp(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    view.getTaskGrid().getSelectionModel().select(0, false);
+                    view.getTaskGrid().focus();
+                } else {
+                    view.getTaskGrid().getStore().applyFilters("");
                 }
             }
         });

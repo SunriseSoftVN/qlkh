@@ -27,9 +27,7 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -130,6 +128,9 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     @I18nField(emptyText = true)
     TextField<String> txtTaskSearch = new TextField<String>();
+
+    @I18nField
+    Label lblTaskSearchHint = new Label();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -404,7 +405,12 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         if (!txtTaskSearch.isRendered()) {
             txtTaskSearch.setSelectOnFocus(true);
             txtTaskSearch.setWidth(170);
-            taskEditPanel.add(txtTaskSearch);
+
+            HorizontalPanel hp = new HorizontalPanel();
+            hp.setSpacing(3);
+            hp.add(txtTaskSearch);
+            hp.add(lblTaskSearchHint);
+            taskEditPanel.add(hp);
         }
         window.setFocusWidget(txtTaskSearch);
 
@@ -500,18 +506,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public TextField<String> getTxtSearch() {
         return txtSearch;
-    }
-
-    public VerticalPanel getTaskEditPanel() {
-        return taskEditPanel;
-    }
-
-    public ColumnModel getSubTaskColumnModel() {
-        return subTaskColumnModel;
-    }
-
-    public ContentPanel getSubTaskPanel() {
-        return subTaskPanel;
     }
 
     public Button getBtnTaskEditCancel() {
