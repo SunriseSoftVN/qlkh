@@ -33,7 +33,6 @@ import com.qlvt.client.client.service.TaskService;
 import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.client.client.utils.NumberUtils;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
@@ -114,14 +113,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        Integer code = null;
-                        if (NumberUtils.isNumber(st)) {
-                            code = Integer.parseInt(st);
-                        }
                         filters.put("name", view.getTxtSearch().getValue());
-                        if (code != null) {
-                            filters.put("code", code);
-                        }
+                        filters.put("code", view.getTxtSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();
@@ -199,7 +192,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         if (isNotFound) {
             view.getTaskGird().getStore().add(updateModel);
             view.getTaskGird().getView().ensureVisible(view.getTaskGird()
-                    .getStore().getCount() -1 , 1 , false);
+                    .getStore().getCount() - 1, 1, false);
         }
         view.getTaskGird().getSelectionModel().select(updateModel, false);
     }
