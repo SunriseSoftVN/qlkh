@@ -17,5 +17,7 @@
         <property name="defaultValue" column="defaultValue" not-null="false"/>
         <property name="unit" column="unit" not-null="true"/>
         <property name="quota" column="quota" not-null="true"/>
+        <property name="taskTypeCode" column="taskTypeCode" not-null="true"/>
+        <property name="childTasks" column="childTasks" />
     </class>
 </hibernate-mapping>

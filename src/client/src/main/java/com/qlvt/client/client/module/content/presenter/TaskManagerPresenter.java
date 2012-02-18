@@ -23,9 +23,15 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
 import com.qlvt.client.client.module.content.view.TaskManagerView;
@@ -33,6 +39,7 @@ import com.qlvt.client.client.service.TaskService;
 import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
@@ -57,6 +64,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
     private Window taskEditWindow;
+    private Window addChildTaskWindow;
     private Task currentTask;
 
     @Override
@@ -68,6 +76,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     @Override
     protected void doBind() {
+        view.setTaskChildOptionCellRenderer(new TaskChildOptionGridRender());
         view.createGrid(createTaskListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -97,6 +106,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskUnit().setValue(selectedTask.getUnit());
                     view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
                     view.getTxtTaskQuota().setValue(selectedTask.getQuota());
+                    view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
+                            valueOf(selectedTask.getTaskTypeCode()));
                     currentTask = selectedTask;
                     taskEditWindow.show();
                 }
@@ -146,6 +157,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     if (view.getTxtTaskQuota().getValue() != null) {
                         currentTask.setQuota(view.getTxtTaskQuota().getValue().intValue());
                     }
+                    currentTask.setTaskTypeCode(view.getCbbTaskType().
+                            getSimpleValue().getTaskTypeCode());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
                     taskService.updateTask(currentTask, new AbstractAsyncCallback<Task>() {
@@ -173,6 +186,19 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 taskEditWindow.hide();
+            }
+        });
+        view.getBtnAddTaskChildCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                addChildTaskWindow.hide();
+            }
+        });
+        view.getBtnAddTaskChild().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                BeanModel task = view.getCbbChildTask().getValue();
+                view.getChildTaskGrid().getStore().add(task);
             }
         });
     }
@@ -216,6 +242,42 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
+    }
+
+    private class TaskChildOptionGridRender implements GridCellRenderer<BeanModel> {
+        @Override
+        public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+            Task task = model.getBean();
+            if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUM.getTaskTypeCode()) {
+                return createTaskChildOptionAnchor();
+            }
+            return null;
+        }
+    }
+
+    private Anchor createTaskChildOptionAnchor() {
+        Anchor anchor = new Anchor(view.getConstant().taskChildOptionAnchor());
+        anchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                addChildTaskWindow = view.createAddTaskChildWindow();
+                LoadingUtils.showLoading();
+                taskService.getAllNormalTasks(new AbstractAsyncCallback<List<Task>>() {
+                    @Override
+                    public void onSuccess(List<Task> tasks) {
+                        BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
+                        ListStore<BeanModel> store = new ListStore<BeanModel>();
+                        for (Task task : tasks) {
+                            store.add(factory.createModel(task));
+                        }
+                        view.getCbbChildTask().setStore(store);
+                        addChildTaskWindow.show();
+                        LoadingUtils.hideLoading();
+                    }
+                });
+            }
+        });
+        return anchor;
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
