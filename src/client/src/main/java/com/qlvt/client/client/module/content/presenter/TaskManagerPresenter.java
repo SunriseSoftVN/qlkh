@@ -62,7 +62,7 @@ import java.util.Map;
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     private static final String CODE_SEPARATOR = " ; ";
-    
+
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
     private Window taskEditWindow;
@@ -401,10 +401,12 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     private List<String> getChildTaskCodes(String childTasks) {
         List<String> childTaskCodes = new ArrayList<String>();
-        String[] st = childTasks.split(CODE_SEPARATOR);
-        for (String code : st) {
-            if (StringUtils.isNotBlank(code)) {
-                childTaskCodes.add(code.trim());
+        if (StringUtils.isNotBlank(childTasks)) {
+            String[] st = childTasks.split(CODE_SEPARATOR);
+            for (String code : st) {
+                if (StringUtils.isNotBlank(code)) {
+                    childTaskCodes.add(code.trim());
+                }
             }
         }
         return childTaskCodes;

@@ -418,7 +418,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                taskGird.focus();
+                cbbChildTask.reset();
+                childTaskGrid.focus();
             }
         });
 
