@@ -61,6 +61,8 @@ import java.util.Map;
 @Presenter(view = TaskManagerView.class, place = TaskManagerPlace.class)
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
+    private static final String CODE_SEPARATOR = " ; ";
+    
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
     private Window taskEditWindow;
@@ -161,6 +163,9 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             getSimpleValue().getTaskTypeCode());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
+                    if (currentTask.getTaskTypeCode() == TaskTypeEnum.NORMAL.getTaskTypeCode()) {
+                        currentTask.setChildTasks(StringUtils.EMPTY);
+                    }
                     taskService.updateTask(currentTask, new AbstractAsyncCallback<Task>() {
                         @Override
                         public void onFailure(Throwable caught) {
@@ -197,8 +202,43 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getBtnAddTaskChild().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                BeanModel task = view.getCbbChildTask().getValue();
-                view.getChildTaskGrid().getStore().add(task);
+                BeanModel model = view.getCbbChildTask().getValue();
+                view.getChildTaskGrid().getStore().add(model);
+                view.getCbbChildTask().getStore().remove(model);
+                view.getCbbChildTask().reset();
+            }
+        });
+        view.getBtnDeleteTaskChild().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                BeanModel selectedModel = view.getChildTaskGrid().getSelectionModel().getSelectedItem();
+                if (selectedModel != null) {
+                    view.getChildTaskGrid().getStore().remove(selectedModel);
+                    view.getCbbChildTask().getStore().add(selectedModel);
+                }
+            }
+        });
+        view.getBtnAddTaskChildOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                String childIds = StringUtils.EMPTY;
+                for (BeanModel model : view.getChildTaskGrid().getStore().getModels()) {
+                    Task childTask = model.getBean();
+                    childIds += childTask.getCode() + CODE_SEPARATOR;
+                }
+                final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                selectedTask.setChildTasks(childIds);
+                LoadingUtils.showLoading();
+                taskService.updateTask(selectedTask, new AbstractAsyncCallback<Task>() {
+                    @Override
+                    public void onSuccess(Task result) {
+                        super.onSuccess(result);
+                        updateGrid(selectedTask);
+                        addChildTaskWindow.hide();
+                        LoadingUtils.hideLoading();
+                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                    }
+                });
             }
         });
     }
@@ -260,17 +300,28 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         anchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                addChildTaskWindow = view.createAddTaskChildWindow();
+
                 LoadingUtils.showLoading();
                 taskService.getAllNormalTasks(new AbstractAsyncCallback<List<Task>>() {
                     @Override
                     public void onSuccess(List<Task> tasks) {
-                        BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
-                        ListStore<BeanModel> store = new ListStore<BeanModel>();
-                        for (Task task : tasks) {
-                            store.add(factory.createModel(task));
+                        Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                        List<String> childTaskCodes = new ArrayList<String>();
+                        if (selectedTask != null) {
+                            childTaskCodes = getChildTaskCodes(selectedTask.getChildTasks());
                         }
-                        view.getCbbChildTask().setStore(store);
+                        BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
+                        ListStore<BeanModel> cbbStore = new ListStore<BeanModel>();
+                        ListStore<BeanModel> childTaskGridStore = new ListStore<BeanModel>();
+                        for (Task task : tasks) {
+                            if (!childTaskCodes.contains(task.getCode())) {
+                                cbbStore.add(factory.createModel(task));
+                            } else {
+                                childTaskGridStore.add(factory.createModel(task));
+                            }
+                        }
+                        view.getCbbChildTask().setStore(cbbStore);
+                        addChildTaskWindow = view.createAddTaskChildWindow(childTaskGridStore);
                         addChildTaskWindow.show();
                         LoadingUtils.hideLoading();
                     }
@@ -346,6 +397,17 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtSearch().clear();
+    }
+
+    private List<String> getChildTaskCodes(String childTasks) {
+        List<String> childTaskCodes = new ArrayList<String>();
+        String[] st = childTasks.split(CODE_SEPARATOR);
+        for (String code : st) {
+            if (StringUtils.isNotBlank(code)) {
+                childTaskCodes.add(code.trim());
+            }
+        }
+        return childTaskCodes;
     }
 
     @Override

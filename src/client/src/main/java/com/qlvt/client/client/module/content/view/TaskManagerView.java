@@ -135,6 +135,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Button btnAddTaskChild = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
+    Button btnDeleteTaskChild = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
+
+    @I18nField
     Button btnAddTaskChildOk = new Button();
 
     @I18nField
@@ -149,9 +152,10 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private GridCellRenderer<BeanModel> taskChildOptionCellRenderer;
 
     private FormPanel taskEditPanel = new FormPanel();
-    private VerticalPanel addChildTaskPanel = new VerticalPanel();
+    private VerticalPanel addChildTaskPanel;
     private Grid<BeanModel> childTaskGrid;
     private ColumnModel childTaskColumnModel;
+
     /**
      * Create Grid on View.
      */
@@ -365,22 +369,23 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return window;
     }
 
-    public com.extjs.gxt.ui.client.widget.Window createAddTaskChildWindow() {
+    public com.extjs.gxt.ui.client.widget.Window createAddTaskChildWindow(ListStore<BeanModel> childTaskGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        addChildTaskPanel = new VerticalPanel();
+        addChildTaskPanel.setBorders(false);
+        addChildTaskPanel.setSpacing(4);
+        addChildTaskPanel.setTableHeight("100%");
+        addChildTaskPanel.setTableWidth("100%");
+        HorizontalPanel hp = new HorizontalPanel();
+        cbbChildTask.setWidth(400);
+        cbbChildTask.setForceSelection(true);
+        hp.add(cbbChildTask);
+        hp.add(new Text());
+        hp.add(btnAddTaskChild);
+        hp.add(new Text());
+        hp.add(btnDeleteTaskChild);
+        addChildTaskPanel.add(hp);
 
-        if (!addChildTaskPanel.isRendered()) {
-            addChildTaskPanel.setBorders(false);
-            addChildTaskPanel.setSpacing(4);
-            addChildTaskPanel.setTableHeight("100%");
-            addChildTaskPanel.setTableWidth("100%");
-            HorizontalPanel hp = new HorizontalPanel();
-            cbbChildTask.setWidth(400);
-            cbbChildTask.setForceSelection(true);
-            hp.add(cbbChildTask);
-            hp.add(new Text());
-            hp.add(btnAddTaskChild);
-            addChildTaskPanel.add(hp);
-        }
         if (!cbbChildTask.isRendered()) {
             cbbChildTask.setForceSelection(true);
             cbbChildTask.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -388,7 +393,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
                 @Override
                 public BeanModel prepareData(BeanModel model) {
                     Task task = model.getBean();
-                    if (task != null ) {
+                    if (task != null) {
                         model.set("text", task.getCode() + " " + task.getName());
                         return model;
                     }
@@ -397,9 +402,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
             });
         }
 
-
         childTaskColumnModel = new ColumnModel(createChildTaskColumnConfigs());
-        childTaskGrid = new Grid<BeanModel>(new ListStore(), childTaskColumnModel);
+        childTaskGrid = new Grid<BeanModel>(childTaskGridStore, childTaskColumnModel);
         childTaskGrid.setBorders(true);
         childTaskGrid.setHeight(150);
         addChildTaskPanel.add(childTaskGrid);
@@ -407,7 +411,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.add(addChildTaskPanel);
         window.addButton(btnAddTaskChildOk);
         window.addButton(btnAddTaskChildCancel);
-        window.setSize(500, 250);
+        window.setSize(540, 250);
         window.setResizable(false);
         window.setModal(true);
         window.setHeading(getConstant().addChildTaskPanel());
@@ -493,10 +497,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         this.taskChildOptionCellRenderer = taskChildOptionCellRenderer;
     }
 
-    public VerticalPanel getAddChildTaskPanel() {
-        return addChildTaskPanel;
-    }
-
     public ComboBox<BeanModel> getCbbChildTask() {
         return cbbChildTask;
     }
@@ -515,5 +515,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public Grid<BeanModel> getChildTaskGrid() {
         return childTaskGrid;
+    }
+
+    public Button getBtnDeleteTaskChild() {
+        return btnDeleteTaskChild;
     }
 }
