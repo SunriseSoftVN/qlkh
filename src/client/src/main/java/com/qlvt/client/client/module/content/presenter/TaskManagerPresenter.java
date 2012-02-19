@@ -300,9 +300,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         anchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-
                 LoadingUtils.showLoading();
-                taskService.getAllNormalTasks(new AbstractAsyncCallback<List<Task>>() {
+                taskService.getAllTasks(new AbstractAsyncCallback<List<Task>>() {
                     @Override
                     public void onSuccess(List<Task> tasks) {
                         Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
@@ -314,10 +313,12 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         ListStore<BeanModel> cbbStore = new ListStore<BeanModel>();
                         ListStore<BeanModel> childTaskGridStore = new ListStore<BeanModel>();
                         for (Task task : tasks) {
-                            if (!childTaskCodes.contains(task.getCode())) {
-                                cbbStore.add(factory.createModel(task));
-                            } else {
-                                childTaskGridStore.add(factory.createModel(task));
+                            if (!task.getId().equals(selectedTask.getId())) {
+                                if (!childTaskCodes.contains(task.getCode())) {
+                                    cbbStore.add(factory.createModel(task));
+                                } else {
+                                    childTaskGridStore.add(factory.createModel(task));
+                                }
                             }
                         }
                         view.getCbbChildTask().setStore(cbbStore);

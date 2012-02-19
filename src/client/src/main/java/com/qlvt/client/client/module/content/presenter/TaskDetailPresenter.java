@@ -315,7 +315,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
         LoadingUtils.showLoading();
-        taskService.getAllTasks(new AbstractAsyncCallback<List<Task>>() {
+        taskService.getAllNormalTasks(new AbstractAsyncCallback<List<Task>>() {
             @Override
             public void onSuccess(List<Task> result) {
                 super.onSuccess(result);
