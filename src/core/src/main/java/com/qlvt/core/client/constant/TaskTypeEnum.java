@@ -28,7 +28,8 @@ package com.qlvt.core.client.constant;
 public enum TaskTypeEnum {
 
     NORMAL(0),
-    SUM(1);
+    SUM(1),
+    SUBSUM(2);
 
     private int taskTypeCode;
 

@@ -17,25 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.client.client.module.content.presenter;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.qlvt.client.client.module.content.place.ReportPlace;
+import com.qlvt.client.client.module.content.view.ReportView;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 /**
- * The Class MainMenuConstant.
+ * The Class ReportPresenter.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 2/19/12, 3:45 PM
  */
-@SuppressWarnings("UnusedDeclaration")
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManager();
-    String mnlBranchManager();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String mnlTaskAnnualDetail();
-    String mnlReport();
-    String ancLogout();
-    String lblWelcome();
+@Presenter(view = ReportView.class, place = ReportPlace.class)
+public class ReportPresenter extends AbstractPresenter<ReportView> {
+    @Override
+    public void onActivate() {
+        view.show();
+    }
+
 }

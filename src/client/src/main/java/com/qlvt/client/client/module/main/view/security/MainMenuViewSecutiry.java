@@ -29,6 +29,7 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 9:48 AM
  */
+@SuppressWarnings("UnusedDeclaration")
 public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
 
     @Override
@@ -51,6 +52,11 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
     public HasRole[] mnlTaskManage() {
         return new HasRole[]{UserRoleEnum.MANAGER};
     }
+
+    public HasRole[] mnlReport() {
+        return new HasRole[]{UserRoleEnum.MANAGER};
+    }
+
 
     public HasRole[] mnlTaskDetail() {
         return new HasRole[]{UserRoleEnum.USER};

@@ -86,6 +86,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     MenuLink mnlTaskAnnualDetail = new MenuLink(TaskAnnualDetailPlace.class);
 
     @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mnlReport = new MenuLink(ReportPlace.class);
+
+    @FieldSecurity
     @I18nField
     Anchor ancLogout = new Anchor("");
 
@@ -102,14 +107,22 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         layout.setPadding(new Padding(5));
         layout.setHBoxLayoutAlign(HBoxLayout.HBoxLayoutAlign.MIDDLE);
         mainPanel.setLayout(layout);
+
+        //Admin
         mnlUserManager.setStyleName("menulink");
         mainPanel.add(mnlUserManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mnlStationManager.setStyleName("menulink");
         mainPanel.add(mnlStationManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mnlBranchManager.setStyleName("menulink");
         mainPanel.add(mnlBranchManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        //Manager
         mnlTaskManage.setStyleName("menulink");
         mainPanel.add(mnlTaskManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mnlReport.setStyleName("menulink");
+        mainPanel.add(mnlReport, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        //User
         mnlTaskAnnualDetail.setStyleName("menulink");
         mainPanel.add(mnlTaskAnnualDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mnlTaskDetail.setStyleName("menulink");
