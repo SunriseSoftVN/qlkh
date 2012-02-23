@@ -22,6 +22,7 @@ package com.qlvt.server.guice;
 import com.google.inject.matcher.Matchers;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.service.*;
+import com.qlvt.server.servlet.ReportServlet;
 import com.qlvt.server.transaction.Transaction;
 import com.qlvt.server.transaction.TransactionInterceptor;
 import com.qlvt.server.transaction.TransactionMethodMatcher;
@@ -36,12 +37,14 @@ public class ServletModule extends com.google.inject.servlet.ServletModule {
     @Override
     protected void configureServlets() {
         String servletRootPath = SystemUtil.getConfiguration().serverServletRootPath();
-        serve(servletRootPath + "/Login").with(LoginServiceImpl.class);
-        serve(servletRootPath + "/User").with(UserServiceImpl.class);
-        serve(servletRootPath + "/Station").with(StationServiceImpl.class);
-        serve(servletRootPath + "/Task").with(TaskServiceImpl.class);
-        serve(servletRootPath + "/TaskDetail").with(TaskDetailServiceImpl.class);
-        serve(servletRootPath + "/Branch").with(BranchServiceImpl.class);
+        serve(servletRootPath + "/login").with(LoginServiceImpl.class);
+        serve(servletRootPath + "/user").with(UserServiceImpl.class);
+        serve(servletRootPath + "/station").with(StationServiceImpl.class);
+        serve(servletRootPath + "/task").with(TaskServiceImpl.class);
+        serve(servletRootPath + "/taskDetail").with(TaskDetailServiceImpl.class);
+        serve(servletRootPath + "/branch").with(BranchServiceImpl.class);
+        serve(servletRootPath + "/reportService").with(ReportServiceImpl.class);
+        serve(servletRootPath + "/report").with(ReportServlet.class);
         bindInterceptor(Matchers.annotatedWith(Transaction.class), new TransactionMethodMatcher(),
                 new TransactionInterceptor());
     }

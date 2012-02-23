@@ -19,8 +19,14 @@
 
 package com.qlvt.client.client.module.content.presenter;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.google.gwt.user.client.Window;
+import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.ReportPlace;
 import com.qlvt.client.client.module.content.view.ReportView;
+import com.qlvt.client.client.service.ReportService;
+import com.qlvt.client.client.service.ReportServiceAsync;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
@@ -32,9 +38,26 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
  */
 @Presenter(view = ReportView.class, place = ReportPlace.class)
 public class ReportPresenter extends AbstractPresenter<ReportView> {
+
+    private ReportServiceAsync reportService = ReportService.App.getInstance();
+
     @Override
     public void onActivate() {
         view.show();
     }
 
+    @Override
+    protected void doBind() {
+        view.getBtnPlanReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                reportService.reportForCompany(new AbstractAsyncCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Window.open(result, "", "");
+                    }
+                });
+            }
+        });
+    }
 }

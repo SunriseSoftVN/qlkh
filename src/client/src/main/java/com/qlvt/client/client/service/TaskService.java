@@ -36,7 +36,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/31/11, 2:36 PM
  */
-@RemoteServiceRelativePath("Task")
+@RemoteServiceRelativePath("task")
 public interface TaskService extends RemoteService<TaskService> {
 
     List<Task> getAllTasks();

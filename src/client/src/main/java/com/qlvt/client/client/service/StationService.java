@@ -36,7 +36,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/29/11, 1:32 PM
  */
-@RemoteServiceRelativePath("Station")
+@RemoteServiceRelativePath("station")
 public interface StationService extends RemoteService<StationService> {
 
     Station getStationAndBranchByUserName(String userName);

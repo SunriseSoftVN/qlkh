@@ -38,7 +38,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:51 PM
  */
-@RemoteServiceRelativePath("TaskDetail")
+@RemoteServiceRelativePath("taskDetail")
 public interface TaskDetailService extends RemoteService<TaskDetailService> {
 
     TaskDetail updateTaskDetail(TaskDetail taskDetail);

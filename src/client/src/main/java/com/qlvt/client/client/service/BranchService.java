@@ -36,7 +36,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/2/12, 12:55 PM
  */
-@RemoteServiceRelativePath("Branch")
+@RemoteServiceRelativePath("branch")
 public interface BranchService extends RemoteService<BranchService> {
 
     void deleteBranchById(long branchId) throws DeleteException;

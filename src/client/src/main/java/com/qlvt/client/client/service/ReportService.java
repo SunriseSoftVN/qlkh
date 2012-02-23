@@ -17,23 +17,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.i18n;
+package com.qlvt.client.client.service;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.qlvt.client.client.utils.ServiceUtils;
+import com.smvp4g.mvp.client.core.service.RemoteService;
 
 /**
- * The Class ReportConstant.
+ * The Class ReportService.
  *
  * @author Nguyen Duc Dung
- * @since 2/19/12, 3:47 PM
+ * @since 2/22/12, 12:42 PM
  */
-public interface ReportConstant extends Constants {
-    String txtSearch();
-    String btnRefresh();
-    String sttColumnTitle();
-    String taskCodeColumnTitle();
-    String taskNameColumnTitle();
-    String taskUnitColumnTitle();
-    String planReportPanel();
-    String btnPlanReport();
+@RemoteServiceRelativePath("reportService")
+public interface ReportService extends RemoteService<ReportService> {
+    String reportForCompany();
+
+    public static class App {
+        private static final ReportServiceAsync ourInstance = (ReportServiceAsync) GWT.create(ReportService.class);
+
+        public static ReportServiceAsync getInstance() {
+            ServiceUtils.configureServiceEntryPoint(ReportService.class, ourInstance);
+            return ourInstance;
+        }
+    }
 }

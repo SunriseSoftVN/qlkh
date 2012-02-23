@@ -21,11 +21,14 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.ReportConstant;
 import com.qlvt.client.client.module.content.view.security.ReportSecurity;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -40,14 +43,28 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 @View(constantsClass = ReportConstant.class, parentDomId = DomIdConstant.CONTENT_PANEL)
 public class ReportView extends AbstractView<ReportConstant> {
 
+    @I18nField
+    Button btnPlanReport = new Button();
+
+    @I18nField
+    FormPanel planReportPanel = new FormPanel();
+
     private ContentPanel contentPanel = new ContentPanel();
 
     @Override
     protected void initializeView() {
+        planReportPanel.setFrame(true);
+        planReportPanel.add(btnPlanReport);
+
+        contentPanel.add(planReportPanel);
         contentPanel.setHeaderVisible(false);
+        contentPanel.setFrame(true);
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         setWidget(contentPanel);
     }
 
+    public Button getBtnPlanReport() {
+        return btnPlanReport;
+    }
 }

@@ -76,6 +76,13 @@
                 <directory>src/main/java</directory>
                 <filtering>true</filtering>
             </resource>
+
+            <resource>
+                <directory>src/main/resources/share</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
         </resources>
 
         <plugins>

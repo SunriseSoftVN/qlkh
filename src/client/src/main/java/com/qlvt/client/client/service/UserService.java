@@ -36,7 +36,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 5:14 PM
  */
-@RemoteServiceRelativePath("User")
+@RemoteServiceRelativePath("user")
 public interface UserService extends RemoteService<UserService> {
 
     void updateUsers(List<User> users);

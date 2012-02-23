@@ -32,7 +32,7 @@ import com.smvp4g.mvp.client.core.service.RemoteService;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 10:13 AM
  */
-@RemoteServiceRelativePath("Login")
+@RemoteServiceRelativePath("login")
 public interface LoginService extends RemoteService<LoginService> {
 
     User checkLogin(String userName, String passWord) throws UserAuthenticationException;

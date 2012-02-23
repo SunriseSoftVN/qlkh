@@ -17,23 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.i18n;
+package com.qlvt.client.client.service;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
-/**
- * The Class ReportConstant.
- *
- * @author Nguyen Duc Dung
- * @since 2/19/12, 3:47 PM
- */
-public interface ReportConstant extends Constants {
-    String txtSearch();
-    String btnRefresh();
-    String sttColumnTitle();
-    String taskCodeColumnTitle();
-    String taskNameColumnTitle();
-    String taskUnitColumnTitle();
-    String planReportPanel();
-    String btnPlanReport();
+public interface ReportServiceAsync extends RemoteServiceAsync<ReportServiceAsync> {
+    void reportForCompany(AsyncCallback<String> async);
 }
