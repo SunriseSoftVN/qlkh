@@ -27,6 +27,7 @@ import com.qlvt.client.client.module.content.place.ReportPlace;
 import com.qlvt.client.client.module.content.view.ReportView;
 import com.qlvt.client.client.service.ReportService;
 import com.qlvt.client.client.service.ReportServiceAsync;
+import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
@@ -48,10 +49,21 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
 
     @Override
     protected void doBind() {
-        view.getBtnPlanReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                reportService.reportForCompany(new AbstractAsyncCallback<String>() {
+                reportService.reportForCompany(ReportFileTypeEnum.PDF, new AbstractAsyncCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Window.open(result, "", "");
+                    }
+                });
+            }
+        });
+        view.getBtnPlanReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                reportService.reportForCompany(ReportFileTypeEnum.EXCEL, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         Window.open(result, "", "");

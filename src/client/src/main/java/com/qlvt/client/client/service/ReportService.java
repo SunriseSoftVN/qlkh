@@ -22,6 +22,7 @@ package com.qlvt.client.client.service;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.qlvt.client.client.utils.ServiceUtils;
+import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.smvp4g.mvp.client.core.service.RemoteService;
 
 /**
@@ -32,7 +33,8 @@ import com.smvp4g.mvp.client.core.service.RemoteService;
  */
 @RemoteServiceRelativePath("reportService")
 public interface ReportService extends RemoteService<ReportService> {
-    String reportForCompany();
+
+    String reportForCompany(ReportFileTypeEnum fileTypeEnum);
 
     public static class App {
         private static final ReportServiceAsync ourInstance = (ReportServiceAsync) GWT.create(ReportService.class);

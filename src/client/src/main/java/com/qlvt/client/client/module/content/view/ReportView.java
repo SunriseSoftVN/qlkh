@@ -21,6 +21,7 @@ package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -44,7 +45,10 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 public class ReportView extends AbstractView<ReportConstant> {
 
     @I18nField
-    Button btnPlanReport = new Button();
+    Button btnPlanReportPdf = new Button();
+
+    @I18nField
+    Button btnPlanReportXls = new Button();
 
     @I18nField
     FormPanel planReportPanel = new FormPanel();
@@ -54,7 +58,12 @@ public class ReportView extends AbstractView<ReportConstant> {
     @Override
     protected void initializeView() {
         planReportPanel.setFrame(true);
-        planReportPanel.add(btnPlanReport);
+
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.setSpacing(4);
+        hp.add(btnPlanReportPdf);
+        hp.add(btnPlanReportXls);
+        planReportPanel.add(hp);
 
         contentPanel.add(planReportPanel);
         contentPanel.setHeaderVisible(false);
@@ -64,7 +73,11 @@ public class ReportView extends AbstractView<ReportConstant> {
         setWidget(contentPanel);
     }
 
-    public Button getBtnPlanReport() {
-        return btnPlanReport;
+    public Button getBtnPlanReportPdf() {
+        return btnPlanReportPdf;
+    }
+
+    public Button getBtnPlanReportXls() {
+        return btnPlanReportXls;
     }
 }

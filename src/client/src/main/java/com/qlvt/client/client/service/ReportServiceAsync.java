@@ -20,8 +20,9 @@
 package com.qlvt.client.client.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
 public interface ReportServiceAsync extends RemoteServiceAsync<ReportServiceAsync> {
-    void reportForCompany(AsyncCallback<String> async);
+    void reportForCompany(ReportFileTypeEnum fileTypeEnum, AsyncCallback<String> async);
 }

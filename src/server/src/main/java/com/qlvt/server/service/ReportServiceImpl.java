@@ -25,6 +25,7 @@ import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.ReportService;
+import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
@@ -45,11 +46,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "report1";
-    private static final String PDF_EXT = ".pdf";
 
     @Override
-    public String reportForCompany() {
-
+    public String reportForCompany(ReportFileTypeEnum fileTypeEnum) {
         try {
             FastReportBuilder fastReportBuilder = new FastReportBuilder();
             fastReportBuilder.addColumn("Name", "name", String.class.getName(), 50);
@@ -65,11 +64,25 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
             JasperPrint jasperPrint = JasperFillManager.
                     fillReport(jasperReport, null, new JREmptyDataSource(10));
 
-            ReportExporter.exportReport(jasperPrint, ServletUtils.getInstance().
-                    getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME + PDF_EXT));
+            String filePath = ServletUtils.getInstance().
+                    getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME
+                            + fileTypeEnum.getFileExt());
 
-            return ServletUtils.getInstance().getBaseUrl(getThreadLocalRequest()) + SystemUtil.getConfiguration().serverServletRootPath()
-                    + REPORT_SERVLET_URI + ReportServlet.REPORT_FILENAME + "=" + REPORT_FILE_NAME + PDF_EXT;
+            if (fileTypeEnum == ReportFileTypeEnum.PDF) {
+                ReportExporter.exportReport(jasperPrint, filePath);
+            } else if (fileTypeEnum == ReportFileTypeEnum.EXCEL) {
+                ReportExporter.exportReportXls(jasperPrint, filePath);
+            }
+
+            return new StringBuilder().append(ServletUtils.getInstance().
+                    getBaseUrl(getThreadLocalRequest())).
+                    append(SystemUtil.getConfiguration().serverServletRootPath()).
+                    append(REPORT_SERVLET_URI).
+                    append(ReportServlet.REPORT_FILENAME).
+                    append("=").
+                    append(REPORT_FILE_NAME).
+                    append(fileTypeEnum.getFileExt()).toString();
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (JRException e) {

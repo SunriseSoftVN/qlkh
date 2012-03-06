@@ -35,5 +35,6 @@ public interface ReportConstant extends Constants {
     String taskNameColumnTitle();
     String taskUnitColumnTitle();
     String planReportPanel();
-    String btnPlanReport();
+    String btnPlanReportPdf();
+    String btnPlanReportXls();
 }

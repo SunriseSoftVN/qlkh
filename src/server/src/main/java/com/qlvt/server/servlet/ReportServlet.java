@@ -20,6 +20,7 @@
 package com.qlvt.server.servlet;
 
 import com.google.inject.Singleton;
+import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.server.util.ServletUtils;
 
 import javax.servlet.ServletException;
@@ -43,26 +44,27 @@ public class ReportServlet extends HttpServlet {
     public static final String REPORT_FILENAME = "reportName";
     public static final String REPORT_DIRECTORY = "report";
 
-    public static final String PDF_CONTENT_TYPE = "application/pdf";
     public static final String RESPONSE_HEADER = "Content-Disposition";
     public static final String RESPONSE_HEADER_CONTENT = "attachment; filename=";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String reportFileName = req.getParameter(REPORT_FILENAME);
+        ReportFileTypeEnum fileTypeEnum = ReportFileTypeEnum.getFileType(reportFileName);
+        if (fileTypeEnum != null) {
+            String st = ServletUtils.getInstance().getRealPath(REPORT_DIRECTORY, reportFileName);
+            File file = new File(st);
 
-        String st = ServletUtils.getInstance().getRealPath(REPORT_DIRECTORY, reportFileName);
-        File file = new File(st);
+            byte[] bytes = new byte[(int) file.length()];
+            InputStream inputStream = new FileInputStream(file);
+            inputStream.read(bytes);
 
-        byte[] bytes = new byte[(int) file.length()];
-        InputStream inputStream = new FileInputStream(file);
-        inputStream.read(bytes);
-
-        resp.setContentType(PDF_CONTENT_TYPE);
-        resp.setHeader(RESPONSE_HEADER, RESPONSE_HEADER_CONTENT + reportFileName);
-        resp.setContentLength(bytes.length);
-        resp.getOutputStream().write(bytes, 0, bytes.length);
-        resp.getOutputStream().flush();
-        resp.getOutputStream().close();
+            resp.setContentType(fileTypeEnum.getFileContent());
+            resp.setHeader(RESPONSE_HEADER, RESPONSE_HEADER_CONTENT + reportFileName);
+            resp.setContentLength(bytes.length);
+            resp.getOutputStream().write(bytes, 0, bytes.length);
+            resp.getOutputStream().flush();
+            resp.getOutputStream().close();
+        }
     }
 }
