@@ -149,6 +149,10 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>dynamic-report</id>
+            <url>http://archiva.fdvs.com.ar/repository/public1/</url>
+        </repository>
     </repositories>
 
 </project>

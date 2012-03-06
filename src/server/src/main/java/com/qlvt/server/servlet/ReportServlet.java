@@ -20,6 +20,7 @@
 package com.qlvt.server.servlet;
 
 import com.google.inject.Singleton;
+import com.qlvt.server.util.ServletUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +41,7 @@ import java.io.InputStream;
 public class ReportServlet extends HttpServlet {
 
     public static final String REPORT_FILENAME = "reportName";
-    public static final String REPORT_DIRECTORY = "/report/";
+    public static final String REPORT_DIRECTORY = "report";
 
     public static final String PDF_CONTENT_TYPE = "application/pdf";
     public static final String RESPONSE_HEADER = "Content-Disposition";
@@ -50,7 +51,7 @@ public class ReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String reportFileName = req.getParameter(REPORT_FILENAME);
 
-        String st = getClass().getResource(REPORT_DIRECTORY).getPath() + reportFileName;
+        String st = ServletUtils.getInstance().getRealPath(REPORT_DIRECTORY, reportFileName);
         File file = new File(st);
 
         byte[] bytes = new byte[(int) file.length()];

@@ -19,16 +19,20 @@
 
 package com.qlvt.server.service;
 
+import ar.com.fdvs.dj.core.DynamicJasperHelper;
+import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
+import ar.com.fdvs.dj.domain.DynamicReport;
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.ReportService;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperRunManager;
+import com.qlvt.server.util.ReportExporter;
+import com.qlvt.server.util.ServletUtils;
+import net.sf.jasperreports.engine.*;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
 
 /**
  * The Class ReportServiceImpl.
@@ -42,28 +46,38 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "report1";
     private static final String PDF_EXT = ".pdf";
-    private static final String REPORT_EXT = ".jasper";
 
     @Override
     public String reportForCompany() {
+
         try {
-            JasperRunManager.runReportToPdfFile(getClass().getResource(ReportServlet.REPORT_DIRECTORY
-                    + REPORT_FILE_NAME + REPORT_EXT).getPath(), null, new JREmptyDataSource(50));
-            return getBaseUrl(getThreadLocalRequest()) + SystemUtil.getConfiguration().serverServletRootPath()
+            FastReportBuilder fastReportBuilder = new FastReportBuilder();
+            fastReportBuilder.addColumn("Name", "name", String.class.getName(), 50);
+            fastReportBuilder.addColumn("Age", "age", String.class.getName(), 30);
+            fastReportBuilder.addColumn("Email", "email", String.class.getName(), 200);
+            fastReportBuilder.setUseFullPageWidth(true);
+            fastReportBuilder.setPrintBackgroundOnOddRows(true);
+            DynamicReport dynamicReport = fastReportBuilder.build();
+
+            JasperReport jasperReport = DynamicJasperHelper.
+                    generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
+
+            JasperPrint jasperPrint = JasperFillManager.
+                    fillReport(jasperReport, null, new JREmptyDataSource(10));
+
+            ReportExporter.exportReport(jasperPrint, ServletUtils.getInstance().
+                    getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME + PDF_EXT));
+
+            return ServletUtils.getInstance().getBaseUrl(getThreadLocalRequest()) + SystemUtil.getConfiguration().serverServletRootPath()
                     + REPORT_SERVLET_URI + ReportServlet.REPORT_FILENAME + "=" + REPORT_FILE_NAME + PDF_EXT;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } catch (JRException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public String getBaseUrl(HttpServletRequest request) {
-        if ((request.getServerPort() == 80) ||
-                (request.getServerPort() == 443))
-            return request.getScheme() + "://" + request.getServerName() + request.getContextPath();
-        else
-            return request.getScheme() + "://"
-                    + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 
 }

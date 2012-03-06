@@ -151,38 +151,20 @@
             <version>${dozerVersion}</version>
         </dependency>
 
-        <!--jasperreports-->
+        <!--DynamicJasper-->
         <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>${jasperreportsVersion}</version>
+            <groupId>ar.com.fdvs</groupId>
+            <artifactId>DynamicJasper</artifactId>
+            <version>3.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-collections</groupId>
                     <artifactId>commons-collections</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-beanutils</groupId>
-                    <artifactId>commons-beanutils</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>eclipse</groupId>
-                    <artifactId>jdtcore</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>1.7.5</version>
-            <scope>compile</scope>
-        </dependency>
         <!--end-->
+
     </dependencies>
 
 </project>
