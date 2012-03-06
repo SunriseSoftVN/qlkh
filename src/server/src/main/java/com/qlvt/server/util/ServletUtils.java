@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public final class ServletUtils {
 
-    private String SPE_PATH = "/";
-    private String CLASS_PATH = "WEB-INF/classes/";
+    private static final String SPE_PATH = "/";
+    private static final String CLASS_PATH = "WEB-INF/classes/";
 
     private ServletUtils() {
 
@@ -43,9 +43,8 @@ public final class ServletUtils {
     }
 
     public String getRealPath(String dirName, String fileName) {
-        String path = SPE_PATH + this.getClass().getResource(SPE_PATH).getPath().replaceFirst(SPE_PATH, StringUtils.EMPTY).
-                replace(CLASS_PATH, dirName + SPE_PATH) + fileName;
-        return path;
+        return new StringBuilder().append(SPE_PATH).append(this.getClass().getResource(SPE_PATH).getPath().replaceFirst(SPE_PATH, StringUtils.EMPTY).
+                replace(CLASS_PATH, dirName + SPE_PATH)).append(fileName).toString();
     }
 
     public String getBaseUrl(HttpServletRequest request) {
