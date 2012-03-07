@@ -30,7 +30,7 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 public enum ReportFileTypeEnum {
 
     PDF(".pdf", "application/pdf"),
-    EXCEL(".xls", "application/vnd.ms-excel");
+    EXCEL(".xls", "application/xls");
 
     private String fileExt;
 
@@ -50,13 +50,14 @@ public enum ReportFileTypeEnum {
     }
 
     public static ReportFileTypeEnum getFileType(String fileName) {
-        int index = StringUtils.indexOf(fileName, PDF.getFileExt());
-        if (index >= 0) {
-            return PDF;
-        }
-        index = StringUtils.indexOf(fileName, EXCEL.getFileExt());
-        if (index >= 0) {
-            return EXCEL;
+        int index = StringUtils.indexOf(fileName, ".");
+        if (index > 0 && index < fileName.length() - 1) {
+            String fileExt = fileName.substring(index, fileName.length());
+            for (ReportFileTypeEnum typeEnum : values()) {
+                if (typeEnum.getFileExt().equals(fileExt)) {
+                    return typeEnum;
+                }
+            }
         }
         return null;
     }
