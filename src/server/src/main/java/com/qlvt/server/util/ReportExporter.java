@@ -50,8 +50,9 @@ public class ReportExporter {
 
         File outputFile = new File(path);
         File parentFile = outputFile.getParentFile();
-        if (parentFile != null)
+        if (parentFile != null) {
             parentFile.mkdirs();
+        }
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
@@ -67,8 +68,9 @@ public class ReportExporter {
 
         File outputFile = new File(path);
         File parentFile = outputFile.getParentFile();
-        if (parentFile != null)
+        if (parentFile != null) {
             parentFile.mkdirs();
+        }
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
@@ -87,8 +89,9 @@ public class ReportExporter {
 
         File outputFile = new File(path);
         File parentFile = outputFile.getParentFile();
-        if (parentFile != null)
+        if (parentFile != null) {
             parentFile.mkdirs();
+        }
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
@@ -104,8 +107,9 @@ public class ReportExporter {
 
         File outputFile = new File(path);
         File parentFile = outputFile.getParentFile();
-        if (parentFile != null)
+        if (parentFile != null) {
             parentFile.mkdirs();
+        }
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
