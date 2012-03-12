@@ -29,13 +29,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.ReportService;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
-import com.qlvt.core.client.model.Station;
-import com.qlvt.core.client.model.Task;
+import com.qlvt.core.client.model.*;
 import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.dao.StationDao;
-import com.qlvt.server.dao.TaskDao;
+import com.qlvt.server.dao.*;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
 import com.qlvt.server.transaction.Transaction;
@@ -74,6 +72,18 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     @Inject
     private StationDao stationDao;
+
+    @Inject
+    private TaskDetailDao taskDetailDao;
+
+    @Inject
+    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+
+    @Inject
+    private SubTaskDetailDao subTaskDetailDao;
+
+    @Inject
+    private BranchDao branchDao;
 
     @Override
     public String reportForCompany(ReportFileTypeEnum fileTypeEnum) {
@@ -133,10 +143,11 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
         try {
             fastReportBuilder.addColumn("TT", "stt", Integer.class, 20, detailStyle)
-                    .addColumn("Ma CV", "task.code", String.class, 20, detailStyle)
-                    .addColumn("Noi dung cong viec", "task.name", String.class, 100, nameStyle)
-                    .addColumn("Don vi", "task.unit", String.class, 20, detailStyle)
-                    .addColumn("So lan", "task.defaultValue", Double.class, 20, detailStyle);
+                    .addColumn("Mã CV", "task.code", String.class, 20, detailStyle)
+                    .addColumn("Nội dung công ", "task.name", String.class, 100, nameStyle)
+                    .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
+                    .addColumn("Định mức", "task.defaultValue", Double.class, 20, detailStyle)
+                    .addColumn("Số lần", "task.quota", Integer.class, 20, detailStyle);
             List<CompanySumReportBean> companies = buildReportData();
             if (CollectionUtils.isNotEmpty(companies)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
@@ -176,16 +187,75 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
             bean.setStt(++index);
             bean.setTask(task);
             for (Station station : stations) {
-                StationReportBean stationReport = new StationReportBean();
-                stationReport.setId(station.getId());
-                stationReport.setName(station.getName());
-                stationReport.setTime(100l);
-                stationReport.setValue(100.001d);
+                StationReportBean stationReport = calculate(task, station);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
         }
         return beans;
+    }
+
+    private StationReportBean calculate(Task task, Station station) {
+        StationReportBean stationReport = new StationReportBean();
+        stationReport.setId(station.getId());
+        stationReport.setName(station.getName());
+        TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
+        if (taskDetail != null) {
+            //Calculate Weight
+            if (taskDetail.getAnnual()) {
+                calculateWeightForAnnualTask(stationReport, taskDetail);
+            } else {
+                calculateWeightForNormalTask(stationReport, taskDetail);
+            }
+            //Calculate time
+            if (task.getDefaultValue() != null && stationReport.getValue() != null) {
+                Double time = task.getDefaultValue() * task.getQuota() * stationReport.getValue();
+                stationReport.setTime(time.longValue());
+            }
+        }
+        return stationReport;
+    }
+
+    private void calculateWeightForNormalTask(StationReportBean stationReport, TaskDetail taskDetail) {
+        List<SubTaskDetail> subTaskDetails = subTaskDetailDao.findByTaskDetailId(taskDetail.getId());
+        if (CollectionUtils.isNotEmpty(subTaskDetails)) {
+            Double weight = 0d;
+            for (SubTaskDetail subTaskDetail : subTaskDetails) {
+                if (subTaskDetail.getQ1() != null) {
+                    weight += subTaskDetail.getQ1();
+                }
+            }
+            stationReport.setValue(weight);
+        }
+    }
+
+    private void calculateWeightForAnnualTask(StationReportBean stationReport, TaskDetail taskDetail) {
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = subTaskAnnualDetailDao
+                .findByTaskDetailId(taskDetail.getId());
+        if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
+            Double weight = 0d;
+            for (SubTaskAnnualDetail subTaskAnnualDetail : subTaskAnnualDetails) {
+                if (subTaskAnnualDetail.getRealValue() != null) {
+                    weight += subTaskAnnualDetail.getRealValue();
+                } else {
+                    Double increaseValue = subTaskAnnualDetail.getIncreaseValue();
+                    if (increaseValue == null) {
+                        increaseValue = 0d;
+                    }
+                    Double decreaseValue = subTaskAnnualDetail.getDecreaseValue();
+                    if (decreaseValue == null) {
+                        decreaseValue = 0d;
+                    }
+                    Double lastYearValue = subTaskAnnualDetail.getLastYearValue();
+                    if (lastYearValue == null) {
+                        lastYearValue = 0d;
+                    }
+                    Double result = lastYearValue + increaseValue - decreaseValue;
+                    weight += result;
+                }
+            }
+            stationReport.setValue(weight);
+        }
     }
 
 }

@@ -41,6 +41,7 @@ public interface TaskService extends RemoteService<TaskService> {
 
     List<Task> getAllTasks();
     List<Task> getAllNormalTasks();
+    List<Task> getAllAnnualTasks();
     void deleteTask(long taskId);
     void deleteTasks(List<Long> taskIds);
     Task updateTask(Task task) throws CodeExistException;

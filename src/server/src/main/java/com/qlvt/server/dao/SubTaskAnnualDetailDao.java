@@ -33,5 +33,6 @@ import java.util.List;
 public interface SubTaskAnnualDetailDao extends Dao<SubTaskAnnualDetail> {
     SubTaskAnnualDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId);
     void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds);
-    List<SubTaskAnnualDetail> findBrandId(long brandId);
+    List<SubTaskAnnualDetail> findByBrandId(long brandId);
+    List<SubTaskAnnualDetail> findByTaskDetailId(long taskDetailId);
 }

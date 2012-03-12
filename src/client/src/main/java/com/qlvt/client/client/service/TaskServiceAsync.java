@@ -35,4 +35,5 @@ public interface TaskServiceAsync extends RemoteServiceAsync<TaskServiceAsync> {
     void deleteTasks(List<Long> taskIds, AsyncCallback<Void> async);
     void getAllTasks(AsyncCallback<List<Task>> async);
     void getAllNormalTasks(AsyncCallback<List<Task>> async);
+    void getAllAnnualTasks(AsyncCallback<List<Task>> async);
 }

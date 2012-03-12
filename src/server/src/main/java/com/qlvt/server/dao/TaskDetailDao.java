@@ -32,4 +32,12 @@ import java.util.List;
  */
 public interface TaskDetailDao extends Dao<TaskDetail> {
     List<TaskDetail> findByStationId(long stationId);
+
+    /**
+     * Find TaskDetail in current year.
+     * @param stationId Station Id
+     * @param taskId Task Id
+     * @return empty if not found.
+     */
+    TaskDetail findCurrentByStationIdAndTaskId(long stationId, long taskId);
 }

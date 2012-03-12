@@ -27,6 +27,7 @@ package com.qlvt.core.client.constant;
  */
 public enum TaskTypeEnum {
 
+    ANNUAL(3),
     NORMAL(0),
     SUM(1),
     SUBSUM(2);

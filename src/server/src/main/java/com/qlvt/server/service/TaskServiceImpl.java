@@ -88,4 +88,9 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
     public List<Task> getAllNormalTasks() {
         return taskDao.getAllNormalTask();
     }
+
+    @Override
+    public List<Task> getAllAnnualTasks() {
+        return taskDao.getAllAnnualTask();
+    }
 }

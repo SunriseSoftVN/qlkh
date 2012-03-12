@@ -66,4 +66,12 @@ public class SubTaskDetailDaoImpl extends AbstractDao<SubTaskDetail> implements 
         List<SubTaskDetail> subTaskDetails = criteria.list();
         return subTaskDetails;
     }
+
+    @Override
+    public List<SubTaskDetail> findByTaskDetailId(long taskDetailId) {
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskDetail.class)
+                .add(Restrictions.eq("taskDetail.id", taskDetailId));
+        List<SubTaskDetail> subTaskDetails = criteria.list();
+        return subTaskDetails;
+    }
 }

@@ -352,6 +352,8 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                 if (result == 0) {
                     return "";
                 }
+                SubTaskAnnualDetail subTaskAnnualDetail = model.getBean();
+                subTaskAnnualDetail.setRealValue(result);
                 return result;
             }
         });

@@ -57,7 +57,7 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
     @Override
     public void deleteBranchById(long branchId) throws DeleteException {
         if(CollectionUtils.isEmpty(subTaskDetailDao.findBrandId(branchId))
-                && CollectionUtils.isEmpty(subTaskAnnualDetailDao.findBrandId(branchId))) {
+                && CollectionUtils.isEmpty(subTaskAnnualDetailDao.findByBrandId(branchId))) {
             branchDao.deleteById(Branch.class, branchId);
         } else {
             throw new DeleteException();
