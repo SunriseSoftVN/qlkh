@@ -41,6 +41,12 @@
             <groupId>com.mattbertolini</groupId>
             <artifactId>hermes</artifactId>
             <version>1.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.gwt</groupId>
+                    <artifactId>gwt-servlet</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- smvp4g framework-->
