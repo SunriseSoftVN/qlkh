@@ -47,7 +47,8 @@ public interface TaskManagerConstant extends Constants {
     String deleteTaskMessage();
     String saveMessageSuccess();
     String existCodeMessage();
-    String txtSearch();
+    String txtNameSearch();
+    String txtCodeSearch();
     String taskEditPanel();
     String btnTaskEditOk();
     String btnTaskEditCancel();

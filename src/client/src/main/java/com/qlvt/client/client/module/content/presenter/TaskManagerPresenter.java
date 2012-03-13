@@ -118,18 +118,48 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
-        view.getTxtSearch().addKeyListener(new KeyListener() {
+        view.getTxtNameSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyPress(ComponentEvent event) {
-                String st = view.getTxtSearch().getValue();
+                String st = view.getTxtNameSearch().getValue();
                 if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        view.getTxtCodeSearch().clear();
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("name", view.getTxtNameSearch().getValue());
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
+
+        view.getTxtCodeSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    String st = view.getTxtCodeSearch().getValue();
+                    view.getTxtNameSearch().clear();
                     if (StringUtils.isNotBlank(st)) {
                         BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put("name", view.getTxtSearch().getValue());
-                        filters.put("code", view.getTxtSearch().getValue());
+                        filters.put("code", view.getTxtCodeSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();
@@ -399,7 +429,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 getStore().getLoadConfig();
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
-        view.getTxtSearch().clear();
+        view.getTxtNameSearch().clear();
+        view.getTxtCodeSearch().clear();
     }
 
     @Override

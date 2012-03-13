@@ -144,7 +144,10 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Button btnAddTaskChildCancel = new Button();
 
     @I18nField(emptyText = true)
-    TextField<String> txtSearch = new TextField<String>();
+    TextField<String> txtNameSearch = new TextField<String>();
+
+    @I18nField(emptyText = true)
+    TextField<String> txtCodeSearch = new TextField<String>();
 
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
@@ -188,8 +191,11 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
-        txtSearch.setWidth(200);
-        toolBar.add(txtSearch);
+        txtCodeSearch.setWidth(100);
+        toolBar.add(txtCodeSearch);
+        toolBar.add(new SeparatorToolItem());
+        txtNameSearch.setWidth(150);
+        toolBar.add(txtNameSearch);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
@@ -450,8 +456,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return taskGird;
     }
 
-    public TextField<String> getTxtSearch() {
-        return txtSearch;
+    public TextField<String> getTxtNameSearch() {
+        return txtNameSearch;
     }
 
     public FormPanel getTaskEditPanel() {
@@ -520,5 +526,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public Button getBtnDeleteTaskChild() {
         return btnDeleteTaskChild;
+    }
+
+    public TextField<String> getTxtCodeSearch() {
+        return txtCodeSearch;
     }
 }
