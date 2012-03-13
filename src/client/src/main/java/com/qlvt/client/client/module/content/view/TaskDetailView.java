@@ -95,7 +95,8 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public static final int Q3_UNIT_WIDTH = 70;
     public static final String Q4_UNIT_COLUMN = "q4";
     public static final int Q4_UNIT_WIDTH = 70;
-    public static final int TASK_LIST_SIZE = 50;
+
+    public static final int TASK_LIST_SIZE = 100;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));

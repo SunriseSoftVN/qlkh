@@ -62,8 +62,6 @@ import java.util.Map;
 @Presenter(view = TaskManagerView.class, place = TaskManagerPlace.class)
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
-
-
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
     private Window taskEditWindow;

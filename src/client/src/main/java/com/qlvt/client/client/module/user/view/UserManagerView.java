@@ -76,7 +76,8 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
     public static final int USER_ROLE_COLUMN_WIDTH = 200;
     public static final String USER_PASSWORD_COLUMN = "passWord";
     public static final int USER_PASSWORD_COLUMN_WIDTH = 90;
-    public static final int USER_LIST_SIZE = 50;
+
+    public static final int USER_LIST_SIZE = 100;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));

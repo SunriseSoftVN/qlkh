@@ -64,7 +64,8 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
     public static final int STT_COLUMN_WIDTH = 40;
     public static final String STATION_NAME_COLUMN = "name";
     public static final int STATION_NAME_WIDTH = 300;
-    public static final int STATION_LIST_SIZE = 50;
+
+    public static final int STATION_LIST_SIZE = 100;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));

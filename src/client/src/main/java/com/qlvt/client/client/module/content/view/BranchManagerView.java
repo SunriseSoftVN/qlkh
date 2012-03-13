@@ -69,7 +69,8 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
     public static final int BRANCH_NAME_WIDTH = 300;
     public static final String STATION_NAME_COLUMN = "station";
     public static final int STATION_NAME_WIDTH = 300;
-    public static final int BRANCH_LIST_SIZE = 50;
+
+    public static final int BRANCH_LIST_SIZE = 100;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));

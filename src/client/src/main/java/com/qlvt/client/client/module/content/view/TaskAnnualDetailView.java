@@ -97,7 +97,8 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final int DECREASE_VALUE_WIDTH = 70;
     public static final String REAL_VALUE_COLUMN = "realValue";
     public static final int REAL_VALUE_WIDTH = 80;
-    public static final int TASK_LIST_SIZE = 50;
+
+    public static final int TASK_LIST_SIZE = 100;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
