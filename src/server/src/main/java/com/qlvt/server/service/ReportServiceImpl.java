@@ -50,10 +50,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUM;
@@ -210,6 +207,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         for (CompanySumReportBean bean : parentBeans) {
             bean.calculate();
         }
+
+        //Sort
+        Collections.sort(beans);
 
         return beans;
     }

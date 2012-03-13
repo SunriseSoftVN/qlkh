@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 3/7/12, 2:09 PM
  */
-public class CompanySumReportBean implements Serializable {
+public class CompanySumReportBean implements Serializable, Comparable<CompanySumReportBean> {
 
     private int stt;
     private Task task;
@@ -76,6 +76,15 @@ public class CompanySumReportBean implements Serializable {
 
             //Mark this bean is calculated. Avoid duplicate value.
             setCalculated(true);
+        }
+    }
+
+    @Override
+    public int compareTo(CompanySumReportBean bean) {
+        if (task.getCode().length() > bean.getTask().getCode().length()) {
+            return 1;
+        } else {
+            return -1;
         }
     }
 
