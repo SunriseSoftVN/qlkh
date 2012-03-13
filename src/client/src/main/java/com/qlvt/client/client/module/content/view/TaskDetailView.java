@@ -169,6 +169,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         taskDetailGird.addPlugin(selectionModel);
         taskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         taskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
+        taskDetailGird.getStore().getLoader().setRemoteSort(true);
         taskDetailGird.setWidth(500);
         taskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override

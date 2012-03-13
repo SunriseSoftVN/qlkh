@@ -116,6 +116,7 @@ public class BranchManagerView extends AbstractView<BranchManagerConstant> {
         branchsGird.addPlugin(selectionModel);
         branchsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         branchsGird.getStore().getLoader().setSortField(ID_COLUMN);
+        branchsGird.getStore().getLoader().setRemoteSort(true);
         branchsGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {

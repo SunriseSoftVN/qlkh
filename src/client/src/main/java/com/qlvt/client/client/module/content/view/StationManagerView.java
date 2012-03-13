@@ -108,6 +108,7 @@ public class StationManagerView extends AbstractView<StationManagerConstant> {
         stationsGird.addPlugin(selectionModel);
         stationsGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         stationsGird.getStore().getLoader().setSortField(ID_COLUMN);
+        stationsGird.getStore().getLoader().setRemoteSort(true);
         stationsGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
