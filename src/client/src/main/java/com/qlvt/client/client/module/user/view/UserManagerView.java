@@ -138,7 +138,6 @@ public class UserManagerView extends AbstractView<UserManagerConstant> {
         usersGrid.addPlugin(selectionModel);
         usersGrid.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         usersGrid.getStore().getLoader().setSortField(ID_COLUMN);
-        usersGrid.getStore().getLoader().setRemoteSort(true);
         usersGrid.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {

@@ -172,8 +172,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         taskGird.setSelectionModel(selectionModel);
         taskGird.addPlugin(selectionModel);
         taskGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        taskGird.getStore().getLoader().setSortField(TASK_CODE_COLUMN);
-        taskGird.getStore().getLoader().setRemoteSort(true);
+        taskGird.getStore().getLoader().setSortField(ID_COLUMN);
         taskGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
