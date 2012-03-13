@@ -22,7 +22,9 @@ package com.qlvt.core.client.report;
 import com.qlvt.core.client.model.Task;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,7 +37,47 @@ public class CompanySumReportBean implements Serializable {
 
     private int stt;
     private Task task;
+    private boolean calculated;
     private Map<String, StationReportBean> stations = new HashMap<String, StationReportBean>();
+    private List<CompanySumReportBean> childBeans = new ArrayList<CompanySumReportBean>();
+
+    public void calculate() {
+        if (!isCalculated()) {
+            for (CompanySumReportBean bean : childBeans) {
+                bean.calculate();
+            }
+
+            for (StationReportBean station : stations.values()) {
+                Long time = station.getTime();
+                Double value = station.getValue();
+                if (time == null) {
+                    time = 0L;
+                }
+                if (value == null) {
+                    value = 0D;
+                }
+                for (CompanySumReportBean bean : childBeans) {
+                    Long childTime = bean.getStations().get(String.valueOf(station.getId())).getTime();
+                    Double childValue = bean.getStations().get(String.valueOf(station.getId())).getValue();
+                    if (childTime != null) {
+                        time += childTime;
+                    }
+                    if (childValue != null) {
+                        value += childValue;
+                    }
+                }
+                if (value > 0) {
+                    station.setValue(value);
+                }
+                if (time > 0) {
+                    station.setTime(time);
+                }
+            }
+
+            //Mark this bean is calculated. Avoid duplicate value.
+            setCalculated(true);
+        }
+    }
 
     public int getStt() {
         return stt;
@@ -59,5 +101,17 @@ public class CompanySumReportBean implements Serializable {
 
     public void setStations(Map<String, StationReportBean> stations) {
         this.stations = stations;
+    }
+
+    public List<CompanySumReportBean> getChildBeans() {
+        return childBeans;
+    }
+
+    public boolean isCalculated() {
+        return calculated;
+    }
+
+    public void setCalculated(boolean calculated) {
+        this.calculated = calculated;
     }
 }

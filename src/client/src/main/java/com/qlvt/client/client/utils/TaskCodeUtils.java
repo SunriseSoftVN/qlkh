@@ -17,25 +17,38 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.i18n;
+package com.qlvt.client.client.utils;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The Class ReportConstant.
+ * The Class TaskCodeUtils.
  *
  * @author Nguyen Duc Dung
- * @since 2/19/12, 3:47 PM
+ * @since 3/13/12, 4:57 PM
  */
-public interface ReportConstant extends Constants {
-    String txtSearch();
-    String btnRefresh();
-    String sttColumnTitle();
-    String taskCodeColumnTitle();
-    String taskNameColumnTitle();
-    String taskUnitColumnTitle();
-    String planReportPanel();
-    String btnPlanReportPdf();
-    String btnPlanReportXls();
-    String cbbReportType();
+public final class TaskCodeUtils {
+
+    public static final String CODE_SEPARATOR = " ; ";
+
+    private TaskCodeUtils() {
+
+    }
+
+    public static List<String> getChildTaskCodes(String childTasks) {
+        List<String> childTaskCodes = new ArrayList<String>();
+        if (StringUtils.isNotBlank(childTasks)) {
+            String[] st = childTasks.split(CODE_SEPARATOR);
+            for (String code : st) {
+                if (StringUtils.isNotBlank(code)) {
+                    childTaskCodes.add(code.trim());
+                }
+            }
+        }
+        return childTaskCodes;
+    }
+
 }

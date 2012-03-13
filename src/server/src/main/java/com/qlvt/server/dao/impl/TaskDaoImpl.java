@@ -25,6 +25,7 @@ import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -48,6 +49,13 @@ public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
     public List<Task> getAllAnnualTask() {
         Criteria criteria = getCurrentSession().createCriteria(Task.class).
                 add(Restrictions.eq("taskTypeCode", TaskTypeEnum.ANNUAL.getTaskTypeCode()));
+        return criteria.list();
+    }
+
+    @Override
+    public List<Task> getAllOrderByCode() {
+        Criteria criteria = getCurrentSession().createCriteria(Task.class)
+                .addOrder(Order.asc("code"));
         return criteria.list();
     }
 }

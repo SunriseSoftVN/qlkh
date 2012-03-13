@@ -52,7 +52,8 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                reportService.reportForCompany(ReportFileTypeEnum.PDF, new AbstractAsyncCallback<String>() {
+                reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
+                        ReportFileTypeEnum.PDF, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         Window.open(result, "", "");
@@ -63,7 +64,8 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                reportService.reportForCompany(ReportFileTypeEnum.EXCEL, new AbstractAsyncCallback<String>() {
+                reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
+                        ReportFileTypeEnum.EXCEL, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         Window.open(result, "", "");

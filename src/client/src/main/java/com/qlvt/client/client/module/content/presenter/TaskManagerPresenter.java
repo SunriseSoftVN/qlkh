@@ -39,6 +39,7 @@ import com.qlvt.client.client.service.TaskService;
 import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.client.client.utils.TaskCodeUtils;
 import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
@@ -61,7 +62,7 @@ import java.util.Map;
 @Presenter(view = TaskManagerView.class, place = TaskManagerPlace.class)
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
-    private static final String CODE_SEPARATOR = " ; ";
+
 
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
@@ -225,7 +226,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 String childIds = StringUtils.EMPTY;
                 for (BeanModel model : view.getChildTaskGrid().getStore().getModels()) {
                     Task childTask = model.getBean();
-                    childIds += childTask.getCode() + CODE_SEPARATOR;
+                    childIds += childTask.getCode() + TaskCodeUtils.CODE_SEPARATOR;
                 }
                 final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                 selectedTask.setChildTasks(childIds);
@@ -308,7 +309,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                         List<String> childTaskCodes = new ArrayList<String>();
                         if (selectedTask != null) {
-                            childTaskCodes = getChildTaskCodes(selectedTask.getChildTasks());
+                            childTaskCodes = TaskCodeUtils.getChildTaskCodes(selectedTask.getChildTasks());
                         }
                         BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
                         ListStore<BeanModel> cbbStore = new ListStore<BeanModel>();
@@ -399,19 +400,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtSearch().clear();
-    }
-
-    private List<String> getChildTaskCodes(String childTasks) {
-        List<String> childTaskCodes = new ArrayList<String>();
-        if (StringUtils.isNotBlank(childTasks)) {
-            String[] st = childTasks.split(CODE_SEPARATOR);
-            for (String code : st) {
-                if (StringUtils.isNotBlank(code)) {
-                    childTaskCodes.add(code.trim());
-                }
-            }
-        }
-        return childTaskCodes;
     }
 
     @Override

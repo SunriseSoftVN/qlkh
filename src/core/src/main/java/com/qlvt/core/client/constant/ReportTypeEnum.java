@@ -17,25 +17,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.content.view.i18n;
-
-import com.smvp4g.mvp.client.core.i18n.Constants;
+package com.qlvt.core.client.constant;
 
 /**
- * The Class ReportConstant.
+ * The Class ReportTypeEnum.
  *
  * @author Nguyen Duc Dung
- * @since 2/19/12, 3:47 PM
+ * @since 3/12/12, 1:50 PM
  */
-public interface ReportConstant extends Constants {
-    String txtSearch();
-    String btnRefresh();
-    String sttColumnTitle();
-    String taskCodeColumnTitle();
-    String taskNameColumnTitle();
-    String taskUnitColumnTitle();
-    String planReportPanel();
-    String btnPlanReportPdf();
-    String btnPlanReportXls();
-    String cbbReportType();
+public enum ReportTypeEnum {
+    Q1,
+    Q2,
+    Q3,
+    Q4,
+    YEAR
+
+
 }

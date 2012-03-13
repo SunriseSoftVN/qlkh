@@ -23,16 +23,21 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.content.view.i18n.ReportConstant;
 import com.qlvt.client.client.module.content.view.security.ReportSecurity;
+import com.qlvt.core.client.constant.ReportTypeEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
+
+import java.util.Arrays;
 
 /**
  * The Class ReportView.
@@ -43,6 +48,9 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 @ViewSecurity(configuratorClass = ReportSecurity.class)
 @View(constantsClass = ReportConstant.class, parentDomId = DomIdConstant.CONTENT_PANEL)
 public class ReportView extends AbstractView<ReportConstant> {
+
+    @I18nField
+    SimpleComboBox<ReportTypeEnum> cbbReportType = new SimpleComboBox<ReportTypeEnum>();
 
     @I18nField
     Button btnPlanReportPdf = new Button();
@@ -58,9 +66,13 @@ public class ReportView extends AbstractView<ReportConstant> {
     @Override
     protected void initializeView() {
         planReportPanel.setFrame(true);
+        cbbReportType.add(Arrays.asList(ReportTypeEnum.values()));
+        cbbReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbReportType.setEditable(false);
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(4);
+        hp.add(cbbReportType);
         hp.add(btnPlanReportPdf);
         hp.add(btnPlanReportXls);
         planReportPanel.add(hp);
@@ -71,6 +83,10 @@ public class ReportView extends AbstractView<ReportConstant> {
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
         setWidget(contentPanel);
+    }
+
+    public SimpleComboBox<ReportTypeEnum> getCbbReportType() {
+        return cbbReportType;
     }
 
     public Button getBtnPlanReportPdf() {

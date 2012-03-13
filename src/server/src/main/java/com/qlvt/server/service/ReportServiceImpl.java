@@ -28,7 +28,10 @@ import ar.com.fdvs.dj.domain.constants.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.ReportService;
+import com.qlvt.client.client.utils.TaskCodeUtils;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
+import com.qlvt.core.client.constant.ReportTypeEnum;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.model.*;
 import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
@@ -51,6 +54,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.qlvt.core.client.constant.TaskTypeEnum.SUBSUM;
+import static com.qlvt.core.client.constant.TaskTypeEnum.SUM;
 
 /**
  * The Class ReportServiceImpl.
@@ -86,14 +92,14 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     private BranchDao branchDao;
 
     @Override
-    public String reportForCompany(ReportFileTypeEnum fileTypeEnum) {
+    public String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum) {
         try {
             DynamicReport dynamicReport = buildReport();
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData()));
+                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(reportTypeEnum)));
 
             String filePath = ServletUtils.getInstance().
                     getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME
@@ -148,10 +154,10 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                     .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 20, detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 20, detailStyle);
-            List<CompanySumReportBean> companies = buildReportData();
-            if (CollectionUtils.isNotEmpty(companies)) {
+            List<Station> stations = stationDao.getAll(Station.class);
+            if (CollectionUtils.isNotEmpty(stations)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
-                for (StationReportBean station : companies.get(0).getStations().values()) {
+                for (Station station : stations) {
                     int index = fastReportBuilder.getColumns().size();
                     fastReportBuilder.addColumn("KL",
                             "stations." + station.getId() + ".value", Double.class, 30, detailStyle);
@@ -177,9 +183,10 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         return fastReportBuilder.build();
     }
 
-    private List<CompanySumReportBean> buildReportData() {
+    private List<CompanySumReportBean> buildReportData(ReportTypeEnum reportTypeEnum) {
         List<CompanySumReportBean> beans = new ArrayList<CompanySumReportBean>();
-        List<Task> tasks = taskDao.getAll(Task.class);
+        List<CompanySumReportBean> parentBeans = new ArrayList<CompanySumReportBean>();
+        List<Task> tasks = taskDao.getAllOrderByCode();
         List<Station> stations = stationDao.getAll(Station.class);
         int index = 0;
         for (Task task : tasks) {
@@ -187,45 +194,120 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
             bean.setStt(++index);
             bean.setTask(task);
             for (Station station : stations) {
-                StationReportBean stationReport = calculate(task, station);
+                StationReportBean stationReport = calculate(task, station, reportTypeEnum);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
+            if (task.getTaskTypeCode() == SUBSUM.getTaskTypeCode()
+                    || task.getTaskTypeCode() == SUM.getTaskTypeCode()) {
+                parentBeans.add(bean);
+            }
         }
+
+        //Build tree
+        buildTree(beans, parentBeans);
+        //Calculate for Sum or SubSum Task.
+        for (CompanySumReportBean bean : parentBeans) {
+            bean.calculate();
+        }
+
         return beans;
     }
 
-    private StationReportBean calculate(Task task, Station station) {
+
+    private void buildTree(List<CompanySumReportBean> beans,
+                           List<CompanySumReportBean> parentBeans) {
+        for (CompanySumReportBean childBean : beans) {
+            for (CompanySumReportBean parentBean : parentBeans) {
+                if (isParent(parentBean, childBean)) {
+                    parentBean.getChildBeans().add(childBean);
+                }
+            }
+        }
+    }
+
+    public boolean isParent(CompanySumReportBean parentBean, CompanySumReportBean childBean) {
+        if (!childBean.getTask().getCode().equals(parentBean.getTask().getCode())) {
+            switch (TaskTypeEnum.valueOf(parentBean.getTask().getTaskTypeCode())) {
+                case SUBSUM:
+                    if (parentBean.getTask().getCode().length() > 3
+                            && childBean.getTask().getCode().length() > 3) {
+                        String parentPrefix = parentBean.getTask().getCode().substring(0, 3);
+                        String childPrefix = childBean.getTask().getCode().substring(0, 3);
+                        if (parentPrefix.equals(childPrefix)) {
+                            return true;
+                        }
+                    }
+                    break;
+                case SUM:
+                    List<String> childTaskCodes = TaskCodeUtils
+                            .getChildTaskCodes(parentBean.getTask().getChildTasks());
+                    if (CollectionUtils.isNotEmpty(childTaskCodes)
+                            && childTaskCodes.contains(childBean.getTask().getCode())) {
+                        return true;
+                    }
+            }
+        }
+        return false;
+    }
+
+
+    private StationReportBean calculate(Task task, Station station, ReportTypeEnum reportTypeEnum) {
         StationReportBean stationReport = new StationReportBean();
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
-        TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
-        if (taskDetail != null) {
-            //Calculate Weight
-            if (taskDetail.getAnnual()) {
-                calculateWeightForAnnualTask(stationReport, taskDetail);
-            } else {
-                calculateWeightForNormalTask(stationReport, taskDetail);
-            }
-            //Calculate time
-            if (task.getDefaultValue() != null && stationReport.getValue() != null) {
-                Double time = task.getDefaultValue() * task.getQuota() * stationReport.getValue();
-                stationReport.setTime(time.longValue());
+        if (task.getTaskTypeCode() == TaskTypeEnum.NORMAL.getTaskTypeCode()
+                || task.getTaskTypeCode() == TaskTypeEnum.ANNUAL.getTaskTypeCode()) {
+            TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
+            if (taskDetail != null) {
+                //Calculate Weight
+                if (taskDetail.getAnnual()) {
+                    calculateWeightForAnnualTask(stationReport, taskDetail);
+                } else {
+                    calculateWeightForNormalTask(stationReport, taskDetail, reportTypeEnum);
+                }
+                //Calculate time
+                if (task.getDefaultValue() != null && stationReport.getValue() != null) {
+                    Double time = task.getDefaultValue() * task.getQuota() * stationReport.getValue();
+                    stationReport.setTime(time.longValue());
+                }
             }
         }
         return stationReport;
     }
 
-    private void calculateWeightForNormalTask(StationReportBean stationReport, TaskDetail taskDetail) {
+    private void calculateWeightForNormalTask(StationReportBean stationReport, TaskDetail taskDetail,
+                                              ReportTypeEnum reportTypeEnum) {
         List<SubTaskDetail> subTaskDetails = subTaskDetailDao.findByTaskDetailId(taskDetail.getId());
         if (CollectionUtils.isNotEmpty(subTaskDetails)) {
             Double weight = 0d;
             for (SubTaskDetail subTaskDetail : subTaskDetails) {
-                if (subTaskDetail.getQ1() != null) {
-                    weight += subTaskDetail.getQ1();
+                switch (reportTypeEnum) {
+                    case Q1:
+                        if (subTaskDetail.getQ1() != null) {
+                            weight += subTaskDetail.getQ1();
+                        }
+                        break;
+                    case Q2:
+                        if (subTaskDetail.getQ2() != null) {
+                            weight += subTaskDetail.getQ2();
+                        }
+                        break;
+                    case Q3:
+                        if (subTaskDetail.getQ3() != null) {
+                            weight += subTaskDetail.getQ3();
+                        }
+                        break;
+                    case Q4:
+                        if (subTaskDetail.getQ4() != null) {
+                            weight += subTaskDetail.getQ4();
+                        }
+                        break;
                 }
             }
-            stationReport.setValue(weight);
+            if (weight > 0) {
+                stationReport.setValue(weight);
+            }
         }
     }
 

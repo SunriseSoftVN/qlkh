@@ -28,6 +28,8 @@
         <dozerVersion>5.3.2</dozerVersion>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>
+        <buildNumber>${maven.build.timestamp}</buildNumber>
     </properties>
 
     <profiles>
