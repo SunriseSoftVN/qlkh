@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.client.client.service.TaskService;
 import com.qlvt.core.client.exception.CodeExistException;
+import com.qlvt.core.client.exception.ExceptionHandler;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.service.core.AbstractService;
@@ -51,13 +52,11 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
         return taskDao.getByBeanConfig(Task.class, loadConfig);
     }
 
+    @ExceptionHandler(expectException = ConstraintViolationException.class,
+            wrapperException = CodeExistException.class)
     @Override
     public Task updateTask(Task task) throws CodeExistException {
-        try {
-            return taskDao.saveOrUpdate(task);
-        } catch (ConstraintViolationException ex) {
-            throw new CodeExistException();
-        }
+        return taskDao.saveOrUpdate(task);
     }
 
     @Override

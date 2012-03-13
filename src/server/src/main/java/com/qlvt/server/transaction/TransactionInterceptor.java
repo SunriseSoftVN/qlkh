@@ -19,6 +19,7 @@
 
 package com.qlvt.server.transaction;
 
+import com.qlvt.core.client.exception.ExceptionHandler;
 import com.qlvt.server.util.SessionFactoryUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -36,12 +37,24 @@ public class TransactionInterceptor implements MethodInterceptor {
         //Open Session and begin transaction.
         Session session = SessionFactoryUtil.openSession();
         session.beginTransaction();
-
-        Object result = invocation.proceed();
+        Object result = null;
 
         //Commit and close session.
-        session.flush();
-        session.close();
+        try {
+            result = invocation.proceed();
+            session.flush();
+        } catch (Exception ex) {
+            ExceptionHandler handler = invocation.getMethod().getAnnotation(ExceptionHandler.class);
+            if (handler != null) {
+                Class<? extends Exception> expectException = handler.expectException();
+                Class<? extends Exception> wrapperException = handler.wrapperException();
+                if (ex.getClass() == expectException) {
+                    throw wrapperException.newInstance();
+                }
+            }
+        } finally {
+            session.close();
+        }
         return result;
     }
 }
