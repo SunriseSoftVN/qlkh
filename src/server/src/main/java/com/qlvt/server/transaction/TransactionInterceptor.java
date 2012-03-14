@@ -51,6 +51,9 @@ public class TransactionInterceptor implements MethodInterceptor {
                 if (ex.getClass() == expectException) {
                     throw wrapperException.newInstance();
                 }
+            } else {
+                //Throw original exception, if exception handler wasn't define.
+                throw ex;
             }
         } finally {
             session.close();
