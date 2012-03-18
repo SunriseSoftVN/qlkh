@@ -75,6 +75,13 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernateValidatorVersion}</version>
         </dependency>
+
+        <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-c3p0</artifactId>
+           <version>${hibernateC3p0Verion}</version>
+        </dependency>
+
         <!--End-->
 
     </dependencies>
