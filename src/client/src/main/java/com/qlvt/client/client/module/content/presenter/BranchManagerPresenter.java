@@ -28,7 +28,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlvt.client.client.module.content.place.BranchManagerPlace;
+import com.qlvt.client.client.module.content.place.skdjsdla;
 import com.qlvt.client.client.module.content.view.BranchManagerView;
 import com.qlvt.client.client.service.BranchService;
 import com.qlvt.client.client.service.BranchServiceAsync;
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/2/12, 1:07 PM
  */
-@Presenter(view = BranchManagerView.class, place = BranchManagerPlace.class)
+@Presenter(view = BranchManagerView.class, place = skdjsdla.class)
 public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView> {
 
     private BranchServiceAsync branchService = BranchService.App.getInstance();
