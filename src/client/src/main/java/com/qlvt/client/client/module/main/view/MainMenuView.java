@@ -68,7 +68,7 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mnlBranchManager = new MenuLink(skdjsdla.class);
+    MenuLink mnlBranchManager = new MenuLink(BranchManagerPlace.class);
 
     @FieldSecurity
     @HistoryHandler

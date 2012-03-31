@@ -23,11 +23,11 @@ import com.smvp4g.mvp.client.core.place.AbstractPlace;
 import com.smvp4g.mvp.client.core.place.Place;
 
 /**
- * The Class skdjsdla.
+ * The Class BranchManagerPlace.
  *
  * @author Nguyen Duc Dung
  * @since 1/2/12, 1:06 PM
  */
 @Place
-public class skdjsdla extends AbstractPlace {
+public class BranchManagerPlace extends AbstractPlace {
 }
