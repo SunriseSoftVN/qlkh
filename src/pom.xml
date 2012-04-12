@@ -156,6 +156,10 @@
             <id>dynamic-report</id>
             <url>http://archiva.fdvs.com.ar/repository/public1/</url>
         </repository>
+        <repository>
+            <id>smvp4g</id>
+            <url>http://smvp4g-repository.googlecode.com/svn/trunk/</url>
+        </repository>
     </repositories>
 
 </project>
