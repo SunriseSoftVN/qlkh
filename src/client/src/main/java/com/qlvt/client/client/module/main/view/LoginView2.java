@@ -17,17 +17,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.place;
+package com.qlvt.client.client.module.main.view;
 
-import com.smvp4g.mvp.client.core.place.AbstractPlace;
-import com.smvp4g.mvp.client.core.place.Place;
+import com.qlvt.client.client.constant.DomIdConstant;
+import com.qlvt.client.client.module.main.view.i18n.Login2Constants;
+import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.view.AbstractView;
+import com.smvp4g.mvp.client.core.view.annotation.View;
 
 /**
- * The Class LoginPlace.
+ * The Class LoginView2.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:52 AM
+ * @since 5/27/12, 9:23 PM
  */
-@Place
-public class LoginPlace extends AbstractPlace {
+@ViewSecurity(showOnlyGuest = true)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = Login2Constants.class)
+public class LoginView2 extends AbstractView<Login2Constants> {
+    @Override
+    protected void initializeView() {
+
+    }
 }

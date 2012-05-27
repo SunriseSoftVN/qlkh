@@ -23,11 +23,11 @@ import com.smvp4g.mvp.client.core.place.AbstractPlace;
 import com.smvp4g.mvp.client.core.place.Place;
 
 /**
- * The Class LoginPlace.
+ * The Class Login2Place.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:52 AM
+ * @since 5/27/12, 9:26 PM
  */
-@Place
-public class LoginPlace extends AbstractPlace {
+@Place(defaultPlace = true)
+public class Login2Place extends AbstractPlace {
 }

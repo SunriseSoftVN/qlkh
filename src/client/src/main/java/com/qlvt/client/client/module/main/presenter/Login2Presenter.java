@@ -17,17 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.place;
+package com.qlvt.client.client.module.main.presenter;
 
-import com.smvp4g.mvp.client.core.place.AbstractPlace;
-import com.smvp4g.mvp.client.core.place.Place;
+import com.qlvt.client.client.module.main.place.Login2Place;
+import com.qlvt.client.client.module.main.view.LoginView2;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 /**
- * The Class LoginPlace.
+ * The Class Login2Presenter.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:52 AM
+ * @since 5/27/12, 9:27 PM
  */
-@Place
-public class LoginPlace extends AbstractPlace {
+@Presenter(view = LoginView2.class, place = Login2Place.class)
+public class Login2Presenter extends AbstractPresenter<LoginView2> {
+    @Override
+    public void onActivate() {
+        view.show();
+    }
 }

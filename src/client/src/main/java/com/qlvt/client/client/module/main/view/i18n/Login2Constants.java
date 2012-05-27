@@ -17,17 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.place;
+package com.qlvt.client.client.module.main.view.i18n;
 
-import com.smvp4g.mvp.client.core.place.AbstractPlace;
-import com.smvp4g.mvp.client.core.place.Place;
+import com.smvp4g.mvp.client.core.i18n.Constants;
 
 /**
- * The Class LoginPlace.
+ * The Class Login2Constants.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 9:52 AM
+ * @since 5/27/12, 9:24 PM
  */
-@Place
-public class LoginPlace extends AbstractPlace {
+public interface Login2Constants extends Constants {
 }
