@@ -211,6 +211,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         //Sort
         Collections.sort(beans);
 
+        //Remove empty task
+
+
         return beans;
     }
 

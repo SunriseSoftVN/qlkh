@@ -27,6 +27,7 @@
         <hibernateValidatorVersion>4.2.0.Final</hibernateValidatorVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
         <dozerVersion>5.3.2</dozerVersion>
+        <lambdaj.version>2.3.1</lambdaj.version>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>

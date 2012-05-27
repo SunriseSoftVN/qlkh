@@ -151,6 +151,13 @@
             <version>${dozerVersion}</version>
         </dependency>
 
+        <!-- Lambdaj -->
+        <dependency>
+            <groupId>com.googlecode.lambdaj</groupId>
+            <artifactId>lambdaj</artifactId>
+            <version>${lambdaj.version}</version>
+        </dependency>
+
         <!--DynamicJasper-->
         <dependency>
             <groupId>ar.com.fdvs</groupId>

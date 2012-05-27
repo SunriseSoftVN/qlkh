@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.Window;
 import com.qlvt.client.client.constant.DomIdConstant;
 import com.qlvt.client.client.module.main.view.i18n.LoginConstants;
+import com.qlvt.client.client.utils.BrowserUtils;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -43,6 +44,8 @@ import com.smvp4g.mvp.client.widget.TextField;
 @ViewSecurity(showOnlyGuest = true)
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = LoginConstants.class)
 public class LoginView extends AbstractView<LoginConstants> {
+
+    private Html downloadChromeHtml = new Html(getConstant().downloadChrome());
 
     private ContentPanel contentPanel = new ContentPanel(new CenterLayout());
 
@@ -60,7 +63,7 @@ public class LoginView extends AbstractView<LoginConstants> {
 
     @I18nField
     Button btnCancel = new Button();
-    
+
     @Override
     protected void initializeView() {
         txtPassWord.setPassword(true);
@@ -76,10 +79,13 @@ public class LoginView extends AbstractView<LoginConstants> {
 
         contentPanel.add(loginPanel);
 
-        contentPanel.add(new Html("Chương trình chạy tốt nhất trên trình duyệt Google Chrome. " +
-                "<a href='https://www.google.com/chrome?hl=vi'>Tải Google Chorme về máy.</a>"));
+        if (!BrowserUtils.is_chrome()) {
+            contentPanel.add(downloadChromeHtml);
+        }
+
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setHeaderVisible(false);
+
         setWidget(contentPanel);
     }
 
