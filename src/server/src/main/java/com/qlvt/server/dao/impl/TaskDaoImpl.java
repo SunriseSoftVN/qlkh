@@ -41,14 +41,14 @@ public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
     @Override
     public List<Task> getAllNormalTask() {
         Criteria criteria = getCurrentSession().createCriteria(Task.class).
-                add(Restrictions.eq("taskTypeCode", TaskTypeEnum.NORMAL.getTaskTypeCode()));
+                add(Restrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
         return criteria.list();
     }
 
     @Override
     public List<Task> getAllAnnualTask() {
         Criteria criteria = getCurrentSession().createCriteria(Task.class).
-                add(Restrictions.eq("taskTypeCode", TaskTypeEnum.ANNUAL.getTaskTypeCode()));
+                add(Restrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
         return criteria.list();
     }
 

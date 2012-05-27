@@ -27,6 +27,7 @@ import com.qlvt.client.client.module.content.place.ReportPlace;
 import com.qlvt.client.client.module.content.view.ReportView;
 import com.qlvt.client.client.service.ReportService;
 import com.qlvt.client.client.service.ReportServiceAsync;
+import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -52,10 +53,12 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                LoadingUtils.showLoading();
                 reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
                         ReportFileTypeEnum.PDF, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
+                        LoadingUtils.hideLoading();
                         Window.open(result, "", "");
                     }
                 });
@@ -64,10 +67,12 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
+                LoadingUtils.showLoading();
                 reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
                         ReportFileTypeEnum.EXCEL, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
+                        LoadingUtils.hideLoading();
                         Window.open(result, "", "");
                     }
                 });

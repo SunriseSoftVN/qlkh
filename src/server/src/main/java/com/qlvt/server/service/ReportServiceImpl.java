@@ -256,8 +256,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         StationReportBean stationReport = new StationReportBean();
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
-        if (task.getTaskTypeCode() == TaskTypeEnum.NORMAL.getTaskTypeCode()
-                || task.getTaskTypeCode() == TaskTypeEnum.ANNUAL.getTaskTypeCode()) {
+        if (task.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()
+                || task.getTaskTypeCode() == TaskTypeEnum.DK.getTaskTypeCode()) {
             TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
             if (taskDetail != null) {
                 //Calculate Weight

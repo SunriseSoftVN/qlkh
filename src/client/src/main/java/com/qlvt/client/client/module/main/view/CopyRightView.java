@@ -29,7 +29,7 @@ public class CopyRightView extends AbstractView {
     @Override
     protected void initializeView() {
         HTML html = new HTML("<p style='text-align:center'>" +
-                "© Copyright 2012 <a href='http://smvp4g.com'>smvp4g.com</a></p>");
+                "© Copyright 2012 <a href='http://www.visitec.vn'>Công ty TTTH DS Vinh</a></p>");
         setWidget(html);
     }
 }

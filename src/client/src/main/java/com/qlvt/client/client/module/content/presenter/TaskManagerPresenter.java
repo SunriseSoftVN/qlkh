@@ -85,7 +85,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             public void componentSelected(ButtonEvent ce) {
                 taskEditWindow = view.createTaskEditWindow();
                 view.getTaskEditPanel().clear();
-                view.getCbbTaskType().setSimpleValue(TaskTypeEnum.ANNUAL);
+                view.getCbbTaskType().setSimpleValue(TaskTypeEnum.DK);
                 currentTask = new Task();
                 taskEditWindow.show();
             }
@@ -193,7 +193,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             getSimpleValue().getTaskTypeCode());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
-                    if (currentTask.getTaskTypeCode() == TaskTypeEnum.NORMAL.getTaskTypeCode()) {
+                    if (currentTask.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()) {
                         currentTask.setChildTasks(StringUtils.EMPTY);
                     }
                     taskService.updateTask(currentTask, new AbstractAsyncCallback<Task>() {

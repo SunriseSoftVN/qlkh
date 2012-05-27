@@ -21,6 +21,7 @@ package com.qlvt.client.client.module.main.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
@@ -74,6 +75,9 @@ public class LoginView extends AbstractView<LoginConstants> {
         loginPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
 
         contentPanel.add(loginPanel);
+
+        contentPanel.add(new Html("Chương trình chạy tốt nhất trên trình duyệt Google Chrome. " +
+                "<a href='https://www.google.com/chrome?hl=vi'>Tải Google Chorme về máy.</a>"));
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setHeaderVisible(false);
         setWidget(contentPanel);
