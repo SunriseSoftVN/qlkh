@@ -22,6 +22,8 @@ package com.qlvt.client.client.module.content.view;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -50,6 +52,9 @@ import java.util.Arrays;
 public class ReportView extends AbstractView<ReportConstant> {
 
     @I18nField
+    Label lblDownload = new Label();
+
+    @I18nField
     SimpleComboBox<ReportTypeEnum> cbbReportType = new SimpleComboBox<ReportTypeEnum>();
 
     @I18nField
@@ -57,6 +62,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     @I18nField
     Button btnPlanReportXls = new Button();
+
+    @I18nField
+    Button btnReportCancel = new Button();
 
     @I18nField
     FormPanel planReportPanel = new FormPanel();
@@ -85,6 +93,18 @@ public class ReportView extends AbstractView<ReportConstant> {
         setWidget(contentPanel);
     }
 
+    public com.extjs.gxt.ui.client.widget.Window createReportWindow(String url) {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        window.add(lblDownload);
+        window.getButtonBar().add(new Html("<a href='" + url + "'>Download</a>"));
+        window.addButton(btnReportCancel);
+        window.setSize(380, 50);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().reportWindow());
+        return window;
+    }
+
     public SimpleComboBox<ReportTypeEnum> getCbbReportType() {
         return cbbReportType;
     }
@@ -95,5 +115,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public Button getBtnPlanReportXls() {
         return btnPlanReportXls;
+    }
+
+    public Button getBtnReportCancel() {
+        return btnReportCancel;
     }
 }

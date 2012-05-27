@@ -30,7 +30,5 @@ public enum ReportTypeEnum {
     Q2,
     Q3,
     Q4,
-    YEAR
-
-
+    CA_NAM
 }

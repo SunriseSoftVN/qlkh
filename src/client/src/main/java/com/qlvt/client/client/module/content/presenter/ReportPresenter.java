@@ -21,7 +21,7 @@ package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.google.gwt.user.client.Window;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.ReportPlace;
 import com.qlvt.client.client.module.content.view.ReportView;
@@ -43,6 +43,8 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
 
     private ReportServiceAsync reportService = ReportService.App.getInstance();
 
+    private Window reportWindow;
+
     @Override
     public void onActivate() {
         view.show();
@@ -59,7 +61,8 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     @Override
                     public void onSuccess(String result) {
                         LoadingUtils.hideLoading();
-                        Window.open(result, "", "");
+                        reportWindow = view.createReportWindow(result);
+                        reportWindow.show();
                     }
                 });
             }
@@ -73,9 +76,18 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     @Override
                     public void onSuccess(String result) {
                         LoadingUtils.hideLoading();
-                        Window.open(result, "", "");
+                        reportWindow = view.createReportWindow(result);
+                        reportWindow.show();
                     }
                 });
+            }
+        });
+        view.getBtnReportCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (reportWindow != null) {
+                    reportWindow.hide();
+                }
             }
         });
     }
