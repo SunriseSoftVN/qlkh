@@ -147,7 +147,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         try {
             fastReportBuilder.addColumn("TT", "stt", Integer.class, 20, detailStyle)
                     .addColumn("Mã CV", "task.code", String.class, 20, detailStyle)
-                    .addColumn("Nội dung công ", "task.name", String.class, 100, nameStyle)
+                    .addColumn("Nội dung công việc", "task.name", String.class, 100, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 20, detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 20, detailStyle);
@@ -212,7 +212,24 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         Collections.sort(beans);
 
         //Remove empty task
+        List<CompanySumReportBean> removeBeans = new ArrayList<CompanySumReportBean>();
+        for (CompanySumReportBean bean : beans) {
+            boolean found = true;
+            for (StationReportBean station : bean.getStations().values()) {
+                if (station.getValue() != null) {
+                    found = false;
+                }
+            }
+            if (found) {
+                removeBeans.add(bean);
+            }
+        }
+        beans.removeAll(removeBeans);
 
+        //Reindex
+        for (int i = 0; i < beans.size(); i++) {
+            beans.get(i).setStt(i + 1);
+        }
 
         return beans;
     }
