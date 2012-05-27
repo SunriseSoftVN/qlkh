@@ -75,6 +75,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     protected void initializeView() {
         planReportPanel.setFrame(true);
         cbbReportType.add(Arrays.asList(ReportTypeEnum.values()));
+        cbbReportType.setSimpleValue(ReportTypeEnum.CA_NAM);
         cbbReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbReportType.setEditable(false);
 
