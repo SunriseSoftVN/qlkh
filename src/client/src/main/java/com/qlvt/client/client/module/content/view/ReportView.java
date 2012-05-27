@@ -106,6 +106,11 @@ public class ReportView extends AbstractView<ReportConstant> {
         return window;
     }
 
+    public void setEnableReportButton(boolean enable) {
+        btnPlanReportPdf.setEnabled(enable);
+        btnPlanReportXls.setEnabled(enable);
+    }
+
     public SimpleComboBox<ReportTypeEnum> getCbbReportType() {
         return cbbReportType;
     }

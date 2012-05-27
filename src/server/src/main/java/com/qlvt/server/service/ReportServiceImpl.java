@@ -52,8 +52,10 @@ import org.apache.commons.collections.CollectionUtils;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import static ch.lambdaj.Lambda.forEach;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUM;
+
 
 /**
  * The Class ReportServiceImpl.
@@ -185,10 +187,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         List<CompanySumReportBean> parentBeans = new ArrayList<CompanySumReportBean>();
         List<Task> tasks = taskDao.getAllOrderByCode();
         List<Station> stations = stationDao.getAll(Station.class);
-        int index = 0;
         for (Task task : tasks) {
             CompanySumReportBean bean = new CompanySumReportBean();
-            bean.setStt(++index);
             bean.setTask(task);
             for (Station station : stations) {
                 StationReportBean stationReport = calculate(task, station, reportTypeEnum);
@@ -204,9 +204,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         //Build tree
         buildTree(beans, parentBeans);
         //Calculate for Sum or SubSum Task.
-        for (CompanySumReportBean bean : parentBeans) {
-            bean.calculate();
-        }
+        forEach(beans).calculate();
 
         //Sort
         Collections.sort(beans);
@@ -226,7 +224,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         }
         beans.removeAll(removeBeans);
 
-        //Reindex
+        //Index
         for (int i = 0; i < beans.size(); i++) {
             beans.get(i).setStt(i + 1);
         }

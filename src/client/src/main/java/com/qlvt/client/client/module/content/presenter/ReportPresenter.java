@@ -55,12 +55,14 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                view.setEnableReportButton(false);
                 LoadingUtils.showLoading();
                 reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
                         ReportFileTypeEnum.PDF, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         LoadingUtils.hideLoading();
+                        view.setEnableReportButton(true);
                         reportWindow = view.createReportWindow(result);
                         reportWindow.show();
                     }
@@ -70,12 +72,14 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
+                view.setEnableReportButton(false);
                 LoadingUtils.showLoading();
                 reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
                         ReportFileTypeEnum.EXCEL, new AbstractAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         LoadingUtils.hideLoading();
+                        view.setEnableReportButton(true);
                         reportWindow = view.createReportWindow(result);
                         reportWindow.show();
                     }
