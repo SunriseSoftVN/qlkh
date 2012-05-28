@@ -28,7 +28,6 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.service.StationService;
 import com.qlvt.client.client.service.StationServiceAsync;
@@ -50,7 +49,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/29/11, 7:00 AM
  */
-@Presenter(view = StationManagerView.class, place = StationManagerPlace.class)
+@Presenter(view = StationManagerView.class)
 public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
 
     private StationServiceAsync stationService = StationService.App.getInstance();
