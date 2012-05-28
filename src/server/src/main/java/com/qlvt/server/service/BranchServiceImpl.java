@@ -26,9 +26,7 @@ import com.google.inject.Singleton;
 import com.qlvt.client.client.service.BranchService;
 import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Branch;
-import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.SubTaskAnnualDetailDao;
-import com.qlvt.server.dao.SubTaskDetailDao;
+import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.transaction.Transaction;
 import org.apache.commons.collections.CollectionUtils;
@@ -46,19 +44,13 @@ import java.util.List;
 public class BranchServiceImpl extends AbstractService implements BranchService {
 
     @Inject
-    private BranchDao branchDao;
-
-    @Inject
-    private SubTaskDetailDao subTaskDetailDao;
-
-    @Inject
-    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+    private DaoProvider provider;
 
     @Override
     public void deleteBranchById(long branchId) throws DeleteException {
-        if(CollectionUtils.isEmpty(subTaskDetailDao.findBrandId(branchId))
-                && CollectionUtils.isEmpty(subTaskAnnualDetailDao.findByBrandId(branchId))) {
-            branchDao.deleteById(Branch.class, branchId);
+        if(CollectionUtils.isEmpty(provider.getSubTaskDetailDao().findBrandId(branchId))
+                && CollectionUtils.isEmpty(provider.getSubTaskAnnualDetailDao().findByBrandId(branchId))) {
+            provider.getBranchDao().deleteById(Branch.class, branchId);
         } else {
             throw new DeleteException();
         }
@@ -73,26 +65,26 @@ public class BranchServiceImpl extends AbstractService implements BranchService 
 
     @Override
     public void updateBranchs(List<Branch> branchs) {
-        branchDao.saveOrUpdate(branchs);
+        provider.getBranchDao().saveOrUpdate(branchs);
     }
 
     @Override
     public Branch updateBranch(Branch branch) {
-        return branchDao.saveOrUpdate(branch);
+        return provider.getBranchDao().saveOrUpdate(branch);
     }
 
     @Override
     public List<Branch> getAllBranch() {
-        return branchDao.getAll(Branch.class);
+        return provider.getBranchDao().getAll(Branch.class);
     }
 
     @Override
     public BasePagingLoadResult<Branch> getBranchsForGrid(BasePagingLoadConfig config) {
-       return branchDao.getByBeanConfig(Branch.class, config);
+       return provider.getBranchDao().getByBeanConfig(Branch.class, config);
     }
 
     @Override
     public List<Branch> getBranchByStationId(long stationId) {
-        return branchDao.findByStationId(stationId);
+        return provider.getBranchDao().findByStationId(stationId);
     }
 }

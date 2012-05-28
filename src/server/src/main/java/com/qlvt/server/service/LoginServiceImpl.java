@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
 import com.qlvt.client.client.service.LoginService;
 import com.qlvt.core.client.exception.UserAuthenticationException;
 import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.transaction.Transaction;
 
@@ -39,11 +39,11 @@ import com.qlvt.server.transaction.Transaction;
 public class LoginServiceImpl extends AbstractService implements LoginService {
 
     @Inject
-    private UserDao userDao;
+    private DaoProvider provider;
 
     @Override
     public User checkLogin(String userName, String passWord) throws UserAuthenticationException {
-        User user = userDao.findByUserName(userName);
+        User user = provider.getUserDao().findByUserName(userName);
         if (user != null && user.getPassWord().equals(passWord)) {
             return user;
         } else {

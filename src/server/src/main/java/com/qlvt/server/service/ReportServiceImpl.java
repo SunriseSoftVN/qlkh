@@ -36,7 +36,7 @@ import com.qlvt.core.client.model.*;
 import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.dao.*;
+import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
 import com.qlvt.server.transaction.Transaction;
@@ -73,22 +73,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
 
     @Inject
-    private TaskDao taskDao;
-
-    @Inject
-    private StationDao stationDao;
-
-    @Inject
-    private TaskDetailDao taskDetailDao;
-
-    @Inject
-    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
-
-    @Inject
-    private SubTaskDetailDao subTaskDetailDao;
-
-    @Inject
-    private BranchDao branchDao;
+    private DaoProvider provider;
 
     @Override
     public String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum) {
@@ -153,7 +138,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                     .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 20, detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 20, detailStyle);
-            List<Station> stations = stationDao.getAll(Station.class);
+            List<Station> stations = provider.getStationDao().getAll(Station.class);
             if (CollectionUtils.isNotEmpty(stations)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
                 for (Station station : stations) {
@@ -185,8 +170,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     private List<CompanySumReportBean> buildReportData(ReportTypeEnum reportTypeEnum) {
         List<CompanySumReportBean> beans = new ArrayList<CompanySumReportBean>();
         List<CompanySumReportBean> parentBeans = new ArrayList<CompanySumReportBean>();
-        List<Task> tasks = taskDao.getAllOrderByCode();
-        List<Station> stations = stationDao.getAll(Station.class);
+        List<Task> tasks = provider.getTaskDao().getAllOrderByCode();
+        List<Station> stations = provider.getStationDao().getAll(Station.class);
         for (Task task : tasks) {
             CompanySumReportBean bean = new CompanySumReportBean();
             bean.setTask(task);
@@ -276,7 +261,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         stationReport.setName(station.getName());
         if (task.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()
                 || task.getTaskTypeCode() == TaskTypeEnum.DK.getTaskTypeCode()) {
-            TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
+            TaskDetail taskDetail = provider.getTaskDetailDao().findCurrentByStationIdAndTaskId(station.getId(), task.getId());
             if (taskDetail != null) {
                 //Calculate Weight
                 if (taskDetail.getAnnual()) {
@@ -296,7 +281,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     private void calculateWeightForNormalTask(StationReportBean stationReport, TaskDetail taskDetail,
                                               ReportTypeEnum reportTypeEnum) {
-        List<SubTaskDetail> subTaskDetails = subTaskDetailDao.findByTaskDetailId(taskDetail.getId());
+        List<SubTaskDetail> subTaskDetails = provider.getSubTaskDetailDao().findByTaskDetailId(taskDetail.getId());
         if (CollectionUtils.isNotEmpty(subTaskDetails)) {
             Double weight = 0d;
             for (SubTaskDetail subTaskDetail : subTaskDetails) {
@@ -330,7 +315,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     }
 
     private void calculateWeightForAnnualTask(StationReportBean stationReport, TaskDetail taskDetail) {
-        List<SubTaskAnnualDetail> subTaskAnnualDetails = subTaskAnnualDetailDao
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = provider.getSubTaskAnnualDetailDao()
                 .findByTaskDetailId(taskDetail.getId());
         if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
             Double weight = 0d;

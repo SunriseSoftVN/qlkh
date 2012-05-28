@@ -28,10 +28,7 @@ import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.StationDao;
-import com.qlvt.server.dao.TaskDetailDao;
-import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.transaction.Transaction;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,43 +46,34 @@ import java.util.List;
 public class StationServiceImpl extends AbstractService implements StationService {
 
     @Inject
-    private StationDao stationDao;
-
-    @Inject
-    private UserDao userDao;
-
-    @Inject
-    private BranchDao branchDao;
-
-    @Inject
-    private TaskDetailDao taskDetailDao;
+    private DaoProvider provider;
 
     @Override
     public List<Station> getAllStation() {
-        return stationDao.getAll(Station.class);
+        return provider.getStationDao().getAll(Station.class);
     }
 
     @Override
     public BasePagingLoadResult<Station> getStationsForGrid(BasePagingLoadConfig config) {
-        return stationDao.getByBeanConfig(Station.class, config);
+        return provider.getStationDao().getByBeanConfig(Station.class, config);
     }
 
     @Override
     public void updateStations(List<Station> stations) {
-        stationDao.saveOrUpdate(stations);
+        provider.getStationDao().saveOrUpdate(stations);
     }
 
     @Override
     public Station updateStation(Station station) {
-        return stationDao.saveOrUpdate(station);
+        return provider.getStationDao().saveOrUpdate(station);
     }
 
     @Override
     public void deleteStationById(long stationId) throws DeleteException {
-        if (CollectionUtils.isEmpty(userDao.findByStationId(stationId))
-                && CollectionUtils.isEmpty(branchDao.findByStationId(stationId))
-                && CollectionUtils.isEmpty(taskDetailDao.findByStationId(stationId))) {
-            stationDao.deleteById(Station.class, stationId);
+        if (CollectionUtils.isEmpty(provider.getUserDao().findByStationId(stationId))
+                && CollectionUtils.isEmpty(provider.getBranchDao().findByStationId(stationId))
+                && CollectionUtils.isEmpty(provider.getTaskDetailDao().findByStationId(stationId))) {
+            provider.getStationDao().deleteById(Station.class, stationId);
         } else {
             throw new DeleteException();
         }
@@ -100,10 +88,10 @@ public class StationServiceImpl extends AbstractService implements StationServic
 
     @Override
     public Station getStationAndBranchByUserName(String userName) {
-        User user = userDao.findByUserName(userName);
+        User user = provider.getUserDao().findByUserName(userName);
         if (user != null) {
             Station station = user.getStation();
-            List<Branch> branches = branchDao.findByStationId(station.getId());
+            List<Branch> branches = provider.getBranchDao().findByStationId(station.getId());
             station.setBranches(branches);
             return station;
         }

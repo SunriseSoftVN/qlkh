@@ -17,23 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.servlet.listener;
+package com.qlvt.server.guice;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
-import com.qlvt.server.guice.ServletModule;
-
+import com.google.inject.Provider;
+import com.qlvt.core.client.model.core.AbstractEntity;
+import com.qlvt.server.dao.core.Dao;
 
 /**
- * The Class GuiceContextListener.
+ * The Class AbstractDaoProvider.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:38 AM
+ * @since 5/28/12, 2:38 PM
  */
-public class GuiceContextListener extends GuiceServletContextListener {
+public abstract class AbstractDaoProvider implements Provider<Dao<? extends AbstractEntity>> {
+
+    /**
+     * We don't use this method, in this project, it's always return null.
+     * @return null
+     */
+    @Deprecated
     @Override
-    protected Injector getInjector() {
-        return Guice.createInjector(new ServletModule());
+    public Dao<? extends AbstractEntity> get() {
+        return null;
     }
 }

@@ -19,25 +19,42 @@
 
 package com.qlvt.server.guice;
 
-import com.google.inject.AbstractModule;
 import com.qlvt.server.dao.*;
 import com.qlvt.server.dao.impl.*;
 
 /**
- * The Class DaoModule.
+ * The Class UserDaoProvider.
  *
  * @author Nguyen Duc Dung
- * @since 8/16/11, 9:41 AM
+ * @since 5/28/12, 1:21 PM
  */
-public class DaoModule extends AbstractModule {
-    @Override
-    protected void configure() {
-        bind(UserDao.class).to(UserDaoImpl.class);
-        bind(StationDao.class).to(StationDaoImpl.class);
-        bind(TaskDao.class).to(TaskDaoImpl.class);
-        bind(TaskDetailDao.class).to(TaskDetailDaoImpl.class);
-        bind(BranchDao.class).to(BranchDaoImpl.class);
-        bind(SubTaskDetailDao.class).to(SubTaskDetailDaoImpl.class);
-        bind(SubTaskAnnualDetailDao.class).to(SubTaskAnnualDetailDaoImpl.class);
+public class DaoProvider extends AbstractDaoProvider {
+
+    public UserDao getUserDao() {
+        return new UserDaoImpl();
+    }
+
+    public BranchDao getBranchDao() {
+        return new BranchDaoImpl();
+    }
+
+    public StationDao getStationDao() {
+        return new StationDaoImpl();
+    }
+
+    public TaskDao getTaskDao() {
+        return new TaskDaoImpl();
+    }
+
+    public TaskDetailDao getTaskDetailDao() {
+        return new TaskDetailDaoImpl();
+    }
+
+    public SubTaskAnnualDetailDao getSubTaskAnnualDetailDao() {
+        return new SubTaskAnnualDetailDaoImpl();
+    }
+
+    public SubTaskDetailDao getSubTaskDetailDao() {
+        return new SubTaskDetailDaoImpl();
     }
 }

@@ -26,7 +26,7 @@ import com.google.inject.Singleton;
 import com.qlvt.client.client.service.UserService;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.transaction.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
@@ -44,27 +44,27 @@ import java.util.List;
 public class UserServiceImpl extends AbstractService implements UserService {
 
     @Inject
-    private UserDao userDao;
+    private DaoProvider provider;
 
     @Override
     public BasePagingLoadResult<User> getUsersForGrid(BasePagingLoadConfig config) {
-        return userDao.getByBeanConfig(User.class, config);
+        return provider.getUserDao().getByBeanConfig(User.class, config);
     }
 
     @Override
     public void deleteUserById(long userId) {
-        userDao.deleteById(User.class, userId);
+        provider.getUserDao().deleteById(User.class, userId);
     }
 
     @Override
     public void deleteUserByIds(List<Long> userIds) {
-        userDao.deleteByIds(User.class, userIds);
+        provider.getUserDao().deleteByIds(User.class, userIds);
     }
 
     @Override
     public void updateUser(User user) throws CodeExistException {
         try {
-            userDao.saveOrUpdate(user);
+            provider.getUserDao().saveOrUpdate(user);
         } catch (ConstraintViolationException ex) {
             throw new CodeExistException(ex.getMessage());
         }
@@ -72,6 +72,6 @@ public class UserServiceImpl extends AbstractService implements UserService {
 
     @Override
     public void updateUsers(List<User> users) {
-        userDao.saveOrUpdate(users);
+        provider.getUserDao().saveOrUpdate(users);
     }
 }

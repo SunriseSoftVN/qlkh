@@ -27,7 +27,7 @@ import com.qlvt.client.client.service.TaskService;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.exception.ExceptionHandler;
 import com.qlvt.core.client.model.Task;
-import com.qlvt.server.dao.TaskDao;
+import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.transaction.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
@@ -45,24 +45,24 @@ import java.util.List;
 public class TaskServiceImpl extends AbstractService implements TaskService {
 
     @Inject
-    private TaskDao taskDao;
+    private DaoProvider provider;
 
     @Override
     public BasePagingLoadResult<Task> getTasksForGrid(BasePagingLoadConfig loadConfig) {
-        return taskDao.getByBeanConfig(Task.class, loadConfig);
+        return provider.getTaskDao().getByBeanConfig(Task.class, loadConfig);
     }
 
     @ExceptionHandler(expectException = ConstraintViolationException.class,
             wrapperException = CodeExistException.class)
     @Override
     public Task updateTask(Task task) throws CodeExistException {
-        return taskDao.saveOrUpdate(task);
+        return provider.getTaskDao().saveOrUpdate(task);
     }
 
     @Override
     public void updateTasks(List<Task> tasks) throws CodeExistException {
         try {
-            taskDao.saveOrUpdate(tasks);
+            provider.getTaskDao().saveOrUpdate(tasks);
         } catch (ConstraintViolationException ex) {
             throw new CodeExistException();
         }
@@ -70,26 +70,26 @@ public class TaskServiceImpl extends AbstractService implements TaskService {
 
     @Override
     public void deleteTask(long taskId) {
-        taskDao.deleteById(Task.class, taskId);
+        provider.getTaskDao().deleteById(Task.class, taskId);
     }
 
     @Override
     public void deleteTasks(List<Long> taskIds) {
-        taskDao.deleteByIds(Task.class, taskIds);
+        provider.getTaskDao().deleteByIds(Task.class, taskIds);
     }
 
     @Override
     public List<Task> getAllTasks() {
-        return taskDao.getAll(Task.class);
+        return provider.getTaskDao().getAll(Task.class);
     }
 
     @Override
     public List<Task> getAllNormalTasks() {
-        return taskDao.getAllNormalTask();
+        return provider.getTaskDao().getAllNormalTask();
     }
 
     @Override
     public List<Task> getAllAnnualTasks() {
-        return taskDao.getAllAnnualTask();
+        return provider.getTaskDao().getAllAnnualTask();
     }
 }
