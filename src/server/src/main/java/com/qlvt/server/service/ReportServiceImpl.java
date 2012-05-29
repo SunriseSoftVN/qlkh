@@ -127,26 +127,30 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         detailStyle.setHorizontalAlign(HorizontalAlign.CENTER);
         detailStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 
+        Style valueStyle = new Style();
+        valueStyle.setFont(DEFAULT_FONT);
+        valueStyle.setHorizontalAlign(HorizontalAlign.LEFT);
+        valueStyle.setVerticalAlign(VerticalAlign.MIDDLE);
+
         Style nameStyle = new Style();
         nameStyle.setFont(DEFAULT_FONT);
         nameStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 
         try {
-            fastReportBuilder.addColumn("TT", "stt", Integer.class, 20, detailStyle)
-                    .addColumn("Mã CV", "task.code", String.class, 20, detailStyle)
+            fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 20, detailStyle)
                     .addColumn("Nội dung công việc", "task.name", String.class, 100, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
-                    .addColumn("Định mức", "task.defaultValue", Double.class, 20, detailStyle)
-                    .addColumn("Số lần", "task.quota", Integer.class, 20, detailStyle);
+                    .addColumn("Định mức", "task.defaultValue", Double.class, 15, detailStyle)
+                    .addColumn("Số lần", "task.quota", Integer.class, 10, detailStyle);
             List<Station> stations = provider.getStationDao().getAll(Station.class);
             if (CollectionUtils.isNotEmpty(stations)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
                 for (Station station : stations) {
                     int index = fastReportBuilder.getColumns().size();
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".value", Double.class, 30, detailStyle);
+                            "stations." + station.getId() + ".value", Double.class, 30, valueStyle);
                     fastReportBuilder.addColumn("Giờ",
-                            "stations." + station.getId() + ".time", Long.class, 30, detailStyle);
+                            "stations." + station.getId() + ".time", Long.class, 20, valueStyle);
                     colSpans.put(index, station.getName());
                 }
                 for (Integer colIndex : colSpans.keySet()) {
@@ -191,9 +195,6 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         //Calculate for Sum or SubSum Task.
         forEach(beans).calculate();
 
-        //Sort
-        Collections.sort(beans);
-
         //Remove empty task
         List<CompanySumReportBean> removeBeans = new ArrayList<CompanySumReportBean>();
         for (CompanySumReportBean bean : beans) {
@@ -209,10 +210,11 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         }
         beans.removeAll(removeBeans);
 
-        //Index
-        for (int i = 0; i < beans.size(); i++) {
-            beans.get(i).setStt(i + 1);
-        }
+        //Calculate for company
+        calculateForCompany(beans);
+
+        //Sort
+        Collections.sort(beans);
 
         return beans;
     }
@@ -309,6 +311,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                 }
             }
             if (weight > 0) {
+                //Round up the weight
+                weight = Math.round(weight * 100) / 100.0d;
                 stationReport.setValue(weight);
             }
         }
@@ -339,8 +343,39 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                     weight += result;
                 }
             }
-            stationReport.setValue(weight);
+            if (weight > 0) {
+                //Round up the weight
+                weight = Math.round(weight * 100) / 100.0d;
+                stationReport.setValue(weight);
+            }
         }
     }
 
+    private void calculateForCompany(List<CompanySumReportBean> beans) {
+        for (CompanySumReportBean bean : beans) {
+            long sumTime = 0l;
+            double sumValue = 0d;
+            for (StationReportBean station : bean.getStations().values()) {
+                Long time = station.getTime();
+                Double value = station.getValue();
+                if (time == null) {
+                    time = 0L;
+                }
+                if (value == null) {
+                    value = 0D;
+                }
+                sumTime += time;
+                sumValue += value;
+            }
+            if (sumValue > 0) {
+                //Round up the value
+                sumValue = Math.round(sumValue * 100) / 100.0d;
+                //TODO REMOVE HARD CODE @dungvn3000
+                bean.getStations().get("27").setValue(sumValue);
+            }
+            if (sumTime > 0) {
+                bean.getStations().get("27").setTime(sumTime);
+            }
+        }
+    }
 }

@@ -12,9 +12,7 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
-        <property name="lastYear" column="lastYear" not-null="true"/>
         <property name="lastYearValue" column="lastYearValue"/>
-        <property name="currentYear" column="currentYear" not-null="true"/>
         <property name="increaseValue" column="increaseValue"/>
         <property name="decreaseValue" column="decreaseValue"/>
         <property name="realValue" column="realValue"/>

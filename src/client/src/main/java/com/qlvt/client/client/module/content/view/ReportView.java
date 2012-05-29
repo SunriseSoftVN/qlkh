@@ -107,6 +107,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     }
 
     public void setEnableReportButton(boolean enable) {
+        cbbReportType.setEnabled(enable);
         btnPlanReportPdf.setEnabled(enable);
         btnPlanReportXls.setEnabled(enable);
     }

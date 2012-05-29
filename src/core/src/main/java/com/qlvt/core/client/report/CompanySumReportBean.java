@@ -35,7 +35,6 @@ import java.util.Map;
  */
 public class CompanySumReportBean implements Serializable, Comparable<CompanySumReportBean> {
 
-    private int stt;
     private Task task;
     private boolean calculated;
     private Map<String, StationReportBean> stations = new HashMap<String, StationReportBean>();
@@ -67,6 +66,8 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
                     }
                 }
                 if (value > 0) {
+                    //Round up the result
+                    value = Math.round(value * 100) / 100.0d;
                     station.setValue(value);
                 }
                 if (time > 0) {
@@ -88,14 +89,6 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
         }
     }
 
-    public int getStt() {
-        return stt;
-    }
-
-    public void setStt(int stt) {
-        this.stt = stt;
-    }
-
     public Task getTask() {
         return task;
     }
@@ -106,10 +99,6 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
 
     public Map<String, StationReportBean> getStations() {
         return stations;
-    }
-
-    public void setStations(Map<String, StationReportBean> stations) {
-        this.stations = stations;
     }
 
     public List<CompanySumReportBean> getChildBeans() {

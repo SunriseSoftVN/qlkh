@@ -31,8 +31,6 @@ public class SubTaskAnnualDetail extends AbstractEntity {
 
     private TaskDetail taskDetail;
     private Branch branch;
-    private int lastYear;
-    private int currentYear;
     private Double lastYearValue;
     private Double increaseValue;
     private Double decreaseValue;
@@ -52,22 +50,6 @@ public class SubTaskAnnualDetail extends AbstractEntity {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
-    }
-
-    public int getLastYear() {
-        return lastYear;
-    }
-
-    public void setLastYear(int lastYear) {
-        this.lastYear = lastYear;
-    }
-
-    public int getCurrentYear() {
-        return currentYear;
-    }
-
-    public void setCurrentYear(int currentYear) {
-        this.currentYear = currentYear;
     }
 
     public Double getLastYearValue() {
