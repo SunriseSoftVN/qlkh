@@ -27,6 +27,7 @@
         <hibernateValidatorVersion>4.2.0.Final</hibernateValidatorVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
         <dozerVersion>5.3.2</dozerVersion>
+        <dynamicJasperVersion>3.2.2</dynamicJasperVersion>
         <lambdaj.version>2.3.1</lambdaj.version>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -155,11 +156,11 @@
         </repository>
         <repository>
             <id>dynamic-report</id>
-            <url>http://archiva.fdvs.com.ar/repository/public1/</url>
+            <url>http://archiva.fdvs.com.ar/repository/public1</url>
         </repository>
         <repository>
             <id>smvp4g</id>
-            <url>http://smvp4g-repository.googlecode.com/svn/trunk/</url>
+            <url>http://smvp4g-repository.googlecode.com/svn/trunk</url>
         </repository>
     </repositories>
 
