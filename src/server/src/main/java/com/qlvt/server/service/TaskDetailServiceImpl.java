@@ -39,6 +39,7 @@ import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -147,6 +148,8 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
 
     @Override
     public TaskDetail updateTaskDetail(TaskDetail taskDetail) {
+        //Set year on server because client time might be wrong.
+        taskDetail.setYear(1900 + new Date().getYear());
         return provider.getTaskDetailDao().saveOrUpdate(taskDetail);
     }
 

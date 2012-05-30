@@ -17,27 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao;
-
-import com.qlvt.core.client.model.TaskDetail;
-import com.qlvt.server.dao.core.Dao;
-
-import java.util.List;
+package com.qlvt.server.business.rule;
 
 /**
- * The Class TaskDetailDao.
+ * The Class StationCodeEnum.
  *
  * @author Nguyen Duc Dung
- * @since 1/1/12, 3:49 PM
+ * @since 5/30/12, 3:23 PM
  */
-public interface TaskDetailDao extends Dao<TaskDetail> {
-    List<TaskDetail> findByStationId(long stationId);
+public enum StationCodeEnum {
 
-    /**
-     * Find TaskDetail in current year.
-     * @param stationId Station Id
-     * @param taskId Task Id
-     * @return null if not found.
-     */
-    TaskDetail findCurrentByStationIdAndTaskId(long stationId, long taskId);
+    COMPANY(27l),
+    CAUGIAT(32l);
+
+    private long id;
+
+    StationCodeEnum(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 }

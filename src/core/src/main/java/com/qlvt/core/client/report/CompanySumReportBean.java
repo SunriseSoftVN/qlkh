@@ -47,16 +47,16 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
             }
 
             for (StationReportBean station : stations.values()) {
-                Long time = station.getTime();
+                Double time = station.getTime();
                 Double value = station.getValue();
                 if (time == null) {
-                    time = 0L;
+                    time = 0D;
                 }
                 if (value == null) {
                     value = 0D;
                 }
                 for (CompanySumReportBean bean : childBeans) {
-                    Long childTime = bean.getStations().get(String.valueOf(station.getId())).getTime();
+                    Double childTime = bean.getStations().get(String.valueOf(station.getId())).getTime();
                     Double childValue = bean.getStations().get(String.valueOf(station.getId())).getValue();
                     if (childTime != null) {
                         time += childTime;
@@ -66,8 +66,6 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
                     }
                 }
                 if (value > 0) {
-                    //Round up the result
-                    value = Math.round(value * 100) / 100.0d;
                     station.setValue(value);
                 }
                 if (time > 0) {

@@ -36,9 +36,7 @@ import com.qlvt.core.client.model.*;
 import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.system.SystemUtil;
-import com.qlvt.server.business.rule.AlwaysShowTaskRule;
-import com.qlvt.server.business.rule.HideDetailTaskRule;
-import com.qlvt.server.business.rule.ReportOrderRule;
+import com.qlvt.server.business.rule.*;
 import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
@@ -72,7 +70,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "kehoachtacnghiep";
-    private static final Font DEFAULT_FONT = new Font(9, "Arial", "/fonts/Arial.ttf",
+    private static final Font DEFAULT_FONT = new Font(8, "Arial", "/fonts/Arial.ttf",
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
 
     @Inject
@@ -132,7 +130,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
         Style valueStyle = new Style();
         valueStyle.setFont(DEFAULT_FONT);
-        valueStyle.setHorizontalAlign(HorizontalAlign.LEFT);
+        valueStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
         valueStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 
         Style nameStyle = new Style();
@@ -140,20 +138,24 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         nameStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 
         try {
-            fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 20, detailStyle)
-                    .addColumn("Nội dung công việc", "task.name", String.class, 100, nameStyle)
+            fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)
+                    .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 15, detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 10, detailStyle);
             List<Station> stations = provider.getStationDao().getAll(Station.class);
+
+            //Add two more columns. Business rule. TODO remove @dungvn3000
+            AdditionStationColumnRule.addStation(stations);
+
             if (CollectionUtils.isNotEmpty(stations)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
                 for (Station station : stations) {
                     int index = fastReportBuilder.getColumns().size();
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".value", Double.class, 30, valueStyle);
+                            "stations." + station.getId() + ".value", Double.class, 18, valueStyle);
                     fastReportBuilder.addColumn("Giờ",
-                            "stations." + station.getId() + ".time", Long.class, 20, valueStyle);
+                            "stations." + station.getId() + ".time", Double.class, 22, valueStyle);
                     colSpans.put(index, station.getName());
                 }
                 for (Integer colIndex : colSpans.keySet()) {
@@ -193,6 +195,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
             }
         }
 
+        //Add two more columns. Business rule.
+        AdditionStationColumnRule.addDataForDSND(beans, provider, reportTypeEnum);
+
         //Build tree
         buildTree(beans, parentBeans);
         //Calculate for Sum or SubSum Task.
@@ -225,6 +230,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         //Hide unnecessary detail
         HideDetailTaskRule.hide(beans);
 
+        //Calculate for DSTN
+        AdditionStationColumnRule.addDataForDSTN(beans);
+
         return beans;
     }
 
@@ -240,7 +248,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         }
     }
 
-    public boolean isParent(CompanySumReportBean parentBean, CompanySumReportBean childBean) {
+    private boolean isParent(CompanySumReportBean parentBean, CompanySumReportBean childBean) {
         if (!childBean.getTask().getCode().equals(parentBean.getTask().getCode())) {
             switch (TaskTypeEnum.valueOf(parentBean.getTask().getTaskTypeCode())) {
                 case SUBSUM:
@@ -283,7 +291,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                 //Calculate time
                 if (task.getDefaultValue() != null && stationReport.getValue() != null) {
                     Double time = task.getDefaultValue() * task.getQuota() * stationReport.getValue();
-                    stationReport.setTime(time.longValue());
+                    stationReport.setTime(time);
                 }
             }
         }
@@ -317,11 +325,23 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                             weight += subTaskDetail.getQ4();
                         }
                         break;
+                    case CA_NAM:
+                        if (subTaskDetail.getQ1() != null) {
+                            weight += subTaskDetail.getQ1();
+                        }
+                        if (subTaskDetail.getQ2() != null) {
+                            weight += subTaskDetail.getQ2();
+                        }
+                        if (subTaskDetail.getQ3() != null) {
+                            weight += subTaskDetail.getQ3();
+                        }
+                        if (subTaskDetail.getQ4() != null) {
+                            weight += subTaskDetail.getQ4();
+                        }
+                        break;
                 }
             }
             if (weight > 0) {
-                //Round up the weight
-                weight = Math.round(weight * 100) / 100.0d;
                 stationReport.setValue(weight);
             }
         }
@@ -353,8 +373,6 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                 }
             }
             if (weight > 0) {
-                //Round up the weight
-                weight = Math.round(weight * 100) / 100.0d;
                 stationReport.setValue(weight);
             }
         }
@@ -362,13 +380,13 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
     private void calculateForCompany(List<CompanySumReportBean> beans) {
         for (CompanySumReportBean bean : beans) {
-            long sumTime = 0l;
+            double sumTime = 0d;
             double sumValue = 0d;
             for (StationReportBean station : bean.getStations().values()) {
-                Long time = station.getTime();
+                Double time = station.getTime();
                 Double value = station.getValue();
                 if (time == null) {
-                    time = 0L;
+                    time = 0D;
                 }
                 if (value == null) {
                     value = 0D;
@@ -377,13 +395,10 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                 sumValue += value;
             }
             if (sumValue > 0) {
-                //Round up the value
-                sumValue = Math.round(sumValue * 100) / 100.0d;
-                //TODO REMOVE HARD CODE @dungvn3000
-                bean.getStations().get("27").setValue(sumValue);
+                bean.getStations().get(String.valueOf(StationCodeEnum.COMPANY.getId())).setValue(sumValue);
             }
             if (sumTime > 0) {
-                bean.getStations().get("27").setTime(sumTime);
+                bean.getStations().get(String.valueOf(StationCodeEnum.COMPANY.getId())).setTime(sumTime);
             }
         }
     }

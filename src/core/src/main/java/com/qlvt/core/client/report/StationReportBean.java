@@ -32,7 +32,15 @@ public class StationReportBean implements Serializable {
     private long id;
     private String name;
     private Double value;
-    private Long time;
+    private Double time;
+
+    public StationReportBean() {
+    }
+
+    public StationReportBean(long id, String name) {
+        this.name = name;
+        this.id = id;
+    }
 
     public long getId() {
         return id;
@@ -55,14 +63,22 @@ public class StationReportBean implements Serializable {
     }
 
     public void setValue(Double value) {
+        //Round up
+        if (value != null) {
+            value = Math.round(value * 10) / 10.0d;
+        }
         this.value = value;
     }
 
-    public Long getTime() {
+    public Double getTime() {
         return time;
     }
 
-    public void setTime(Long time) {
+    public void setTime(Double time) {
+        //Round up
+        if (time != null) {
+            time = Math.round(time * 10) / 10.0d;
+        }
         this.time = time;
     }
 }

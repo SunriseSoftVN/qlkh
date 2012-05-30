@@ -23,6 +23,7 @@ import com.google.inject.matcher.AbstractMatcher;
 import com.qlvt.server.service.core.AbstractService;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * The Class TransactionMethodMatcher.
@@ -33,7 +34,7 @@ import java.lang.reflect.Method;
 public class TransactionMethodMatcher extends AbstractMatcher<Method> {
     @Override
     public boolean matches(Method method) {
-        if (method != null) {
+        if (method != null && Modifier.isPublic(method.getModifiers())) {
             Class clazz = method.getDeclaringClass();
             if (clazz.getSuperclass() != null
                     && clazz.getSuperclass().equals(AbstractService.class)) {

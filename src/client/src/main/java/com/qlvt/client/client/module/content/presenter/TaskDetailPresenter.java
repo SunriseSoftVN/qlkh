@@ -43,7 +43,10 @@ import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class TaskDetailPresenter.
@@ -201,7 +204,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     currentTaskDetail.setTask(task);
                     currentTaskDetail.setAnnual(false);
                     currentTaskDetail.setStation(currentStation);
-                    currentTaskDetail.setYear(1900 + new Date().getYear());
                     currentTaskDetail.setCreateBy(1l);
                     currentTaskDetail.setUpdateBy(1l);
                     taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<TaskDetail>() {
