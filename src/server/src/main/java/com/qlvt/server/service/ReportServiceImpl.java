@@ -36,6 +36,9 @@ import com.qlvt.core.client.model.*;
 import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.system.SystemUtil;
+import com.qlvt.server.business.rule.AlwaysShowTaskRule;
+import com.qlvt.server.business.rule.HideDetailTaskRule;
+import com.qlvt.server.business.rule.ReportOrderRule;
 import com.qlvt.server.guice.DaoProvider;
 import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
@@ -195,7 +198,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         //Calculate for Sum or SubSum Task.
         forEach(beans).calculate();
 
-        //Remove empty task
+        //Remove empty task, exclude sum task
         List<CompanySumReportBean> removeBeans = new ArrayList<CompanySumReportBean>();
         for (CompanySumReportBean bean : beans) {
             boolean found = true;
@@ -204,7 +207,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                     found = false;
                 }
             }
-            if (found) {
+            if (found && !AlwaysShowTaskRule.isTask(bean.getTask().getCode())) {
                 removeBeans.add(bean);
             }
         }
@@ -213,8 +216,14 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         //Calculate for company
         calculateForCompany(beans);
 
-        //Sort
+        //Sort by Alphas B.
         Collections.sort(beans);
+
+        //Business Order.
+        ReportOrderRule.sort(beans);
+
+        //Hide unnecessary detail
+        HideDetailTaskRule.hide(beans);
 
         return beans;
     }
