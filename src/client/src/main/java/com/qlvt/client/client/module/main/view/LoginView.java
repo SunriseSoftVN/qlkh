@@ -71,7 +71,7 @@ public class LoginView extends AbstractView<LoginConstants> {
 
         loginPanel.add(txtUserName);
         loginPanel.add(txtPassWord);
-        loginPanel.setLabelWidth(90);
+        loginPanel.setLabelWidth(100);
 
         loginPanel.addButton(btnOk);
         loginPanel.addButton(btnCancel);

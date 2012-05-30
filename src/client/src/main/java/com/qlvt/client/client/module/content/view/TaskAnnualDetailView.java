@@ -75,6 +75,10 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final int TASK_DETAIL_NAME_WIDTH = 300;
     public static final String TASK_DETAIL_UNIT_COLUMN = "task.unit";
     public static final int TASK_DETAIL_UNIT_WIDTH = 70;
+    public static final String TASK_DETAIL_DEFAULT_COLUMN = "task.defaultValue";
+    public static final int TASK_DETAIL_DEFAULT_WIDTH = 60;
+    public static final String TASK_DETAIL_QUOTA_COLUMN = "task.quota";
+    public static final int TASK_DETAIL_QUOTA_WIDTH = 50;
 
     public static final String TASK_CODE_COLUMN = "code";
     public static final int TASK_CODE_WIDTH = 60;
@@ -277,9 +281,13 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                 TASK_DETAIL_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
-        for (ColumnConfig columnConfig : columnConfigs) {
-            columnConfig.setMenuDisabled(true);
-        }
+        ColumnConfig defaultColumnConfig = new ColumnConfig(TASK_DETAIL_DEFAULT_COLUMN, getConstant().taskDefaultValueColumnTitle(),
+                TASK_DETAIL_DEFAULT_WIDTH);
+        columnConfigs.add(defaultColumnConfig);
+
+        ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_DETAIL_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
+                TASK_DETAIL_QUOTA_WIDTH);
+        columnConfigs.add(quotaColumnConfig);
 
         return columnConfigs;
     }

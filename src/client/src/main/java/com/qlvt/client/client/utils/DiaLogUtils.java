@@ -20,11 +20,15 @@
 package com.qlvt.client.client.utils;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.qlvt.core.system.SystemUtil;
 
 /**
@@ -58,7 +62,29 @@ public final class DiaLogUtils {
      */
     public static void logAndShowErrorMessage(Object message, Throwable caught) {
         Log.error(caught.getMessage(), caught);
-        showMessage(message);
+        final com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        Button btnReload = new Button("Reload");
+        Button btnOk = new Button("Ok");
+        btnOk.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                window.hide();
+            }
+        });
+        btnReload.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Window.Location.reload();
+            }
+        });
+        window.addButton(btnReload);
+        window.addButton(btnOk);
+        window.add(new HTML(String.valueOf(message)));
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(APP_MESSAGE_TITLE);
+        window.setFocusWidget(btnOk);
+        window.show();
     }
 
     /**
