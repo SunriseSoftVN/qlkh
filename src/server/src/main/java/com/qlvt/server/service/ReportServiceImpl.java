@@ -79,7 +79,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     @Override
     public String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum) {
         try {
-            DynamicReport dynamicReport = buildReport();
+            DynamicReport dynamicReport = buildReport(fileTypeEnum);
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
@@ -113,7 +113,7 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         return null;
     }
 
-    private DynamicReport buildReport() {
+    private DynamicReport buildReport(ReportFileTypeEnum reportFileTypeEnum) {
         FastReportBuilder fastReportBuilder = new FastReportBuilder();
 
         Style headerStyle = new Style();
@@ -127,20 +127,31 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         detailStyle.setFont(DEFAULT_FONT);
         detailStyle.setHorizontalAlign(HorizontalAlign.CENTER);
         detailStyle.setVerticalAlign(VerticalAlign.MIDDLE);
+        detailStyle.setBorderLeft(Border.THIN);
+        detailStyle.setBorderRight(Border.THIN);
+        detailStyle.setBorderBottom(Border.THIN);
 
-        Style valueStyle = new Style();
-        valueStyle.setFont(DEFAULT_FONT);
-        valueStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
-        valueStyle.setVerticalAlign(VerticalAlign.MIDDLE);
+        Style numberStyle = new Style();
+        numberStyle.setFont(DEFAULT_FONT);
+        numberStyle.setBorder(Border.THIN);
+        numberStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
+        numberStyle.setVerticalAlign(VerticalAlign.MIDDLE);
+        numberStyle.setBorderLeft(Border.THIN);
+        numberStyle.setBorderRight(Border.THIN);
+        numberStyle.setBorderBottom(Border.THIN);
 
         Style nameStyle = new Style();
         nameStyle.setFont(DEFAULT_FONT);
+        nameStyle.setBorder(Border.THIN);
         nameStyle.setVerticalAlign(VerticalAlign.MIDDLE);
+        nameStyle.setBorderLeft(Border.THIN);
+        nameStyle.setBorderRight(Border.THIN);
+        nameStyle.setBorderBottom(Border.THIN);
 
         try {
             fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)
                     .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
-                    .addColumn("Đơn vị", "task.unit", String.class, 20, detailStyle)
+                    .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 15, detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 10, detailStyle);
             List<Station> stations = provider.getStationDao().getAll(Station.class);
@@ -153,9 +164,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                 for (Station station : stations) {
                     int index = fastReportBuilder.getColumns().size();
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".value", Double.class, 18, valueStyle);
+                            "stations." + station.getId() + ".value", Double.class, 19, numberStyle);
                     fastReportBuilder.addColumn("Giờ",
-                            "stations." + station.getId() + ".time", Double.class, 22, valueStyle);
+                            "stations." + station.getId() + ".time", Double.class, 22, numberStyle);
                     colSpans.put(index, station.getName());
                 }
                 for (Integer colIndex : colSpans.keySet()) {
@@ -169,9 +180,14 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
         fastReportBuilder.setHeaderHeight(50);
         fastReportBuilder.setPageSizeAndOrientation(Page.Page_A4_Landscape());
+
         fastReportBuilder.setDefaultStyles(null, null, headerStyle, null);
         fastReportBuilder.setUseFullPageWidth(true);
-        fastReportBuilder.setPrintBackgroundOnOddRows(true);
+        fastReportBuilder.setLeftMargin(10);
+
+        if (reportFileTypeEnum == ReportFileTypeEnum.PDF) {
+            fastReportBuilder.setPrintBackgroundOnOddRows(true);
+        }
 
         return fastReportBuilder.build();
     }
