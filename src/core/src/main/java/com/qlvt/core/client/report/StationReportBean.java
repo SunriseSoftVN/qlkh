@@ -63,10 +63,6 @@ public class StationReportBean implements Serializable {
     }
 
     public void setValue(Double value) {
-        //Round up
-        if (value != null) {
-            value = Math.round(value * 10) / 10.0d;
-        }
         this.value = value;
     }
 
@@ -75,10 +71,6 @@ public class StationReportBean implements Serializable {
     }
 
     public void setTime(Double time) {
-        //Round up
-        if (time != null) {
-            time = Math.round(time * 10) / 10.0d;
-        }
         this.time = time;
     }
 }

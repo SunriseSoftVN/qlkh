@@ -163,15 +163,18 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
                 for (Station station : stations) {
                     int index = fastReportBuilder.getColumns().size();
+                    //Format number style, remove omit unnecessary '.0'
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".value", Double.class, 19, numberStyle);
+                            "stations." + station.getId() + ".value", Double.class, 19, false, "###,###.#", numberStyle);
                     fastReportBuilder.addColumn("Giờ",
-                            "stations." + station.getId() + ".time", Double.class, 22, numberStyle);
+                            "stations." + station.getId() + ".time", Double.class, 24, false, "###,###.#", numberStyle);
                     colSpans.put(index, station.getName());
                 }
                 for (Integer colIndex : colSpans.keySet()) {
                     fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
                 }
+                //set style two last columns. Business rule. TODO remove @dungvn3000
+                AdditionStationColumnRule.setStyle(fastReportBuilder.getColumns());
             }
 
         } catch (ClassNotFoundException e) {
@@ -187,6 +190,8 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
 
         if (reportFileTypeEnum == ReportFileTypeEnum.PDF) {
             fastReportBuilder.setPrintBackgroundOnOddRows(true);
+        } else {
+            fastReportBuilder.setIgnorePagination(true);
         }
 
         return fastReportBuilder.build();

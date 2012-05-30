@@ -19,6 +19,7 @@
 
 package com.qlvt.server.business.rule;
 
+import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.qlvt.core.client.constant.ReportTypeEnum;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
@@ -148,6 +149,12 @@ public final class AdditionStationColumnRule {
             bean.getStations().put(String.valueOf(dsTNBean.getId()), dsTNBean);
             bean.getStations().put(String.valueOf(dsNDBean.getId()), dsNDBean);
         }
+    }
+
+    public static void setStyle(List<AbstractColumn> columns) {
+        int index = columns.size() - 1;
+        columns.get(index - 1).setWidth(15);
+        columns.get(index).setWidth(16);
     }
 
 }
