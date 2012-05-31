@@ -19,7 +19,6 @@
 
 package com.qlvt.server.dao.impl;
 
-import com.google.inject.Singleton;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.server.dao.StationDao;
 import com.qlvt.server.dao.core.AbstractDao;
@@ -30,6 +29,5 @@ import com.qlvt.server.dao.core.AbstractDao;
  * @author Nguyen Duc Dung
  * @since 12/29/11, 1:43 PM
  */
-@Singleton
 public class StationDaoImpl extends AbstractDao<Station> implements StationDao {
 }

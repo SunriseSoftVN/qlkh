@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.service;
 
 import com.qlvt.core.client.action.LoginAction;
 import com.qlvt.core.client.action.LoginResult;
@@ -29,10 +29,10 @@ import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class LoginHandler.
+ * The Class LoginServiceImpl.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:58 AM
+ * @since 12/28/11, 10:18 AM
  */
 public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
@@ -46,13 +46,15 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
     @Override
     public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName("admin");
-        System.out.println(user.getUserName());
-        return new LoginResult(true);
+        User user = userDao.findByUserName(action.getUserName());
+        if (user != null && user.getPassWord().equals(action.getPassWord())) {
+            return new LoginResult(user);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void rollback(LoginAction action, LoginResult result, ExecutionContext context) throws DispatchException {
     }
-
 }

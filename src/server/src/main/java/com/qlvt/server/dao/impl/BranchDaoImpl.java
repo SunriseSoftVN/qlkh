@@ -19,7 +19,6 @@
 
 package com.qlvt.server.dao.impl;
 
-import com.google.inject.Singleton;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.core.AbstractDao;
@@ -34,7 +33,6 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/2/12, 12:54 PM
  */
-@Singleton
 public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
     @Override
     public List<Branch> findByStationId(long stationId) {

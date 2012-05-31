@@ -19,6 +19,7 @@
 
 package com.qlvt.core.client.action;
 
+import com.qlvt.core.client.model.User;
 import net.customware.gwt.dispatch.shared.Result;
 
 /**
@@ -29,20 +30,20 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class LoginResult implements Result {
 
-    private boolean result;
+    private User user;
 
     public LoginResult() {
     }
 
-    public LoginResult(boolean result) {
-        this.result = result;
+    public LoginResult(User user) {
+        this.user = user;
     }
 
-    public boolean isResult() {
-        return result;
+    public User getUser() {
+        return user;
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
