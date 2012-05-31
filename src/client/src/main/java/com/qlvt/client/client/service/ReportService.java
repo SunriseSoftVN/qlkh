@@ -35,7 +35,7 @@ import com.smvp4g.mvp.client.core.service.RemoteService;
 @RemoteServiceRelativePath("reportService")
 public interface ReportService extends RemoteService<ReportService> {
 
-    String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum);
+    String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId);
 
     public static class App {
         private static final ReportServiceAsync ourInstance = (ReportServiceAsync) GWT.create(ReportService.class);

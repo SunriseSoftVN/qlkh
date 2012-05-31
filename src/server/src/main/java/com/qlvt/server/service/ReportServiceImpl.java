@@ -72,19 +72,21 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
     private static final String REPORT_FILE_NAME = "kehoachtacnghiep";
     private static final Font DEFAULT_FONT = new Font(8, "Arial", "/fonts/Arial.ttf",
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
+    private static final Font TITLE_FONT = new Font(14, "Arial", "/fonts/Arial.ttf",
+            Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
 
     @Inject
     private DaoProvider provider;
 
     @Override
-    public String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum) {
+    public String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) {
         try {
-            DynamicReport dynamicReport = buildReport(fileTypeEnum);
+            DynamicReport dynamicReport = buildReport(reportTypeEnum, fileTypeEnum, stationId);
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(reportTypeEnum)));
+                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(reportTypeEnum, stationId)));
 
             String filePath = ServletUtils.getInstance().
                     getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME
@@ -113,8 +115,14 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         return null;
     }
 
-    private DynamicReport buildReport(ReportFileTypeEnum reportFileTypeEnum) {
+    private DynamicReport buildReport(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum reportFileTypeEnum, long stationId) {
         FastReportBuilder fastReportBuilder = new FastReportBuilder();
+
+        Style titleStyle = new Style();
+        TITLE_FONT.setBold(true);
+        titleStyle.setFont(TITLE_FONT);
+        titleStyle.setHorizontalAlign(HorizontalAlign.CENTER);
+        titleStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 
         Style headerStyle = new Style();
         headerStyle.setFont(DEFAULT_FONT);
@@ -154,10 +162,19 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 15, detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 10, detailStyle);
-            List<Station> stations = provider.getStationDao().getAll(Station.class);
 
-            //Add two more columns. Business rule. TODO remove @dungvn3000
-            AdditionStationColumnRule.addStation(stations);
+            List<Station> stations = new ArrayList<Station>();
+            if (stationId == StationCodeEnum.COMPANY.getId()) {
+                stations = provider.getStationDao().getAll(Station.class);
+                //Add two more columns. Business rule. TODO remove @dungvn3000
+                AdditionStationColumnRule.addStation(stations);
+            } else {
+                Station station = provider.getStationDao().findById(Station.class, stationId);
+                stations.add(station);
+                fastReportBuilder.setTitle("KẾ HOẠCH TÁC NGHIỆP KHỐI LƯỢNG SCTXĐK-KCHT TTTH ĐS "
+                        + reportTypeEnum.getValue() + " NĂM 2012 "
+                        + station.getName().toUpperCase());
+            }
 
             if (CollectionUtils.isNotEmpty(stations)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
@@ -167,14 +184,17 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
                     fastReportBuilder.addColumn("KL",
                             "stations." + station.getId() + ".value", Double.class, 19, false, "###,###.#", numberStyle);
                     fastReportBuilder.addColumn("Giờ",
-                            "stations." + station.getId() + ".time", Double.class, 24, false, "###,###.#", numberStyle);
+                            "stations." + station.getId() + ".time", Double.class, 24, false, "###,###", numberStyle);
                     colSpans.put(index, station.getName());
                 }
-                for (Integer colIndex : colSpans.keySet()) {
-                    fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
+
+                if (stationId == StationCodeEnum.COMPANY.getId()) {
+                    for (Integer colIndex : colSpans.keySet()) {
+                        fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
+                    }
+                    //set style two last columns. Business rule. TODO remove @dungvn3000
+                    AdditionStationColumnRule.setStyle(fastReportBuilder.getColumns());
                 }
-                //set style two last columns. Business rule. TODO remove @dungvn3000
-                AdditionStationColumnRule.setStyle(fastReportBuilder.getColumns());
             }
 
         } catch (ClassNotFoundException e) {
@@ -182,9 +202,13 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         }
 
         fastReportBuilder.setHeaderHeight(50);
-        fastReportBuilder.setPageSizeAndOrientation(Page.Page_A4_Landscape());
+        if (stationId == StationCodeEnum.COMPANY.getId()) {
+            fastReportBuilder.setPageSizeAndOrientation(Page.Page_A4_Landscape());
+        } else {
+            fastReportBuilder.setPageSizeAndOrientation(Page.Page_A4_Portrait());
+        }
 
-        fastReportBuilder.setDefaultStyles(null, null, headerStyle, null);
+        fastReportBuilder.setDefaultStyles(titleStyle, null, headerStyle, null);
         fastReportBuilder.setUseFullPageWidth(true);
         fastReportBuilder.setLeftMargin(10);
 
@@ -197,11 +221,16 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         return fastReportBuilder.build();
     }
 
-    private List<CompanySumReportBean> buildReportData(ReportTypeEnum reportTypeEnum) {
+    private List<CompanySumReportBean> buildReportData(ReportTypeEnum reportTypeEnum, long stationId) {
         List<CompanySumReportBean> beans = new ArrayList<CompanySumReportBean>();
         List<CompanySumReportBean> parentBeans = new ArrayList<CompanySumReportBean>();
         List<Task> tasks = provider.getTaskDao().getAllOrderByCode();
-        List<Station> stations = provider.getStationDao().getAll(Station.class);
+        List<Station> stations = new ArrayList<Station>();
+        if (stationId == StationCodeEnum.COMPANY.getId()) {
+            stations = provider.getStationDao().getAll(Station.class);
+        } else {
+            stations.add(provider.getStationDao().findById(Station.class, stationId));
+        }
         for (Task task : tasks) {
             CompanySumReportBean bean = new CompanySumReportBean();
             bean.setTask(task);
@@ -217,7 +246,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         }
 
         //Add two more columns. Business rule.
-        AdditionStationColumnRule.addDataForDSND(beans, provider, reportTypeEnum);
+        if (stationId == StationCodeEnum.COMPANY.getId()) {
+            AdditionStationColumnRule.addDataForDSND(beans, provider, reportTypeEnum);
+        }
 
         //Build tree
         buildTree(beans, parentBeans);
@@ -240,9 +271,11 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         beans.removeAll(removeBeans);
 
         //Calculate for company
-        calculateForCompany(beans);
+        if (stationId == StationCodeEnum.COMPANY.getId()) {
+            calculateForCompany(beans);
+        }
 
-        //Sort by Alphas B.
+        //Sort by Alphabetical.
         Collections.sort(beans);
 
         //Business Order.
@@ -252,7 +285,9 @@ public class ReportServiceImpl extends AbstractService implements ReportService 
         HideDetailTaskRule.hide(beans);
 
         //Calculate for DSTN
-        AdditionStationColumnRule.addDataForDSTN(beans);
+        if (stationId == StationCodeEnum.COMPANY.getId()) {
+            AdditionStationColumnRule.addDataForDSTN(beans);
+        }
 
         return beans;
     }

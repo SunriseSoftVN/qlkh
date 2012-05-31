@@ -26,9 +26,19 @@ package com.qlvt.core.client.constant;
  * @since 3/12/12, 1:50 PM
  */
 public enum ReportTypeEnum {
-    Q1,
-    Q2,
-    Q3,
-    Q4,
-    CA_NAM
+    Q1("QUÝ I"),
+    Q2("QUÝ II"),
+    Q3("QUÝ III"),
+    Q4("QUÝ IV"),
+    CA_NAM("");
+
+    private String value;
+
+    ReportTypeEnum(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

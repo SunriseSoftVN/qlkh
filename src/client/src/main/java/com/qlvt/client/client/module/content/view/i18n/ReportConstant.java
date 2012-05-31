@@ -38,6 +38,7 @@ public interface ReportConstant extends Constants {
     String btnPlanReportPdf();
     String btnPlanReportXls();
     String cbbReportType();
+    String cbbReportStation();
     String reportWindow();
     String lblDownload();
     String btnReportCancel();

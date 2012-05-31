@@ -20,6 +20,7 @@
 package com.qlvt.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -58,6 +59,11 @@ public class ReportView extends AbstractView<ReportConstant> {
     SimpleComboBox<ReportTypeEnum> cbbReportType = new SimpleComboBox<ReportTypeEnum>();
 
     @I18nField
+    ComboBox<BeanModel> cbbReportStation = new ComboBox<BeanModel>();
+
+    SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
+
+    @I18nField
     Button btnPlanReportPdf = new Button();
 
     @I18nField
@@ -74,14 +80,29 @@ public class ReportView extends AbstractView<ReportConstant> {
     @Override
     protected void initializeView() {
         planReportPanel.setFrame(true);
+
+        cbbReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
+        cbbReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbReportStation.setEditable(false);
+
         cbbReportType.add(Arrays.asList(ReportTypeEnum.values()));
         cbbReportType.setSimpleValue(ReportTypeEnum.CA_NAM);
         cbbReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbReportType.setEditable(false);
+        cbbReportType.setWidth(100);
+
+        for (int i = 2012; i < 2100; i++) {
+            cbbYear.add(i);
+        }
+        cbbYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbYear.setSimpleValue(2012);
+        cbbYear.setWidth(60);
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(4);
+        hp.add(cbbReportStation);
         hp.add(cbbReportType);
+        hp.add(cbbYear);
         hp.add(btnPlanReportPdf);
         hp.add(btnPlanReportXls);
         planReportPanel.add(hp);
@@ -97,7 +118,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     public com.extjs.gxt.ui.client.widget.Window createReportWindow(String url) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         window.add(lblDownload);
-        window.getButtonBar().add(new Html("<a href='" + url + "'>Download</a>"));
+        window.getButtonBar().add(new Html("<a href='" + url + "'><b>Download</b></a>"));
         window.addButton(btnReportCancel);
         window.setSize(380, 50);
         window.setResizable(false);
@@ -107,6 +128,8 @@ public class ReportView extends AbstractView<ReportConstant> {
     }
 
     public void setEnableReportButton(boolean enable) {
+        cbbReportStation.setEnabled(enable);
+        cbbYear.setEnabled(enable);
         cbbReportType.setEnabled(enable);
         btnPlanReportPdf.setEnabled(enable);
         btnPlanReportXls.setEnabled(enable);
@@ -126,5 +149,13 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public Button getBtnReportCancel() {
         return btnReportCancel;
+    }
+
+    public ComboBox<BeanModel> getCbbReportStation() {
+        return cbbReportStation;
+    }
+
+    public SimpleComboBox<Integer> getCbbYear() {
+        return cbbYear;
     }
 }
