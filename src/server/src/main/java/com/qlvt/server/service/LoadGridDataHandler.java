@@ -19,38 +19,33 @@
 
 package com.qlvt.server.service;
 
-import com.qlvt.core.client.action.LoginAction;
-import com.qlvt.core.client.action.LoginResult;
-import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
+import com.qlvt.core.client.action.LoadGridDataAction;
+import com.qlvt.core.client.action.LoadGridDataResult;
+import com.qlvt.server.dao.GxtDao;
 import com.qlvt.server.service.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class LoginServiceImpl.
+ * The Class LoadGridHandler.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 10:18 AM
+ * @since 6/1/12, 6:41 AM
  */
-public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
+public class LoadGridDataHandler extends AbstractHandler<LoadGridDataAction, LoadGridDataResult> {
 
     @Autowired
-    private UserDao userDao;
+    private GxtDao gxtDao;
 
     @Override
-    public Class<LoginAction> getActionType() {
-        return LoginAction.class;
+    public Class<LoadGridDataAction> getActionType() {
+        return LoadGridDataAction.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName(action.getUserName());
-        if (user != null && user.getPassWord().equals(action.getPassWord())) {
-            return new LoginResult(user);
-        } else {
-            return null;
-        }
+    public LoadGridDataResult execute(LoadGridDataAction action, ExecutionContext context) throws DispatchException {
+        return new LoadGridDataResult(gxtDao.getByBeanConfig(action.getEntityName(), action.getConfig()));
     }
 }

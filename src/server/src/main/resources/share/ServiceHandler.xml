@@ -11,6 +11,7 @@
         <property name="actionHandlers">
             <list>
                 <bean class="com.qlvt.server.service.LoginHandler"/>
+                <bean class="com.qlvt.server.service.LoadGridDataHandler"/>
             </list>
         </property>
     </bean>
