@@ -22,7 +22,7 @@ package com.qlvt.client.client.core.reader;
 import com.extjs.gxt.ui.client.data.BeanModelReader;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.qlvt.core.client.action.LoadGridDataResult;
+import com.qlvt.core.client.action.grid.LoadGridDataResult;
 
 /**
  * The Class BeanModelReader.

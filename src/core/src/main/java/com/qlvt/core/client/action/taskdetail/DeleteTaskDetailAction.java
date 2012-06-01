@@ -17,27 +17,40 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao.impl;
+package com.qlvt.core.client.action.taskdetail;
 
-import com.qlvt.core.client.model.Branch;
-import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
+import net.customware.gwt.dispatch.shared.Action;
 
 import java.util.List;
 
 /**
- * The Class BranchDaoImpl.
+ * The Class DeleteTaskDetailAction.
  *
  * @author Nguyen Duc Dung
- * @since 1/2/12, 12:54 PM
+ * @since 6/1/12, 8:46 PM
  */
-public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
-    @Override
-    public List<Branch> findByStationId(long stationId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(Branch.class)
-                .add(Restrictions.eq("station.id", stationId));
-        return getHibernateTemplate().findByCriteria(criteria);
+public class DeleteTaskDetailAction implements Action<DeleteTaskDetailResult> {
+
+    private List<Long> ids;
+
+    private long id;
+
+    public DeleteTaskDetailAction() {
+    }
+
+    public DeleteTaskDetailAction(long id) {
+        this.id = id;
+    }
+
+    public DeleteTaskDetailAction(List<Long> ids) {
+        this.ids = ids;
+    }
+
+    public List<Long> getIds() {
+        return ids;
+    }
+
+    public long getId() {
+        return id;
     }
 }

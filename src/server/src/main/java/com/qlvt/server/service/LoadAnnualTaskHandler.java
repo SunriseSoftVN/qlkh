@@ -19,38 +19,33 @@
 
 package com.qlvt.server.service;
 
-import com.qlvt.core.client.action.SaveAction;
-import com.qlvt.core.client.action.SaveResult;
-import com.qlvt.server.dao.core.GeneralDao;
+import com.qlvt.core.client.action.task.LoadAnnualTaskAction;
+import com.qlvt.core.client.action.task.LoadAnnualTaskResult;
+import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.service.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class SaveHandler.
+ * The Class LoadAnnualTaskHandler.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:55 PM
+ * @since 6/1/12, 9:24 PM
  */
-public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
+public class LoadAnnualTaskHandler extends AbstractHandler<LoadAnnualTaskAction, LoadAnnualTaskResult> {
 
     @Autowired
-    private GeneralDao generalDao;
+    private TaskDao taskDao;
 
     @Override
-    public Class<SaveAction> getActionType() {
-        return SaveAction.class;
+    public Class<LoadAnnualTaskAction> getActionType() {
+        return LoadAnnualTaskAction.class;
     }
 
     @Override
-    public SaveResult execute(SaveAction action, ExecutionContext context) throws DispatchException {
-        if (action.getEntity() != null) {
-            return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
-        } else if (action.getEntities() != null) {
-            generalDao.saveOrUpdate(action.getEntities());
-            return new SaveResult();
-        }
-        return null;
+    public LoadAnnualTaskResult execute(LoadAnnualTaskAction action, ExecutionContext context) throws DispatchException {
+        return new LoadAnnualTaskResult(taskDao.getAllAnnualTask());
     }
 }
+

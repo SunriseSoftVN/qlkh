@@ -19,37 +19,47 @@
 
 package com.qlvt.server.service;
 
-import com.qlvt.core.client.action.SaveAction;
-import com.qlvt.core.client.action.SaveResult;
-import com.qlvt.server.dao.core.GeneralDao;
+import com.qlvt.core.client.action.station.LoadStationAction;
+import com.qlvt.core.client.action.station.LoadStationResult;
+import com.qlvt.core.client.model.Branch;
+import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.User;
+import com.qlvt.server.dao.BranchDao;
+import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.service.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 /**
- * The Class SaveHandler.
+ * The Class LoadStationHandler.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:55 PM
+ * @since 6/1/12, 8:11 PM
  */
-public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
+public class LoadStationHandler extends AbstractHandler<LoadStationAction, LoadStationResult> {
 
     @Autowired
-    private GeneralDao generalDao;
+    private BranchDao branchDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Override
-    public Class<SaveAction> getActionType() {
-        return SaveAction.class;
+    public Class<LoadStationAction> getActionType() {
+        return LoadStationAction.class;
     }
 
     @Override
-    public SaveResult execute(SaveAction action, ExecutionContext context) throws DispatchException {
-        if (action.getEntity() != null) {
-            return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
-        } else if (action.getEntities() != null) {
-            generalDao.saveOrUpdate(action.getEntities());
-            return new SaveResult();
+    public LoadStationResult execute(LoadStationAction action, ExecutionContext context) throws DispatchException {
+        User user = userDao.findByUserName(action.getUserName());
+        if (user != null) {
+            Station station = user.getStation();
+            List<Branch> branches = branchDao.findByStationId(station.getId());
+            station.setBranches(branches);
+            return new LoadStationResult(station);
         }
         return null;
     }

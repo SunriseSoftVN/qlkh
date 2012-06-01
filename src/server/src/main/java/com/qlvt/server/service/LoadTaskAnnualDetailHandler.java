@@ -19,38 +19,37 @@
 
 package com.qlvt.server.service;
 
-import com.qlvt.core.client.action.SaveAction;
-import com.qlvt.core.client.action.SaveResult;
-import com.qlvt.server.dao.core.GeneralDao;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlvt.core.client.action.taskdetail.LoadTaskAnnualDetailAction;
+import com.qlvt.core.client.action.taskdetail.LoadTaskAnnualDetailResult;
+import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.server.dao.GxtDao;
 import com.qlvt.server.service.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class SaveHandler.
+ * The Class LoadTaskAnnualDetailHandler.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:55 PM
+ * @since 6/1/12, 9:31 PM
  */
-public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
+public class LoadTaskAnnualDetailHandler extends AbstractHandler<LoadTaskAnnualDetailAction, LoadTaskAnnualDetailResult> {
 
     @Autowired
-    private GeneralDao generalDao;
+    private GxtDao gxtDao;
 
     @Override
-    public Class<SaveAction> getActionType() {
-        return SaveAction.class;
+    public Class<LoadTaskAnnualDetailAction> getActionType() {
+        return LoadTaskAnnualDetailAction.class;
     }
 
     @Override
-    public SaveResult execute(SaveAction action, ExecutionContext context) throws DispatchException {
-        if (action.getEntity() != null) {
-            return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
-        } else if (action.getEntities() != null) {
-            generalDao.saveOrUpdate(action.getEntities());
-            return new SaveResult();
-        }
-        return null;
+    public LoadTaskAnnualDetailResult execute(LoadTaskAnnualDetailAction action, ExecutionContext context) throws DispatchException {
+        BasePagingLoadResult<TaskDetail> result = gxtDao.getByBeanConfig(TaskDetail.class.getName(), action.getConfig(),
+                Restrictions.eq("station.id", action.getStationId()), Restrictions.eq("annual", true));
+        return new LoadTaskAnnualDetailResult(result);
     }
 }

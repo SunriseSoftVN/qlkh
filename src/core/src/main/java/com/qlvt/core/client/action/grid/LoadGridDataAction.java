@@ -17,30 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.grid;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlvt.core.client.model.core.AbstractEntity;
-import net.customware.gwt.dispatch.shared.Result;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class LoadGridDataResult.
+ * The Class LoadGridDataAction.
  *
  * @author Nguyen Duc Dung
  * @since 6/1/12, 6:38 AM
  */
-public class LoadGridDataResult implements Result {
+public class LoadGridDataAction implements Action<LoadGridDataResult> {
 
-    private BasePagingLoadResult result;
+    private BasePagingLoadConfig config;
+    private String entityName;
 
-    public LoadGridDataResult() {
+    public LoadGridDataAction() {
     }
 
-    public LoadGridDataResult(BasePagingLoadResult result) {
-        this.result = result;
+    public LoadGridDataAction(BasePagingLoadConfig config, String entityName) {
+        this.config = config;
+        this.entityName = entityName;
     }
 
-    public <E extends AbstractEntity> BasePagingLoadResult getResult() {
-        return result;
+    public BasePagingLoadConfig getConfig() {
+        return config;
+    }
+
+    public String getEntityName() {
+        return entityName;
     }
 }

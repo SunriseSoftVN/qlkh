@@ -27,12 +27,24 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
+import com.qlvt.client.client.core.reader.LoadGridDataReader;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskAnnualDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
-import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.action.SaveAction;
+import com.qlvt.core.client.action.SaveResult;
+import com.qlvt.core.client.action.station.LoadStationAction;
+import com.qlvt.core.client.action.station.LoadStationResult;
+import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualAction;
+import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualResult;
+import com.qlvt.core.client.action.task.LoadAnnualTaskAction;
+import com.qlvt.core.client.action.task.LoadAnnualTaskResult;
+import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
+import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
+import com.qlvt.core.client.action.taskdetail.LoadTaskAnnualDetailAction;
+import com.qlvt.core.client.action.taskdetail.LoadTaskAnnualDetailResult;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
@@ -63,10 +75,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
 
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
-    private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
-    private TaskServiceAsync taskService = TaskService.App.getInstance();
-    private StationServiceAsync stationService = StationService.App.getInstance();
-
     private Station currentStation;
     private TaskDetail currentTaskDetail;
 
@@ -92,11 +100,12 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     protected void doBind() {
         LoadingUtils.showLoading();
         taskDtoListStore = createTaskDtoListStore();
-        stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
+
+        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
-            public void onSuccess(Station result) {
+            public void onSuccess(LoadStationResult result) {
                 super.onSuccess(result);
-                currentStation = result;
+                currentStation = result.getStation();
                 view.createTaskGrid(createTaskListStore());
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
@@ -121,6 +130,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
             }
         });
+
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -167,9 +177,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
                     subTaskAnnualDetails.add(((BeanModel) record.getModel()).<SubTaskAnnualDetail>getBean());
                 }
-                taskDetailService.updateSubTaskAnnualDetails(subTaskAnnualDetails, new AbstractAsyncCallback<Void>() {
+                dispatch.execute(new SaveAction(subTaskAnnualDetails), new AbstractAsyncCallback<SaveResult>() {
                     @Override
-                    public void onSuccess(Void result) {
+                    public void onSuccess(SaveResult result) {
                         DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                         view.getSubTaskPagingToolBar().refresh();
                     }
@@ -217,13 +227,13 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     currentTaskDetail.setStation(currentStation);
                     currentTaskDetail.setCreateBy(1l);
                     currentTaskDetail.setUpdateBy(1l);
-                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<TaskDetail>() {
+                    dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
                         @Override
-                        public void onSuccess(TaskDetail result) {
+                        public void onSuccess(SaveResult result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             taskEditWindow.hide();
-                            updateGrid(result);
+                            updateGrid(result.<TaskDetail>getEntity());
                         }
                     });
                 }
@@ -277,19 +287,19 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     }
 
     private ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<SubTaskAnnualDetail>>() {
+        RpcProxy<LoadSubTaskAnnualResult> rpcProxy = new RpcProxy<LoadSubTaskAnnualResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<SubTaskAnnualDetail>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskAnnualResult> callback) {
                 long currentTaskDetailId = -1;
                 if (currentTaskDetail != null) {
                     currentTaskDetailId = currentTaskDetail.getId();
                 }
-                taskDetailService.getSubTaskAnnualDetails((BasePagingLoadConfig) loadConfig, currentTaskDetailId, callback);
+                dispatch.execute(new LoadSubTaskAnnualAction((BasePagingLoadConfig) loadConfig, currentTaskDetailId), callback);
             }
         };
 
         PagingLoader<PagingLoadResult<SubTaskAnnualDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<SubTaskAnnualDetail>>(rpcProxy, new BeanModelReader()) {
+                new BasePagingLoader<PagingLoadResult<SubTaskAnnualDetail>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -302,15 +312,15 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     }
 
     private ListStore<BeanModel> createTaskListStore() {
-        RpcProxy<BasePagingLoadResult<TaskDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetail>>() {
+        RpcProxy<LoadTaskAnnualDetailResult> rpcProxy = new RpcProxy<LoadTaskAnnualDetailResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetail>> callback) {
-                taskDetailService.getTaskAnnualDetailsForGrid((BasePagingLoadConfig) loadConfig, currentStation.getId(), callback);
+            protected void load(Object loadConfig, AsyncCallback<LoadTaskAnnualDetailResult> callback) {
+                dispatch.execute(new LoadTaskAnnualDetailAction((BasePagingLoadConfig) loadConfig, currentStation.getId()), callback);
             }
         };
 
         PagingLoader<PagingLoadResult<TaskDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new BeanModelReader()) {
+                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -326,11 +336,11 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
         LoadingUtils.showLoading();
-        taskService.getAllAnnualTasks(new AbstractAsyncCallback<List<Task>>() {
+        dispatch.execute(new LoadAnnualTaskAction(), new AbstractAsyncCallback<LoadAnnualTaskResult>() {
             @Override
-            public void onSuccess(List<Task> result) {
+            public void onSuccess(LoadAnnualTaskResult result) {
                 super.onSuccess(result);
-                for (Task task : result) {
+                for (Task task : result.getAnnualTask()) {
                     listStore.add(factory.createModel(task));
                 }
             }
@@ -366,9 +376,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     private void showDeleteTagConform(final List<Long> taskDetailIds, String tagName) {
         assert taskDetailIds != null;
         String deleteMessage;
-        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+        final AsyncCallback<DeleteTaskDetailResult> callback = new AbstractAsyncCallback<DeleteTaskDetailResult>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(DeleteTaskDetailResult result) {
                 super.onSuccess(result);
                 //Reload grid.
                 resetView();
@@ -388,9 +398,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        taskDetailService.deleteTaskDetails(taskDetailIds, callback);
+                        dispatch.execute(new DeleteTaskDetailAction(taskDetailIds), callback);
                     } else {
-                        taskDetailService.deleteTaskDetail(taskDetailIds.get(0), callback);
+                        dispatch.execute(new DeleteTaskDetailAction(taskDetailIds.get(0)), callback);
                     }
                 }
             }
