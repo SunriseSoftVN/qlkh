@@ -20,26 +20,24 @@
 package com.qlvt.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.BeanModelFactory;
-import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.ReportPlace;
 import com.qlvt.client.client.module.content.view.ReportView;
-import com.qlvt.client.client.service.ReportService;
-import com.qlvt.client.client.service.ReportServiceAsync;
-import com.qlvt.client.client.service.StationService;
-import com.qlvt.client.client.service.StationServiceAsync;
+import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.action.ReportAction;
+import com.qlvt.core.client.action.ReportResult;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-
-import java.util.List;
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
+import net.customware.gwt.dispatch.client.DispatchAsync;
 
 /**
  * The Class ReportPresenter.
@@ -50,9 +48,7 @@ import java.util.List;
 @Presenter(view = ReportView.class, place = ReportPlace.class)
 public class ReportPresenter extends AbstractPresenter<ReportView> {
 
-    private ReportServiceAsync reportService = ReportService.App.getInstance();
-
-    private StationServiceAsync stationService = StationService.App.getInstance();
+    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private Window reportWindow;
 
@@ -63,14 +59,14 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = createStationListStore();
+            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
             view.getCbbReportStation().setStore(stationListStore);
         }
     }
 
     @Override
     protected void doBind() {
-        stationListStore = createStationListStore();
+        stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
         view.getCbbReportStation().setStore(stationListStore);
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -80,17 +76,16 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     Station station = view.getCbbReportStation().getValue().getBean();
                     view.setEnableReportButton(false);
                     LoadingUtils.showLoading();
-                    reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
-                            ReportFileTypeEnum.PDF, station.getId(), new AbstractAsyncCallback<String>() {
+                    dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
+                            ReportFileTypeEnum.PDF, station.getId()), new AbstractAsyncCallback<ReportResult>() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(ReportResult result) {
                             LoadingUtils.hideLoading();
                             view.setEnableReportButton(true);
-                            reportWindow = view.createReportWindow(result);
+                            reportWindow = view.createReportWindow(result.getReportUrl());
                             reportWindow.show();
                         }
                     });
-
                 }
             }
         });
@@ -102,17 +97,16 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     Station station = view.getCbbReportStation().getValue().getBean();
                     view.setEnableReportButton(false);
                     LoadingUtils.showLoading();
-                    reportService.reportForCompany(view.getCbbReportType().getSimpleValue(),
-                            ReportFileTypeEnum.EXCEL, station.getId(), new AbstractAsyncCallback<String>() {
+                    dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
+                            ReportFileTypeEnum.EXCEL, station.getId()), new AbstractAsyncCallback<ReportResult>() {
                         @Override
-                        public void onSuccess(String result) {
+                        public void onSuccess(ReportResult result) {
                             LoadingUtils.hideLoading();
                             view.setEnableReportButton(true);
-                            reportWindow = view.createReportWindow(result);
+                            reportWindow = view.createReportWindow(result.getReportUrl());
                             reportWindow.show();
                         }
                     });
-
                 }
             }
         });
@@ -124,21 +118,5 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 }
             }
         });
-    }
-
-    private ListStore<BeanModel> createStationListStore() {
-        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
-        final ListStore<BeanModel> store = new ListStore<BeanModel>();
-        LoadingUtils.showLoading();
-        stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
-            @Override
-            public void onSuccess(List<Station> result) {
-                super.onSuccess(result);
-                for (Station station : result) {
-                    store.add(factory.createModel(station));
-                }
-            }
-        });
-        return store;
     }
 }
