@@ -85,7 +85,7 @@ public final class GridUtils {
         final ListStore<BeanModel> store = new ListStore<BeanModel>();
         LoadingUtils.showLoading();
 
-        dispatch.execute(new LoadAction(entityClass.getName(), LoadAction.LoadActionType.ALL), new AbstractAsyncCallback<LoadResult>() {
+        dispatch.execute(new LoadAction(entityClass.getName()), new AbstractAsyncCallback<LoadResult>() {
             @Override
             public void onSuccess(LoadResult result) {
                 super.onSuccess(result);
