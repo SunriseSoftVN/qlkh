@@ -34,16 +34,17 @@ import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.BranchManagerPlace;
 import com.qlvt.client.client.module.content.view.BranchManagerView;
-import com.qlvt.client.client.service.BranchService;
-import com.qlvt.client.client.service.BranchServiceAsync;
-import com.qlvt.client.client.service.StationService;
-import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.exception.DeleteException;
+import com.qlvt.core.client.action.DeleteAction;
+import com.qlvt.core.client.action.DeleteResult;
+import com.qlvt.core.client.action.SaveAction;
+import com.qlvt.core.client.action.SaveResult;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
+import com.qlvt.core.client.model.SubTaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -63,14 +64,11 @@ import java.util.List;
 @Presenter(view = BranchManagerView.class, place = BranchManagerPlace.class)
 public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView> {
 
+    private static final String[] RELATE_ENTITY_NAMES = {SubTaskDetail.class.getName(), SubTaskAnnualDetail.class.getName()};
+
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
-
-    private BranchServiceAsync branchService = BranchService.App.getInstance();
-    private StationServiceAsync stationService = StationService.App.getInstance();
-
     private ListStore<BeanModel> stationListStore;
     private Branch currentBranch;
-
     private Window branchEditWindow;
 
     @Override
@@ -137,13 +135,13 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                     currentBranch.setStation(view.getCbbStation().getValue().<Station>getBean());
                     currentBranch.setUpdateBy(1l);
                     currentBranch.setCreateBy(1l);
-                    branchService.updateBranch(currentBranch, new AbstractAsyncCallback<Branch>() {
+                    dispatch.execute(new SaveAction(currentBranch), new AbstractAsyncCallback<SaveResult>() {
                         @Override
-                        public void onSuccess(Branch result) {
+                        public void onSuccess(SaveResult result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             branchEditWindow.hide();
-                            updateGrid(result);
+                            updateGrid(result.<Branch>getEntity());
                         }
                     });
                 }
@@ -172,7 +170,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         if (isNotFound) {
             view.getBranchsGird().getStore().add(updateModel);
             view.getBranchsGird().getView().ensureVisible(view.getBranchsGird()
-                    .getStore().getCount() -1 , 1 , false);
+                    .getStore().getCount() - 1, 1, false);
         }
         view.getBranchsGird().getSelectionModel().select(updateModel, false);
     }
@@ -206,24 +204,17 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     private void showDeleteTagConform(final List<Long> branchIds, String tagName) {
         assert branchIds != null;
         String deleteMessage;
-        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
-
+        final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
-            public void onFailure(Throwable caught) {
-                if (caught instanceof DeleteException) {
-                    DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
-                    LoadingUtils.hideLoading();
-                } else {
-                    super.onFailure(caught);
-                }
-            }
-
-            @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(DeleteResult result) {
                 super.onSuccess(result);
-                //Reload grid.
-                view.getPagingToolBar().refresh();
-                DiaLogUtils.notify(view.getConstant().deleteBranchMessageSuccess());
+                if (result.isResult()) {
+                    //Reload grid.
+                    view.getPagingToolBar().refresh();
+                    DiaLogUtils.notify(view.getConstant().deleteBranchMessageSuccess());
+                } else {
+                    DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
+                }
             }
         };
         final boolean hasManyTag = branchIds.size() > 1;
@@ -239,9 +230,9 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        branchService.deleteBranchByIds(branchIds, callback);
+                        dispatch.execute(new DeleteAction(Branch.class.getName(), branchIds, RELATE_ENTITY_NAMES), callback);
                     } else {
-                        branchService.deleteBranchById(branchIds.get(0), callback);
+                        dispatch.execute(new DeleteAction(Branch.class.getName(), branchIds.get(0), RELATE_ENTITY_NAMES), callback);
                     }
                 }
             }

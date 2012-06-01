@@ -28,4 +28,17 @@ import net.customware.gwt.dispatch.shared.Result;
  * @since 6/1/12, 2:03 PM
  */
 public class DeleteResult implements Result {
+
+    private boolean result;
+
+    public DeleteResult() {
+    }
+
+    public DeleteResult(boolean result) {
+        this.result = result;
+    }
+
+    public boolean isResult() {
+        return result;
+    }
 }
