@@ -92,6 +92,16 @@ public class GeneralDaoImpl extends HibernateDaoSupport implements GeneralDao {
     }
 
     @Override
+    public <E extends AbstractEntity> E findById(Class<E> entityClass, long id) {
+        return getHibernateTemplate().get(entityClass, id);
+    }
+
+    @Override
+    public <E extends AbstractEntity> List<E> getAll(Class<E> entityClass) {
+        return getHibernateTemplate().loadAll(entityClass);
+    }
+
+    @Override
     public <E extends AbstractEntity> List<E> getAll(String entityName) {
         Type type = getSessionFactory().getTypeHelper().entity(entityName);
         if (type != null) {

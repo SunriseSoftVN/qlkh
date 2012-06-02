@@ -23,7 +23,7 @@ import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
@@ -38,22 +38,22 @@ import java.util.List;
 public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
     @Override
     public List<Task> getAllNormalTask() {
-        Criteria criteria = getCurrentSession().createCriteria(Task.class).
+        DetachedCriteria criteria = DetachedCriteria.forClass(Task.class).
                 add(Restrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
-        return criteria.list();
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 
     @Override
     public List<Task> getAllAnnualTask() {
-        Criteria criteria = getCurrentSession().createCriteria(Task.class).
+        DetachedCriteria criteria = DetachedCriteria.forClass(Task.class).
                 add(Restrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
-        return criteria.list();
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 
     @Override
     public List<Task> getAllOrderByCode() {
-        Criteria criteria = getCurrentSession().createCriteria(Task.class)
+        DetachedCriteria criteria = DetachedCriteria.forClass(Task.class)
                 .addOrder(Order.asc("code"));
-        return criteria.list();
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 }

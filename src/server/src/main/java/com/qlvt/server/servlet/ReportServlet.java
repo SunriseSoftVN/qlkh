@@ -19,7 +19,6 @@
 
 package com.qlvt.server.servlet;
 
-import com.google.inject.Singleton;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.server.util.ServletUtils;
 
@@ -38,7 +37,6 @@ import java.io.InputStream;
  * @author Nguyen Duc Dung
  * @since 2/23/12, 2:33 PM
  */
-@Singleton
 public class ReportServlet extends HttpServlet {
 
     public static final String REPORT_FILENAME = "reportName";

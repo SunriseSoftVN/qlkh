@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskAnnualDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
@@ -41,6 +42,8 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
+import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +58,10 @@ import java.util.Map;
  */
 @Presenter(view = TaskAnnualDetailView.class, place = TaskAnnualDetailPlace.class)
 public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetailView> {
+
+    private static final String[] RELATE_ENTITY_NAMES = {TaskDetail.class.getName()};
+
+    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
     private TaskServiceAsync taskService = TaskService.App.getInstance();

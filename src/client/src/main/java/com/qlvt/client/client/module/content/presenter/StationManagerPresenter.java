@@ -33,13 +33,17 @@ import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.view.StationManagerView;
-import com.qlvt.client.client.service.StationService;
-import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.exception.DeleteException;
+import com.qlvt.core.client.action.DeleteAction;
+import com.qlvt.core.client.action.DeleteResult;
+import com.qlvt.core.client.action.SaveAction;
+import com.qlvt.core.client.action.SaveResult;
+import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -59,9 +63,8 @@ import java.util.List;
 @Presenter(view = StationManagerView.class, place = StationManagerPlace.class)
 public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
 
+    private static final String[] RELATE_ENTITY_NAMES = {User.class.getName(), Branch.class.getName(), TaskDetail.class.getName()};
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
-
-    private StationServiceAsync stationService = StationService.App.getInstance();
 
     private Station currentStation;
     private Window stationEditWindow;
@@ -110,13 +113,13 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                     currentStation.setName(view.getTxtStationName().getValue());
                     currentStation.setCreateBy(1l);
                     currentStation.setUpdateBy(1l);
-                    stationService.updateStation(currentStation, new AbstractAsyncCallback<Station>() {
+                    dispatch.execute(new SaveAction(currentStation), new AbstractAsyncCallback<SaveResult>() {
                         @Override
-                        public void onSuccess(Station result) {
+                        public void onSuccess(SaveResult result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             stationEditWindow.hide();
-                            updateGrid(result);
+                            updateGrid(result.<Station>getEntity());
                         }
                     });
                 }
@@ -145,7 +148,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
         if (isNotFound) {
             view.getStationsGird().getStore().add(updateModel);
             view.getStationsGird().getView().ensureVisible(view.getStationsGird()
-                    .getStore().getCount() -1 , 1 , false);
+                    .getStore().getCount() - 1, 1, false);
         }
         view.getStationsGird().getSelectionModel().select(updateModel, false);
     }
@@ -179,23 +182,17 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
     private void showDeleteTagConform(final List<Long> stationIds, String tagName) {
         assert stationIds != null;
         String deleteMessage;
-        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+        final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
-            public void onFailure(Throwable caught) {
-                if (caught instanceof DeleteException) {
-                    DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
-                    LoadingUtils.hideLoading();
-                } else {
-                    super.onFailure(caught);
-                }
-            }
-
-            @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(DeleteResult result) {
                 super.onSuccess(result);
-                //Reload grid.
-                view.getPagingToolBar().refresh();
-                DiaLogUtils.notify(view.getConstant().deleteStationMessageSuccess());
+                if (result.isResult()) {
+                    //Reload grid.
+                    view.getPagingToolBar().refresh();
+                    DiaLogUtils.notify(view.getConstant().deleteStationMessageSuccess());
+                } else {
+                    DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
+                }
             }
         };
         final boolean hasManyTag = stationIds.size() > 1;
@@ -211,9 +208,11 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        stationService.deleteStationByIds(stationIds, callback);
+                        dispatch.execute(new DeleteAction(Station.class.getName(), stationIds,
+                                RELATE_ENTITY_NAMES), callback);
                     } else {
-                        stationService.deleteStationById(stationIds.get(0), callback);
+                        dispatch.execute(new DeleteAction(Station.class.getName(), stationIds.get(0),
+                                RELATE_ENTITY_NAMES), callback);
                     }
                 }
             }
