@@ -12,7 +12,6 @@
             <list>
                 <bean class="com.qlvt.server.service.LoginHandler"/>
                 <bean class="com.qlvt.server.service.LoadGridDataHandler"/>
-                <bean class="com.qlvt.server.service.LoadHandler"/>
             </list>
         </property>
     </bean>

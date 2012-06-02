@@ -21,6 +21,8 @@ package com.qlvt.client.client.module.user.presenter;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.data.BeanModelFactory;
+import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
@@ -36,6 +38,8 @@ import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
+import com.qlvt.client.client.service.StationService;
+import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.service.UserService;
 import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
@@ -68,6 +72,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private UserServiceAsync userService = UserService.App.getInstance();
+    private StationServiceAsync stationService = StationService.App.getInstance();
 
     private ListStore<BeanModel> stationListStore;
     private Window newUserWindow;
@@ -78,7 +83,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+            stationListStore = createStationListStore();
             view.getCbbUserStation().setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
@@ -87,7 +92,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     @Override
     protected void doBind() {
-        stationListStore = GridUtils.createListStore(Station.class, dispatch);
+        stationListStore = createStationListStore();
         view.getCbbUserStation().setStore(stationListStore);
         view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
         view.createGrid(GridUtils.createListStore(User.class, dispatch));
@@ -283,6 +288,22 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 }
             }
         });
+    }
+
+    private ListStore<BeanModel> createStationListStore() {
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+        final ListStore<BeanModel> store = new ListStore<BeanModel>();
+        LoadingUtils.showLoading();
+        stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
+            @Override
+            public void onSuccess(List<Station> result) {
+                super.onSuccess(result);
+                for (Station station : result) {
+                    store.add(factory.createModel(station));
+                }
+            }
+        });
+        return store;
     }
 
     @Override
