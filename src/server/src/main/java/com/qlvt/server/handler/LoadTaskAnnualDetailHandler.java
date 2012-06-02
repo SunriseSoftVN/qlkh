@@ -17,35 +17,39 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
-import com.qlvt.core.client.action.grid.LoadGridDataAction;
-import com.qlvt.core.client.action.grid.LoadGridDataResult;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlvt.core.client.action.taskdetail.LoadTaskAnnualDetailAction;
+import com.qlvt.core.client.action.taskdetail.LoadTaskAnnualDetailResult;
+import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.GxtDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class LoadGridHandler.
+ * The Class LoadTaskAnnualDetailHandler.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 6:41 AM
+ * @since 6/1/12, 9:31 PM
  */
-public class LoadGridDataHandler extends AbstractHandler<LoadGridDataAction, LoadGridDataResult> {
+public class LoadTaskAnnualDetailHandler extends AbstractHandler<LoadTaskAnnualDetailAction, LoadTaskAnnualDetailResult> {
 
     @Autowired
     private GxtDao gxtDao;
 
     @Override
-    public Class<LoadGridDataAction> getActionType() {
-        return LoadGridDataAction.class;
+    public Class<LoadTaskAnnualDetailAction> getActionType() {
+        return LoadTaskAnnualDetailAction.class;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public LoadGridDataResult execute(LoadGridDataAction action, ExecutionContext context) throws DispatchException {
-        return new LoadGridDataResult(gxtDao.getByBeanConfig(action.getEntityName(), action.getConfig()));
+    public LoadTaskAnnualDetailResult execute(LoadTaskAnnualDetailAction action, ExecutionContext context) throws DispatchException {
+        BasePagingLoadResult<TaskDetail> result = gxtDao.getByBeanConfig(TaskDetail.class.getName(), action.getConfig(),
+                Restrictions.eq("station.id", action.getStationId()), Restrictions.eq("annual", true));
+        return new LoadTaskAnnualDetailResult(result);
     }
 }

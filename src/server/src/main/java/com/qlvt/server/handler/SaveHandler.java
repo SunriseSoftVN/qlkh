@@ -17,12 +17,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
 import com.qlvt.core.client.action.SaveAction;
 import com.qlvt.core.client.action.SaveResult;
 import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;

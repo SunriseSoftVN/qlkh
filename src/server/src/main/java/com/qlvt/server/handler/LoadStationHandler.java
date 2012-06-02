@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
 import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
@@ -26,7 +26,7 @@ import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;

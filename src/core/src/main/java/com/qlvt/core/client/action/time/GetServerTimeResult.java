@@ -17,24 +17,27 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service.core;
+package com.qlvt.core.client.action.time;
 
-import net.customware.gwt.dispatch.server.ActionHandler;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.Action;
-import net.customware.gwt.dispatch.shared.DispatchException;
 import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class AbstractHandler.
+ * The Class GerServerTimeResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 6:26 AM
+ * @since 6/2/12, 4:00 PM
  */
-public abstract class AbstractHandler<A extends Action<R>, R extends Result>
-        implements ActionHandler<A, R> {
-    @Override
-    public void rollback(A action, R result, ExecutionContext context) throws DispatchException {
-        //Default do nothing.
+public class GetServerTimeResult implements Result {
+    private int year;
+
+    public GetServerTimeResult() {
+    }
+
+    public GetServerTimeResult(int year) {
+        this.year = year;
+    }
+
+    public int getYear() {
+        return year;
     }
 }

@@ -17,19 +17,19 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailAction;
-import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailResult;
+import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualAction;
+import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualResult;
 import com.qlvt.core.client.model.Branch;
-import com.qlvt.core.client.model.SubTaskDetail;
+import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.BranchDao;
-import com.qlvt.server.dao.SubTaskDetailDao;
+import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,12 +39,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class LoadSubTaskDetailHandler.
+ * The Class LoadSubTaskAnnualHandler.
  *
  * @author Nguyen Duc Dung
- * @since 6/2/12, 12:45 PM
+ * @since 6/1/12, 9:10 PM
  */
-public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailAction, LoadSubTaskDetailResult> {
+public class LoadSubTaskAnnualHandler extends AbstractHandler<LoadSubTaskAnnualAction, LoadSubTaskAnnualResult> {
 
     @Autowired
     private GeneralDao generalDao;
@@ -53,40 +53,40 @@ public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailA
     private BranchDao branchDao;
 
     @Autowired
-    private SubTaskDetailDao subTaskDetailDao;
+    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
 
     @Override
-    public Class<LoadSubTaskDetailAction> getActionType() {
-        return LoadSubTaskDetailAction.class;
+    public Class<LoadSubTaskAnnualAction> getActionType() {
+        return LoadSubTaskAnnualAction.class;
     }
 
     @Override
-    public LoadSubTaskDetailResult execute(LoadSubTaskDetailAction action, ExecutionContext context) throws DispatchException {
-        BasePagingLoadResult<SubTaskDetail> result = getSubTaskDetails(action.getLoadConfig(), action.getTaskDetailId());
-        return new LoadSubTaskDetailResult(result);
+    public LoadSubTaskAnnualResult execute(LoadSubTaskAnnualAction action, ExecutionContext context) throws DispatchException {
+        return new LoadSubTaskAnnualResult(getSubTaskAnnualDetails(action.getLoadConfig(), action.getTaskDetailId()));
     }
 
-    public BasePagingLoadResult<SubTaskDetail> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
-        List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
+    public BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig,
+                                                                             long taskDetailId) {
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
         TaskDetail taskDetail = generalDao.findById(TaskDetail.class, taskDetailId);
         if (taskDetail != null) {
             List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
-                    SubTaskDetail subTaskDetail = subTaskDetailDao.
+                    SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.
                             findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                    if (subTaskDetail == null) {
-                        subTaskDetail = new SubTaskDetail();
-                        subTaskDetail.setTaskDetail(taskDetail);
-                        subTaskDetail.setBranch(branch);
-                        subTaskDetail.setCreateBy(1l);
-                        subTaskDetail.setUpdateBy(1l);
+                    if (subTaskAnnualDetail == null) {
+                        subTaskAnnualDetail = new SubTaskAnnualDetail();
+                        subTaskAnnualDetail.setTaskDetail(taskDetail);
+                        subTaskAnnualDetail.setBranch(branch);
+                        subTaskAnnualDetail.setCreateBy(1l);
+                        subTaskAnnualDetail.setUpdateBy(1l);
                     }
-                    subTaskDetails.add(subTaskDetail);
+                    subTaskAnnualDetails.add(subTaskAnnualDetail);
                 }
             }
         }
-        return new BasePagingLoadResult<SubTaskDetail>(subTaskDetails, loadConfig.getOffset(),
-                subTaskDetails.size());
+        return new BasePagingLoadResult<SubTaskAnnualDetail>(subTaskAnnualDetails, loadConfig.getOffset(),
+                subTaskAnnualDetails.size());
     }
 }

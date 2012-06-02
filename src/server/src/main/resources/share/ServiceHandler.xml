@@ -10,20 +10,21 @@
     <bean id="registry" class="net.customware.gwt.dispatch.server.DefaultActionHandlerRegistry">
         <property name="actionHandlers">
             <list>
-                <bean class="com.qlvt.server.service.LoginHandler"/>
-                <bean class="com.qlvt.server.service.LoadGridDataHandler"/>
-                <bean class="com.qlvt.server.service.LoadHandler"/>
-                <bean class="com.qlvt.server.service.SaveHandler"/>
-                <bean class="com.qlvt.server.service.DeleteHandler"/>
-                <bean class="com.qlvt.server.service.ReportHandler"/>
-                <bean class="com.qlvt.server.service.LoadStationHandler"/>
-                <bean class="com.qlvt.server.service.LoadSubTaskAnnualHandler"/>
-                <bean class="com.qlvt.server.service.LoadTaskAnnualDetailHandler"/>
-                <bean class="com.qlvt.server.service.LoadAnnualTaskHandler"/>
-                <bean class="com.qlvt.server.service.DeleteTaskDetailHandler"/>
-                <bean class="com.qlvt.server.service.LoadTaskDetailHandler"/>
-                <bean class="com.qlvt.server.service.LoadNormalTaskHandler"/>
-                <bean class="com.qlvt.server.service.LoadSubTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.LoginHandler"/>
+                <bean class="com.qlvt.server.handler.LoadGridDataHandler"/>
+                <bean class="com.qlvt.server.handler.LoadHandler"/>
+                <bean class="com.qlvt.server.handler.SaveHandler"/>
+                <bean class="com.qlvt.server.handler.DeleteHandler"/>
+                <bean class="com.qlvt.server.handler.ReportHandler"/>
+                <bean class="com.qlvt.server.handler.LoadStationHandler"/>
+                <bean class="com.qlvt.server.handler.LoadSubTaskAnnualHandler"/>
+                <bean class="com.qlvt.server.handler.LoadTaskAnnualDetailHandler"/>
+                <bean class="com.qlvt.server.handler.LoadAnnualTaskHandler"/>
+                <bean class="com.qlvt.server.handler.DeleteTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.LoadTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.LoadNormalTaskHandler"/>
+                <bean class="com.qlvt.server.handler.LoadSubTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.time.GetServerTimeHandler"/>
             </list>
         </property>
     </bean>

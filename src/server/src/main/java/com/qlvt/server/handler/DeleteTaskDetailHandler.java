@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
@@ -27,7 +27,7 @@ import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.apache.commons.collections.CollectionUtils;

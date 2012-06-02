@@ -17,34 +17,40 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
-import com.qlvt.core.client.action.task.LoadNormalTaskAction;
-import com.qlvt.core.client.action.task.LoadNormalTaskResult;
-import com.qlvt.server.dao.TaskDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.core.client.action.LoginAction;
+import com.qlvt.core.client.action.LoginResult;
+import com.qlvt.core.client.model.User;
+import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class LoadNormalTaskHandler.
+ * The Class LoginServiceImpl.
  *
  * @author Nguyen Duc Dung
- * @since 6/2/12, 12:20 PM
+ * @since 12/28/11, 10:18 AM
  */
-public class LoadNormalTaskHandler extends AbstractHandler<LoadNormalTaskAction, LoadNormalTaskResult> {
+public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
 
     @Autowired
-    private TaskDao taskDao;
+    private UserDao userDao;
 
     @Override
-    public Class<LoadNormalTaskAction> getActionType() {
-        return LoadNormalTaskAction.class;
+    public Class<LoginAction> getActionType() {
+        return LoginAction.class;
     }
 
     @Override
-    public LoadNormalTaskResult execute(LoadNormalTaskAction action, ExecutionContext context) throws DispatchException {
-        return new LoadNormalTaskResult(taskDao.getAllNormalTask());
+    public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
+        User user = userDao.findByUserName(action.getUserName());
+        if (user != null && user.getPassWord().equals(action.getPassWord())) {
+            return new LoginResult(user);
+        } else {
+            return null;
+        }
     }
 }

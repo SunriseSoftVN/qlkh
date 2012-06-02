@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler;
 
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -41,7 +41,7 @@ import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.handler.core.AbstractHandler;
 import com.qlvt.server.servlet.ReportServlet;
 import com.qlvt.server.util.ReportExporter;
 import com.qlvt.server.util.ServletUtils;

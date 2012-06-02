@@ -46,6 +46,8 @@ import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.taskdetail.LoadTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.LoadTaskDetailResult;
+import com.qlvt.core.client.action.time.GetServerTimeAction;
+import com.qlvt.core.client.action.time.GetServerTimeResult;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.Task;
@@ -220,13 +222,20 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     currentTaskDetail.setStation(currentStation);
                     currentTaskDetail.setCreateBy(1l);
                     currentTaskDetail.setUpdateBy(1l);
-                    dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
+                    LoadingUtils.showLoading();
+                    dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
                         @Override
-                        public void onSuccess(SaveResult result) {
-                            super.onSuccess(result);
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            taskEditWindow.hide();
-                            updateGrid(result.<TaskDetail>getEntity());
+                        public void onSuccess(GetServerTimeResult result) {
+                            currentTaskDetail.setYear(result.getYear());
+                            dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
+                                @Override
+                                public void onSuccess(SaveResult result) {
+                                    super.onSuccess(result);
+                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                    taskEditWindow.hide();
+                                    updateGrid(result.<TaskDetail>getEntity());
+                                }
+                            });
                         }
                     });
                 }

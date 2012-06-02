@@ -17,34 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.core.client.action.time;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.qlvt.core.client.model.TaskDetail;
-import com.qlvt.server.guice.DaoProvider;
-import com.qlvt.server.service.core.AbstractService;
-import com.qlvt.server.transaction.Transaction;
-
-import java.util.Date;
+import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class TaskDetailServiceImpl.
+ * The Class GetServerTimeAction.
  *
  * @author Nguyen Duc Dung
- * @since 1/1/12, 3:53 PM
+ * @since 6/2/12, 4:00 PM
  */
-@Transaction
-@Singleton
-public class TaskDetailServiceImpl extends AbstractService {
-
-    @Inject
-    private DaoProvider provider;
-
-
-    public TaskDetail updateTaskDetail(TaskDetail taskDetail) {
-        //Set year on server because client time might be wrong.
-        taskDetail.setYear(1900 + new Date().getYear());
-        return provider.getTaskDetailDao().saveOrUpdate(taskDetail);
-    }
+public class GetServerTimeAction implements Action<GetServerTimeResult> {
 }

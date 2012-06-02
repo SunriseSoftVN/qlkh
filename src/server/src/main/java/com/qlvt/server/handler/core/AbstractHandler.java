@@ -17,34 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler.core;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.qlvt.core.client.model.TaskDetail;
-import com.qlvt.server.guice.DaoProvider;
-import com.qlvt.server.service.core.AbstractService;
-import com.qlvt.server.transaction.Transaction;
-
-import java.util.Date;
+import net.customware.gwt.dispatch.server.ActionHandler;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.DispatchException;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class TaskDetailServiceImpl.
+ * The Class AbstractHandler.
  *
  * @author Nguyen Duc Dung
- * @since 1/1/12, 3:53 PM
+ * @since 6/1/12, 6:26 AM
  */
-@Transaction
-@Singleton
-public class TaskDetailServiceImpl extends AbstractService {
-
-    @Inject
-    private DaoProvider provider;
-
-
-    public TaskDetail updateTaskDetail(TaskDetail taskDetail) {
-        //Set year on server because client time might be wrong.
-        taskDetail.setYear(1900 + new Date().getYear());
-        return provider.getTaskDetailDao().saveOrUpdate(taskDetail);
+public abstract class AbstractHandler<A extends Action<R>, R extends Result>
+        implements ActionHandler<A, R> {
+    @Override
+    public void rollback(A action, R result, ExecutionContext context) throws DispatchException {
+        //Default do nothing.
     }
 }

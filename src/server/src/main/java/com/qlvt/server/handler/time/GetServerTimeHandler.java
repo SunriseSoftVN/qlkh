@@ -17,40 +17,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.handler.time;
 
-import com.qlvt.core.client.action.LoginAction;
-import com.qlvt.core.client.action.LoginResult;
-import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.core.client.action.time.GetServerTimeAction;
+import com.qlvt.core.client.action.time.GetServerTimeResult;
+import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
- * The Class LoginServiceImpl.
+ * The Class GetServerTimeHandler.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 10:18 AM
+ * @since 6/2/12, 4:01 PM
  */
-public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
-
-    @Autowired
-    private UserDao userDao;
-
+public class GetServerTimeHandler extends AbstractHandler<GetServerTimeAction, GetServerTimeResult> {
     @Override
-    public Class<LoginAction> getActionType() {
-        return LoginAction.class;
+    public Class<GetServerTimeAction> getActionType() {
+        return GetServerTimeAction.class;
     }
 
     @Override
-    public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName(action.getUserName());
-        if (user != null && user.getPassWord().equals(action.getPassWord())) {
-            return new LoginResult(user);
-        } else {
-            return null;
-        }
+    public GetServerTimeResult execute(GetServerTimeAction action, ExecutionContext context) throws DispatchException {
+        return new GetServerTimeResult(1900 + new Date().getYear());
     }
 }
