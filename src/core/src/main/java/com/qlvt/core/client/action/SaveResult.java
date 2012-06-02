@@ -30,6 +30,7 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class SaveResult implements Result {
 
+
     private AbstractEntity entity;
 
     public SaveResult() {
