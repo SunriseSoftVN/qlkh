@@ -26,13 +26,26 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
+import com.qlvt.client.client.core.reader.LoadGridDataReader;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.module.content.view.TaskDetailView;
-import com.qlvt.client.client.service.*;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.action.SaveAction;
+import com.qlvt.core.client.action.SaveResult;
+import com.qlvt.core.client.action.station.LoadStationAction;
+import com.qlvt.core.client.action.station.LoadStationResult;
+import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailAction;
+import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailResult;
+import com.qlvt.core.client.action.task.LoadNormalTaskAction;
+import com.qlvt.core.client.action.task.LoadNormalTaskResult;
+import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
+import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
+import com.qlvt.core.client.action.taskdetail.LoadTaskDetailAction;
+import com.qlvt.core.client.action.taskdetail.LoadTaskDetailResult;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.Task;
@@ -42,6 +55,8 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
+import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,9 +72,7 @@ import java.util.Map;
 @Presenter(view = TaskDetailView.class, place = TaskDetailPlace.class)
 public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
-    private TaskDetailServiceAsync taskDetailService = TaskDetailService.App.getInstance();
-    private TaskServiceAsync taskService = TaskService.App.getInstance();
-    private StationServiceAsync stationService = StationService.App.getInstance();
+    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private Station currentStation;
     private TaskDetail currentTaskDetail;
@@ -86,11 +99,11 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     protected void doBind() {
         LoadingUtils.showLoading();
         taskDtoListStore = createTaskDtoListStore();
-        stationService.getStationAndBranchByUserName(LoginUtils.getUserName(), new AbstractAsyncCallback<Station>() {
+        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
-            public void onSuccess(Station result) {
+            public void onSuccess(LoadStationResult result) {
                 super.onSuccess(result);
-                currentStation = result;
+                currentStation = result.getStation();
                 view.createTaskGrid(createTaskListStore());
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
@@ -110,6 +123,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
             }
         });
+
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -156,9 +170,9 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
                     subTaskDetails.add(((BeanModel) record.getModel()).<SubTaskDetail>getBean());
                 }
-                taskDetailService.updateSubTaskDetails(subTaskDetails, new AbstractAsyncCallback<Void>() {
+                dispatch.execute(new SaveAction(subTaskDetails), new AbstractAsyncCallback<SaveResult>() {
                     @Override
-                    public void onSuccess(Void result) {
+                    public void onSuccess(SaveResult result) {
                         DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                         view.getSubTaskPagingToolBar().refresh();
                     }
@@ -206,13 +220,13 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     currentTaskDetail.setStation(currentStation);
                     currentTaskDetail.setCreateBy(1l);
                     currentTaskDetail.setUpdateBy(1l);
-                    taskDetailService.updateTaskDetail(currentTaskDetail, new AbstractAsyncCallback<TaskDetail>() {
+                    dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
                         @Override
-                        public void onSuccess(TaskDetail result) {
+                        public void onSuccess(SaveResult result) {
                             super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             taskEditWindow.hide();
-                            updateGrid(result);
+                            updateGrid(result.<TaskDetail>getEntity());
                         }
                     });
                 }
@@ -266,15 +280,15 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     }
 
     private ListStore<BeanModel> createTaskListStore() {
-        RpcProxy<BasePagingLoadResult<TaskDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<TaskDetail>>() {
+        RpcProxy<LoadTaskDetailResult> rpcProxy = new RpcProxy<LoadTaskDetailResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<TaskDetail>> callback) {
-                taskDetailService.getTaskDetailsForGrid((BasePagingLoadConfig) loadConfig, currentStation.getId(), callback);
+            protected void load(Object loadConfig, AsyncCallback<LoadTaskDetailResult> callback) {
+                dispatch.execute(new LoadTaskDetailAction((BasePagingLoadConfig) loadConfig, currentStation.getId()), callback);
             }
         };
 
         PagingLoader<PagingLoadResult<TaskDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new BeanModelReader()) {
+                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -287,19 +301,19 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     }
 
     private ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<BasePagingLoadResult<SubTaskDetail>> rpcProxy = new RpcProxy<BasePagingLoadResult<SubTaskDetail>>() {
+        RpcProxy<LoadSubTaskDetailResult> rpcProxy = new RpcProxy<LoadSubTaskDetailResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<SubTaskDetail>> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskDetailResult> callback) {
                 long currentTaskDetailId = -1;
                 if (currentTaskDetail != null) {
                     currentTaskDetailId = currentTaskDetail.getId();
                 }
-                taskDetailService.getSubTaskDetails((BasePagingLoadConfig) loadConfig, currentTaskDetailId, callback);
+                dispatch.execute(new LoadSubTaskDetailAction((BasePagingLoadConfig) loadConfig, currentTaskDetailId), callback);
             }
         };
 
         PagingLoader<PagingLoadResult<SubTaskDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<SubTaskDetail>>(rpcProxy, new BeanModelReader()) {
+                new BasePagingLoader<PagingLoadResult<SubTaskDetail>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -315,11 +329,11 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
         LoadingUtils.showLoading();
-        taskService.getAllNormalTasks(new AbstractAsyncCallback<List<Task>>() {
+        dispatch.execute(new LoadNormalTaskAction(), new AbstractAsyncCallback<LoadNormalTaskResult>() {
             @Override
-            public void onSuccess(List<Task> result) {
+            public void onSuccess(LoadNormalTaskResult result) {
                 super.onSuccess(result);
-                for (Task task : result) {
+                for (Task task : result.getTasks()) {
                     listStore.add(factory.createModel(task));
                 }
             }
@@ -355,9 +369,9 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private void showDeleteTagConform(final List<Long> taskDetailIds, String tagName) {
         assert taskDetailIds != null;
         String deleteMessage;
-        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+        final AsyncCallback<DeleteTaskDetailResult> callback = new AbstractAsyncCallback<DeleteTaskDetailResult>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(DeleteTaskDetailResult result) {
                 super.onSuccess(result);
                 //Reload grid.
                 resetView();
@@ -377,9 +391,9 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        taskDetailService.deleteTaskDetails(taskDetailIds, callback);
+                        dispatch.execute(new DeleteTaskDetailAction(taskDetailIds), callback);
                     } else {
-                        taskDetailService.deleteTaskDetail(taskDetailIds.get(0), callback);
+                        dispatch.execute(new DeleteTaskDetailAction(taskDetailIds.get(0)), callback);
                     }
                 }
             }

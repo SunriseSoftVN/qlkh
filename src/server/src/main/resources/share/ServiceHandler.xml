@@ -21,6 +21,9 @@
                 <bean class="com.qlvt.server.service.LoadTaskAnnualDetailHandler"/>
                 <bean class="com.qlvt.server.service.LoadAnnualTaskHandler"/>
                 <bean class="com.qlvt.server.service.DeleteTaskDetailHandler"/>
+                <bean class="com.qlvt.server.service.LoadTaskDetailHandler"/>
+                <bean class="com.qlvt.server.service.LoadNormalTaskHandler"/>
+                <bean class="com.qlvt.server.service.LoadSubTaskDetailHandler"/>
             </list>
         </property>
     </bean>
