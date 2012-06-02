@@ -23,7 +23,6 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.qlvt.client.client.service.TaskDetailService;
 import com.qlvt.core.client.dto.SubTaskAnnualDetailDto;
 import com.qlvt.core.client.dto.SubTaskDetailDto;
 import com.qlvt.core.client.dto.TaskDetailDto;
@@ -50,24 +49,21 @@ import java.util.List;
  */
 @Transaction
 @Singleton
-public class TaskDetailServiceImpl extends AbstractService implements TaskDetailService {
+public class TaskDetailServiceImpl extends AbstractService {
 
     @Inject
     private DaoProvider provider;
 
-    @Override
     public BasePagingLoadResult<TaskDetail> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         return provider.getTaskDetailDao().getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
     }
 
-    @Override
     public BasePagingLoadResult<TaskDetail> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
         return provider.getTaskDetailDao().getByBeanConfig(TaskDetail.class, loadConfig,
                 Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
     }
 
-    @Override
     public BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig,
                                                                              long taskDetailId) {
         List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
@@ -93,7 +89,6 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                 subTaskAnnualDetails.size());
     }
 
-    @Override
     public BasePagingLoadResult<SubTaskDetail> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
         List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
         TaskDetail taskDetail = provider.getTaskDetailDao().findById(TaskDetail.class, taskDetailId);
@@ -118,7 +113,6 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
                 subTaskDetails.size());
     }
 
-    @Override
     public void deleteTaskDetail(long taskDetailId) {
         TaskDetail taskDetail = provider.getTaskDetailDao().findById(TaskDetail.class, taskDetailId);
         if (taskDetail != null) {
@@ -137,7 +131,6 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         }
     }
 
-    @Override
     public void deleteTaskDetails(List<Long> taskDetailIds) {
         for (Long taskId : taskDetailIds) {
             if (taskId != null) {
@@ -146,19 +139,16 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
         }
     }
 
-    @Override
     public TaskDetail updateTaskDetail(TaskDetail taskDetail) {
         //Set year on server because client time might be wrong.
         taskDetail.setYear(1900 + new Date().getYear());
         return provider.getTaskDetailDao().saveOrUpdate(taskDetail);
     }
 
-    @Override
     public void updateTaskDetails(List<TaskDetail> taskDetails) {
         provider.getTaskDetailDao().saveOrUpdate(taskDetails);
     }
 
-    @Override
     public void updateTaskDetailDtos(List<TaskDetailDto> taskDetailDtos) {
         List<TaskDetail> taskDetails = new ArrayList<TaskDetail>(taskDetailDtos.size());
         List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>(taskDetails.size());
@@ -194,12 +184,10 @@ public class TaskDetailServiceImpl extends AbstractService implements TaskDetail
     }
 
 
-    @Override
     public void updateSubTaskAnnualDetails(List<SubTaskAnnualDetail> subTaskAnnualDetails) {
         provider.getSubTaskAnnualDetailDao().saveOrUpdate(subTaskAnnualDetails);
     }
 
-    @Override
     public void updateSubTaskDetails(List<SubTaskDetail> subTaskDetails) {
         provider.getSubTaskDetailDao().saveOrUpdate(subTaskDetails);
     }
