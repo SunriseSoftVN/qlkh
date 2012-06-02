@@ -42,6 +42,4 @@ public interface GeneralDao {
     <E extends AbstractEntity> void deleteById(String entityName, long id);
 
     <E extends AbstractEntity> void deleteByIds(String entityName, List<Long> ids);
-
-    <E extends AbstractEntity> List<E> findRelateEntityById(String entityName, long id, String relateEntity);
 }

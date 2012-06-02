@@ -36,29 +36,25 @@ public class DeleteAction implements Action<DeleteResult> {
     private String entityName;
     private List<Long> ids;
     private long id;
-    private String[] relateEntityNames;
     private DeleteActionType actionType;
 
     public DeleteAction() {
     }
 
-    public <E extends AbstractEntity> DeleteAction(E entity, String... relateEntityNames) {
+    public <E extends AbstractEntity> DeleteAction(E entity) {
         this.entity = entity;
-        this.relateEntityNames = relateEntityNames;
         this.actionType = DeleteActionType.BY_ENTITY;
     }
 
-    public DeleteAction(String entityName, long id, String... relateEntityNames) {
+    public DeleteAction(String entityName, long id) {
         this.entityName = entityName;
         this.id = id;
-        this.relateEntityNames = relateEntityNames;
         this.actionType = DeleteActionType.BY_ID;
     }
 
-    public DeleteAction(String entityName, List<Long> ids, String... relateEntityNames) {
+    public DeleteAction(String entityName, List<Long> ids) {
         this.entityName = entityName;
         this.ids = ids;
-        this.relateEntityNames = relateEntityNames;
         this.actionType = DeleteActionType.BY_IDS;
     }
 
@@ -80,10 +76,6 @@ public class DeleteAction implements Action<DeleteResult> {
 
     public List<Long> getIds() {
         return ids;
-    }
-
-    public String[] getRelateEntityNames() {
-        return relateEntityNames;
     }
 
     public enum DeleteActionType {
