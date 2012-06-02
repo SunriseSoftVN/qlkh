@@ -19,7 +19,6 @@
 
 package com.qlvt.server.dao.impl;
 
-import com.google.inject.Singleton;
 import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
@@ -36,7 +35,6 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/31/11, 2:35 PM
  */
-@Singleton
 public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
     @Override
     public List<Task> getAllNormalTask() {

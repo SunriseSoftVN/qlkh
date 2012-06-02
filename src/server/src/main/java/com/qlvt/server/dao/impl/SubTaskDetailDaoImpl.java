@@ -19,7 +19,6 @@
 
 package com.qlvt.server.dao.impl;
 
-import com.google.inject.Singleton;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
@@ -35,7 +34,6 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/3/12, 8:39 PM
  */
-@Singleton
 public class SubTaskDetailDaoImpl extends AbstractDao<SubTaskDetail> implements SubTaskDetailDao {
 
     @Override
