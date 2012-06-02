@@ -13,8 +13,6 @@
                 <bean class="com.qlvt.server.service.LoginHandler"/>
                 <bean class="com.qlvt.server.service.LoadGridDataHandler"/>
                 <bean class="com.qlvt.server.service.LoadHandler"/>
-                <bean class="com.qlvt.server.service.SaveHandler"/>
-                <bean class="com.qlvt.server.service.DeleteHandler"/>
             </list>
         </property>
     </bean>

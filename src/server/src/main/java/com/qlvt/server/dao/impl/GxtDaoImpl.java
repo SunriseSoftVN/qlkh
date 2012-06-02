@@ -26,6 +26,7 @@ import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.dao.GxtDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class GxtDaoImpl extends AbstractDao implements GxtDao {
 
     @Override
     public <E extends AbstractEntity> BasePagingLoadResult<E> getByBeanConfig(String entityName, BasePagingLoadConfig config, Criterion... criterions) {
-        DetachedCriteria criteria = DetachedCriteria.forEntityName(entityName);
+        Criteria criteria = getCurrentSession().createCriteria(entityName);
         if (StringUtils.isNotBlank(config.getSortField())) {
             if (config.getSortDir() == Style.SortDir.ASC) {
                 criteria.addOrder(Order.asc(config.getSortField()));
@@ -85,16 +86,52 @@ public class GxtDaoImpl extends AbstractDao implements GxtDao {
                 criteria.add(criterion);
             }
         }
-
-        List<E> result = getHibernateTemplate().findByCriteria(criteria, config.getOffset(), config.getLimit());
-        return new BasePagingLoadResult<E>(result, config.getOffset(), count(criteria));
+        List<E> result = criteria.setFirstResult(config.getOffset()).
+                setMaxResults(config.getLimit()).list();
+        return new BasePagingLoadResult<E>(result, config.getOffset(), count(entityName, config, criterions));
     }
 
-    protected int count(DetachedCriteria criteria) {
-        criteria.setProjection(Projections.rowCount());
-        List result = getHibernateTemplate().findByCriteria(criteria);
+    protected int count(String entityName, BasePagingLoadConfig config, Criterion... criterions) {
+        Criteria criteria = getCurrentSession().createCriteria(entityName).setProjection(Projections.rowCount());
+        if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+            Map<String, Object> filters = config.get("filters");
+            if (filters != null) {
+                Criterion criterion = null;
+                String joinEntityName = null;
+                for (String filter : filters.keySet()) {
+                    if (joinEntityName == null
+                            || !joinEntityName.equals(getRootEntityName(filter))) {
+                        joinEntityName = getRootEntityName(filter);
+                        if (StringUtils.isNotEmpty(joinEntityName)) {
+                            criteria.createAlias(joinEntityName, joinEntityName);
+                        }
+                    }
+                    Criterion likeCriterion;
+                    Object filterValue = filters.get(filter);
+                    if (filterValue instanceof String) {
+                        likeCriterion = Restrictions.like(filter, ((String) filterValue).trim(), MatchMode.ANYWHERE).ignoreCase();
+                    } else {
+                        likeCriterion = Restrictions.like(filter, filterValue);
+                    }
+                    if (criterion == null) {
+                        criterion = likeCriterion;
+                    } else {
+                        criterion = Restrictions.or(criterion, likeCriterion);
+                    }
+                }
+                if (criterion != null) {
+                    criteria.add(criterion);
+                }
+            }
+        }
+        if (criterions != null && criterions.length > 0) {
+            for (Criterion criterion : criterions) {
+                criteria.add(criterion);
+            }
+        }
+        Object result = criteria.uniqueResult();
         if (result != null) {
-            return ((Long)result.get(0)).intValue();
+            return ((Long) result).intValue();
         }
         return 0;
     }

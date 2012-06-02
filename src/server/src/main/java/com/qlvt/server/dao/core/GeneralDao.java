@@ -33,13 +33,7 @@ public interface GeneralDao {
 
     <E extends AbstractEntity> List<E> getAll(String entityName);
 
+
     <E extends AbstractEntity> E findById(String entityName, long id);
 
-    <E extends AbstractEntity> E saveOrUpdate(E entity);
-
-    <E extends AbstractEntity> void delete(E entity);
-
-    <E extends AbstractEntity> void deleteById(String entityName, long id);
-
-    <E extends AbstractEntity> void deleteByIds(String entityName, List<Long> ids);
 }

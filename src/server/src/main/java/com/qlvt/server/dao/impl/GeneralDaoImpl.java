@@ -32,36 +32,15 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 11:42 AM
  */
-@SuppressWarnings("unchecked")
 public class GeneralDaoImpl extends HibernateDaoSupport implements GeneralDao {
 
-    @Override
-    public <E extends AbstractEntity> void deleteByIds(String entityName, List<Long> ids) {
-        for (Long id : ids) {
-            if (id != null) {
-                deleteById(entityName, id);
-            }
-        }
-    }
-
-    @Override
-    public <E extends AbstractEntity> void deleteById(String entityName, long id) {
-        Object entity = getHibernateTemplate().get(entityName, id);
-        if (entity != null) {
-            getHibernateTemplate().delete(entity);
-        }
-    }
-
-    @Override
-    public <E extends AbstractEntity> void delete(E entity) {
-        getHibernateTemplate().delete(entity);
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public <E extends AbstractEntity> E findById(String entityName, long id) {
         return (E) getHibernateTemplate().get(entityName, id);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <E extends AbstractEntity> List<E> getAll(String entityName) {
         Type type = getSessionFactory().getTypeHelper().entity(entityName);
@@ -69,11 +48,5 @@ public class GeneralDaoImpl extends HibernateDaoSupport implements GeneralDao {
             return getHibernateTemplate().loadAll(type.getReturnedClass());
         }
         return null;
-    }
-
-    @Override
-    public <E extends AbstractEntity> E saveOrUpdate(E entity) {
-        getHibernateTemplate().saveOrUpdate(entity);
-        return entity;
     }
 }
