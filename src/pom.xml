@@ -24,10 +24,9 @@
         <seleniumVersion>2.2.0</seleniumVersion>
         <slf4jVersion>1.6.1</slf4jVersion>
         <jasperreportsVersion>4.5.0</jasperreportsVersion>
-        <hibernateVersion>3.6.9.Final</hibernateVersion>
-        <hibernateC3p0Verion>3.6.9.Final</hibernateC3p0Verion>
-        <hibernateValidatorVersion>4.0.2.GA</hibernateValidatorVersion>
-        <javassistVersion>3.12.1.GA</javassistVersion>
+        <hibernateVersion>4.0.0.Final</hibernateVersion>
+        <hibernateC3p0Verion>4.0.0.Final</hibernateC3p0Verion>
+        <hibernateValidatorVersion>4.2.0.Final</hibernateValidatorVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
         <dozerVersion>5.3.2</dozerVersion>
         <dynamicJasperVersion>3.2.2</dynamicJasperVersion>
