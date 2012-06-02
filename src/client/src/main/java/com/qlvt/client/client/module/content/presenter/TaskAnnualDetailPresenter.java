@@ -40,12 +40,11 @@ import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
 import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualAction;
 import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualResult;
-import com.qlvt.core.client.action.task.LoadAnnualTaskAction;
-import com.qlvt.core.client.action.task.LoadAnnualTaskResult;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
 import com.qlvt.core.client.action.time.GetServerTimeResult;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.criterion.ClientRestrictions;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
@@ -87,7 +86,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         if (currentStation != null) {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
-                taskDtoListStore = createTaskDtoListStore();
+                taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
+                        ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
             }
             resetView();
         }
@@ -99,7 +99,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     @Override
     protected void doBind() {
         LoadingUtils.showLoading();
-        taskDtoListStore = createTaskDtoListStore();
+        taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
+                ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
 
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
@@ -107,7 +108,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 super.onSuccess(result);
                 currentStation = result.getStation();
                 view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, dispatch, ClientRestrictions.eq("station.id",
-                        currentStation.getId()),ClientRestrictions.eq("annual", true)));
+                        currentStation.getId()), ClientRestrictions.eq("annual", true)));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
                 view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
@@ -317,22 +318,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
-    }
-
-    private ListStore<BeanModel> createTaskDtoListStore() {
-        final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
-        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
-        LoadingUtils.showLoading();
-        dispatch.execute(new LoadAnnualTaskAction(), new AbstractAsyncCallback<LoadAnnualTaskResult>() {
-            @Override
-            public void onSuccess(LoadAnnualTaskResult result) {
-                super.onSuccess(result);
-                for (Task task : result.getAnnualTask()) {
-                    listStore.add(factory.createModel(task));
-                }
-            }
-        });
-        return listStore;
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {

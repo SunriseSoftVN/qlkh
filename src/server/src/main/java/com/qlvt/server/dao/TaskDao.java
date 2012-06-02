@@ -32,6 +32,4 @@ import java.util.List;
  */
 public interface TaskDao extends Dao<Task> {
     List<Task> getAllOrderByCode();
-    List<Task> getAllNormalTask();
-    List<Task> getAllAnnualTask();
 }

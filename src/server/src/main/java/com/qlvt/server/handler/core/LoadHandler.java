@@ -21,6 +21,7 @@ package com.qlvt.server.handler.core;
 
 import com.qlvt.core.client.action.core.LoadAction;
 import com.qlvt.core.client.action.core.LoadResult;
+import com.qlvt.server.criterion.ClientRestrictionsTranslator;
 import com.qlvt.server.dao.core.GeneralDao;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -35,7 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LoadHandler extends AbstractHandler<LoadAction, LoadResult> {
 
     @Autowired
-    private GeneralDao generalDaoImpl;
+    private GeneralDao generalDao;
 
     @Override
     public Class<LoadAction> getActionType() {
@@ -45,9 +46,12 @@ public class LoadHandler extends AbstractHandler<LoadAction, LoadResult> {
     @Override
     public LoadResult execute(LoadAction action, ExecutionContext context) throws DispatchException {
         if (action.getLoadType() == LoadAction.LoadActionType.ALL) {
-            return new LoadResult(generalDaoImpl.getAll(action.getEntityName()));
+            return new LoadResult(generalDao.getAll(action.getEntityName()));
         } else if (action.getLoadType() == LoadAction.LoadActionType.BY_ID) {
-            return new LoadResult(generalDaoImpl.findById(action.getEntityName(), action.getId()));
+            return new LoadResult(generalDao.findById(action.getEntityName(), action.getId()));
+        } else if (action.getLoadType() == LoadAction.LoadActionType.BY_CRITERIA) {
+            return new LoadResult(generalDao.findCriteria(action.getEntityName(),
+                    ClientRestrictionsTranslator.getCriterions(action.getCriterion())));
         }
         return null;
     }

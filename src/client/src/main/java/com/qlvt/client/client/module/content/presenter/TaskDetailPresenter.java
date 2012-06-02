@@ -41,12 +41,11 @@ import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
 import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailAction;
 import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailResult;
-import com.qlvt.core.client.action.task.LoadNormalTaskAction;
-import com.qlvt.core.client.action.task.LoadNormalTaskResult;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
 import com.qlvt.core.client.action.time.GetServerTimeResult;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.criterion.ClientRestrictions;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
@@ -88,7 +87,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         if (currentStation != null) {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
-                taskDtoListStore = createTaskDtoListStore();
+                taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
+                        ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
             }
             resetView();
         }
@@ -100,14 +100,15 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     @Override
     protected void doBind() {
         LoadingUtils.showLoading();
-        taskDtoListStore = createTaskDtoListStore();
+        taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
+                ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
             public void onSuccess(LoadStationResult result) {
                 super.onSuccess(result);
                 currentStation = result.getStation();
                 view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, dispatch, ClientRestrictions.eq("station.id",
-                        currentStation.getId()), ClientRestrictions.eq("annual", true)));
+                        currentStation.getId()), ClientRestrictions.eq("annual", false)));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
                 view.getTaskDetailGird().focus();
@@ -312,22 +313,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
-    }
-
-    private ListStore<BeanModel> createTaskDtoListStore() {
-        final ListStore<BeanModel> listStore = new ListStore<BeanModel>();
-        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
-        LoadingUtils.showLoading();
-        dispatch.execute(new LoadNormalTaskAction(), new AbstractAsyncCallback<LoadNormalTaskResult>() {
-            @Override
-            public void onSuccess(LoadNormalTaskResult result) {
-                super.onSuccess(result);
-                for (Task task : result.getTasks()) {
-                    listStore.add(factory.createModel(task));
-                }
-            }
-        });
-        return listStore;
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {

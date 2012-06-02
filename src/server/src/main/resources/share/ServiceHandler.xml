@@ -18,11 +18,7 @@
                 <bean class="com.qlvt.server.handler.ReportHandler"/>
                 <bean class="com.qlvt.server.handler.LoadStationHandler"/>
                 <bean class="com.qlvt.server.handler.LoadSubTaskAnnualHandler"/>
-                <bean class="com.qlvt.server.handler.LoadTaskAnnualDetailHandler"/>
-                <bean class="com.qlvt.server.handler.LoadAnnualTaskHandler"/>
                 <bean class="com.qlvt.server.handler.DeleteTaskDetailHandler"/>
-                <bean class="com.qlvt.server.handler.LoadTaskDetailHandler"/>
-                <bean class="com.qlvt.server.handler.LoadNormalTaskHandler"/>
                 <bean class="com.qlvt.server.handler.LoadSubTaskDetailHandler"/>
                 <bean class="com.qlvt.server.handler.time.GetServerTimeHandler"/>
             </list>

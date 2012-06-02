@@ -19,6 +19,7 @@
 
 package com.qlvt.core.client.action.core;
 
+import com.qlvt.core.client.criterion.ClientCriteria;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
@@ -32,6 +33,7 @@ public class LoadAction implements Action<LoadResult> {
     private String entityName;
     private Long id;
     private LoadActionType loadType;
+    private ClientCriteria[] criterion;
 
     public LoadAction() {
     }
@@ -47,6 +49,12 @@ public class LoadAction implements Action<LoadResult> {
         this.loadType = LoadActionType.BY_ID;
     }
 
+    public LoadAction(String entityName, ClientCriteria... criterion) {
+        this.entityName = entityName;
+        this.criterion = criterion;
+        this.loadType = LoadActionType.BY_CRITERIA;
+    }
+
     public String getEntityName() {
         return entityName;
     }
@@ -59,7 +67,11 @@ public class LoadAction implements Action<LoadResult> {
         return id;
     }
 
+    public ClientCriteria[] getCriterion() {
+        return criterion;
+    }
+
     public enum LoadActionType {
-        ALL, BY_ID
+        ALL, BY_ID, BY_CRITERIA
     }
 }

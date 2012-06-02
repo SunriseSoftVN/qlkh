@@ -82,12 +82,14 @@ public final class GridUtils {
      * @param <E>
      * @return
      */
-    public static <E extends AbstractEntity> ListStore<BeanModel> getListStoreForCb(Class<E> entityClass, DispatchAsync dispatch) {
+    public static <E extends AbstractEntity> ListStore<BeanModel> getListStoreForCb(Class<E> entityClass,
+                                                                                    DispatchAsync dispatch,
+                                                                                    ClientCriteria... criterion) {
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(entityClass);
         final ListStore<BeanModel> store = new ListStore<BeanModel>();
         LoadingUtils.showLoading();
 
-        dispatch.execute(new LoadAction(entityClass.getName()), new AbstractAsyncCallback<LoadResult>() {
+        dispatch.execute(new LoadAction(entityClass.getName(), criterion), new AbstractAsyncCallback<LoadResult>() {
             @Override
             public void onSuccess(LoadResult result) {
                 super.onSuccess(result);

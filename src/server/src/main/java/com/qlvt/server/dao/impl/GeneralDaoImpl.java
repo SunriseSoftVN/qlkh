@@ -22,6 +22,7 @@ package com.qlvt.server.dao.impl;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.dao.core.AbstractDao;
 import com.qlvt.server.dao.core.GeneralDao;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.Type;
@@ -102,6 +103,28 @@ public class GeneralDaoImpl extends AbstractDao implements GeneralDao {
     @Override
     public <E extends AbstractEntity> E findById(Class<E> entityClass, long id) {
         return getHibernateTemplate().get(entityClass, id);
+    }
+
+    @Override
+    public <E extends AbstractEntity> List<E> findCriteria(String entityName, Criterion... criterions) {
+        DetachedCriteria criteria = DetachedCriteria.forEntityName(entityName);
+        for (Criterion criterion: criterions) {
+            if (criterion != null) {
+                criteria.add(criterion);
+            }
+        }
+        return getHibernateTemplate().findByCriteria(criteria);
+    }
+
+    @Override
+    public <E extends AbstractEntity> List<E> findCriteria(Class<E> entityClass, Criterion... criterions) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(entityClass);
+        for (Criterion criterion: criterions) {
+            if (criterion != null) {
+                criteria.add(criterion);
+            }
+        }
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 
     @Override

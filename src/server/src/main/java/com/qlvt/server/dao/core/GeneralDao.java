@@ -20,6 +20,7 @@
 package com.qlvt.server.dao.core;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
+import org.hibernate.criterion.Criterion;
 
 import java.util.List;
 
@@ -36,6 +37,10 @@ public interface GeneralDao extends Dao {
     <E extends AbstractEntity> List<E> getAll(Class<E> entityClass);
 
     <E extends AbstractEntity> E findById(String entityName, long id);
+
+    <E extends AbstractEntity> List<E> findCriteria(Class<E> entityClass, Criterion... criterion);
+
+    <E extends AbstractEntity> List<E> findCriteria(String entityName, Criterion... criterion);
 
     <E extends AbstractEntity> E findById(Class<E> entityClass, long id);
 
