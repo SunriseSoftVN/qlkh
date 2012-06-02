@@ -23,7 +23,7 @@ import com.qlvt.core.client.action.LoginAction;
 import com.qlvt.core.client.action.LoginResult;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Nguyen Duc Dung
  * @since 12/28/11, 10:18 AM
  */
-public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
+public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
     @Autowired
     private UserDao userDao;
@@ -52,5 +52,9 @@ public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void rollback(LoginAction action, LoginResult result, ExecutionContext context) throws DispatchException {
     }
 }

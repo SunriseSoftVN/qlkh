@@ -19,10 +19,7 @@
 
 package com.qlvt.client.client.module.content.presenter;
 
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.BeanModelFactory;
-import com.extjs.gxt.ui.client.data.BeanModelLookup;
-import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -30,7 +27,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.BranchManagerPlace;
 import com.qlvt.client.client.module.content.view.BranchManagerView;
@@ -39,7 +35,6 @@ import com.qlvt.client.client.service.BranchServiceAsync;
 import com.qlvt.client.client.service.StationService;
 import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
-import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Branch;
@@ -48,8 +43,6 @@ import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
-import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +55,6 @@ import java.util.List;
  */
 @Presenter(view = BranchManagerView.class, place = BranchManagerPlace.class)
 public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView> {
-
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private BranchServiceAsync branchService = BranchService.App.getInstance();
     private StationServiceAsync stationService = StationService.App.getInstance();
@@ -89,7 +80,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
     protected void doBind() {
         stationListStore = createStationListStore();
         view.getCbbStation().setStore(stationListStore);
-        view.createGrid(GridUtils.createListStore(Branch.class, dispatch));
+        view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getBranchsGird().getStore().getLoader());
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -175,6 +166,27 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                     .getStore().getCount() -1 , 1 , false);
         }
         view.getBranchsGird().getSelectionModel().select(updateModel, false);
+    }
+
+    private ListStore<BeanModel> createUserListStore() {
+        RpcProxy<BasePagingLoadResult<Branch>> rpcProxy = new RpcProxy<BasePagingLoadResult<Branch>>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<Branch>> callback) {
+                branchService.getBranchsForGrid((BasePagingLoadConfig) loadConfig, callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<Branch>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Branch>>(rpcProxy, new BeanModelReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {

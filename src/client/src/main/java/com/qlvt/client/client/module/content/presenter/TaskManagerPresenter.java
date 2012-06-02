@@ -32,14 +32,12 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
 import com.qlvt.client.client.module.content.view.TaskManagerView;
 import com.qlvt.client.client.service.TaskService;
 import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
-import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.client.client.utils.TaskCodeUtils;
 import com.qlvt.core.client.constant.TaskTypeEnum;
@@ -49,8 +47,6 @@ import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
-import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +62,6 @@ import java.util.Map;
 @Presenter(view = TaskManagerView.class, place = TaskManagerPlace.class)
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
     private TaskServiceAsync taskService = TaskService.App.getInstance();
 
     private Window taskEditWindow;
@@ -83,7 +78,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     @Override
     protected void doBind() {
         view.setTaskChildOptionCellRenderer(new TaskChildOptionGridRender());
-        view.createGrid(GridUtils.createListStore(Task.class, dispatch));
+        view.createGrid(createTaskListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -296,6 +291,27 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     .getStore().getCount() - 1, 1, false);
         }
         view.getTaskGird().getSelectionModel().select(updateModel, false);
+    }
+
+    private ListStore<BeanModel> createTaskListStore() {
+        RpcProxy<BasePagingLoadResult<Task>> rpcProxy = new RpcProxy<BasePagingLoadResult<Task>>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<Task>> callback) {
+                taskService.getTasksForGrid((BasePagingLoadConfig) loadConfig, callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<Task>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Task>>(rpcProxy, new BeanModelReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private class TaskChildOptionGridRender implements GridCellRenderer<BeanModel> {

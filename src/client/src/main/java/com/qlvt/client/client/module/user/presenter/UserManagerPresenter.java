@@ -20,10 +20,7 @@
 package com.qlvt.client.client.module.user.presenter;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.BeanModelFactory;
-import com.extjs.gxt.ui.client.data.BeanModelLookup;
-import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -34,7 +31,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
@@ -43,7 +39,6 @@ import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.service.UserService;
 import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
-import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.constant.UserRoleEnum;
 import com.qlvt.core.client.exception.CodeExistException;
@@ -54,8 +49,6 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
-import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +61,6 @@ import java.util.List;
  */
 @Presenter(view = UserManagerView.class, place = UserManagerPlace.class)
 public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
-
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private UserServiceAsync userService = UserService.App.getInstance();
     private StationServiceAsync stationService = StationService.App.getInstance();
@@ -95,7 +86,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         stationListStore = createStationListStore();
         view.getCbbUserStation().setStore(stationListStore);
         view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
-        view.createGrid(GridUtils.createListStore(User.class, dispatch));
+        view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getUsersGrid().getStore().getLoader());
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -159,6 +150,26 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         });
     }
 
+    private ListStore<BeanModel> createUserListStore() {
+        RpcProxy<BasePagingLoadResult<User>> rpcProxy = new RpcProxy<BasePagingLoadResult<User>>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<User>> callback) {
+                userService.getUsersForGrid((BasePagingLoadConfig) loadConfig, callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<User>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<User>>(rpcProxy, new BeanModelReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
+    }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
         @Override

@@ -19,24 +19,20 @@
 
 package com.qlvt.client.client.module.content.presenter;
 
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.BeanModelFactory;
-import com.extjs.gxt.ui.client.data.BeanModelLookup;
-import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.service.StationService;
 import com.qlvt.client.client.service.StationServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
-import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.exception.DeleteException;
 import com.qlvt.core.client.model.Station;
@@ -44,8 +40,6 @@ import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
-import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +52,6 @@ import java.util.List;
  */
 @Presenter(view = StationManagerView.class, place = StationManagerPlace.class)
 public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
-
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private StationServiceAsync stationService = StationService.App.getInstance();
 
@@ -75,7 +67,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
 
     @Override
     protected void doBind() {
-        view.createGrid(GridUtils.createListStore(Station.class, dispatch));
+        view.createGrid(createUserListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getStationsGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -148,6 +140,27 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
                     .getStore().getCount() -1 , 1 , false);
         }
         view.getStationsGird().getSelectionModel().select(updateModel, false);
+    }
+
+    private ListStore<BeanModel> createUserListStore() {
+        RpcProxy<BasePagingLoadResult<Station>> rpcProxy = new RpcProxy<BasePagingLoadResult<Station>>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<BasePagingLoadResult<Station>> callback) {
+                stationService.getStationsForGrid((BasePagingLoadConfig) loadConfig, callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<Station>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Station>>(rpcProxy, new BeanModelReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
