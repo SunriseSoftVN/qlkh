@@ -18,7 +18,7 @@
 
     <servlet>
         <servlet-name>dispatch</servlet-name>
-        <servlet-class>net.customware.gwt.dispatch.server.spring.SpringStandardDispatchServlet</servlet-class>
+        <servlet-class>com.qlvt.server.servlet.SpringStandardDispatchServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 

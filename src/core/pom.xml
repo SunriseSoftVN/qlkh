@@ -82,6 +82,12 @@
             <version>${hibernateC3p0Verion}</version>
         </dependency>
 
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassistVersion}</version>
+        </dependency>
+
         <!--End-->
 
         <dependency>

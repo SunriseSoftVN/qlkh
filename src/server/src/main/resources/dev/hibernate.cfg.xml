@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <property name="connection.url">
-            jdbc:mysql://localhost/qlvt?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8
+            jdbc:mysql://127.0.0.1/qlvt?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8
         </property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="show_sql">true</property>
@@ -17,7 +17,7 @@
         <!-- <property name="hbm2ddl.auto">update</property> -->
 
         <!-- c3p0 config http://www.hibernate.org/214.html -->
-        <property name="connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>
+        <property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
         <property name="hibernate.c3p0.acquire_increment">1</property>
         <property name="hibernate.c3p0.idle_test_period">60</property>
         <property name="hibernate.c3p0.min_size">1</property>

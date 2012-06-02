@@ -21,6 +21,7 @@ package com.qlvt.server.handler;
 
 import com.qlvt.core.client.action.LoginAction;
 import com.qlvt.core.client.action.LoginResult;
+import com.qlvt.server.dao.TestDao;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -33,6 +34,8 @@ import net.customware.gwt.dispatch.shared.DispatchException;
  */
 public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
+    private TestDao testDao;
+
     @Override
     public Class<LoginAction> getActionType() {
         return LoginAction.class;
@@ -40,6 +43,9 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
     @Override
     public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
+        System.out.println("dung ne");
+        System.out.println(testDao);
+        testDao.test();
         return new LoginResult(true);
     }
 
@@ -47,4 +53,7 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
     public void rollback(LoginAction action, LoginResult result, ExecutionContext context) throws DispatchException {
     }
 
+    public void setTestDao(TestDao testDao) {
+        this.testDao = testDao;
+    }
 }
