@@ -35,5 +35,4 @@ public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T> {
         DiaLogUtils.logAndShowRpcErrorMessage(caught);
     }
 
-
 }

@@ -131,7 +131,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
                             @Override
                             public void onSuccess(SaveResult result) {
-                                super.onSuccess(result);
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                                 newUserWindow.hide();
                                 view.getPagingToolBar().refresh();
@@ -214,7 +213,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                             dispatch.execute(new SaveAction(user), new AbstractAsyncCallback<SaveResult>() {
                                 @Override
                                 public void onSuccess(SaveResult result) {
-                                    super.onSuccess(result);
                                     DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                                     beanModelListStore.update(model);
                                     changePasswordWindow.hide();
@@ -255,7 +253,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
             public void onSuccess(DeleteResult result) {
-                super.onSuccess(result);
                 //Reload grid.
                 view.getPagingToolBar().refresh();
                 DiaLogUtils.notify(view.getConstant().deleteUserMessageSuccess());

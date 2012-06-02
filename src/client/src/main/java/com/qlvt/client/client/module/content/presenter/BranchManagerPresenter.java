@@ -137,7 +137,6 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                     dispatch.execute(new SaveAction(currentBranch), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onSuccess(SaveResult result) {
-                            super.onSuccess(result);
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             branchEditWindow.hide();
                             updateGrid(result.<Branch>getEntity());
@@ -206,7 +205,6 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
             public void onSuccess(DeleteResult result) {
-                super.onSuccess(result);
                 if (result.isResult()) {
                     //Reload grid.
                     view.getPagingToolBar().refresh();

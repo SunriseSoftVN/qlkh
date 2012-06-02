@@ -91,7 +91,6 @@ public final class GridUtils {
         dispatch.execute(new LoadAction(entityClass.getName(), criterion), new AbstractAsyncCallback<LoadResult>() {
             @Override
             public void onSuccess(LoadResult result) {
-                super.onSuccess(result);
                 for (E entity : result.<E>getList()) {
                     store.add(factory.createModel(entity));
                 }

@@ -104,7 +104,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
             public void onSuccess(LoadStationResult result) {
-                super.onSuccess(result);
                 currentStation = result.getStation();
                 view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, dispatch, ClientRestrictions.eq("station.id",
                         currentStation.getId()), ClientRestrictions.eq("annual", true)));
@@ -236,7 +235,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                             dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
                                 @Override
                                 public void onSuccess(SaveResult result) {
-                                    super.onSuccess(result);
                                     DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                                     taskEditWindow.hide();
                                     updateGrid(result.<TaskDetail>getEntity());
@@ -350,7 +348,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         final AsyncCallback<DeleteTaskDetailResult> callback = new AbstractAsyncCallback<DeleteTaskDetailResult>() {
             @Override
             public void onSuccess(DeleteTaskDetailResult result) {
-                super.onSuccess(result);
                 //Reload grid.
                 resetView();
                 DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());

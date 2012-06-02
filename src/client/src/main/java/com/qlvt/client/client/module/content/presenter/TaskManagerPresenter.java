@@ -203,7 +203,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     dispatch.execute(new SaveAction(currentTask), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onSuccess(SaveResult result) {
-                            super.onSuccess(result);
                             if (result.getEntity() != null) {
                                 taskEditWindow.hide();
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
@@ -260,7 +259,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 dispatch.execute(new SaveAction(selectedTask), new AbstractAsyncCallback<SaveResult>() {
                     @Override
                     public void onSuccess(SaveResult result) {
-                        super.onSuccess(result);
                         if (result.getEntity() != null) {
                             updateGrid(selectedTask);
                             addChildTaskWindow.hide();
@@ -331,7 +329,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         view.getCbbChildTask().setStore(cbbStore);
                         addChildTaskWindow = view.createAddTaskChildWindow(childTaskGridStore);
                         addChildTaskWindow.show();
-                        super.onSuccess(result);
                     }
                 });
             }
@@ -371,7 +368,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
             public void onSuccess(DeleteResult result) {
-                super.onSuccess(result);
                 if (result.isResult()) {
                     //Reload grid.
                     view.getPagingToolBar().refresh();
