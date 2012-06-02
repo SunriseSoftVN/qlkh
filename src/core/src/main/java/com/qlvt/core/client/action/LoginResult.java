@@ -17,32 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.utils;
+package com.qlvt.core.client.action;
 
-import com.qlvt.core.system.SystemUtil;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class ServiceUtils.
+ * The Class LoginResult.
  *
  * @author Nguyen Duc Dung
- * @since 12/23/11, 9:34 AM
+ * @since 6/1/12, 1:56 AM
  */
-public class ServiceUtils {
+public class LoginResult implements Result {
 
-    private ServiceUtils() {
+    private boolean result;
 
+    public LoginResult() {
     }
 
-    public static String getServiceEntryPoint() {
-        if (SystemUtil.isProductionMode()) {
-            return SystemUtil.getServerBaseUrl()
-                    + SystemUtil.getConfiguration().serverServletRootPath();
-        }
-        //Set proxy servlet for development mode, to split up gwt server and gwt client to 2 projects.
-        return SystemUtil.getConfiguration().developmentModeClientBaseUrl()
-                + SystemUtil.getConfiguration().developmentModeClientProxyPath();
+    public LoginResult(boolean result) {
+        this.result = result;
     }
 
-    public static void configureServiceEntryPoint(Class<?> clazz, Object ourInstance) {
+    public boolean isResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
     }
 }

@@ -17,32 +17,34 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.utils;
+package com.qlvt.server.handler;
 
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.client.action.LoginAction;
+import com.qlvt.core.client.action.LoginResult;
+import net.customware.gwt.dispatch.server.ActionHandler;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.DispatchException;
 
 /**
- * The Class ServiceUtils.
+ * The Class LoginHandler.
  *
  * @author Nguyen Duc Dung
- * @since 12/23/11, 9:34 AM
+ * @since 6/1/12, 1:58 AM
  */
-public class ServiceUtils {
+public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
-    private ServiceUtils() {
-
+    @Override
+    public Class<LoginAction> getActionType() {
+        return LoginAction.class;
     }
 
-    public static String getServiceEntryPoint() {
-        if (SystemUtil.isProductionMode()) {
-            return SystemUtil.getServerBaseUrl()
-                    + SystemUtil.getConfiguration().serverServletRootPath();
-        }
-        //Set proxy servlet for development mode, to split up gwt server and gwt client to 2 projects.
-        return SystemUtil.getConfiguration().developmentModeClientBaseUrl()
-                + SystemUtil.getConfiguration().developmentModeClientProxyPath();
+    @Override
+    public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
+        return new LoginResult(true);
     }
 
-    public static void configureServiceEntryPoint(Class<?> clazz, Object ourInstance) {
+    @Override
+    public void rollback(LoginAction action, LoginResult result, ExecutionContext context) throws DispatchException {
     }
+
 }
