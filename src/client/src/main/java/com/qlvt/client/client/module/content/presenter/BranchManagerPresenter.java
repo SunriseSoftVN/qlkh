@@ -78,7 +78,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = createStationListStore();
+            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
             view.getCbbStation().setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
@@ -87,7 +87,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
 
     @Override
     protected void doBind() {
-        stationListStore = createStationListStore();
+        stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
         view.getCbbStation().setStore(stationListStore);
         view.createGrid(GridUtils.createListStore(Branch.class, dispatch));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getBranchsGird().getStore().getLoader());
@@ -246,22 +246,6 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
                 }
             }
         });
-    }
-
-    private ListStore<BeanModel> createStationListStore() {
-        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
-        final ListStore<BeanModel> store = new ListStore<BeanModel>();
-        LoadingUtils.showLoading();
-        stationService.getAllStation(new AbstractAsyncCallback<List<Station>>() {
-            @Override
-            public void onSuccess(List<Station> result) {
-                super.onSuccess(result);
-                for (Station station : result) {
-                    store.add(factory.createModel(station));
-                }
-            }
-        });
-        return store;
     }
 
     @Override

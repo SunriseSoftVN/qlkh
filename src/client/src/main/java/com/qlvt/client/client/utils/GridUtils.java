@@ -23,8 +23,11 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.reader.LoadGridDataReader;
+import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
+import com.qlvt.core.client.action.LoadAction;
 import com.qlvt.core.client.action.LoadGridDataAction;
 import com.qlvt.core.client.action.LoadGridDataResult;
+import com.qlvt.core.client.action.LoadResult;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
@@ -67,6 +70,31 @@ public final class GridUtils {
                     }
                 };
         return new ListStore<BeanModel>(pagingLoader);
+    }
+
+    /**
+     * Create ListStore for GXT ComboBox.
+     *
+     * @param entityClass
+     * @param dispatch
+     * @param <E>
+     * @return
+     */
+    public static <E extends AbstractEntity> ListStore<BeanModel> getListStoreForCb(Class<E> entityClass, DispatchAsync dispatch) {
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(entityClass);
+        final ListStore<BeanModel> store = new ListStore<BeanModel>();
+        LoadingUtils.showLoading();
+
+        dispatch.execute(new LoadAction(entityClass.getName(), LoadAction.LoadActionType.ALL), new AbstractAsyncCallback<LoadResult>() {
+            @Override
+            public void onSuccess(LoadResult result) {
+                super.onSuccess(result);
+                for(E entity : result.<E>getList()) {
+                    store.add(factory.createModel(entity));
+                }
+            }
+        });
+        return store;
     }
 
 }
