@@ -19,7 +19,12 @@
 
 package com.qlvt.client.client.utils;
 
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.qlvt.core.system.SystemUtil;
+import com.smvp4g.factory.client.utils.ClassUtils;
+import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 /**
  * The Class ServiceUtils.
@@ -33,6 +38,25 @@ public class ServiceUtils {
 
     }
 
+    /**
+     * Build configure for service.
+     *
+     * @param s   Remote Service Class
+     * @param t   Remote Service Async.
+     * @param <T> Remote Service Async.
+     * @return A instance of Async Remote Service was be configured.
+     */
+    public static <T extends RemoteServiceAsync<?>> void configureServiceEntryPoint(Class<?> s, T t) {
+        if (StringUtils.isNotEmpty(getServiceEntryPoint())) {
+            RemoteServiceRelativePath relativePath = ClassUtils.getAnnotation(s, RemoteServiceRelativePath.class);
+            if (relativePath != null && StringUtils.isNotEmpty(relativePath.value())) {
+                ServiceDefTarget endpoint = (ServiceDefTarget) t;
+                endpoint.setServiceEntryPoint(StringUtils.concatUrlPath(getServiceEntryPoint(),
+                        relativePath.value()));
+            }
+        }
+    }
+
     public static String getServiceEntryPoint() {
         if (SystemUtil.isProductionMode()) {
             return SystemUtil.getServerBaseUrl()
@@ -41,8 +65,5 @@ public class ServiceUtils {
         //Set proxy servlet for development mode, to split up gwt server and gwt client to 2 projects.
         return SystemUtil.getConfiguration().developmentModeClientBaseUrl()
                 + SystemUtil.getConfiguration().developmentModeClientProxyPath();
-    }
-
-    public static void configureServiceEntryPoint(Class<?> clazz, Object ourInstance) {
     }
 }

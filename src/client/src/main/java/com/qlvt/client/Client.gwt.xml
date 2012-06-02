@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='Client'>
 
-    <inherits name='net.customware.gwt.dispatch.Dispatch'/>
-
     <inherits name='com.smvp4g.mvp.Mvp'/>
     <inherits name='com.qlvt.core.Core'/>
 

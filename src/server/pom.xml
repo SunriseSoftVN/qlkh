@@ -100,22 +100,6 @@
             <classifier>classes</classifier>
         </dependency>
 
-        <!--Spring-->
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${springVerion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${springVerion}</version>
-        </dependency>
-
-        <!--end-->
-
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
