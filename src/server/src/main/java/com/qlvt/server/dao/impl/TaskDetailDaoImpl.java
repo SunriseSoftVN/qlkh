@@ -19,6 +19,7 @@
 
 package com.qlvt.server.dao.impl;
 
+import com.google.inject.Singleton;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
@@ -35,6 +36,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:49 PM
  */
+@Singleton
 public class TaskDetailDaoImpl extends AbstractDao<TaskDetail> implements TaskDetailDao {
     @Override
     public List<TaskDetail> findByStationId(long stationId) {

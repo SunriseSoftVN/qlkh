@@ -25,14 +25,19 @@ import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.main.place.LoginPlace;
 import com.qlvt.client.client.module.main.view.LoginView;
+import com.qlvt.client.client.service.LoginService;
+import com.qlvt.client.client.service.LoginServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.UrlUtils;
 import com.qlvt.core.client.action.LoginAction;
 import com.qlvt.core.client.action.LoginResult;
+import com.qlvt.core.client.exception.UserAuthenticationException;
+import com.qlvt.core.client.model.User;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
@@ -48,6 +53,8 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 @Presenter(view = LoginView.class, place = LoginPlace.class)
 public class LoginPresenter extends AbstractPresenter<LoginView> {
 
+    private LoginServiceAsync loginService = LoginService.App.getInstance();
+
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     @Override
@@ -61,8 +68,21 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
         view.getBtnOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                checkLogin(view.getTxtUserName().getValue(),
-                        LoginUtils.md5hash(view.getTxtPassWord().getValue()));
+
+                dispatch.execute(new LoginAction(), new AsyncCallback<LoginResult>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Window.alert(caught.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(LoginResult result) {
+                        Window.alert(String.valueOf(result.isResult()));
+                    }
+                });
+
+//                checkLogin(view.getTxtUserName().getValue(),
+//                        LoginUtils.md5hash(view.getTxtPassWord().getValue()));
             }
         });
         view.getTxtPassWord().addKeyListener(new KeyListener() {
@@ -84,15 +104,22 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
     }
 
     public void checkLogin(final String userName, final String passWord) {
-        dispatch.execute(new LoginAction(userName, passWord), new AbstractAsyncCallback<LoginResult>() {
+        loginService.checkLogin(userName, passWord, new AbstractAsyncCallback<User>() {
             @Override
-            public void onSuccess(LoginResult result) {
-                if (result != null) {
-                    LoginUtils.login(userName, result.getUser().getUserRole());
+            public void onFailure(Throwable caught) {
+                if (caught instanceof UserAuthenticationException) {
+                    DiaLogUtils.showMessage(view.getConstant().worngUserNameOrPassword());
+                } else {
+                    super.onFailure(caught);
+                }
+            }
+
+            @Override
+            public void onSuccess(User user) {
+                if (user != null) {
+                    LoginUtils.login(userName, user.getUserRole());
                     //Reload page and go to home page.
                     goToHomePage();
-                } else {
-                    DiaLogUtils.showMessage(view.getConstant().worngUserNameOrPassword());
                 }
             }
         });
