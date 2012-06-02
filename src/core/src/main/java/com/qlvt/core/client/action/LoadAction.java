@@ -36,9 +36,9 @@ public class LoadAction implements Action<LoadResult> {
     public LoadAction() {
     }
 
-    public LoadAction(String entityName) {
+    public LoadAction(String entityName, LoadActionType loadType) {
         this.entityName = entityName;
-        this.loadType = LoadActionType.ALL;
+        this.loadType = loadType;
     }
 
     public LoadAction(String entityName, Long id) {
