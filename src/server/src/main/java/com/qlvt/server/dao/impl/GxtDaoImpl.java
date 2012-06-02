@@ -82,7 +82,9 @@ public class GxtDaoImpl extends AbstractDao implements GxtDao {
         }
         if (criterions != null && criterions.length > 0) {
             for (Criterion criterion : criterions) {
-                criteria.add(criterion);
+                if (criterion != null) {
+                    criteria.add(criterion);
+                }
             }
         }
 

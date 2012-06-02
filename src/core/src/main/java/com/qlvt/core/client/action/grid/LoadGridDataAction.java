@@ -20,6 +20,7 @@
 package com.qlvt.core.client.action.grid;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.qlvt.core.client.criterion.ClientCriteria;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
@@ -32,13 +33,15 @@ public class LoadGridDataAction implements Action<LoadGridDataResult> {
 
     private BasePagingLoadConfig config;
     private String entityName;
+    private ClientCriteria[] criterion;
 
     public LoadGridDataAction() {
     }
 
-    public LoadGridDataAction(BasePagingLoadConfig config, String entityName) {
+    public LoadGridDataAction(BasePagingLoadConfig config, String entityName, ClientCriteria... criterion) {
         this.config = config;
         this.entityName = entityName;
+        this.criterion = criterion;
     }
 
     public BasePagingLoadConfig getConfig() {
@@ -47,5 +50,9 @@ public class LoadGridDataAction implements Action<LoadGridDataResult> {
 
     public String getEntityName() {
         return entityName;
+    }
+
+    public ClientCriteria[] getCriterion() {
+        return criterion;
     }
 }

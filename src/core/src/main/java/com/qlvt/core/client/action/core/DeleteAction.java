@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.core;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
 import net.customware.gwt.dispatch.shared.Action;

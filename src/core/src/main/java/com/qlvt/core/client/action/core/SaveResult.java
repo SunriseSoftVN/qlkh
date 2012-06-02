@@ -17,49 +17,31 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.core;
 
-import net.customware.gwt.dispatch.shared.Action;
+import com.qlvt.core.client.model.core.AbstractEntity;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class LoadAction.
+ * The Class SaveResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 11:37 AM
+ * @since 6/1/12, 1:50 PM
  */
-public class LoadAction implements Action<LoadResult> {
+public class SaveResult implements Result {
 
-    private String entityName;
-    private Long id;
-    private LoadActionType loadType;
 
-    public LoadAction() {
+    private AbstractEntity entity;
+
+    public SaveResult() {
     }
 
-    public LoadAction(String entityName) {
-        this.entityName = entityName;
-        this.loadType = LoadActionType.ALL;
+    public <E extends AbstractEntity> SaveResult(E entity) {
+        this.entity = entity;
     }
 
-    public LoadAction(String entityName, Long id) {
-        this.entityName = entityName;
-        this.id = id;
-        this.loadType = LoadActionType.BY_ID;
-    }
-
-    public String getEntityName() {
-        return entityName;
-    }
-
-    public LoadActionType getLoadType() {
-        return loadType;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public enum LoadActionType {
-        ALL, BY_ID
+    @SuppressWarnings("unchecked")
+    public <E extends AbstractEntity> E getEntity() {
+        return (E) entity;
     }
 }

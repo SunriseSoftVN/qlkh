@@ -17,43 +17,49 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.core;
 
-import com.qlvt.core.client.model.core.AbstractEntity;
-import net.customware.gwt.dispatch.shared.Result;
-
-import java.util.List;
+import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class LoadResult.
+ * The Class LoadAction.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 11:38 AM
+ * @since 6/1/12, 11:37 AM
  */
-public class LoadResult implements Result {
+public class LoadAction implements Action<LoadResult> {
 
-    private List<? extends AbstractEntity> list;
+    private String entityName;
+    private Long id;
+    private LoadActionType loadType;
 
-    private AbstractEntity result;
-
-    public LoadResult() {
+    public LoadAction() {
     }
 
-    public LoadResult(List<? extends AbstractEntity> list) {
-        this.list = list;
+    public LoadAction(String entityName) {
+        this.entityName = entityName;
+        this.loadType = LoadActionType.ALL;
     }
 
-    public LoadResult(AbstractEntity result) {
-        this.result = result;
+    public LoadAction(String entityName, Long id) {
+        this.entityName = entityName;
+        this.id = id;
+        this.loadType = LoadActionType.BY_ID;
     }
 
-    @SuppressWarnings("unchecked")
-    public <E extends AbstractEntity> E getResult() {
-        return (E) result;
+    public String getEntityName() {
+        return entityName;
     }
 
-    @SuppressWarnings("unchecked")
-    public <E extends AbstractEntity> List<E> getList() {
-        return (List<E>) list;
+    public LoadActionType getLoadType() {
+        return loadType;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public enum LoadActionType {
+        ALL, BY_ID
     }
 }

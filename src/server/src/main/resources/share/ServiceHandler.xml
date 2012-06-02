@@ -10,11 +10,11 @@
     <bean id="registry" class="net.customware.gwt.dispatch.server.DefaultActionHandlerRegistry">
         <property name="actionHandlers">
             <list>
-                <bean class="com.qlvt.server.handler.LoginHandler"/>
-                <bean class="com.qlvt.server.handler.LoadGridDataHandler"/>
-                <bean class="com.qlvt.server.handler.LoadHandler"/>
-                <bean class="com.qlvt.server.handler.SaveHandler"/>
-                <bean class="com.qlvt.server.handler.DeleteHandler"/>
+                <bean class="com.qlvt.server.handler.core.LoginHandler"/>
+                <bean class="com.qlvt.server.handler.gird.LoadGridDataHandler"/>
+                <bean class="com.qlvt.server.handler.core.LoadHandler"/>
+                <bean class="com.qlvt.server.handler.core.SaveHandler"/>
+                <bean class="com.qlvt.server.handler.core.DeleteHandler"/>
                 <bean class="com.qlvt.server.handler.ReportHandler"/>
                 <bean class="com.qlvt.server.handler.LoadStationHandler"/>
                 <bean class="com.qlvt.server.handler.LoadSubTaskAnnualHandler"/>

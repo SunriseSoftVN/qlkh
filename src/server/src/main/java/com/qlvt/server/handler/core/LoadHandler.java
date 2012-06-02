@@ -17,39 +17,37 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.handler.core;
 
-import com.qlvt.core.client.action.SaveAction;
-import com.qlvt.core.client.action.SaveResult;
+import com.qlvt.core.client.action.core.LoadAction;
+import com.qlvt.core.client.action.core.LoadResult;
 import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class SaveHandler.
+ * The Class LoadHandler.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:55 PM
+ * @since 6/1/12, 11:41 AM
  */
-public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
+public class LoadHandler extends AbstractHandler<LoadAction, LoadResult> {
 
     @Autowired
-    private GeneralDao generalDao;
+    private GeneralDao generalDaoImpl;
 
     @Override
-    public Class<SaveAction> getActionType() {
-        return SaveAction.class;
+    public Class<LoadAction> getActionType() {
+        return LoadAction.class;
     }
 
     @Override
-    public SaveResult execute(SaveAction action, ExecutionContext context) throws DispatchException {
-        if (action.getEntity() != null) {
-            return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
-        } else if (action.getEntities() != null) {
-            generalDao.saveOrUpdate(action.getEntities());
-            return new SaveResult();
+    public LoadResult execute(LoadAction action, ExecutionContext context) throws DispatchException {
+        if (action.getLoadType() == LoadAction.LoadActionType.ALL) {
+            return new LoadResult(generalDaoImpl.getAll(action.getEntityName()));
+        } else if (action.getLoadType() == LoadAction.LoadActionType.BY_ID) {
+            return new LoadResult(generalDaoImpl.findById(action.getEntityName(), action.getId()));
         }
         return null;
     }

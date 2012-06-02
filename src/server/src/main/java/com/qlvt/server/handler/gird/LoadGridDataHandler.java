@@ -17,10 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.handler.gird;
 
 import com.qlvt.core.client.action.grid.LoadGridDataAction;
 import com.qlvt.core.client.action.grid.LoadGridDataResult;
+import com.qlvt.server.criterion.ClientRestrictionsTranslator;
 import com.qlvt.server.dao.GxtDao;
 import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -46,6 +47,7 @@ public class LoadGridDataHandler extends AbstractHandler<LoadGridDataAction, Loa
     @SuppressWarnings("unchecked")
     @Override
     public LoadGridDataResult execute(LoadGridDataAction action, ExecutionContext context) throws DispatchException {
-        return new LoadGridDataResult(gxtDao.getByBeanConfig(action.getEntityName(), action.getConfig()));
+        return new LoadGridDataResult(gxtDao.getByBeanConfig(action.getEntityName(),
+                action.getConfig(), ClientRestrictionsTranslator.getCriterions(action.getCriterion())));
     }
 }

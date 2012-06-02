@@ -17,43 +17,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.core;
 
-import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class LoginAction.
+ * The Class DeleteResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:56 AM
+ * @since 6/1/12, 2:03 PM
  */
-public class LoginAction implements Action<LoginResult> {
+public class DeleteResult implements Result {
 
-    private String userName;
+    private boolean result;
 
-    private String passWord;
-
-    public LoginAction() {
+    public DeleteResult() {
     }
 
-    public LoginAction(String userName, String passWord) {
-        this.userName = userName;
-        this.passWord = passWord;
+    public DeleteResult(boolean result) {
+        this.result = result;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public boolean isResult() {
+        return result;
     }
 }

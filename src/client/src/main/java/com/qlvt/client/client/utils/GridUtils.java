@@ -24,10 +24,11 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.reader.LoadGridDataReader;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlvt.core.client.action.LoadAction;
-import com.qlvt.core.client.action.LoadResult;
+import com.qlvt.core.client.action.core.LoadAction;
+import com.qlvt.core.client.action.core.LoadResult;
 import com.qlvt.core.client.action.grid.LoadGridDataAction;
 import com.qlvt.core.client.action.grid.LoadGridDataResult;
+import com.qlvt.core.client.criterion.ClientCriteria;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
@@ -53,11 +54,12 @@ public final class GridUtils {
      * @return
      */
     public static <E extends AbstractEntity> ListStore<BeanModel> createListStore(final Class<E> entityClass,
-                                                                                  final DispatchAsync dispatch) {
+                                                                                  final DispatchAsync dispatch,
+                                                                                  final ClientCriteria... criterion) {
         RpcProxy<LoadGridDataResult> rpcProxy = new RpcProxy<LoadGridDataResult>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
-                dispatch.execute(new LoadGridDataAction((BasePagingLoadConfig) loadConfig, entityClass.getName()), callback);
+                dispatch.execute(new LoadGridDataAction((BasePagingLoadConfig) loadConfig, entityClass.getName(), criterion), callback);
             }
         };
         PagingLoader<PagingLoadResult<E>> pagingLoader =
@@ -89,7 +91,7 @@ public final class GridUtils {
             @Override
             public void onSuccess(LoadResult result) {
                 super.onSuccess(result);
-                for(E entity : result.<E>getList()) {
+                for (E entity : result.<E>getList()) {
                     store.add(factory.createModel(entity));
                 }
             }

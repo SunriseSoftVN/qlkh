@@ -17,12 +17,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.handler.core;
 
-import com.qlvt.core.client.action.DeleteAction;
-import com.qlvt.core.client.action.DeleteResult;
+import com.qlvt.core.client.action.core.DeleteAction;
+import com.qlvt.core.client.action.core.DeleteResult;
 import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.apache.commons.collections.CollectionUtils;

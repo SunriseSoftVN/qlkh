@@ -17,28 +17,43 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.core;
 
+import com.qlvt.core.client.model.core.AbstractEntity;
 import net.customware.gwt.dispatch.shared.Result;
 
+import java.util.List;
+
 /**
- * The Class DeleteResult.
+ * The Class LoadResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 2:03 PM
+ * @since 6/1/12, 11:38 AM
  */
-public class DeleteResult implements Result {
+public class LoadResult implements Result {
 
-    private boolean result;
+    private List<? extends AbstractEntity> list;
 
-    public DeleteResult() {
+    private AbstractEntity result;
+
+    public LoadResult() {
     }
 
-    public DeleteResult(boolean result) {
+    public LoadResult(List<? extends AbstractEntity> list) {
+        this.list = list;
+    }
+
+    public LoadResult(AbstractEntity result) {
         this.result = result;
     }
 
-    public boolean isResult() {
-        return result;
+    @SuppressWarnings("unchecked")
+    public <E extends AbstractEntity> E getResult() {
+        return (E) result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <E extends AbstractEntity> List<E> getList() {
+        return (List<E>) list;
     }
 }

@@ -33,9 +33,10 @@ import com.qlvt.client.client.module.content.place.TaskDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
 import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.utils.DiaLogUtils;
+import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
-import com.qlvt.core.client.action.SaveAction;
-import com.qlvt.core.client.action.SaveResult;
+import com.qlvt.core.client.action.core.SaveAction;
+import com.qlvt.core.client.action.core.SaveResult;
 import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
 import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailAction;
@@ -44,10 +45,9 @@ import com.qlvt.core.client.action.task.LoadNormalTaskAction;
 import com.qlvt.core.client.action.task.LoadNormalTaskResult;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
-import com.qlvt.core.client.action.taskdetail.LoadTaskDetailAction;
-import com.qlvt.core.client.action.taskdetail.LoadTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
 import com.qlvt.core.client.action.time.GetServerTimeResult;
+import com.qlvt.core.client.criterion.ClientRestrictions;
 import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.Task;
@@ -106,7 +106,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void onSuccess(LoadStationResult result) {
                 super.onSuccess(result);
                 currentStation = result.getStation();
-                view.createTaskGrid(createTaskListStore());
+                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, dispatch, ClientRestrictions.eq("station.id",
+                        currentStation.getId()), ClientRestrictions.eq("annual", true)));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
                 view.getTaskDetailGird().focus();
@@ -286,27 +287,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     .getStore().getCount() - 1, 1, false);
         }
         view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
-    }
-
-    private ListStore<BeanModel> createTaskListStore() {
-        RpcProxy<LoadTaskDetailResult> rpcProxy = new RpcProxy<LoadTaskDetailResult>() {
-            @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadTaskDetailResult> callback) {
-                dispatch.execute(new LoadTaskDetailAction((BasePagingLoadConfig) loadConfig, currentStation.getId()), callback);
-            }
-        };
-
-        PagingLoader<PagingLoadResult<TaskDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetail>>(rpcProxy, new LoadGridDataReader()) {
-                    @Override
-                    protected void onLoadFailure(Object loadConfig, Throwable t) {
-                        super.onLoadFailure(loadConfig, t);
-                        //Log load exception.
-                        DiaLogUtils.logAndShowRpcErrorMessage(t);
-                    }
-                };
-
-        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private ListStore<BeanModel> createSubTaskListStore() {

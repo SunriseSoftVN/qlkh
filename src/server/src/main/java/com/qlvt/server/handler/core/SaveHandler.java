@@ -17,40 +17,39 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.handler.core;
 
-import com.qlvt.core.client.action.LoginAction;
-import com.qlvt.core.client.action.LoginResult;
-import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.handler.core.AbstractHandler;
+import com.qlvt.core.client.action.core.SaveAction;
+import com.qlvt.core.client.action.core.SaveResult;
+import com.qlvt.server.dao.core.GeneralDao;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * The Class LoginServiceImpl.
+ * The Class SaveHandler.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 10:18 AM
+ * @since 6/1/12, 1:55 PM
  */
-public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
+public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
 
     @Autowired
-    private UserDao userDao;
+    private GeneralDao generalDao;
 
     @Override
-    public Class<LoginAction> getActionType() {
-        return LoginAction.class;
+    public Class<SaveAction> getActionType() {
+        return SaveAction.class;
     }
 
     @Override
-    public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName(action.getUserName());
-        if (user != null && user.getPassWord().equals(action.getPassWord())) {
-            return new LoginResult(user);
-        } else {
-            return null;
+    public SaveResult execute(SaveAction action, ExecutionContext context) throws DispatchException {
+        if (action.getEntity() != null) {
+            return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
+        } else if (action.getEntities() != null) {
+            generalDao.saveOrUpdate(action.getEntities());
+            return new SaveResult();
         }
+        return null;
     }
 }

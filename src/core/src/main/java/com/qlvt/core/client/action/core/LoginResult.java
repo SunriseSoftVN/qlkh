@@ -17,31 +17,33 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.core.client.action.core;
 
-import com.qlvt.core.client.model.core.AbstractEntity;
+import com.qlvt.core.client.model.User;
 import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class SaveResult.
+ * The Class LoginResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 1:50 PM
+ * @since 6/1/12, 1:56 AM
  */
-public class SaveResult implements Result {
+public class LoginResult implements Result {
 
+    private User user;
 
-    private AbstractEntity entity;
-
-    public SaveResult() {
+    public LoginResult() {
     }
 
-    public <E extends AbstractEntity> SaveResult(E entity) {
-        this.entity = entity;
+    public LoginResult(User user) {
+        this.user = user;
     }
 
-    @SuppressWarnings("unchecked")
-    public <E extends AbstractEntity> E getEntity() {
-        return (E) entity;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
