@@ -19,7 +19,6 @@
 
 package com.qlvt.server.dao.impl;
 
-import com.google.inject.Singleton;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.dao.core.AbstractDao;
@@ -35,7 +34,6 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 12/27/11, 7:06 PM
  */
-@Singleton
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User findByUserName(String userName) {
