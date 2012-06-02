@@ -93,7 +93,7 @@ public class GxtDaoImpl extends AbstractDao implements GxtDao {
     protected int count(DetachedCriteria criteria) {
         criteria.setProjection(Projections.rowCount());
         List result = getHibernateTemplate().findByCriteria(criteria);
-        if (result != null && result.size() > 0) {
+        if (result != null) {
             return ((Long)result.get(0)).intValue();
         }
         return 0;

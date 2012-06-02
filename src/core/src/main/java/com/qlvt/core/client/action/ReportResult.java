@@ -17,35 +17,28 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action.taskdetail;
+package com.qlvt.core.client.action;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class LoadTaskAnnualDetailsAction.
+ * The Class ReportResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 9:29 PM
+ * @since 6/1/12, 6:50 PM
  */
-public class LoadTaskAnnualDetailAction implements Action<LoadTaskAnnualDetailResult> {
+public class ReportResult implements Result {
 
-    private BasePagingLoadConfig config;
-    private long stationId;
+    private String reportUrl;
 
-    public LoadTaskAnnualDetailAction() {
+    public ReportResult() {
     }
 
-    public LoadTaskAnnualDetailAction(BasePagingLoadConfig config, long stationId) {
-        this.config = config;
-        this.stationId = stationId;
+    public ReportResult(String reportUrl) {
+        this.reportUrl = reportUrl;
     }
 
-    public long getStationId() {
-        return stationId;
-    }
-
-    public BasePagingLoadConfig getConfig() {
-        return config;
+    public String getReportUrl() {
+        return reportUrl;
     }
 }

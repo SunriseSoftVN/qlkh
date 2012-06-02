@@ -45,12 +45,6 @@ public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
 
     @Override
     public SaveResult execute(SaveAction action, ExecutionContext context) throws DispatchException {
-        if (action.getEntity() != null) {
-            return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
-        } else if (action.getEntities() != null) {
-            generalDao.saveOrUpdate(action.getEntities());
-            return new SaveResult();
-        }
-        return null;
+        return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
     }
 }

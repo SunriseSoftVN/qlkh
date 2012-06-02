@@ -22,8 +22,6 @@ package com.qlvt.core.client.action;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import net.customware.gwt.dispatch.shared.Action;
 
-import java.util.List;
-
 /**
  * The Class SaveAction.
  *
@@ -32,7 +30,6 @@ import java.util.List;
  */
 public class SaveAction implements Action<SaveResult> {
 
-    private List<AbstractEntity> entities;
     private AbstractEntity entity;
 
     public SaveAction() {
@@ -42,15 +39,7 @@ public class SaveAction implements Action<SaveResult> {
         this.entity = entity;
     }
 
-    public <E extends AbstractEntity> SaveAction(List<E> entities) {
-        this.entities = (List<AbstractEntity>) entities;
-    }
-
     public AbstractEntity getEntity() {
         return entity;
-    }
-
-    public List<AbstractEntity> getEntities() {
-        return entities;
     }
 }

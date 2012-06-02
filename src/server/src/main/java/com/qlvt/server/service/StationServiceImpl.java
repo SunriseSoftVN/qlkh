@@ -48,7 +48,6 @@ public class StationServiceImpl extends AbstractService implements StationServic
     @Inject
     private DaoProvider provider;
 
-
     @Override
     public List<Station> getAllStation() {
         return provider.getStationDao().getAll(Station.class);

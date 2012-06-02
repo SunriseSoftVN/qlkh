@@ -22,7 +22,7 @@ package com.qlvt.server.dao.impl;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -36,8 +36,9 @@ import java.util.List;
 public class BranchDaoImpl extends AbstractDao<Branch> implements BranchDao {
     @Override
     public List<Branch> findByStationId(long stationId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(Branch.class)
+        Criteria criteria = getCurrentSession().createCriteria(Branch.class)
                 .add(Restrictions.eq("station.id", stationId));
-        return getHibernateTemplate().findByCriteria(criteria);
+        List<Branch> branches = criteria.list();
+        return branches;
     }
 }

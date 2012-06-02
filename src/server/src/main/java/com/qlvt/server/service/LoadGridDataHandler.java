@@ -19,8 +19,8 @@
 
 package com.qlvt.server.service;
 
-import com.qlvt.core.client.action.grid.LoadGridDataAction;
-import com.qlvt.core.client.action.grid.LoadGridDataResult;
+import com.qlvt.core.client.action.LoadGridDataAction;
+import com.qlvt.core.client.action.LoadGridDataResult;
 import com.qlvt.server.dao.GxtDao;
 import com.qlvt.server.service.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;

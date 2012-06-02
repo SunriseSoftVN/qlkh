@@ -25,9 +25,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.core.reader.LoadGridDataReader;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.core.client.action.LoadAction;
+import com.qlvt.core.client.action.LoadGridDataAction;
+import com.qlvt.core.client.action.LoadGridDataResult;
 import com.qlvt.core.client.action.LoadResult;
-import com.qlvt.core.client.action.grid.LoadGridDataAction;
-import com.qlvt.core.client.action.grid.LoadGridDataResult;
 import com.qlvt.core.client.model.core.AbstractEntity;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 

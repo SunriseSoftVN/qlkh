@@ -17,29 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action.station;
+package com.qlvt.core.client.action;
 
-import com.qlvt.core.client.model.Station;
-import net.customware.gwt.dispatch.shared.Result;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class LoadStationAndBranchResult.
+ * The Class LoadGridDataAction.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 8:08 PM
+ * @since 6/1/12, 6:38 AM
  */
-public class LoadStationResult implements Result {
+public class LoadGridDataAction implements Action<LoadGridDataResult> {
 
-    private Station station;
+    private BasePagingLoadConfig config;
+    private String entityName;
 
-    public LoadStationResult() {
+    public LoadGridDataAction() {
     }
 
-    public LoadStationResult(Station station) {
-        this.station = station;
+    public LoadGridDataAction(BasePagingLoadConfig config, String entityName) {
+        this.config = config;
+        this.entityName = entityName;
     }
 
-    public Station getStation() {
-        return station;
+    public BasePagingLoadConfig getConfig() {
+        return config;
+    }
+
+    public String getEntityName() {
+        return entityName;
     }
 }
