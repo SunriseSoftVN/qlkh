@@ -19,8 +19,6 @@
 
 package com.qlvt.server.service;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qlvt.core.client.dto.SubTaskAnnualDetailDto;
@@ -35,7 +33,6 @@ import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.transaction.Transaction;
 import org.apache.commons.collections.CollectionUtils;
 import org.dozer.DozerBeanMapperSingletonWrapper;
-import org.hibernate.criterion.Restrictions;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,90 +51,6 @@ public class TaskDetailServiceImpl extends AbstractService {
     @Inject
     private DaoProvider provider;
 
-    public BasePagingLoadResult<TaskDetail> getTaskDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
-        return provider.getTaskDetailDao().getByBeanConfig(TaskDetail.class, loadConfig,
-                Restrictions.eq("station.id", stationId), Restrictions.eq("annual", false));
-    }
-
-    public BasePagingLoadResult<TaskDetail> getTaskAnnualDetailsForGrid(BasePagingLoadConfig loadConfig, long stationId) {
-        return provider.getTaskDetailDao().getByBeanConfig(TaskDetail.class, loadConfig,
-                Restrictions.eq("station.id", stationId), Restrictions.eq("annual", true));
-    }
-
-    public BasePagingLoadResult<SubTaskAnnualDetail> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig,
-                                                                             long taskDetailId) {
-        List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
-        TaskDetail taskDetail = provider.getTaskDetailDao().findById(TaskDetail.class, taskDetailId);
-        if (taskDetail != null) {
-            List<Branch> branches = provider.getBranchDao().findByStationId(taskDetail.getStation().getId());
-            if (CollectionUtils.isNotEmpty(branches)) {
-                for (Branch branch : branches) {
-                    SubTaskAnnualDetail subTaskAnnualDetail = provider.getSubTaskAnnualDetailDao().
-                            findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                    if (subTaskAnnualDetail == null) {
-                        subTaskAnnualDetail = new SubTaskAnnualDetail();
-                        subTaskAnnualDetail.setTaskDetail(taskDetail);
-                        subTaskAnnualDetail.setBranch(branch);
-                        subTaskAnnualDetail.setCreateBy(1l);
-                        subTaskAnnualDetail.setUpdateBy(1l);
-                    }
-                    subTaskAnnualDetails.add(subTaskAnnualDetail);
-                }
-            }
-        }
-        return new BasePagingLoadResult<SubTaskAnnualDetail>(subTaskAnnualDetails, loadConfig.getOffset(),
-                subTaskAnnualDetails.size());
-    }
-
-    public BasePagingLoadResult<SubTaskDetail> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
-        List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
-        TaskDetail taskDetail = provider.getTaskDetailDao().findById(TaskDetail.class, taskDetailId);
-        if (taskDetail != null) {
-            List<Branch> branches = provider.getBranchDao().findByStationId(taskDetail.getStation().getId());
-            if (CollectionUtils.isNotEmpty(branches)) {
-                for (Branch branch : branches) {
-                    SubTaskDetail subTaskDetail = provider.getSubTaskDetailDao().
-                            findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                    if (subTaskDetail == null) {
-                        subTaskDetail = new SubTaskDetail();
-                        subTaskDetail.setTaskDetail(taskDetail);
-                        subTaskDetail.setBranch(branch);
-                        subTaskDetail.setCreateBy(1l);
-                        subTaskDetail.setUpdateBy(1l);
-                    }
-                    subTaskDetails.add(subTaskDetail);
-                }
-            }
-        }
-        return new BasePagingLoadResult<SubTaskDetail>(subTaskDetails, loadConfig.getOffset(),
-                subTaskDetails.size());
-    }
-
-    public void deleteTaskDetail(long taskDetailId) {
-        TaskDetail taskDetail = provider.getTaskDetailDao().findById(TaskDetail.class, taskDetailId);
-        if (taskDetail != null) {
-            List<Branch> branches = provider.getBranchDao().findByStationId(taskDetail.getStation().getId());
-
-            //Delete SubTask First
-            List<Long> branchIds = new ArrayList<Long>(branches.size());
-            for (Branch branch : branches) {
-                branchIds.add(branch.getId());
-            }
-            provider.getSubTaskDetailDao().deleteSubTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
-
-            provider.getSubTaskAnnualDetailDao().deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(taskDetail.getId(), branchIds);
-            //Delete TaskDetail
-            provider.getTaskDetailDao().deleteById(TaskDetail.class, taskDetailId);
-        }
-    }
-
-    public void deleteTaskDetails(List<Long> taskDetailIds) {
-        for (Long taskId : taskDetailIds) {
-            if (taskId != null) {
-                deleteTaskDetail(taskId);
-            }
-        }
-    }
 
     public TaskDetail updateTaskDetail(TaskDetail taskDetail) {
         //Set year on server because client time might be wrong.
@@ -181,14 +94,5 @@ public class TaskDetailServiceImpl extends AbstractService {
         if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
             provider.getSubTaskAnnualDetailDao().saveOrUpdate(subTaskAnnualDetails);
         }
-    }
-
-
-    public void updateSubTaskAnnualDetails(List<SubTaskAnnualDetail> subTaskAnnualDetails) {
-        provider.getSubTaskAnnualDetailDao().saveOrUpdate(subTaskAnnualDetails);
-    }
-
-    public void updateSubTaskDetails(List<SubTaskDetail> subTaskDetails) {
-        provider.getSubTaskDetailDao().saveOrUpdate(subTaskDetails);
     }
 }
