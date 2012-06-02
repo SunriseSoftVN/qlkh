@@ -21,9 +21,13 @@ package com.qlvt.server.dao.impl;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
 import com.qlvt.server.dao.core.GeneralDao;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.Type;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,6 +38,31 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public class GeneralDaoImpl extends HibernateDaoSupport implements GeneralDao {
+
+    @Override
+    public <E extends AbstractEntity> List<E> findRelateEntityById(String entityName, long id, String relateEntity) {
+        Type entityType = getSessionFactory().getTypeHelper().entity(entityName);
+        Type relateEntityType = getSessionFactory().getTypeHelper().entity(relateEntity);
+        if (entityType != null && relateEntityType != null) {
+            Class<?> entityClass = entityType.getReturnedClass();
+            Class<?> relateEntityClass = relateEntityType.getReturnedClass();
+
+            //Find entity class field name inside relate entity.
+            String fieldName = null;
+            for (Field field : relateEntityClass.getDeclaredFields()) {
+                if(field.getType() == entityClass) {
+                    fieldName = field.getName();
+                    break;
+                }
+            }
+            if (fieldName != null) {
+                DetachedCriteria criteria = DetachedCriteria.forEntityName(relateEntity);
+                criteria.add(Restrictions.eq(fieldName + ".id", id));
+                return getHibernateTemplate().findByCriteria(criteria);
+            }
+        }
+        return Collections.emptyList();
+    }
 
     @Override
     public <E extends AbstractEntity> void deleteByIds(String entityName, List<Long> ids) {
