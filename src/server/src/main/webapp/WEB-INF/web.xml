@@ -29,18 +29,6 @@
 
     <!--end-->
 
-    <!--Report Servlet-->
-    <servlet>
-        <servlet-name>report</servlet-name>
-        <servlet-class>com.qlvt.server.servlet.ReportServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>report</servlet-name>
-        <url-pattern>/service/report</url-pattern>
-    </servlet-mapping>
-    <!--end-->
-
     <!-- Guice Filter-->
     <filter>
         <filter-name>guiceFilter</filter-name>
@@ -59,7 +47,7 @@
 
     <!-- Guice Context Listener -->
     <!--<listener>-->
-    <!--<listener-class>com.qlvt.server.servlet.listener.GuiceContextListener</listener-class>-->
+        <!--<listener-class>com.qlvt.server.servlet.listener.GuiceContextListener</listener-class>-->
     <!--</listener>-->
 
     <welcome-file-list>

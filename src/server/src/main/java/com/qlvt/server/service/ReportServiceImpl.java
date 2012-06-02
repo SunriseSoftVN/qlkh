@@ -25,9 +25,10 @@ import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.qlvt.client.client.service.ReportService;
 import com.qlvt.client.client.utils.TaskCodeUtils;
-import com.qlvt.core.client.action.ReportAction;
-import com.qlvt.core.client.action.ReportResult;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.client.constant.ReportTypeEnum;
 import com.qlvt.core.client.constant.TaskTypeEnum;
@@ -36,24 +37,18 @@ import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.business.rule.*;
-import com.qlvt.server.dao.SubTaskAnnualDetailDao;
-import com.qlvt.server.dao.SubTaskDetailDao;
-import com.qlvt.server.dao.TaskDao;
-import com.qlvt.server.dao.TaskDetailDao;
-import com.qlvt.server.dao.core.GeneralDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import com.qlvt.server.guice.DaoProvider;
+import com.qlvt.server.service.core.AbstractService;
 import com.qlvt.server.servlet.ReportServlet;
+import com.qlvt.server.transaction.Transaction;
 import com.qlvt.server.util.ReportExporter;
 import com.qlvt.server.util.ServletUtils;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.DispatchException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -62,13 +57,16 @@ import static ch.lambdaj.Lambda.forEach;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUM;
 
+
 /**
- * The Class ReportHandler.
+ * The Class ReportServiceImpl.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 6:52 PM
+ * @since 2/22/12, 12:45 PM
  */
-public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
+@Transaction
+@Singleton
+public class ReportServiceImpl extends AbstractService implements ReportService {
 
     private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "kehoachtacnghiep";
@@ -77,32 +75,11 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private static final Font TITLE_FONT = new Font(14, "Arial", "/fonts/Arial.ttf",
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
 
-    @Autowired
-    private GeneralDao generalDao;
-
-    @Autowired
-    private TaskDao taskDao;
-
-    @Autowired
-    private TaskDetailDao taskDetailDao;
-
-    @Autowired
-    private SubTaskDetailDao subTaskDetailDao;
-
-    @Autowired
-    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+    @Inject
+    private DaoProvider provider;
 
     @Override
-    public Class<ReportAction> getActionType() {
-        return ReportAction.class;
-    }
-
-    @Override
-    public ReportResult execute(ReportAction action, ExecutionContext context) throws DispatchException {
-        return new ReportResult(reportForCompany(action.getReportTypeEnum(), action.getFileTypeEnum(), action.getStationId()));
-    }
-
-    private String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) {
+    public String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) {
         try {
             DynamicReport dynamicReport = buildReport(reportTypeEnum, fileTypeEnum, stationId);
             JasperReport jasperReport = DynamicJasperHelper.
@@ -121,7 +98,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 ReportExporter.exportReportXls(jasperPrint, filePath);
             }
 
-            return new StringBuilder().append(SystemUtil.getServerBaseUrl())
+            return new StringBuilder().append(ServletUtils.getInstance()
+                    .getBaseUrl(getThreadLocalRequest()))
                     .append(SystemUtil.getConfiguration().serverServletRootPath())
                     .append(REPORT_SERVLET_URI)
                     .append(ReportServlet.REPORT_FILENAME)
@@ -187,11 +165,11 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
             List<Station> stations = new ArrayList<Station>();
             if (stationId == StationCodeEnum.COMPANY.getId()) {
-                stations = generalDao.getAll(Station.class);
+                stations = provider.getStationDao().getAll(Station.class);
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
             } else {
-                Station station = generalDao.findById(Station.class, stationId);
+                Station station = provider.getStationDao().findById(Station.class, stationId);
                 stations.add(station);
                 fastReportBuilder.setTitle("KẾ HOẠCH TÁC NGHIỆP KHỐI LƯỢNG SCTXĐK-KCHT TTTH ĐS "
                         + reportTypeEnum.getValue() + " NĂM 2012 "
@@ -246,12 +224,12 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private List<CompanySumReportBean> buildReportData(ReportTypeEnum reportTypeEnum, long stationId) {
         List<CompanySumReportBean> beans = new ArrayList<CompanySumReportBean>();
         List<CompanySumReportBean> parentBeans = new ArrayList<CompanySumReportBean>();
-        List<Task> tasks = taskDao.getAllOrderByCode();
+        List<Task> tasks = provider.getTaskDao().getAllOrderByCode();
         List<Station> stations = new ArrayList<Station>();
         if (stationId == StationCodeEnum.COMPANY.getId()) {
-            stations = generalDao.getAll(Station.class);
+            stations = provider.getStationDao().getAll(Station.class);
         } else {
-            stations.add(generalDao.findById(Station.class, stationId));
+            stations.add(provider.getStationDao().findById(Station.class, stationId));
         }
         for (Task task : tasks) {
             CompanySumReportBean bean = new CompanySumReportBean();
@@ -269,8 +247,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
         //Add two more columns. Business rule.
         if (stationId == StationCodeEnum.COMPANY.getId()) {
-            AdditionStationColumnRule.addDataForDSND(beans, reportTypeEnum, taskDetailDao,
-                    subTaskAnnualDetailDao, subTaskDetailDao);
+            AdditionStationColumnRule.addDataForDSND(beans, provider, reportTypeEnum);
         }
 
         //Build tree
@@ -359,7 +336,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         stationReport.setName(station.getName());
         if (task.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()
                 || task.getTaskTypeCode() == TaskTypeEnum.DK.getTaskTypeCode()) {
-            TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
+            TaskDetail taskDetail = provider.getTaskDetailDao().findCurrentByStationIdAndTaskId(station.getId(), task.getId());
             if (taskDetail != null) {
                 //Calculate Weight
                 if (taskDetail.getAnnual()) {
@@ -379,7 +356,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     private void calculateWeightForNormalTask(StationReportBean stationReport, TaskDetail taskDetail,
                                               ReportTypeEnum reportTypeEnum) {
-        List<SubTaskDetail> subTaskDetails = subTaskDetailDao.findByTaskDetailId(taskDetail.getId());
+        List<SubTaskDetail> subTaskDetails = provider.getSubTaskDetailDao().findByTaskDetailId(taskDetail.getId());
         if (CollectionUtils.isNotEmpty(subTaskDetails)) {
             Double weight = 0d;
             for (SubTaskDetail subTaskDetail : subTaskDetails) {
@@ -427,7 +404,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     }
 
     private void calculateWeightForAnnualTask(StationReportBean stationReport, TaskDetail taskDetail) {
-        List<SubTaskAnnualDetail> subTaskAnnualDetails = subTaskAnnualDetailDao
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = provider.getSubTaskAnnualDetailDao()
                 .findByTaskDetailId(taskDetail.getId());
         if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
             Double weight = 0d;

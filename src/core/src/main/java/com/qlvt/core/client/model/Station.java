@@ -21,7 +21,6 @@ package com.qlvt.core.client.model;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
 
-import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -33,8 +32,6 @@ import java.util.List;
 public class Station extends AbstractEntity {
 
     private String name;
-
-    @Transient
     private List<Branch> branches;
 
     public String getName() {

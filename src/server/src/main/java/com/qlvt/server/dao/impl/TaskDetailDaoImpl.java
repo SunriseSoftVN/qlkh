@@ -23,7 +23,7 @@ import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Calendar;
@@ -38,21 +38,22 @@ import java.util.List;
 public class TaskDetailDaoImpl extends AbstractDao<TaskDetail> implements TaskDetailDao {
     @Override
     public List<TaskDetail> findByStationId(long stationId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetail.class)
+        Criteria criteria = getCurrentSession().createCriteria(TaskDetail.class)
                 .add(Restrictions.eq("station.id", stationId));
-        return getHibernateTemplate().findByCriteria(criteria);
+        List<TaskDetail> taskDetails = criteria.list();
+        return taskDetails;
     }
 
 
     @Override
     public TaskDetail findCurrentByStationIdAndTaskId(long stationId, long taskId) {
         Integer currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetail.class)
+        Criteria criteria = getCurrentSession().createCriteria(TaskDetail.class)
                 .add(Restrictions.eq("station.id", stationId))
                 .add(Restrictions.eq("task.id", taskId))
                 .add(Restrictions.eq("year", currentYear));
 
-        List<TaskDetail> taskDetails = getHibernateTemplate().findByCriteria(criteria);
+        List<TaskDetail> taskDetails = criteria.list();
         if (CollectionUtils.isNotEmpty(taskDetails)) {
             return taskDetails.get(0);
         }

@@ -15,7 +15,6 @@
                 <bean class="com.qlvt.server.service.LoadHandler"/>
                 <bean class="com.qlvt.server.service.SaveHandler"/>
                 <bean class="com.qlvt.server.service.DeleteHandler"/>
-                <bean class="com.qlvt.server.service.ReportHandler"/>
             </list>
         </property>
     </bean>

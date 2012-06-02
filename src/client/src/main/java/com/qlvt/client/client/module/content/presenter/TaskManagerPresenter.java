@@ -36,14 +36,15 @@ import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
 import com.qlvt.client.client.module.content.view.TaskManagerView;
+import com.qlvt.client.client.service.TaskService;
+import com.qlvt.client.client.service.TaskServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.client.client.utils.TaskCodeUtils;
-import com.qlvt.core.client.action.*;
 import com.qlvt.core.client.constant.TaskTypeEnum;
+import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Task;
-import com.qlvt.core.client.model.TaskDetail;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -65,9 +66,8 @@ import java.util.Map;
 @Presenter(view = TaskManagerView.class, place = TaskManagerPlace.class)
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
-    private static final String[] RELATE_ENTITY_NAMES = {TaskDetail.class.getName()};
-
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private TaskServiceAsync taskService = TaskService.App.getInstance();
 
     private Window taskEditWindow;
     private Window addChildTaskWindow;
@@ -201,17 +201,22 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     if (currentTask.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()) {
                         currentTask.setChildTasks(StringUtils.EMPTY);
                     }
-                    dispatch.execute(new SaveAction(currentTask), new AbstractAsyncCallback<SaveResult>() {
+                    taskService.updateTask(currentTask, new AbstractAsyncCallback<Task>() {
                         @Override
-                        public void onSuccess(SaveResult result) {
-                            super.onSuccess(result);
-                            if (result.getEntity() != null) {
-                                taskEditWindow.hide();
-                                DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                                updateGrid(result.<Task>getEntity());
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof CodeExistException) {
+                                DiaLogUtils.logAndShowErrorMessage(view.getConstant().existCodeMessage(), caught);
                             } else {
-                                DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                                super.onFailure(caught);
                             }
+                        }
+
+                        @Override
+                        public void onSuccess(Task result) {
+                            super.onSuccess(result);
+                            taskEditWindow.hide();
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            updateGrid(result);
                         }
                     });
                 }
@@ -259,15 +264,14 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                 selectedTask.setChildTasks(childIds);
                 LoadingUtils.showLoading();
-                dispatch.execute(new SaveAction(selectedTask), new AbstractAsyncCallback<SaveResult>() {
+                taskService.updateTask(selectedTask, new AbstractAsyncCallback<Task>() {
                     @Override
-                    public void onSuccess(SaveResult result) {
+                    public void onSuccess(Task result) {
                         super.onSuccess(result);
-                        if (result.getEntity() != null) {
-                            updateGrid(selectedTask);
-                            addChildTaskWindow.hide();
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                        }
+                        updateGrid(selectedTask);
+                        addChildTaskWindow.hide();
+                        LoadingUtils.hideLoading();
+                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                     }
                 });
             }
@@ -311,9 +315,9 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void onClick(ClickEvent event) {
                 LoadingUtils.showLoading();
-                dispatch.execute(new LoadAction(Task.class.getName()), new AbstractAsyncCallback<LoadResult>() {
+                taskService.getAllTasks(new AbstractAsyncCallback<List<Task>>() {
                     @Override
-                    public void onSuccess(LoadResult result) {
+                    public void onSuccess(List<Task> tasks) {
                         Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                         List<String> childTaskCodes = new ArrayList<String>();
                         if (selectedTask != null) {
@@ -322,7 +326,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         BeanModelFactory factory = BeanModelLookup.get().getFactory(Task.class);
                         ListStore<BeanModel> cbbStore = new ListStore<BeanModel>();
                         ListStore<BeanModel> childTaskGridStore = new ListStore<BeanModel>();
-                        for (Task task : result.<Task>getList()) {
+                        for (Task task : tasks) {
                             if (!task.getId().equals(selectedTask.getId())) {
                                 if (!childTaskCodes.contains(task.getCode())) {
                                     cbbStore.add(factory.createModel(task));
@@ -334,7 +338,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         view.getCbbChildTask().setStore(cbbStore);
                         addChildTaskWindow = view.createAddTaskChildWindow(childTaskGridStore);
                         addChildTaskWindow.show();
-                        super.onSuccess(result);
+                        LoadingUtils.hideLoading();
                     }
                 });
             }
@@ -371,17 +375,13 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     private void showDeleteTagConform(final List<Long> taskIds, String tagName) {
         assert taskIds != null;
         String deleteMessage;
-        final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
+        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
             @Override
-            public void onSuccess(DeleteResult result) {
+            public void onSuccess(Void result) {
                 super.onSuccess(result);
-                if (result.isResult()) {
-                    //Reload grid.
-                    view.getPagingToolBar().refresh();
-                    DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
-                } else {
-                    DiaLogUtils.showMessage(view.getConstant().deleteTaskMessageError());
-                }
+                //Reload grid.
+                view.getPagingToolBar().refresh();
+                DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
             }
         };
         final boolean hasManyTag = taskIds.size() > 1;
@@ -397,11 +397,9 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        dispatch.execute(new DeleteAction(Task.class.getName(), taskIds,
-                                RELATE_ENTITY_NAMES), callback);
+                        taskService.deleteTasks(taskIds, callback);
                     } else {
-                        dispatch.execute(new DeleteAction(Task.class.getName(), taskIds.get(0),
-                                RELATE_ENTITY_NAMES), callback);
+                        taskService.deleteTask(taskIds.get(0), callback);
                     }
                 }
             }

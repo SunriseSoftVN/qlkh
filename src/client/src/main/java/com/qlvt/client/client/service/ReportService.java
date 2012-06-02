@@ -17,42 +17,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.client.client.service;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.qlvt.client.client.utils.ServiceUtils;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.client.constant.ReportTypeEnum;
-import net.customware.gwt.dispatch.shared.Action;
+import com.smvp4g.mvp.client.core.service.RemoteService;
 
 /**
- * The Class ReportAction.
+ * The Class ReportService.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 6:50 PM
+ * @since 2/22/12, 12:42 PM
  */
-public class ReportAction implements Action<ReportResult> {
+@RemoteServiceRelativePath("reportService")
+public interface ReportService extends RemoteService<ReportService> {
 
-    private ReportTypeEnum reportTypeEnum;
-    private ReportFileTypeEnum fileTypeEnum;
-    private long stationId;
+    String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId);
 
-    public ReportAction() {
-    }
+    public static class App {
+        private static final ReportServiceAsync ourInstance = (ReportServiceAsync) GWT.create(ReportService.class);
 
-    public ReportAction(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) {
-        this.reportTypeEnum = reportTypeEnum;
-        this.fileTypeEnum = fileTypeEnum;
-        this.stationId = stationId;
-    }
-
-    public ReportTypeEnum getReportTypeEnum() {
-        return reportTypeEnum;
-    }
-
-    public ReportFileTypeEnum getFileTypeEnum() {
-        return fileTypeEnum;
-    }
-
-    public long getStationId() {
-        return stationId;
+        public static ReportServiceAsync getInstance() {
+            ServiceUtils.configureServiceEntryPoint(ReportService.class, ourInstance);
+            return ourInstance;
+        }
     }
 }

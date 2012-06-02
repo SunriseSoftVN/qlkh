@@ -23,7 +23,7 @@ import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -38,9 +38,9 @@ public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail>
 
     @Override
     public SubTaskAnnualDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
-        List<SubTaskAnnualDetail> subTaskAnnualDetails = getHibernateTemplate().findByCriteria(criteria);
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = criteria.list();
         if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
             return subTaskAnnualDetails.get(0);
         }
@@ -49,25 +49,27 @@ public class SubTaskAnnualDetailDaoImpl extends AbstractDao<SubTaskAnnualDetail>
 
     @Override
     public void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
-        List<SubTaskAnnualDetail> subTaskAnnualDetails = getHibernateTemplate().findByCriteria(criteria);
+        List<SubTaskAnnualDetail> subTaskAnnualDetails = criteria.list();
         for (SubTaskAnnualDetail subTaskAnnualDetail : subTaskAnnualDetails) {
-            getHibernateTemplate().delete(subTaskAnnualDetail);
+            getCurrentSession().delete(subTaskAnnualDetail);
         }
     }
 
     @Override
     public List<SubTaskAnnualDetail> findByBrandId(long brandId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("branch.id", brandId));
-        return getHibernateTemplate().findByCriteria(criteria);
+        List<SubTaskAnnualDetail> subTaskDetails = criteria.list();
+        return subTaskDetails;
     }
 
     @Override
     public List<SubTaskAnnualDetail> findByTaskDetailId(long taskDetailId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(SubTaskAnnualDetail.class).
+        Criteria criteria = getCurrentSession().createCriteria(SubTaskAnnualDetail.class).
                 add(Restrictions.eq("taskDetail.id", taskDetailId));
-        return getHibernateTemplate().findByCriteria(criteria);
+        List<SubTaskAnnualDetail> subTaskDetails = criteria.list();
+        return subTaskDetails;
     }
 }

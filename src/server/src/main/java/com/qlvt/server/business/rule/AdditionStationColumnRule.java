@@ -27,9 +27,7 @@ import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
-import com.qlvt.server.dao.SubTaskAnnualDetailDao;
-import com.qlvt.server.dao.SubTaskDetailDao;
-import com.qlvt.server.dao.TaskDetailDao;
+import com.qlvt.server.guice.DaoProvider;
 
 import java.util.List;
 
@@ -82,21 +80,20 @@ public final class AdditionStationColumnRule {
         }
     }
 
-    public static void addDataForDSND(List<CompanySumReportBean> beans, ReportTypeEnum reportTypeEnum, TaskDetailDao taskDetailDao,
-                                      SubTaskAnnualDetailDao subTaskAnnualDetailDao, SubTaskDetailDao subTaskDetailDao) {
+    public static void addDataForDSND(List<CompanySumReportBean> beans, DaoProvider provider, ReportTypeEnum reportTypeEnum) {
         for (CompanySumReportBean bean : beans) {
-            TaskDetail taskDetail = taskDetailDao.
+            TaskDetail taskDetail = provider.getTaskDetailDao().
                     findCurrentByStationIdAndTaskId(StationCodeEnum.CAUGIAT.getId(), bean.getTask().getId());
             Double value = 0d;
             if (taskDetail != null) {
                 if (taskDetail.getAnnual()) {
-                    SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.findByTaskDetaiIdAndBranchId(taskDetail.getId(),
+                    SubTaskAnnualDetail subTaskAnnualDetail = provider.getSubTaskAnnualDetailDao().findByTaskDetaiIdAndBranchId(taskDetail.getId(),
                             BranchCodeEnum.ND.getId());
                     if (subTaskAnnualDetail != null) {
                         value = subTaskAnnualDetail.getRealValue();
                     }
                 } else {
-                    SubTaskDetail subTaskDetail = subTaskDetailDao.findByTaskDetaiIdAndBranchId(taskDetail.getId(),
+                    SubTaskDetail subTaskDetail = provider.getSubTaskDetailDao().findByTaskDetaiIdAndBranchId(taskDetail.getId(),
                             BranchCodeEnum.ND.getId());
                     if (subTaskDetail != null) {
                         switch (reportTypeEnum) {

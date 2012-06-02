@@ -17,28 +17,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action;
+package com.qlvt.client.client.service;
 
-import net.customware.gwt.dispatch.shared.Result;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.core.client.constant.ReportFileTypeEnum;
+import com.qlvt.core.client.constant.ReportTypeEnum;
+import com.smvp4g.mvp.client.core.service.RemoteServiceAsync;
 
-/**
- * The Class ReportResult.
- *
- * @author Nguyen Duc Dung
- * @since 6/1/12, 6:50 PM
- */
-public class ReportResult implements Result {
-
-    private String reportUrl;
-
-    public ReportResult() {
-    }
-
-    public ReportResult(String reportUrl) {
-        this.reportUrl = reportUrl;
-    }
-
-    public String getReportUrl() {
-        return reportUrl;
-    }
+public interface ReportServiceAsync extends RemoteServiceAsync<ReportServiceAsync> {
+    void reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId, AsyncCallback<String> async);
 }
