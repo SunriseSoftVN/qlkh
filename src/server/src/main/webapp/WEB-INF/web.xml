@@ -46,9 +46,9 @@
     </listener>
 
     <!-- Guice Context Listener -->
-    <!--<listener>-->
-        <!--<listener-class>com.qlvt.server.servlet.listener.GuiceContextListener</listener-class>-->
-    <!--</listener>-->
+    <listener>
+        <listener-class>com.qlvt.server.servlet.listener.GuiceContextListener</listener-class>
+    </listener>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

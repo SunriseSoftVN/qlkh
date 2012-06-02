@@ -23,12 +23,12 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlvt.core.client.model.core.AbstractEntity;
+import com.qlvt.server.util.SessionFactoryUtil;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.*;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 8/16/11, 10:34 AM
  */
-public abstract class AbstractDao<E extends AbstractEntity> extends HibernateDaoSupport implements Dao<E> {
+public abstract class AbstractDao<E extends AbstractEntity> implements Dao<E> {
 
     @Override
     public E saveOrUpdate(E entity) {
@@ -221,6 +221,6 @@ public abstract class AbstractDao<E extends AbstractEntity> extends HibernateDao
     }
 
     protected Session getCurrentSession() {
-        return getSession();
+        return SessionFactoryUtil.getCurrentSession();
     }
 }

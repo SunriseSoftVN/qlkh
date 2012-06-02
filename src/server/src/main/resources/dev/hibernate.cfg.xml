@@ -12,6 +12,7 @@
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="connection.username">root</property>
         <property name="connection.password"></property>
+        <property name="hibernate.connection.pool_size">30</property>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
 
@@ -19,7 +20,7 @@
         <property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
         <property name="hibernate.c3p0.acquire_increment">1</property>
         <property name="hibernate.c3p0.idle_test_period">60</property>
-        <property name="hibernate.c3p0.min_size">3</property>
+        <property name="hibernate.c3p0.min_size">1</property>
         <property name="hibernate.c3p0.max_size">5</property>
         <property name="hibernate.c3p0.max_statements">50</property>
         <property name="hibernate.c3p0.timeout">0</property>

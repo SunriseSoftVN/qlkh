@@ -21,12 +21,10 @@ package com.qlvt.server.handler;
 
 import com.qlvt.core.client.action.LoginAction;
 import com.qlvt.core.client.action.LoginResult;
-import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.dao.TestDao;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The Class LoginHandler.
@@ -36,8 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
-    @Autowired
-    private UserDao userDao;
+    private TestDao testDao;
 
     @Override
     public Class<LoginAction> getActionType() {
@@ -46,8 +43,9 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
 
     @Override
     public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName("admin");
-        System.out.println(user.getUserName());
+        System.out.println("dung ne");
+        System.out.println(testDao);
+        testDao.test();
         return new LoginResult(true);
     }
 
@@ -55,4 +53,7 @@ public class LoginHandler implements ActionHandler<LoginAction, LoginResult> {
     public void rollback(LoginAction action, LoginResult result, ExecutionContext context) throws DispatchException {
     }
 
+    public void setTestDao(TestDao testDao) {
+        this.testDao = testDao;
+    }
 }
