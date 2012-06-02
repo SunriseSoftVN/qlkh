@@ -17,29 +17,15 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao.core;
+package com.qlvt.core.client.action;
 
-import com.qlvt.core.client.model.core.AbstractEntity;
-
-import java.util.List;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class GeneralDao.
+ * The Class DeleteResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 11:51 AM
+ * @since 6/1/12, 2:03 PM
  */
-public interface GeneralDao {
-
-    <E extends AbstractEntity> List<E> getAll(String entityName);
-
-    <E extends AbstractEntity> E findById(String entityName, long id);
-
-    <E extends AbstractEntity> E saveOrUpdate(E entity);
-
-    <E extends AbstractEntity> void delete(E entity);
-
-    <E extends AbstractEntity> void deleteById(String entityName, long id);
-
-    <E extends AbstractEntity> void deleteByIds(String entityName, List<Long> ids);
+public class DeleteResult implements Result {
 }

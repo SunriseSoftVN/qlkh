@@ -36,11 +36,13 @@ import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
-import com.qlvt.client.client.service.UserService;
-import com.qlvt.client.client.service.UserServiceAsync;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
+import com.qlvt.core.client.action.DeleteAction;
+import com.qlvt.core.client.action.DeleteResult;
+import com.qlvt.core.client.action.SaveAction;
+import com.qlvt.core.client.action.SaveResult;
 import com.qlvt.core.client.constant.UserRoleEnum;
 import com.qlvt.core.client.exception.CodeExistException;
 import com.qlvt.core.client.model.Station;
@@ -66,8 +68,6 @@ import java.util.List;
 public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
-
-    private UserServiceAsync userService = UserService.App.getInstance();
 
     private ListStore<BeanModel> stationListStore;
     private Window newUserWindow;
@@ -121,7 +121,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         user.setCreateBy(1l);
                         user.setUpdateBy(1l);
                         LoadingUtils.showLoading();
-                        userService.updateUser(user, new AbstractAsyncCallback<Void>() {
+                        dispatch.execute(new SaveAction(user), new AbstractAsyncCallback<SaveResult>() {
                             @Override
                             public void onFailure(Throwable caught) {
                                 LoadingUtils.hideLoading();
@@ -133,13 +133,14 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                             }
 
                             @Override
-                            public void onSuccess(Void result) {
+                            public void onSuccess(SaveResult result) {
                                 super.onSuccess(result);
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                                 newUserWindow.hide();
                                 view.getPagingToolBar().refresh();
                             }
                         });
+
                     } else {
                         DiaLogUtils.showMessage(view.getConstant().passWordErrorMessage());
                     }
@@ -213,9 +214,9 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                                 && view.getChangePasswordPanel().isValid()) {
                             User user = model.getBean();
                             user.setPassWord(LoginUtils.md5hash(newPass));
-                            userService.updateUser(user, new AbstractAsyncCallback<Void>() {
+                            dispatch.execute(new SaveAction(user), new AbstractAsyncCallback<SaveResult>() {
                                 @Override
-                                public void onSuccess(Void result) {
+                                public void onSuccess(SaveResult result) {
                                     super.onSuccess(result);
                                     DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                                     beanModelListStore.update(model);
@@ -254,9 +255,9 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
     private void showDeleteTagConform(final List<Long> userIds, String tagName) {
         assert userIds != null;
         String deleteMessage;
-        final AsyncCallback<Void> callback = new AbstractAsyncCallback<Void>() {
+        final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(DeleteResult result) {
                 super.onSuccess(result);
                 //Reload grid.
                 view.getPagingToolBar().refresh();
@@ -276,9 +277,9 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                 if (be.getButtonClicked().getText().equals("Yes")) {
                     LoadingUtils.showLoading();
                     if (hasManyTag) {
-                        userService.deleteUserByIds(userIds, callback);
+                        dispatch.execute(new DeleteAction(User.class.getName(), userIds), callback);
                     } else {
-                        userService.deleteUserById(userIds.get(0), callback);
+                        dispatch.execute(new DeleteAction(User.class.getName(), userIds.get(0)), callback);
                     }
                 }
             }
