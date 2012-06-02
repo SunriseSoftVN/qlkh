@@ -53,6 +53,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
@@ -246,7 +247,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private List<CompanySumReportBean> buildReportData(ReportTypeEnum reportTypeEnum, long stationId) {
         List<CompanySumReportBean> beans = new ArrayList<CompanySumReportBean>();
         List<CompanySumReportBean> parentBeans = new ArrayList<CompanySumReportBean>();
-        List<Task> tasks = taskDao.getAllOrderByCode();
+        List<Task> tasks = generalDao.getAll(Task.class, Order.asc("code"));
         List<Station> stations = new ArrayList<Station>();
         if (stationId == StationCodeEnum.COMPANY.getId()) {
             stations = generalDao.getAll(Station.class);

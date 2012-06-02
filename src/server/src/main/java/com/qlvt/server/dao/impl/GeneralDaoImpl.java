@@ -24,6 +24,7 @@ import com.qlvt.server.dao.core.AbstractDao;
 import com.qlvt.server.dao.core.GeneralDao;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.Type;
 
@@ -122,6 +123,17 @@ public class GeneralDaoImpl extends AbstractDao implements GeneralDao {
         for (Criterion criterion: criterions) {
             if (criterion != null) {
                 criteria.add(criterion);
+            }
+        }
+        return getHibernateTemplate().findByCriteria(criteria);
+    }
+
+    @Override
+    public <E extends AbstractEntity> List<E> getAll(Class<E> entityClass, Order... orders) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(entityClass);
+        for(Order order : orders) {
+            if (order != null) {
+                criteria.addOrder(order);
             }
         }
         return getHibernateTemplate().findByCriteria(criteria);

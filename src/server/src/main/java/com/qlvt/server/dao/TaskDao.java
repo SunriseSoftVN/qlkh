@@ -22,8 +22,6 @@ package com.qlvt.server.dao;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.core.Dao;
 
-import java.util.List;
-
 /**
  * The Class TaskDao.
  *
@@ -31,5 +29,5 @@ import java.util.List;
  * @since 12/31/11, 2:34 PM
  */
 public interface TaskDao extends Dao<Task> {
-    List<Task> getAllOrderByCode();
+
 }

@@ -21,6 +21,7 @@ package com.qlvt.server.dao.core;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public interface GeneralDao extends Dao {
     <E extends AbstractEntity> List<E> getAll(String entityName);
 
     <E extends AbstractEntity> List<E> getAll(Class<E> entityClass);
+
+    <E extends AbstractEntity> List<E> getAll(Class<E> entityClass, Order... orders);
 
     <E extends AbstractEntity> E findById(String entityName, long id);
 

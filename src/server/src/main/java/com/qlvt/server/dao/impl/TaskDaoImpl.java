@@ -22,10 +22,6 @@ package com.qlvt.server.dao.impl;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.core.AbstractDao;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-
-import java.util.List;
 
 /**
  * The Class TaskDaoImpl.
@@ -34,10 +30,5 @@ import java.util.List;
  * @since 12/31/11, 2:35 PM
  */
 public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
-    @Override
-    public List<Task> getAllOrderByCode() {
-        DetachedCriteria criteria = DetachedCriteria.forClass(Task.class)
-                .addOrder(Order.asc("code"));
-        return getHibernateTemplate().findByCriteria(criteria);
-    }
+
 }
