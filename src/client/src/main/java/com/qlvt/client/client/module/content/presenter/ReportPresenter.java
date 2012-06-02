@@ -29,7 +29,6 @@ import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.ReportPlace;
 import com.qlvt.client.client.module.content.view.ReportView;
 import com.qlvt.client.client.utils.GridUtils;
-import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.action.report.ReportAction;
 import com.qlvt.core.client.action.report.ReportResult;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
@@ -75,12 +74,10 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                         && view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
                     Station station = view.getCbbReportStation().getValue().getBean();
                     view.setEnableReportButton(false);
-                    LoadingUtils.showLoading();
                     dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
                             ReportFileTypeEnum.PDF, station.getId()), new AbstractAsyncCallback<ReportResult>() {
                         @Override
                         public void onSuccess(ReportResult result) {
-                            LoadingUtils.hideLoading();
                             view.setEnableReportButton(true);
                             reportWindow = view.createReportWindow(result.getReportUrl());
                             reportWindow.show();
@@ -96,12 +93,10 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                         && view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
                     Station station = view.getCbbReportStation().getValue().getBean();
                     view.setEnableReportButton(false);
-                    LoadingUtils.showLoading();
                     dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
                             ReportFileTypeEnum.EXCEL, station.getId()), new AbstractAsyncCallback<ReportResult>() {
                         @Override
                         public void onSuccess(ReportResult result) {
-                            LoadingUtils.hideLoading();
                             view.setEnableReportButton(true);
                             reportWindow = view.createReportWindow(result.getReportUrl());
                             reportWindow.show();

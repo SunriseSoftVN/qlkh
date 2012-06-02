@@ -38,7 +38,6 @@ import com.qlvt.client.client.module.content.place.TaskManagerPlace;
 import com.qlvt.client.client.module.content.view.TaskManagerView;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
-import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.client.client.utils.TaskCodeUtils;
 import com.qlvt.core.client.action.core.*;
 import com.qlvt.core.client.constant.TaskTypeEnum;
@@ -258,7 +257,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 }
                 final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                 selectedTask.setChildTasks(childIds);
-                LoadingUtils.showLoading();
                 dispatch.execute(new SaveAction(selectedTask), new AbstractAsyncCallback<SaveResult>() {
                     @Override
                     public void onSuccess(SaveResult result) {
@@ -310,7 +308,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         anchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                LoadingUtils.showLoading();
                 dispatch.execute(new LoadAction(Task.class.getName()), new AbstractAsyncCallback<LoadResult>() {
                     @Override
                     public void onSuccess(LoadResult result) {
@@ -395,7 +392,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         dispatch.execute(new DeleteAction(Task.class.getName(), taskIds,
                                 RELATE_ENTITY_NAMES), callback);

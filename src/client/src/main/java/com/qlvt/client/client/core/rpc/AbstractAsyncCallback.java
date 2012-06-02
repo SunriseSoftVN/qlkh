@@ -19,10 +19,8 @@
 
 package com.qlvt.client.client.core.rpc;
 
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlvt.client.client.utils.DiaLogUtils;
-import com.qlvt.client.client.utils.LoadingUtils;
 
 /**
  * The Class AbstractAsyncCallback. Using to show dialog message and log RPC error message.
@@ -32,26 +30,10 @@ import com.qlvt.client.client.utils.LoadingUtils;
  */
 public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T> {
 
-    private static final int TIME_DELAY = 300;
-
     @Override
     public void onFailure(Throwable caught) {
         DiaLogUtils.logAndShowRpcErrorMessage(caught);
-        hideLoadingPanel();
     }
 
-    @Override
-    public void onSuccess(T result) {
-        hideLoadingPanel();
-    }
 
-    private void hideLoadingPanel() {
-        Timer timer = new Timer() {
-            @Override
-            public void run() {
-                LoadingUtils.hideLoading();
-            }
-        };
-        timer.schedule(TIME_DELAY);
-    }
 }

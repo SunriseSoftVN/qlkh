@@ -35,7 +35,6 @@ import com.qlvt.client.client.module.content.place.StationManagerPlace;
 import com.qlvt.client.client.module.content.view.StationManagerView;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
-import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.action.core.DeleteAction;
 import com.qlvt.core.client.action.core.DeleteResult;
 import com.qlvt.core.client.action.core.SaveAction;
@@ -206,7 +205,6 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         dispatch.execute(new DeleteAction(Station.class.getName(), stationIds,
                                 RELATE_ENTITY_NAMES), callback);

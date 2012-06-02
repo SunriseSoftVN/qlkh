@@ -36,7 +36,6 @@ import com.qlvt.client.client.module.content.place.BranchManagerPlace;
 import com.qlvt.client.client.module.content.view.BranchManagerView;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
-import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.action.core.DeleteAction;
 import com.qlvt.core.client.action.core.DeleteResult;
 import com.qlvt.core.client.action.core.SaveAction;
@@ -228,7 +227,6 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         dispatch.execute(new DeleteAction(Branch.class.getName(), branchIds, RELATE_ENTITY_NAMES), callback);
                     } else {

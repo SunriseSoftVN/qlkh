@@ -20,8 +20,10 @@
 package com.qlvt.client.client.core.dispatch;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.AbstractDispatchAsync;
@@ -41,6 +43,8 @@ public class StandardDispatchAsync extends AbstractDispatchAsync {
 
     private static final String DISPATCH_SERVICE_RELATIVE_PATH = "dispatch";
 
+    private static final int TIME_DELAY = 300;
+
     private static final StandardDispatchServiceAsync realService = GWT.create(StandardDispatchService.class);
 
     public StandardDispatchAsync(ExceptionHandler exceptionHandler) {
@@ -49,13 +53,16 @@ public class StandardDispatchAsync extends AbstractDispatchAsync {
     }
 
     public <A extends Action<R>, R extends Result> void execute(final A action, final AsyncCallback<R> callback) {
+        LoadingUtils.showLoading();
         realService.execute(action, new AsyncCallback<Result>() {
             public void onFailure(Throwable caught) {
+                hideLoadingPanel();
                 StandardDispatchAsync.this.onFailure(action, caught, callback);
             }
 
             @SuppressWarnings("unchecked")
             public void onSuccess(Result result) {
+                hideLoadingPanel();
                 StandardDispatchAsync.this.onSuccess(action, (R) result, callback);
             }
         });
@@ -67,5 +74,15 @@ public class StandardDispatchAsync extends AbstractDispatchAsync {
             endpoint.setServiceEntryPoint(StringUtils.concatUrlPath(ServiceUtils.getServiceEntryPoint(),
                     DISPATCH_SERVICE_RELATIVE_PATH));
         }
+    }
+
+    private void hideLoadingPanel() {
+        Timer timer = new Timer() {
+            @Override
+            public void run() {
+                LoadingUtils.hideLoading();
+            }
+        };
+        timer.schedule(TIME_DELAY);
     }
 }

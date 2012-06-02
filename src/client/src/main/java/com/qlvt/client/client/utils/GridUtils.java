@@ -87,7 +87,6 @@ public final class GridUtils {
                                                                                     ClientCriteria... criterion) {
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(entityClass);
         final ListStore<BeanModel> store = new ListStore<BeanModel>();
-        LoadingUtils.showLoading();
 
         dispatch.execute(new LoadAction(entityClass.getName(), criterion), new AbstractAsyncCallback<LoadResult>() {
             @Override

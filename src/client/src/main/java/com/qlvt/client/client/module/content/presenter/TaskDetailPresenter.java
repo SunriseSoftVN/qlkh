@@ -99,7 +99,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     @Override
     protected void doBind() {
-        LoadingUtils.showLoading();
         taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
                 ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
@@ -363,7 +362,6 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         dispatch.execute(new DeleteTaskDetailAction(taskDetailIds), callback);
                     } else {

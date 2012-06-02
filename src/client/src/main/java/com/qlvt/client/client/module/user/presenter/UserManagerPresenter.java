@@ -38,7 +38,6 @@ import com.qlvt.client.client.module.user.place.UserManagerPlace;
 import com.qlvt.client.client.module.user.view.UserManagerView;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
-import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.core.client.action.core.DeleteAction;
 import com.qlvt.core.client.action.core.DeleteResult;
 import com.qlvt.core.client.action.core.SaveAction;
@@ -120,11 +119,9 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
                         user.setStation(view.getCbbUserStation().getValue().<Station>getBean());
                         user.setCreateBy(1l);
                         user.setUpdateBy(1l);
-                        LoadingUtils.showLoading();
                         dispatch.execute(new SaveAction(user), new AbstractAsyncCallback<SaveResult>() {
                             @Override
                             public void onFailure(Throwable caught) {
-                                LoadingUtils.hideLoading();
                                 if (caught instanceof CodeExistException) {
                                     DiaLogUtils.logAndShowErrorMessage(view.getConstant().userExitsErrorMessage(), caught);
                                 } else {
@@ -275,7 +272,6 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         dispatch.execute(new DeleteAction(User.class.getName(), userIds), callback);
                     } else {

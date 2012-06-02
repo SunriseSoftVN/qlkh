@@ -98,7 +98,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
 
     @Override
     protected void doBind() {
-        LoadingUtils.showLoading();
         taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
                 ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
 
@@ -368,7 +367,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    LoadingUtils.showLoading();
                     if (hasManyTag) {
                         dispatch.execute(new DeleteTaskDetailAction(taskDetailIds), callback);
                     } else {
