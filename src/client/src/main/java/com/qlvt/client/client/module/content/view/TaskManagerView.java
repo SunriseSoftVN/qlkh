@@ -70,7 +70,6 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = TaskManagerConstant.class)
 public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
-    public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
     public static final String TASK_CODE_COLUMN = "code";
@@ -90,7 +89,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final String TASK_CHILD_OPTION_COLUMN = "childTaskOptions";
     public static final int TASK_CHILD_OPTION_WIDTH = 70;
 
-    public static final int TASK_LIST_SIZE = 200;
+    public static final int TASK_LIST_SIZE = 5;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));

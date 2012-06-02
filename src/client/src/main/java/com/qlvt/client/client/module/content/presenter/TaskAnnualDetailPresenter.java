@@ -55,7 +55,6 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ import java.util.Map;
 @Presenter(view = TaskAnnualDetailView.class, place = TaskAnnualDetailPlace.class)
 public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetailView> {
 
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Station currentStation;
     private TaskDetail currentTaskDetail;

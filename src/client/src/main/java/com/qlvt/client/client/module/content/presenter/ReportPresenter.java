@@ -35,7 +35,6 @@ import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 /**
@@ -47,7 +46,7 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 @Presenter(view = ReportView.class, place = ReportPlace.class)
 public class ReportPresenter extends AbstractPresenter<ReportView> {
 
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Window reportWindow;
 

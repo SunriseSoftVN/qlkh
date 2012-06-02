@@ -47,7 +47,6 @@ import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ import java.util.List;
 public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
 
     private static final String[] RELATE_ENTITY_NAMES = {User.class.getName(), Branch.class.getName(), TaskDetail.class.getName()};
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Station currentStation;
     private Window stationEditWindow;

@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.qlvt.client.client.constant.ExceptionConstant;
 import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskManagerPlace;
@@ -47,8 +48,8 @@ import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.shared.ServiceException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +67,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     private static final String[] RELATE_ENTITY_NAMES = {TaskDetail.class.getName()};
 
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Window taskEditWindow;
     private Window addChildTaskWindow;
@@ -201,15 +202,24 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         currentTask.setChildTasks(StringUtils.EMPTY);
                     }
                     dispatch.execute(new SaveAction(currentTask), new AbstractAsyncCallback<SaveResult>() {
+
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof ServiceException) {
+                                String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                    DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                                }
+                            } else {
+                                super.onFailure(caught);
+                            }
+                        }
+
                         @Override
                         public void onSuccess(SaveResult result) {
-                            if (result.getEntity() != null) {
-                                taskEditWindow.hide();
-                                DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                                updateGrid(result.<Task>getEntity());
-                            } else {
-                                DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
-                            }
+                            taskEditWindow.hide();
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            updateGrid(result.<Task>getEntity());
                         }
                     });
                 }

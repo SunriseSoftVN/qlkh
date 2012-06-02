@@ -27,6 +27,7 @@ import com.qlvt.client.client.utils.LoadingUtils;
 import com.qlvt.client.client.utils.ServiceUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.AbstractDispatchAsync;
+import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.ExceptionHandler;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchService;
 import net.customware.gwt.dispatch.client.standard.StandardDispatchServiceAsync;
@@ -41,13 +42,13 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class StandardDispatchAsync extends AbstractDispatchAsync {
 
+    private static final StandardDispatchServiceAsync realService = GWT.create(StandardDispatchService.class);
     private static final String DISPATCH_SERVICE_RELATIVE_PATH = "dispatch";
-
     private static final int TIME_DELAY = 300;
 
-    private static final StandardDispatchServiceAsync realService = GWT.create(StandardDispatchService.class);
+    public static final StandardDispatchAsync INSTANCE = new StandardDispatchAsync(new DefaultExceptionHandler());
 
-    public StandardDispatchAsync(ExceptionHandler exceptionHandler) {
+    private StandardDispatchAsync(ExceptionHandler exceptionHandler) {
         super(exceptionHandler);
         setServiceEntryPoint(realService);
     }

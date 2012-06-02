@@ -51,7 +51,6 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ import java.util.List;
 @Presenter(view = UserManagerView.class, place = UserManagerPlace.class)
 public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private ListStore<BeanModel> stationListStore;
     private Window newUserWindow;

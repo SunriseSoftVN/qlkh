@@ -36,7 +36,6 @@ import com.qlvt.core.client.action.core.LoginResult;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
-import net.customware.gwt.dispatch.client.DefaultExceptionHandler;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 /**
@@ -48,7 +47,7 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 @Presenter(view = LoginView.class, place = LoginPlace.class)
 public class LoginPresenter extends AbstractPresenter<LoginView> {
 
-    private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
+    private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     @Override
     public void onActivate() {
