@@ -17,40 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.service;
+package com.qlvt.server.service.core;
 
-import com.qlvt.core.client.action.LoginAction;
-import com.qlvt.core.client.action.LoginResult;
-import com.qlvt.core.client.model.User;
-import com.qlvt.server.dao.UserDao;
-import com.qlvt.server.service.core.AbstractHandler;
+import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class LoginServiceImpl.
+ * The Class AbstractHandler.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 10:18 AM
+ * @since 6/1/12, 6:26 AM
  */
-public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
-
-    @Autowired
-    private UserDao userDao;
-
+public abstract class AbstractHandler<A extends Action<R>, R extends Result>
+        implements ActionHandler<A, R> {
     @Override
-    public Class<LoginAction> getActionType() {
-        return LoginAction.class;
-    }
-
-    @Override
-    public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName(action.getUserName());
-        if (user != null && user.getPassWord().equals(action.getPassWord())) {
-            return new LoginResult(user);
-        } else {
-            return null;
-        }
+    public void rollback(A action, R result, ExecutionContext context) throws DispatchException {
+        //Default do nothing.
     }
 }
