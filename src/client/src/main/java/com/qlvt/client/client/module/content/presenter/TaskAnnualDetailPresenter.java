@@ -73,8 +73,6 @@ import java.util.Map;
 @Presenter(view = TaskAnnualDetailView.class, place = TaskAnnualDetailPlace.class)
 public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetailView> {
 
-    private static final String[] RELATE_ENTITY_NAMES = {TaskDetail.class.getName()};
-
     private DispatchAsync dispatch = new StandardDispatchAsync(new DefaultExceptionHandler());
 
     private Station currentStation;

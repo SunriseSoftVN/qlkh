@@ -20,11 +20,11 @@
 package com.qlvt.server.dao.impl;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
+import com.qlvt.server.dao.core.AbstractDao;
 import com.qlvt.server.dao.core.GeneralDao;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.Type;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -37,7 +37,7 @@ import java.util.List;
  * @since 6/1/12, 11:42 AM
  */
 @SuppressWarnings("unchecked")
-public class GeneralDaoImpl extends HibernateDaoSupport implements GeneralDao {
+public class GeneralDaoImpl extends AbstractDao implements GeneralDao {
 
     @Override
     public <E extends AbstractEntity> List<E> findRelateEntityById(String entityName, long id, String relateEntity) {

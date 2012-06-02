@@ -20,7 +20,6 @@
 package com.qlvt.server.transaction;
 
 import com.qlvt.core.client.exception.ExceptionHandler;
-import com.qlvt.server.util.SessionFactoryUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.hibernate.Session;
@@ -35,7 +34,7 @@ public class TransactionInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         //Open Session and begin transaction.
-        Session session = SessionFactoryUtil.openSession();
+        Session session = null;
         session.beginTransaction();
         Object result = null;
 

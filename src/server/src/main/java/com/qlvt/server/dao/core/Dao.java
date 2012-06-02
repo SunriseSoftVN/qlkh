@@ -19,12 +19,7 @@
 
 package com.qlvt.server.dao.core;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlvt.core.client.model.core.AbstractEntity;
-import org.hibernate.criterion.Criterion;
-
-import java.util.List;
 
 /**
  * The Class IDao.
@@ -33,71 +28,5 @@ import java.util.List;
  * @since 8/16/11, 10:35 AM
  */
 public interface Dao<E extends AbstractEntity> {
-    /**
-     * Save or Update a entity.
-     *
-     * @param entity
-     * @return
-     */
-    E saveOrUpdate(E entity);
 
-    /**
-     * Save or Update entities.
-     * @param entities
-     * @return
-     */
-    List<E> saveOrUpdate(List<E> entities);
-
-    /**
-     * Delete a entity.
-     *
-     * @param entity
-     */
-    void delete(E entity);
-
-    /**
-     * Delete a entity by entity id.
-     *
-     * @param clazz
-     * @param id
-     */
-    void deleteById(Class<E> clazz, long id);
-
-    /**
-     * Delete a entity by entity ids.
-     *
-     * @param clazz
-     * @param ids
-     */
-    void deleteByIds(Class<E> clazz, List<Long> ids);
-
-    /**
-     * Find a entity by id.
-     *
-     * @param clazz
-     * @param id
-     * @return
-     */
-    E findById(Class<E> clazz, long id);
-
-    /**
-     * Find a entity by id.
-     *
-     * @param clazz
-     * @param ids
-     * @return
-     */
-    List<E> findByIds(Class<E> clazz, List<Long> ids);
-
-    /**
-     * Get all entity in data store.
-     *
-     * @param clazz
-     * @return
-     */
-    List<E> getAll(Class<E> clazz);
-
-    BasePagingLoadResult<E> getByBeanConfig(Class<E> clazz, BasePagingLoadConfig config, Criterion... criterions);
-
-    int count(Class<E> clazz);
 }

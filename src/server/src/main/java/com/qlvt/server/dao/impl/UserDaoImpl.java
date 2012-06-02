@@ -23,7 +23,7 @@ import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.UserDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
-import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
@@ -37,8 +37,8 @@ import java.util.List;
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     @Override
     public User findByUserName(String userName) {
-        Criteria criteria = getCurrentSession().createCriteria(User.class).add(Restrictions.eq("userName", userName));
-        List<User> users = criteria.list();
+        DetachedCriteria criteria = DetachedCriteria.forClass(User.class).add(Restrictions.eq("userName", userName));
+        List<User> users = getHibernateTemplate().findByCriteria(criteria);
         if (CollectionsUtils.isNotEmpty(users)) {
             return users.get(0);
         }
@@ -47,15 +47,13 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     @Override
     public List<User> findByStationId(long stationId) {
-        Criteria criteria = getCurrentSession().createCriteria(User.class).add(Restrictions.eq("station.id", stationId));
-        List<User> users = criteria.list();
-        return users;
+        DetachedCriteria criteria = DetachedCriteria.forClass(User.class).add(Restrictions.eq("station.id", stationId));
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 
     @Override
     public List<User> findByStationIds(List<Long> stationIds) {
-        Criteria criteria = getCurrentSession().createCriteria(User.class).add(Restrictions.in("station.id",stationIds));
-        List<User> users = criteria.list();
-        return users;
+        DetachedCriteria criteria = DetachedCriteria.forClass(User.class).add(Restrictions.in("station.id",stationIds));
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 }

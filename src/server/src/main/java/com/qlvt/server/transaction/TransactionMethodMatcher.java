@@ -20,7 +20,6 @@
 package com.qlvt.server.transaction;
 
 import com.google.inject.matcher.AbstractMatcher;
-import com.qlvt.server.service.core.AbstractService;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -36,10 +35,10 @@ public class TransactionMethodMatcher extends AbstractMatcher<Method> {
     public boolean matches(Method method) {
         if (method != null && Modifier.isPublic(method.getModifiers())) {
             Class clazz = method.getDeclaringClass();
-            if (clazz.getSuperclass() != null
-                    && clazz.getSuperclass().equals(AbstractService.class)) {
-                return true;
-            }
+//            if (clazz.getSuperclass() != null
+//                    && clazz.getSuperclass().equals(AbstractService.class)) {
+//                return true;
+//            }
         }
         return false;
     }

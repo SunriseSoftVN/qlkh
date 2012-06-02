@@ -29,7 +29,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 11:51 AM
  */
-public interface GeneralDao {
+public interface GeneralDao extends Dao {
 
     <E extends AbstractEntity> List<E> getAll(String entityName);
 
