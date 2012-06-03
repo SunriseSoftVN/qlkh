@@ -41,7 +41,12 @@ public enum UserRoleEnum implements HasRole {
     /**
      * The User.
      */
-    USER("USER");
+    USER("USER"),
+
+    /**
+     * The developer can access the application to get the system log.
+     */
+    DEVELOPER("DEVELOPER");
 
     private String role;
 

@@ -45,11 +45,7 @@
     <listener>
         <listener-class>com.qlvt.server.servlet.listener.ApplicationContextListener</listener-class>
     </listener>
-
-    <!-- Guice Context Listener -->
-    <!--<listener>-->
-    <!--<listener-class>com.qlvt.server.servlet.listener.GuiceContextListener</listener-class>-->
-    <!--</listener>-->
+    <!--end-->
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
