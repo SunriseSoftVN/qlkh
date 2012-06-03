@@ -33,6 +33,7 @@
         <mapping resource="com/qlvt/core/client/model/SubTaskDetail.hbm.xml"/>
         <mapping resource="com/qlvt/core/client/model/SubTaskAnnualDetail.hbm.xml"/>
         <mapping resource="com/qlvt/core/client/model/Branch.hbm.xml"/>
+        <mapping resource="com/qlvt/core/client/model/SystemLog.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

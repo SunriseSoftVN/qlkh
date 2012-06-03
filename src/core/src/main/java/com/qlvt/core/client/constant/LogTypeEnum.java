@@ -17,33 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.Interceptor;
-
-import com.qlvt.core.client.model.SystemLog;
-import com.qlvt.server.dao.core.GeneralDao;
-import org.springframework.aop.ThrowsAdvice;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.lang.reflect.Method;
+package com.qlvt.core.client.constant;
 
 /**
- * The Class ExceptionsInterceptor.
+ * The Class LogTypeEnum.
  *
  * @author Nguyen Duc Dung
- * @since 6/3/12, 10:17 AM
+ * @since 6/3/12, 11:13 AM
  */
-public class ExceptionsInterceptor implements ThrowsAdvice {
+public enum LogTypeEnum {
+    ERROR(0),
+    DEBUG(1),
+    INFO(2);
 
-    @Autowired
-    private GeneralDao generalDao;
+    private int code;
 
-    public void afterThrowing(Method method, Object[] args, Object target, Exception ex) {
-        SystemLog systemLog = new SystemLog();
-        systemLog.setClassName(target.getClass().getName());
-        systemLog.setMethodName(method.getName());
-        systemLog.setExceptionClass(ex.getClass().getName());
-        systemLog.setContent(ex.getMessage());
-        generalDao.saveOrUpdate(systemLog);
+    LogTypeEnum(int code) {
+        this.code = code;
     }
 
+    public int getCode() {
+        return code;
+    }
 }
