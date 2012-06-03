@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="exceptionAspect" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="beanNames">
+            <list>
+                <value>com.qlvt.server.handler.*</value>
+            </list>
+        </property>
+        <property name="interceptorNames">
+            <value>exceptionAdvisor</value>
+        </property>
+    </bean>
+
+    <bean id="exceptionAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice">
+            <ref local="exceptionsInterceptor"/>
+        </property>
+        <property name="patterns">
+            <list>
+                <value>.*</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean name="exceptionsInterceptor" class="com.qlvt.server.Interceptor.ExceptionsInterceptor"/>
+
+</beans>
