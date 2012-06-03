@@ -41,6 +41,22 @@ public class GxtDaoImpl extends AbstractDao implements GxtDao {
 
     @Override
     public <E extends AbstractEntity> BasePagingLoadResult<E> getByBeanConfig(String entityName, BasePagingLoadConfig config, Criterion... criterions) {
+        DetachedCriteria criteria = buildCriteria(entityName, config, criterions);
+        List<E> result = getHibernateTemplate().findByCriteria(criteria, config.getOffset(), config.getLimit());
+        return new BasePagingLoadResult<E>(result, config.getOffset(), count(entityName, config, criterions));
+    }
+
+    private int count(String entityName, BasePagingLoadConfig config, Criterion... criterions) {
+        DetachedCriteria criteria = buildCriteria(entityName, config, criterions);
+        criteria.setProjection(Projections.rowCount());
+        List result = getHibernateTemplate().findByCriteria(criteria);
+        if (result != null && result.size() > 0) {
+            return ((Long) result.get(0)).intValue();
+        }
+        return 0;
+    }
+
+    private DetachedCriteria buildCriteria(String entityName, BasePagingLoadConfig config, Criterion... criterions) {
         DetachedCriteria criteria = DetachedCriteria.forEntityName(entityName);
         if (StringUtils.isNotBlank(config.getSortField())) {
             if (config.getSortDir() == Style.SortDir.ASC) {
@@ -87,17 +103,6 @@ public class GxtDaoImpl extends AbstractDao implements GxtDao {
                 }
             }
         }
-
-        List<E> result = getHibernateTemplate().findByCriteria(criteria, config.getOffset(), config.getLimit());
-        return new BasePagingLoadResult<E>(result, config.getOffset(), count(criteria));
-    }
-
-    protected int count(DetachedCriteria criteria) {
-        criteria.setProjection(Projections.rowCount());
-        List result = getHibernateTemplate().findByCriteria(criteria);
-        if (result != null && result.size() > 0) {
-            return ((Long)result.get(0)).intValue();
-        }
-        return 0;
+        return criteria;
     }
 }

@@ -89,7 +89,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final String TASK_CHILD_OPTION_COLUMN = "childTaskOptions";
     public static final int TASK_CHILD_OPTION_WIDTH = 70;
 
-    public static final int TASK_LIST_SIZE = 5;
+    public static final int TASK_LIST_SIZE = 200;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
