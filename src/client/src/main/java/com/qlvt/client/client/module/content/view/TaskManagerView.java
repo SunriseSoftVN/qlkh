@@ -349,6 +349,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(txtTaskQuota);
         if (!cbbTaskType.isRendered()) {
+            cbbTaskType.setEditable(false);
             cbbTaskType.setAllowBlank(false);
             cbbTaskType.setSelectOnFocus(true);
             cbbTaskType.add(Arrays.asList(TaskTypeEnum.values()));
