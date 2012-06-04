@@ -119,14 +119,16 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         //Manager
         mnlTaskManage.setStyleName("menulink");
         mainPanel.add(mnlTaskManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
-        mnlReport.setStyleName("menulink");
-        mainPanel.add(mnlReport, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //User
         mnlTaskAnnualDetail.setStyleName("menulink");
         mainPanel.add(mnlTaskAnnualDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mnlTaskDetail.setStyleName("menulink");
         mainPanel.add(mnlTaskDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        //Report
+        mnlReport.setStyleName("menulink");
+        mainPanel.add(mnlReport, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);

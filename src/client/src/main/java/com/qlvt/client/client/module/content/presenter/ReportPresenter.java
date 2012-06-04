@@ -31,10 +31,14 @@ import com.qlvt.client.client.module.content.view.ReportView;
 import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.core.client.action.report.ReportAction;
 import com.qlvt.core.client.action.report.ReportResult;
+import com.qlvt.core.client.action.station.LoadStationAction;
+import com.qlvt.core.client.action.station.LoadStationResult;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
+import com.qlvt.core.client.constant.UserRoleEnum;
 import com.qlvt.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 /**
@@ -47,10 +51,9 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 public class ReportPresenter extends AbstractPresenter<ReportView> {
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
-
     private Window reportWindow;
-
     private ListStore<BeanModel> stationListStore;
+    private Station currentStation;
 
     @Override
     public void onActivate() {
@@ -64,24 +67,39 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
 
     @Override
     protected void doBind() {
-        stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
-        view.getCbbReportStation().setStore(stationListStore);
+        if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
+            dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
+                @Override
+                public void onSuccess(LoadStationResult result) {
+                    currentStation = result.getStation();
+                }
+            });
+        } else {
+            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+            view.getCbbReportStation().setStore(stationListStore);
+        }
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (view.getCbbReportStation().getValue() != null
-                        && view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
-                    Station station = view.getCbbReportStation().getValue().getBean();
-                    view.setEnableReportButton(false);
-                    dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
-                            ReportFileTypeEnum.PDF, station.getId()), new AbstractAsyncCallback<ReportResult>() {
-                        @Override
-                        public void onSuccess(ReportResult result) {
-                            view.setEnableReportButton(true);
-                            reportWindow = view.createReportWindow(result.getReportUrl());
-                            reportWindow.show();
-                        }
-                    });
+                if (view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
+                    Station station = null;
+                    if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
+                        station = currentStation;
+                    } else if (view.getCbbReportStation().getValue() != null) {
+                        station = view.getCbbReportStation().getValue().getBean();
+                    }
+                    if (station != null) {
+                        view.setEnableReportButton(false);
+                        dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
+                                ReportFileTypeEnum.PDF, station.getId()), new AbstractAsyncCallback<ReportResult>() {
+                            @Override
+                            public void onSuccess(ReportResult result) {
+                                view.setEnableReportButton(true);
+                                reportWindow = view.createReportWindow(result.getReportUrl());
+                                reportWindow.show();
+                            }
+                        });
+                    }
                 }
             }
         });

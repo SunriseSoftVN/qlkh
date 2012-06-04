@@ -36,6 +36,7 @@ import com.qlvt.client.client.module.content.view.i18n.ReportConstant;
 import com.qlvt.client.client.module.content.view.security.ReportSecurity;
 import com.qlvt.core.client.constant.ReportTypeEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
+import com.smvp4g.mvp.client.core.security.FieldSecurity;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -58,6 +59,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     @I18nField
     SimpleComboBox<ReportTypeEnum> cbbReportType = new SimpleComboBox<ReportTypeEnum>();
 
+    @FieldSecurity
     @I18nField
     ComboBox<BeanModel> cbbReportStation = new ComboBox<BeanModel>();
 
@@ -97,6 +99,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbYear.setSimpleValue(2012);
         cbbYear.setWidth(60);
+        cbbYear.setEditable(false);
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(4);
