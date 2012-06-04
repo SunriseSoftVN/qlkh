@@ -81,45 +81,13 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                if (view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
-                    Station station = null;
-                    if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
-                        station = currentStation;
-                    } else if (view.getCbbReportStation().getValue() != null) {
-                        station = view.getCbbReportStation().getValue().getBean();
-                    }
-                    if (station != null) {
-                        view.setEnableReportButton(false);
-                        dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
-                                ReportFileTypeEnum.PDF, station.getId()), new AbstractAsyncCallback<ReportResult>() {
-                            @Override
-                            public void onSuccess(ReportResult result) {
-                                view.setEnableReportButton(true);
-                                reportWindow = view.createReportWindow(result.getReportUrl());
-                                reportWindow.show();
-                            }
-                        });
-                    }
-                }
+                report(ReportFileTypeEnum.PDF);
             }
         });
         view.getBtnPlanReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (view.getCbbReportStation().getValue() != null
-                        && view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
-                    Station station = view.getCbbReportStation().getValue().getBean();
-                    view.setEnableReportButton(false);
-                    dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
-                            ReportFileTypeEnum.EXCEL, station.getId()), new AbstractAsyncCallback<ReportResult>() {
-                        @Override
-                        public void onSuccess(ReportResult result) {
-                            view.setEnableReportButton(true);
-                            reportWindow = view.createReportWindow(result.getReportUrl());
-                            reportWindow.show();
-                        }
-                    });
-                }
+                report(ReportFileTypeEnum.EXCEL);
             }
         });
         view.getBtnReportCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -130,5 +98,28 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 }
             }
         });
+    }
+
+    private void report(ReportFileTypeEnum fileTypeEnum) {
+        if (view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
+            Station station = null;
+            if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
+                station = currentStation;
+            } else if (view.getCbbReportStation().getValue() != null) {
+                station = view.getCbbReportStation().getValue().getBean();
+            }
+            if (station != null) {
+                view.setEnableReportButton(false);
+                dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
+                        fileTypeEnum, station.getId()), new AbstractAsyncCallback<ReportResult>() {
+                    @Override
+                    public void onSuccess(ReportResult result) {
+                        view.setEnableReportButton(true);
+                        reportWindow = view.createReportWindow(result.getReportUrl());
+                        reportWindow.show();
+                    }
+                });
+            }
+        }
     }
 }
