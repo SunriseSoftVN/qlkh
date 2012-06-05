@@ -17,26 +17,23 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.client.client.module.content.presenter;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.qlvt.client.client.module.content.place.StationLockPlace;
+import com.qlvt.client.client.module.content.view.StationLockView;
+import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
+import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 /**
- * The Class MainMenuConstant.
+ * The Class StationLockPresenter.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 6/5/12, 9:45 PM
  */
-@SuppressWarnings("UnusedDeclaration")
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManager();
-    String mnlBranchManager();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String mnlTaskAnnualDetail();
-    String mnlReport();
-    String ancLogout();
-    String lblWelcome();
-    String mlLock();
+@Presenter(view = StationLockView.class, place = StationLockPlace.class)
+public class StationLockPresenter extends AbstractPresenter<StationLockView> {
+    @Override
+    public void onActivate() {
+        view.show();
+    }
 }

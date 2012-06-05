@@ -57,7 +57,6 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
         return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.USER};
     }
 
-
     public HasRole[] mnlTaskDetail() {
         return new HasRole[]{UserRoleEnum.USER};
     }
@@ -72,5 +71,9 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
 
     public HasRole[] lblWelcome() {
         return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN, UserRoleEnum.MANAGER};
+    }
+
+    public HasRole[] mlLock() {
+        return new HasRole[]{UserRoleEnum.MANAGER};
     }
 }

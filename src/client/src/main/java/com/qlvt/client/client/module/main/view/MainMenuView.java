@@ -91,6 +91,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     MenuLink mnlReport = new MenuLink(ReportPlace.class);
 
     @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mlLock = new MenuLink(StationLockPlace.class);
+
+    @FieldSecurity
     @I18nField
     Anchor ancLogout = new Anchor("");
 
@@ -129,6 +134,10 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         //Report
         mnlReport.setStyleName("menulink");
         mainPanel.add(mnlReport, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        //Lock
+        mlLock.setStyleName("menulink");
+        mainPanel.add(mlLock, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);

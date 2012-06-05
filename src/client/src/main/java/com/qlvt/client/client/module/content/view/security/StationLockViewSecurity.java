@@ -17,26 +17,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.client.client.module.main.view.i18n;
+package com.qlvt.client.client.module.content.view.security;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
+import com.qlvt.core.client.constant.UserRoleEnum;
+import com.smvp4g.mvp.client.core.security.HasRole;
+import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 
 /**
- * The Class MainMenuConstant.
+ * The Class LockViewSecurity.
  *
  * @author Nguyen Duc Dung
- * @since 12/28/11, 3:25 PM
+ * @since 6/5/12, 9:41 PM
  */
-@SuppressWarnings("UnusedDeclaration")
-public interface MainMenuConstant extends Constants {
-    String mnlUserManager();
-    String mnlStationManager();
-    String mnlBranchManager();
-    String mnlTaskManage();
-    String mnlTaskDetail();
-    String mnlTaskAnnualDetail();
-    String mnlReport();
-    String ancLogout();
-    String lblWelcome();
-    String mlLock();
+public class StationLockViewSecurity implements ViewSecurityConfigurator {
+    @Override
+    public HasRole[] getRoles() {
+        return new HasRole[]{UserRoleEnum.MANAGER};
+    }
 }

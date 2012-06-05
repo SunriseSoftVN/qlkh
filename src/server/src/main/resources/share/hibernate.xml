@@ -8,6 +8,19 @@
           class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
         <property name="configLocation" value="classpath:hibernate.cfg.xml"/>
         <property name="entityInterceptor" ref="auditInterceptor"/>
+        <property name="mappingResources">
+            <list>
+                <value>com/qlvt/core/client/model/User.hbm.xml</value>
+                <value>com/qlvt/core/client/model/Station.hbm.xml</value>
+                <value>com/qlvt/core/client/model/Task.hbm.xml</value>
+                <value>com/qlvt/core/client/model/TaskDetail.hbm.xml</value>
+                <value>com/qlvt/core/client/model/SubTaskDetail.hbm.xml</value>
+                <value>com/qlvt/core/client/model/SubTaskAnnualDetail.hbm.xml</value>
+                <value>com/qlvt/core/client/model/Branch.hbm.xml</value>
+                <value>com/qlvt/core/client/model/SystemLog.hbm.xml</value>
+                <value>com/qlvt/core/client/model/SystemLock.hbm.xml</value>
+            </list>
+        </property>
     </bean>
 
     <bean name="auditInterceptor" class="com.qlvt.server.Interceptor.AuditInterceptor"/>
