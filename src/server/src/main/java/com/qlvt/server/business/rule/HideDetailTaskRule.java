@@ -19,8 +19,9 @@
 
 package com.qlvt.server.business.rule;
 
-import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
+import com.qlvt.core.client.report.SumReportBean;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +34,19 @@ import java.util.List;
  */
 public final class HideDetailTaskRule {
 
-    public static void hide(List<CompanySumReportBean> beans) {
-        for (CompanySumReportBean bean : beans) {
+    public static void hide(List<SumReportBean> beans) {
+        for (SumReportBean bean : beans) {
+            //Hide default value and quota when it is 0.
+            if (bean.getTask().getDefaultValue() == 0) {
+                bean.getTask().setDefaultValue(null);
+            }
+            if (bean.getTask().getQuota() == 0) {
+                bean.getTask().setQuota(null);
+            }
             if (isTask(bean.getTask().getCode())) {
-//                bean.getTask().setUnit(StringUtils.EMPTY);
-//                bean.getTask().setQuota(0);
-//                bean.getTask().setDefaultValue(null);
+                bean.getTask().setUnit(StringUtils.EMPTY);
+                bean.getTask().setQuota(null);
+                bean.getTask().setDefaultValue(null);
                 for (StationReportBean station : bean.getStations().values()) {
                     station.setValue(null);
                 }
@@ -48,7 +56,7 @@ public final class HideDetailTaskRule {
 
     private static boolean isTask(String code) {
         for (Rule rule : getRule()) {
-            if(code.equals(rule.getCode())) {
+            if (code.equals(rule.getCode())) {
                 return true;
             }
         }

@@ -28,21 +28,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The Class CompanySumReportBean.
+ * The Class SumReportBean.
  *
  * @author Nguyen Duc Dung
  * @since 3/7/12, 2:09 PM
  */
-public class CompanySumReportBean implements Serializable, Comparable<CompanySumReportBean> {
+public class SumReportBean implements Serializable, Comparable<SumReportBean> {
 
-    private Task task;
+    private TaskReportBean task;
     private boolean calculated;
     private Map<String, StationReportBean> stations = new HashMap<String, StationReportBean>();
-    private List<CompanySumReportBean> childBeans = new ArrayList<CompanySumReportBean>();
+    private List<SumReportBean> childBeans = new ArrayList<SumReportBean>();
 
     public void calculate() {
         if (!isCalculated()) {
-            for (CompanySumReportBean bean : childBeans) {
+            for (SumReportBean bean : childBeans) {
                 bean.calculate();
             }
 
@@ -55,7 +55,7 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
                 if (value == null) {
                     value = 0D;
                 }
-                for (CompanySumReportBean bean : childBeans) {
+                for (SumReportBean bean : childBeans) {
                     Double childTime = bean.getStations().get(String.valueOf(station.getId())).getTime();
                     Double childValue = bean.getStations().get(String.valueOf(station.getId())).getValue();
                     if (childTime != null) {
@@ -79,7 +79,7 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
     }
 
     @Override
-    public int compareTo(CompanySumReportBean bean) {
+    public int compareTo(SumReportBean bean) {
         if (task.getCode().length() > bean.getTask().getCode().length()) {
             return 1;
         } else {
@@ -87,19 +87,19 @@ public class CompanySumReportBean implements Serializable, Comparable<CompanySum
         }
     }
 
-    public Task getTask() {
+    public TaskReportBean getTask() {
         return task;
     }
 
     public void setTask(Task task) {
-        this.task = task;
+        this.task = new TaskReportBean(task);
     }
 
     public Map<String, StationReportBean> getStations() {
         return stations;
     }
 
-    public List<CompanySumReportBean> getChildBeans() {
+    public List<SumReportBean> getChildBeans() {
         return childBeans;
     }
 

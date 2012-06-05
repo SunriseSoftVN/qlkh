@@ -25,8 +25,8 @@ import com.qlvt.core.client.model.Station;
 import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.SubTaskDetail;
 import com.qlvt.core.client.model.TaskDetail;
-import com.qlvt.core.client.report.CompanySumReportBean;
 import com.qlvt.core.client.report.StationReportBean;
+import com.qlvt.core.client.report.SumReportBean;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
 import com.qlvt.server.dao.TaskDetailDao;
@@ -56,8 +56,8 @@ public final class AdditionStationColumnRule {
         stations.add(dsNDStation);
     }
 
-    public static void addDataForDSTN(List<CompanySumReportBean> beans) {
-        for (CompanySumReportBean bean : beans) {
+    public static void addDataForDSTN(List<SumReportBean> beans) {
+        for (SumReportBean bean : beans) {
             Double companyValue = bean.getStations().get(String.
                     valueOf(StationCodeEnum.COMPANY.getId())).getValue();
             Double companyTime = bean.getStations().get(String.
@@ -82,9 +82,9 @@ public final class AdditionStationColumnRule {
         }
     }
 
-    public static void addDataForDSND(List<CompanySumReportBean> beans, ReportTypeEnum reportTypeEnum, TaskDetailDao taskDetailDao,
+    public static void addDataForDSND(List<SumReportBean> beans, ReportTypeEnum reportTypeEnum, TaskDetailDao taskDetailDao,
                                       SubTaskAnnualDetailDao subTaskAnnualDetailDao, SubTaskDetailDao subTaskDetailDao) {
-        for (CompanySumReportBean bean : beans) {
+        for (SumReportBean bean : beans) {
             TaskDetail taskDetail = taskDetailDao.
                     findCurrentByStationIdAndTaskId(StationCodeEnum.CAUGIAT.getId(), bean.getTask().getId());
             Double value = 0d;

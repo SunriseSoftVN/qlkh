@@ -19,7 +19,7 @@
 
 package com.qlvt.server.business.rule;
 
-import com.qlvt.core.client.report.CompanySumReportBean;
+import com.qlvt.core.client.report.SumReportBean;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 
 import java.util.ArrayList;
@@ -71,18 +71,18 @@ public final class ReportOrderRule {
         return rules;
     }
 
-    public static void sort(List<CompanySumReportBean> beans) {
+    public static void sort(List<SumReportBean> beans) {
         if (CollectionsUtils.isEmpty(beans)) {
             return;
         }
-        List<CompanySumReportBean> sortBeans = new ArrayList<CompanySumReportBean>(beans.size());
+        List<SumReportBean> sortBeans = new ArrayList<SumReportBean>(beans.size());
         sortBeans.addAll(beans);
 
         for (Rule rule : rule()) {
-            for (CompanySumReportBean bean1 : sortBeans) {
+            for (SumReportBean bean1 : sortBeans) {
                 if (bean1.getTask().getCode().trim().toLowerCase()
                         .equals(rule.getCode1().trim().toLowerCase())) {
-                    for (CompanySumReportBean bean2 : sortBeans) {
+                    for (SumReportBean bean2 : sortBeans) {
                         if (bean2.getTask().getCode().trim().toLowerCase()
                                 .equals(rule.getCode2().trim().toLowerCase())) {
                             //Move bean1 to correct position
