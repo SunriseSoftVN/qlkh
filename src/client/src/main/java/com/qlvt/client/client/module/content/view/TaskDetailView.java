@@ -23,11 +23,11 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
@@ -46,7 +46,6 @@ import com.qlvt.client.client.widget.MyNumberField;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 import com.smvp4g.mvp.client.widget.TextField;
@@ -123,9 +122,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     @I18nField(emptyText = true)
     TextField<String> txtTaskSearch = new TextField<String>();
-
-    @I18nField
-    Label lblTaskSearchHint = new Label();
 
     @I18nField
     Button btnTaskEditOk = new Button();
@@ -382,38 +378,13 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         if (!txtTaskSearch.isRendered()) {
             txtTaskSearch.setSelectOnFocus(true);
             txtTaskSearch.setWidth(170);
-
-            HorizontalPanel hp = new HorizontalPanel();
-            hp.setSpacing(3);
-            hp.add(txtTaskSearch);
-            hp.add(lblTaskSearchHint);
-            taskEditPanel.add(hp);
+            taskEditPanel.add(txtTaskSearch);
         }
         window.setFocusWidget(txtTaskSearch);
 
         if (taskGrid == null) {
             taskColumnModel = new ColumnModel(createTaskColumnConfigs());
             taskGrid = new Grid<BeanModel>(taskListStore, taskColumnModel);
-            taskGrid.getStore().addFilter(new StoreFilter<BeanModel>() {
-                @Override
-                public boolean select(Store<BeanModel> beanModelStore, BeanModel parent,
-                                      BeanModel item, String property) {
-                    Task task = item.getBean();
-                    String filter = StringUtils.EMPTY;
-                    if (txtTaskSearch.getValue() != null) {
-                        filter = StringUtils.convertNonAscii(txtTaskSearch.getValue().trim().toLowerCase());
-                    }
-                    if (StringUtils.isBlank(filter)) {
-                        return true;
-                    }
-                    if (task != null && (StringUtils.convertNonAscii(task.getName().toLowerCase()).
-                            contains(filter)
-                            || task.getCode().toLowerCase().startsWith(filter))) {
-                        return true;
-                    }
-                    return false;
-                }
-            });
             taskGrid.addListener(Events.OnKeyDown, new KeyListener() {
                 @Override
                 public void handleEvent(ComponentEvent e) {
@@ -422,7 +393,8 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
                     }
                 }
             });
-            taskGrid.setHeight(265);
+            taskGrid.setLoadMask(true);
+            taskGrid.setHeight(270);
             taskGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
             taskGridPanel.add(taskGrid);
 

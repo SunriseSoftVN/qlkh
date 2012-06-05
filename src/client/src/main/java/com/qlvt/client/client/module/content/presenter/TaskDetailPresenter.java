@@ -85,11 +85,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     public void onActivate() {
         view.show();
         if (currentStation != null) {
-            if (taskDtoListStore != null) {
-                //Reload task dto list.
-                taskDtoListStore = GridUtils.createListStore(Task.class,
-                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.KDK));
-            }
+            //Reload view
             resetView();
         }
         if (view.getTaskDetailGird() != null) {
@@ -132,6 +128,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
                     taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
+                    resetTaskGirdFilter();
                     view.getTaskEditPagingToolBar().bind((PagingLoader<?>) view.getTaskGrid().getStore().getLoader());
                     view.getTaskEditPagingToolBar().refresh();
                     currentTaskDetail = new TaskDetail();
@@ -174,10 +171,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskAnnualDetailView.TASK_DETAIL_NAME_COLUMN,
-                                view.getTxtSearch().getValue());
-                        filters.put(TaskAnnualDetailView.TASK_DETAIL_CODE_COLUMN,
-                                view.getTxtSearch().getValue());
+                        filters.put(TaskAnnualDetailView.TASK_DETAIL_NAME_COLUMN, st);
+                        filters.put(TaskAnnualDetailView.TASK_DETAIL_CODE_COLUMN, st);
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();
@@ -240,11 +235,20 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getTxtTaskSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER && view.getTxtTaskSearch().isRendered()) {
-                    view.getTaskGrid().getSelectionModel().select(0, false);
-                    view.getTaskGrid().focus();
-                } else {
-                    view.getTaskGrid().getStore().applyFilters("");
+                String st = view.getTxtTaskSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGrid().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put(TaskDetailView.TASK_NAME_COLUMN, st);
+                        filters.put(TaskDetailView.TASK_CODE_COLUMN, st);
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetTaskGirdFilter();
+                    }
+                    view.getTaskEditPagingToolBar().refresh();
                 }
             }
         });
@@ -364,6 +368,16 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtSearch().clear();
+    }
+
+    private void resetTaskGirdFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGrid().
+                getStore().getLoadConfig();
+        if (loadConfig != null) {
+            loadConfig.set("hasFilter", false);
+            loadConfig.set("filters", null);
+            view.getTxtTaskSearch().clear();
+        }
     }
 
     private void resetView() {
