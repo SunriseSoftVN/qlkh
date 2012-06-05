@@ -32,19 +32,19 @@ public enum TaskTypeEnum {
     SUM(1),
     SUBSUM(2);
 
-    private int taskTypeCode;
+    private int code;
 
-    TaskTypeEnum(int taskTypeCode) {
-        this.taskTypeCode = taskTypeCode;
+    TaskTypeEnum(int code) {
+        this.code = code;
     }
 
-    public int getTaskTypeCode() {
-        return taskTypeCode;
+    public int getCode() {
+        return code;
     }
 
     public static TaskTypeEnum valueOf(int taskType) {
         for (TaskTypeEnum type : values()) {
-            if (type.getTaskTypeCode() == taskType) {
+            if (type.getCode() == taskType) {
                 return type;
             }
         }

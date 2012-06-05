@@ -17,16 +17,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao;
+package com.qlvt.core.client.action.grid;
 
-import com.qlvt.server.dao.core.Dao;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class GxtDao.
+ * The Class HasLoadConfig.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 9:12 AM
+ * @since 6/5/12, 4:20 PM
  */
-public interface GxtDao extends Dao {
+public interface ActionHasLoadConfig<R extends Result> extends Action<R> {
+    public BasePagingLoadConfig getConfig();
 
+    void setConfig(BasePagingLoadConfig config);
 }

@@ -60,7 +60,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+            stationListStore = GridUtils.createListStoreForCb(Station.class);
             view.getCbbReportStation().setStore(stationListStore);
         }
     }
@@ -75,7 +75,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 }
             });
         } else {
-            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+            stationListStore = GridUtils.createListStoreForCb(Station.class);
             view.getCbbReportStation().setStore(stationListStore);
         }
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {

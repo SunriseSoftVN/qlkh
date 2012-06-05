@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.handler.report;
 
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -262,8 +262,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
-            if (task.getTaskTypeCode() == SUBSUM.getTaskTypeCode()
-                    || task.getTaskTypeCode() == SUM.getTaskTypeCode()) {
+            if (task.getTaskTypeCode() == SUBSUM.getCode()
+                    || task.getTaskTypeCode() == SUM.getCode()) {
                 parentBeans.add(bean);
             }
         }
@@ -358,8 +358,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         StationReportBean stationReport = new StationReportBean();
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
-        if (task.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()
-                || task.getTaskTypeCode() == TaskTypeEnum.DK.getTaskTypeCode()) {
+        if (task.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()
+                || task.getTaskTypeCode() == TaskTypeEnum.DK.getCode()) {
             TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
             if (taskDetail != null) {
                 //Calculate Weight

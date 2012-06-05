@@ -17,26 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action.subtaskdetail;
+package com.qlvt.core.client.action.subtask;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class LoadSubTaskDetailAction.
+ * The Class LoadSubTaskAnnualAction.
  *
  * @author Nguyen Duc Dung
- * @since 6/2/12, 12:43 PM
+ * @since 6/1/12, 9:08 PM
  */
-public class LoadSubTaskDetailAction implements Action<LoadSubTaskDetailResult> {
+public class LoadSubTaskAnnualAction implements Action<LoadSubTaskAnnualResult> {
 
     private BasePagingLoadConfig loadConfig;
     private long taskDetailId;
 
-    public LoadSubTaskDetailAction() {
+    public LoadSubTaskAnnualAction() {
     }
 
-    public LoadSubTaskDetailAction(BasePagingLoadConfig loadConfig, long taskDetailId) {
+    public LoadSubTaskAnnualAction(BasePagingLoadConfig loadConfig, long taskDetailId) {
         this.loadConfig = loadConfig;
         this.taskDetailId = taskDetailId;
     }

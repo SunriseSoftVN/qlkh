@@ -17,24 +17,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action.subtaskdetail;
+package com.qlvt.core.client.action.subtask;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlvt.core.client.action.grid.LoadGridDataResult;
-import net.customware.gwt.dispatch.shared.Result;
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class LoadSubTaskDetailResult.
+ * The Class LoadSubTaskDetailAction.
  *
  * @author Nguyen Duc Dung
  * @since 6/2/12, 12:43 PM
  */
-public class LoadSubTaskDetailResult extends LoadGridDataResult implements Result {
+public class LoadSubTaskDetailAction implements Action<LoadSubTaskDetailResult> {
 
-    public LoadSubTaskDetailResult() {
+    private BasePagingLoadConfig loadConfig;
+    private long taskDetailId;
+
+    public LoadSubTaskDetailAction() {
     }
 
-    public LoadSubTaskDetailResult(BasePagingLoadResult result) {
-        super(result);
+    public LoadSubTaskDetailAction(BasePagingLoadConfig loadConfig, long taskDetailId) {
+        this.loadConfig = loadConfig;
+        this.taskDetailId = taskDetailId;
+    }
+
+    public BasePagingLoadConfig getLoadConfig() {
+        return loadConfig;
+    }
+
+    public long getTaskDetailId() {
+        return taskDetailId;
     }
 }

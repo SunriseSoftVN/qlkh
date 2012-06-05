@@ -76,7 +76,7 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+            stationListStore = GridUtils.createListStoreForCb(Station.class);
             view.getCbbUserStation().setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
@@ -85,10 +85,10 @@ public class UserManagerPresenter extends AbstractPresenter<UserManagerView> {
 
     @Override
     protected void doBind() {
-        stationListStore = GridUtils.createListStore(Station.class, dispatch);
+        stationListStore = GridUtils.createListStore(Station.class);
         view.getCbbUserStation().setStore(stationListStore);
         view.setChangePasswordCellRenderer(new ChangePasswordCellRenderer());
-        view.createGrid(GridUtils.createListStore(User.class, dispatch));
+        view.createGrid(GridUtils.createListStore(User.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getUsersGrid().getStore().getLoader());
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

@@ -17,7 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.handler;
+package com.qlvt.server.handler.taskdetail;
 
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;

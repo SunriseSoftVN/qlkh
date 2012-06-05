@@ -22,15 +22,16 @@ package com.qlvt.client.client.utils;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlvt.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlvt.client.client.core.reader.LoadGridDataReader;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.core.client.action.core.LoadAction;
 import com.qlvt.core.client.action.core.LoadResult;
+import com.qlvt.core.client.action.grid.ActionHasLoadConfig;
 import com.qlvt.core.client.action.grid.LoadGridDataAction;
 import com.qlvt.core.client.action.grid.LoadGridDataResult;
 import com.qlvt.core.client.criterion.ClientCriteria;
 import com.qlvt.core.client.model.core.AbstractEntity;
-import net.customware.gwt.dispatch.client.DispatchAsync;
 
 /**
  * The Class GridUtils.
@@ -40,26 +41,39 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
  */
 public final class GridUtils {
 
-
     private GridUtils() {
-
     }
 
     /**
      * Create ListStore for GXT Grid.
      *
      * @param entityClass
-     * @param dispatch
      * @param <E>
      * @return
      */
     public static <E extends AbstractEntity> ListStore<BeanModel> createListStore(final Class<E> entityClass,
-                                                                                  final DispatchAsync dispatch,
                                                                                   final ClientCriteria... criterion) {
-        RpcProxy<LoadGridDataResult> rpcProxy = new RpcProxy<LoadGridDataResult>() {
+        return createListStore(entityClass, new LoadGridDataAction(entityClass.getName(), criterion));
+    }
+
+    /**
+     * Create ListStore for GXT Grid.
+     *
+     * @param entityClass using for generic
+     * @param loadAction
+     * @param <E>         Entity
+     * @param <A>         Action
+     * @param <R>         Result
+     * @return
+     */
+    public static <E extends AbstractEntity, A extends ActionHasLoadConfig<R>,
+            R extends LoadGridDataResult> ListStore<BeanModel> createListStore(Class<E> entityClass, final A loadAction) {
+        RpcProxy<R> rpcProxy = new RpcProxy<R>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
-                dispatch.execute(new LoadGridDataAction((BasePagingLoadConfig) loadConfig, entityClass.getName(), criterion), callback);
+            protected void load(Object loadConfig, AsyncCallback<R> callback) {
+                loadAction.setConfig((BasePagingLoadConfig) loadConfig);
+                StandardDispatchAsync.INSTANCE
+                        .execute(loadAction, callback);
             }
         };
         PagingLoader<PagingLoadResult<E>> pagingLoader =
@@ -78,24 +92,23 @@ public final class GridUtils {
      * Create ListStore for GXT ComboBox.
      *
      * @param entityClass
-     * @param dispatch
      * @param <E>
      * @return
      */
-    public static <E extends AbstractEntity> ListStore<BeanModel> getListStoreForCb(Class<E> entityClass,
-                                                                                    DispatchAsync dispatch,
-                                                                                    ClientCriteria... criterion) {
+    public static <E extends AbstractEntity> ListStore<BeanModel> createListStoreForCb(Class<E> entityClass,
+                                                                                       ClientCriteria... criterion) {
         final BeanModelFactory factory = BeanModelLookup.get().getFactory(entityClass);
         final ListStore<BeanModel> store = new ListStore<BeanModel>();
-
-        dispatch.execute(new LoadAction(entityClass.getName(), criterion), new AbstractAsyncCallback<LoadResult>() {
-            @Override
-            public void onSuccess(LoadResult result) {
-                for (E entity : result.<E>getList()) {
-                    store.add(factory.createModel(entity));
-                }
-            }
-        });
+        StandardDispatchAsync.INSTANCE
+                .execute(new LoadAction(entityClass.getName(), criterion),
+                        new AbstractAsyncCallback<LoadResult>() {
+                            @Override
+                            public void onSuccess(LoadResult result) {
+                                for (E entity : result.<E>getList()) {
+                                    store.add(factory.createModel(entity));
+                                }
+                            }
+                        });
         return store;
     }
 

@@ -38,8 +38,8 @@ import com.qlvt.core.client.action.core.SaveAction;
 import com.qlvt.core.client.action.core.SaveResult;
 import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
-import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualAction;
-import com.qlvt.core.client.action.subtaskannualdetail.LoadSubTaskAnnualResult;
+import com.qlvt.core.client.action.subtask.LoadSubTaskAnnualAction;
+import com.qlvt.core.client.action.subtask.LoadSubTaskAnnualResult;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
@@ -85,8 +85,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         if (currentStation != null) {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
-                taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
-                        ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
+                taskDtoListStore = GridUtils.createListStoreForCb(Task.class, ClientRestrictions.eq("taskTypeCode",
+                        TaskTypeEnum.DK.getCode()));
             }
             resetView();
         }
@@ -97,14 +97,14 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
 
     @Override
     protected void doBind() {
-        taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
-                ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.DK.getTaskTypeCode()));
+        taskDtoListStore = GridUtils.createListStoreForCb(Task.class, ClientRestrictions.eq("taskTypeCode",
+                TaskTypeEnum.DK.getCode()));
 
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
             public void onSuccess(LoadStationResult result) {
                 currentStation = result.getStation();
-                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, dispatch, ClientRestrictions.eq("station.id",
+                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
                         currentStation.getId()), ClientRestrictions.eq("annual", true)));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();

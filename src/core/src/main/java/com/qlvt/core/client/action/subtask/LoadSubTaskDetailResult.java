@@ -17,16 +17,24 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.server.dao;
+package com.qlvt.core.client.action.subtask;
 
-import com.qlvt.server.dao.core.Dao;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlvt.core.client.action.grid.LoadGridDataResult;
+import net.customware.gwt.dispatch.shared.Result;
 
 /**
- * The Class GxtDao.
+ * The Class LoadSubTaskDetailResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 9:12 AM
+ * @since 6/2/12, 12:43 PM
  */
-public interface GxtDao extends Dao {
+public class LoadSubTaskDetailResult extends LoadGridDataResult implements Result {
 
+    public LoadSubTaskDetailResult() {
+    }
+
+    public LoadSubTaskDetailResult(BasePagingLoadResult result) {
+        super(result);
+    }
 }

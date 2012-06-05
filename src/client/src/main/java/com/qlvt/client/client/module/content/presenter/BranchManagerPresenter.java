@@ -75,7 +75,7 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
         view.show();
         if (stationListStore != null) {
             //reload stations list.
-            stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+            stationListStore = GridUtils.createListStoreForCb(Station.class);
             view.getCbbStation().setStore(stationListStore);
         }
         view.getPagingToolBar().refresh();
@@ -84,9 +84,9 @@ public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView>
 
     @Override
     protected void doBind() {
-        stationListStore = GridUtils.getListStoreForCb(Station.class, dispatch);
+        stationListStore = GridUtils.createListStoreForCb(Station.class);
         view.getCbbStation().setStore(stationListStore);
-        view.createGrid(GridUtils.createListStore(Branch.class, dispatch));
+        view.createGrid(GridUtils.createListStore(Branch.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getBranchsGird().getStore().getLoader());
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {

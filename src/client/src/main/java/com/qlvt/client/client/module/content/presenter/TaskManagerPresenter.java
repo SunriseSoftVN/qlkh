@@ -83,7 +83,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     @Override
     protected void doBind() {
         view.setTaskChildOptionCellRenderer(new TaskChildOptionGridRender());
-        view.createGrid(GridUtils.createListStore(Task.class, dispatch));
+        view.createGrid(GridUtils.createListStore(Task.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -195,10 +195,10 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         currentTask.setQuota(view.getTxtTaskQuota().getValue().intValue());
                     }
                     currentTask.setTaskTypeCode(view.getCbbTaskType().
-                            getSimpleValue().getTaskTypeCode());
+                            getSimpleValue().getCode());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
-                    if (currentTask.getTaskTypeCode() == TaskTypeEnum.KDK.getTaskTypeCode()) {
+                    if (currentTask.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()) {
                         currentTask.setChildTasks(StringUtils.EMPTY);
                     }
                     dispatch.execute(new SaveAction(currentTask), new AbstractAsyncCallback<SaveResult>() {
@@ -304,7 +304,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         @Override
         public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
             Task task = model.getBean();
-            if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUM.getTaskTypeCode()) {
+            if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUM.getCode()) {
                 return createTaskChildOptionAnchor();
             }
             return null;

@@ -19,6 +19,9 @@
 
 package com.qlvt.server.dao;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.model.Task;
 import com.qlvt.server.dao.core.Dao;
 
@@ -29,5 +32,5 @@ import com.qlvt.server.dao.core.Dao;
  * @since 12/31/11, 2:34 PM
  */
 public interface TaskDao extends Dao<Task> {
-
+    BasePagingLoadResult<Task> getUnusedTask(long stationId, TaskTypeEnum typeEnum, BasePagingLoadConfig config);
 }

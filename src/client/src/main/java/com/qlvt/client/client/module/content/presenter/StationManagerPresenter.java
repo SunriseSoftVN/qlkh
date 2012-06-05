@@ -76,7 +76,7 @@ public class StationManagerPresenter extends AbstractPresenter<StationManagerVie
 
     @Override
     protected void doBind() {
-        view.createGrid(GridUtils.createListStore(Station.class, dispatch));
+        view.createGrid(GridUtils.createListStore(Station.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getStationsGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

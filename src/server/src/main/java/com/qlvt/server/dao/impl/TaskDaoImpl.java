@@ -19,9 +19,19 @@
 
 package com.qlvt.server.dao.impl;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.model.Task;
+import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.core.AbstractDao;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The Class TaskDaoImpl.
@@ -31,4 +41,30 @@ import com.qlvt.server.dao.core.AbstractDao;
  */
 public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
 
+    @Override
+    public BasePagingLoadResult<Task> getUnusedTask(long stationId, TaskTypeEnum typeEnum, BasePagingLoadConfig config) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetail.class);
+        criteria.add(Restrictions.eq("station.id", stationId));
+        criteria.add(Restrictions.eq("annual", typeEnum == TaskTypeEnum.DK));
+        criteria.add(Restrictions.eq("year", 1900 + new Date().getYear()));
+        List<TaskDetail> taskDetails = getHibernateTemplate().findByCriteria(criteria);
+        List<Long> usedTaskIds = new ArrayList<Long>(taskDetails.size());
+        for (TaskDetail taskDetail : taskDetails) {
+            usedTaskIds.add(taskDetail.getTask().getId());
+        }
+
+        BasePagingLoadResult<Task> taskResult = getByBeanConfig(Task.class.getName(), config,
+                Restrictions.eq("taskTypeCode", typeEnum.getCode()));
+        List<Task> deleteTask = new ArrayList<Task>(taskResult.getTotalLength());
+        for (Task task : taskResult.getData()) {
+            for (Long usedTaskId : usedTaskIds) {
+                if (task.getId().equals(usedTaskId)) {
+                    deleteTask.add(task);
+                }
+            }
+        }
+        taskResult.getData().removeAll(deleteTask);
+        taskResult.setTotalLength(taskResult.getData().size());
+        return taskResult;
+    }
 }

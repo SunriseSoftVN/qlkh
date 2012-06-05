@@ -30,7 +30,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -101,15 +101,13 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
     public static final int Q4_UNIT_WIDTH = 70;
 
     public static final int TASK_LIST_SIZE = 100;
+    public static final int TASK_EDIT_LIST_SIZE = 20;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
-
-    @I18nField
-    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
 
     @I18nField
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
@@ -137,19 +135,22 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     private ContentPanel contentPanel = new ContentPanel();
 
-    private ContentPanel taskPanel = new ContentPanel();
+    private ContentPanel taskPanel = new ContentPanel(new FillLayout());
     private PagingToolBar taskPagingToolBar;
     private Grid<BeanModel> taskDetailGird;
     private ColumnModel taskDetailColumnModel;
 
-    private ContentPanel subTaskPanel = new ContentPanel();
+    private ContentPanel subTaskPanel = new ContentPanel(new FillLayout());
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
     private ColumnModel subTaskColumnModel;
 
     private VerticalPanel taskEditPanel = new VerticalPanel();
+    private ContentPanel taskGridPanel = new ContentPanel();
     private Grid<BeanModel> taskGrid;
     private ColumnModel taskColumnModel;
+    private PagingToolBar taskEditPagingToolBar;
+
 
     @Override
     protected void initializeView() {
@@ -179,8 +180,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113 || e.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
                     btnRefresh.fireEvent(Events.Select);
                 }
@@ -195,14 +194,11 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnEdit);
-        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnRefresh);
         taskPanel.setHeaderVisible(false);
         taskPanel.setHeight(Window.getClientHeight() - 90);
-        taskPanel.setLayout(new FitLayout());
         taskPanel.setWidth("50%");
         taskPanel.add(taskDetailGird);
         taskPanel.setTopComponent(toolBar);
@@ -243,7 +239,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         subTaskPanel.setBodyBorder(false);
         subTaskPanel.setHeaderVisible(false);
         subTaskPanel.setHeight(Window.getClientHeight() - 90);
-        subTaskPanel.setLayout(new FitLayout());
         subTaskPanel.setWidth("50%");
         subTaskPanel.add(subTaskDetailGird);
         subTaskPanel.setTopComponent(toolBar);
@@ -427,9 +422,15 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
                     }
                 }
             });
-            taskGrid.setHeight(300);
+            taskGrid.setHeight(265);
             taskGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-            taskEditPanel.add(taskGrid);
+            taskGridPanel.add(taskGrid);
+
+            taskEditPagingToolBar = new PagingToolBar(TASK_EDIT_LIST_SIZE);
+            taskGridPanel.setBottomComponent(taskEditPagingToolBar);
+            taskGridPanel.setBodyBorder(false);
+            taskGridPanel.setHeaderVisible(false);
+            taskEditPanel.add(taskGridPanel);
         }
 
         window.add(taskEditPanel);
@@ -460,10 +461,6 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     public Button getBtnDelete() {
         return btnDelete;
-    }
-
-    public Button getBtnEdit() {
-        return btnEdit;
     }
 
     public Button getBtnRefresh() {
@@ -508,5 +505,9 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
 
     public TextField<String> getTxtTaskSearch() {
         return txtTaskSearch;
+    }
+
+    public PagingToolBar getTaskEditPagingToolBar() {
+        return taskEditPagingToolBar;
     }
 }

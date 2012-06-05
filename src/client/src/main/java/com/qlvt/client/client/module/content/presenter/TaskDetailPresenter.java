@@ -39,8 +39,9 @@ import com.qlvt.core.client.action.core.SaveAction;
 import com.qlvt.core.client.action.core.SaveResult;
 import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
-import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailAction;
-import com.qlvt.core.client.action.subtaskdetail.LoadSubTaskDetailResult;
+import com.qlvt.core.client.action.subtask.LoadSubTaskDetailAction;
+import com.qlvt.core.client.action.subtask.LoadSubTaskDetailResult;
+import com.qlvt.core.client.action.task.LoadUnusedTaskGridAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
@@ -86,8 +87,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         if (currentStation != null) {
             if (taskDtoListStore != null) {
                 //Reload task dto list.
-                taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
-                        ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
+                taskDtoListStore = GridUtils.createListStore(Task.class,
+                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.KDK));
             }
             resetView();
         }
@@ -98,13 +99,13 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     @Override
     protected void doBind() {
-        taskDtoListStore = GridUtils.getListStoreForCb(Task.class, dispatch,
-                ClientRestrictions.eq("taskTypeCode", TaskTypeEnum.KDK.getTaskTypeCode()));
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
             public void onSuccess(LoadStationResult result) {
                 currentStation = result.getStation();
-                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, dispatch, ClientRestrictions.eq("station.id",
+                taskDtoListStore = GridUtils.createListStore(Task.class,
+                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.KDK));
+                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
                         currentStation.getId()), ClientRestrictions.eq("annual", false)));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
                 resetView();
@@ -131,29 +132,12 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
                     taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
+                    view.getTaskEditPagingToolBar().bind((PagingLoader<?>) view.getTaskGrid().getStore().getLoader());
+                    view.getTaskEditPagingToolBar().refresh();
                     currentTaskDetail = new TaskDetail();
                     taskEditWindow.show();
                 } else {
                     DiaLogUtils.notify(view.getConstant().loadStationError());
-                }
-            }
-        });
-        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (view.getTaskDetailGird().getSelectionModel().getSelectedItem() != null) {
-                    currentTaskDetail = view.getTaskDetailGird().getSelectionModel().getSelectedItem().getBean();
-                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
-                    BeanModel task = null;
-                    for (BeanModel model : view.getTaskGrid().getStore().getModels()) {
-                        if (model.<Task>getBean().getId().equals(currentTaskDetail.getTask().getId())) {
-                            task = model;
-                        }
-                    }
-                    view.getTxtTaskSearch().setValue(currentTaskDetail.getTask().getCode());
-                    view.getTaskGrid().getStore().applyFilters("");
-                    view.getTaskGrid().getSelectionModel().select(task, false);
-                    taskEditWindow.show();
                 }
             }
         });

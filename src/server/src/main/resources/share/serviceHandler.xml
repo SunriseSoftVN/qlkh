@@ -15,11 +15,12 @@
                 <bean class="com.qlvt.server.handler.core.LoadHandler"/>
                 <bean class="com.qlvt.server.handler.core.SaveHandler"/>
                 <bean class="com.qlvt.server.handler.core.DeleteHandler"/>
-                <bean class="com.qlvt.server.handler.ReportHandler"/>
-                <bean class="com.qlvt.server.handler.LoadStationHandler"/>
-                <bean class="com.qlvt.server.handler.LoadSubTaskAnnualHandler"/>
-                <bean class="com.qlvt.server.handler.DeleteTaskDetailHandler"/>
-                <bean class="com.qlvt.server.handler.LoadSubTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.report.ReportHandler"/>
+                <bean class="com.qlvt.server.handler.station.LoadStationHandler"/>
+                <bean class="com.qlvt.server.handler.subtask.LoadSubTaskAnnualHandler"/>
+                <bean class="com.qlvt.server.handler.taskdetail.DeleteTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.subtask.LoadSubTaskDetailHandler"/>
+                <bean class="com.qlvt.server.handler.task.LoadUnusedTaskGridHandler"/>
                 <bean class="com.qlvt.server.handler.time.GetServerTimeHandler"/>
             </list>
         </property>

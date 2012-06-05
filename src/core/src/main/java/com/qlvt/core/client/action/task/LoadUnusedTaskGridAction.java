@@ -17,35 +17,47 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.client.action.subtaskannualdetail;
+package com.qlvt.core.client.action.task;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import net.customware.gwt.dispatch.shared.Action;
+import com.qlvt.core.client.action.grid.ActionHasLoadConfig;
+import com.qlvt.core.client.constant.TaskTypeEnum;
 
 /**
- * The Class LoadSubTaskAnnualAction.
+ * The Class LoadUnusedTaskGridAction.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 9:08 PM
+ * @since 6/5/12, 4:37 PM
  */
-public class LoadSubTaskAnnualAction implements Action<LoadSubTaskAnnualResult> {
+public class LoadUnusedTaskGridAction implements ActionHasLoadConfig<LoadUnusedTaskGridResult> {
 
     private BasePagingLoadConfig loadConfig;
-    private long taskDetailId;
+    private long stationId;
+    private TaskTypeEnum typeEnum;
 
-    public LoadSubTaskAnnualAction() {
+    public LoadUnusedTaskGridAction() {
     }
 
-    public LoadSubTaskAnnualAction(BasePagingLoadConfig loadConfig, long taskDetailId) {
-        this.loadConfig = loadConfig;
-        this.taskDetailId = taskDetailId;
+    public LoadUnusedTaskGridAction(long stationId, TaskTypeEnum typeEnum) {
+        this.stationId = stationId;
+        this.typeEnum = typeEnum;
     }
 
-    public BasePagingLoadConfig getLoadConfig() {
+    @Override
+    public BasePagingLoadConfig getConfig() {
         return loadConfig;
     }
 
-    public long getTaskDetailId() {
-        return taskDetailId;
+    @Override
+    public void setConfig(BasePagingLoadConfig config) {
+        this.loadConfig = config;
+    }
+
+    public TaskTypeEnum getTypeEnum() {
+        return typeEnum;
+    }
+
+    public long getStationId() {
+        return stationId;
     }
 }
