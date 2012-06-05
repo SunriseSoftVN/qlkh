@@ -58,6 +58,5 @@ public interface TaskAnnualDetailConstant extends Constants {
     String btnTaskEditCancel();
     String cbbTask();
     String txtTaskSearch();
-    String lblTaskSearchHint();
     String conformExitMessage();
 }

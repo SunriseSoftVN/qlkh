@@ -23,11 +23,11 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Store;
-import com.extjs.gxt.ui.client.store.StoreFilter;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -46,7 +46,6 @@ import com.qlvt.core.client.model.SubTaskAnnualDetail;
 import com.qlvt.core.client.model.Task;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 import com.smvp4g.mvp.client.widget.TextField;
@@ -103,6 +102,7 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     public static final int REAL_VALUE_WIDTH = 80;
 
     public static final int TASK_LIST_SIZE = 100;
+    public static final int TASK_EDIT_LIST_SIZE = 20;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
@@ -134,9 +134,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     @I18nField(emptyText = true)
     TextField<String> txtTaskSearch = new TextField<String>();
 
-    @I18nField
-    Label lblTaskSearchHint = new Label();
-
     private ContentPanel contentPanel = new ContentPanel();
 
     private ContentPanel taskPanel = new ContentPanel();
@@ -150,8 +147,10 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     private ColumnModel subTaskColumnModel;
 
     private VerticalPanel taskEditPanel = new VerticalPanel();
+    private ContentPanel taskGridPanel = new ContentPanel();
     private Grid<BeanModel> taskGrid;
     private ColumnModel taskColumnModel;
+    private PagingToolBar taskEditPagingToolBar;
 
     @Override
     protected void initializeView() {
@@ -419,38 +418,13 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         if (!txtTaskSearch.isRendered()) {
             txtTaskSearch.setSelectOnFocus(true);
             txtTaskSearch.setWidth(170);
-
-            HorizontalPanel hp = new HorizontalPanel();
-            hp.setSpacing(3);
-            hp.add(txtTaskSearch);
-            hp.add(lblTaskSearchHint);
-            taskEditPanel.add(hp);
+            taskEditPanel.add(txtTaskSearch);
         }
         window.setFocusWidget(txtTaskSearch);
 
         if (taskGrid == null) {
             taskColumnModel = new ColumnModel(createTaskColumnConfigs());
             taskGrid = new Grid<BeanModel>(taskListStore, taskColumnModel);
-            taskGrid.getStore().addFilter(new StoreFilter<BeanModel>() {
-                @Override
-                public boolean select(Store<BeanModel> beanModelStore, BeanModel parent,
-                                      BeanModel item, String property) {
-                    Task task = item.getBean();
-                    String filter = StringUtils.EMPTY;
-                    if (txtTaskSearch.getValue() != null) {
-                        filter = StringUtils.convertNonAscii(txtTaskSearch.getValue().trim().toLowerCase());
-                    }
-                    if (StringUtils.isBlank(filter)) {
-                        return true;
-                    }
-                    if (task != null && (StringUtils.convertNonAscii(task.getName().toLowerCase()).
-                            contains(filter)
-                            || task.getCode().toLowerCase().startsWith(filter))) {
-                        return true;
-                    }
-                    return false;
-                }
-            });
             taskGrid.addListener(Events.OnKeyDown, new KeyListener() {
                 @Override
                 public void handleEvent(ComponentEvent e) {
@@ -459,9 +433,16 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
                     }
                 }
             });
-            taskGrid.setHeight(300);
+            taskGrid.setLoadMask(true);
+            taskGrid.setHeight(270);
             taskGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-            taskEditPanel.add(taskGrid);
+            taskGridPanel.add(taskGrid);
+
+            taskEditPagingToolBar = new PagingToolBar(TASK_EDIT_LIST_SIZE);
+            taskGridPanel.setBottomComponent(taskEditPagingToolBar);
+            taskGridPanel.setBodyBorder(false);
+            taskGridPanel.setHeaderVisible(false);
+            taskEditPanel.add(taskGridPanel);
         }
 
         window.add(taskEditPanel);
@@ -540,5 +521,9 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public TextField<String> getTxtTaskSearch() {
         return txtTaskSearch;
+    }
+
+    public PagingToolBar getTaskEditPagingToolBar() {
+        return taskEditPagingToolBar;
     }
 }

@@ -31,6 +31,7 @@ import com.qlvt.client.client.core.reader.LoadGridDataReader;
 import com.qlvt.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlvt.client.client.module.content.place.TaskAnnualDetailPlace;
 import com.qlvt.client.client.module.content.view.TaskAnnualDetailView;
+import com.qlvt.client.client.module.content.view.TaskDetailView;
 import com.qlvt.client.client.utils.DiaLogUtils;
 import com.qlvt.client.client.utils.GridUtils;
 import com.qlvt.client.client.utils.LoadingUtils;
@@ -40,6 +41,7 @@ import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
 import com.qlvt.core.client.action.subtask.LoadSubTaskAnnualAction;
 import com.qlvt.core.client.action.subtask.LoadSubTaskAnnualResult;
+import com.qlvt.core.client.action.task.LoadUnusedTaskGridAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
@@ -83,11 +85,7 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
     public void onActivate() {
         view.show();
         if (currentStation != null) {
-            if (taskDtoListStore != null) {
-                //Reload task dto list.
-                taskDtoListStore = GridUtils.createListStoreForCb(Task.class, ClientRestrictions.eq("taskTypeCode",
-                        TaskTypeEnum.DK.getCode()));
-            }
+            //Reload view
             resetView();
         }
         if (view.getTaskDetailGird() != null) {
@@ -97,13 +95,12 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
 
     @Override
     protected void doBind() {
-        taskDtoListStore = GridUtils.createListStoreForCb(Task.class, ClientRestrictions.eq("taskTypeCode",
-                TaskTypeEnum.DK.getCode()));
-
         dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
             public void onSuccess(LoadStationResult result) {
                 currentStation = result.getStation();
+                taskDtoListStore = GridUtils.createListStore(Task.class,
+                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.DK));
                 view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
                         currentStation.getId()), ClientRestrictions.eq("annual", true)));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
@@ -136,6 +133,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             public void componentSelected(ButtonEvent ce) {
                 if (currentStation != null) {
                     taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
+                    resetTaskGirdFilter();
+                    view.getTaskEditPagingToolBar().bind((PagingLoader<?>) view.getTaskGrid().getStore().getLoader());
+                    view.getTaskEditPagingToolBar().refresh();
                     currentTaskDetail = new TaskDetail();
                     taskEditWindow.show();
                 } else {
@@ -261,11 +261,20 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getTxtTaskSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER && view.getTxtTaskSearch().isRendered()) {
-                    view.getTaskGrid().getSelectionModel().select(0, false);
-                    view.getTaskGrid().focus();
-                } else {
-                    view.getTaskGrid().getStore().applyFilters("");
+                String st = view.getTxtTaskSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGrid().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put(TaskDetailView.TASK_NAME_COLUMN, st);
+                        filters.put(TaskDetailView.TASK_CODE_COLUMN, st);
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetTaskGirdFilter();
+                    }
+                    view.getTaskEditPagingToolBar().refresh();
                 }
             }
         });
@@ -385,6 +394,16 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtSearch().clear();
+    }
+
+    private void resetTaskGirdFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGrid().
+                getStore().getLoadConfig();
+        if (loadConfig != null) {
+            loadConfig.set("hasFilter", false);
+            loadConfig.set("filters", null);
+            view.getTxtTaskSearch().clear();
+        }
     }
 
     private void resetView() {
