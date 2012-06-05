@@ -18,7 +18,7 @@
                 <value>com/qlvt/core/client/model/SubTaskAnnualDetail.hbm.xml</value>
                 <value>com/qlvt/core/client/model/Branch.hbm.xml</value>
                 <value>com/qlvt/core/client/model/SystemLog.hbm.xml</value>
-                <value>com/qlvt/core/client/model/SystemLock.hbm.xml</value>
+                <value>com/qlvt/core/client/model/StationLock.hbm.xml</value>
             </list>
         </property>
     </bean>

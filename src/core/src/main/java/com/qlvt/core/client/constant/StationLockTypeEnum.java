@@ -25,14 +25,17 @@ package com.qlvt.core.client.constant;
  * @author Nguyen Duc Dung
  * @since 6/5/12, 9:28 PM
  */
-public enum LockTypeEnum {
+public enum StationLockTypeEnum {
 
-    ALL(0),
-    FIELD(1);
+    DK(0),
+    KDK_Q1(1),
+    KDK_Q2(2),
+    KDK_Q3(3),
+    KDK_Q4(4);
 
     private int code;
 
-    LockTypeEnum(int code) {
+    StationLockTypeEnum(int code) {
         this.code = code;
     }
 

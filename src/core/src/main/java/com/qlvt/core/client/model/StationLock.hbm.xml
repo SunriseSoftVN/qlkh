@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.qlvt.core.client.model.Station" table="station" schema="" catalog="qlvt">
+    <class name="com.qlvt.core.client.model.StationLock" table="stationlock" schema="" catalog="qlvt">
         <id name="id" column="id">
             <generator class="identity"/>
         </id>
@@ -12,7 +12,8 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
-        <property name="name" column="name" not-null="true"/>
-        <property name="company" column="company" not-null="true"/>
+        <property name="code" column="code" not-null="true"/>
+
+        <one-to-one name="station" class="com.qlvt.core.client.model.Station" lazy="false" fetch="select"/>
     </class>
 </hibernate-mapping>

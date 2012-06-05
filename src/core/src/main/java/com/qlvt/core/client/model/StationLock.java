@@ -5,12 +5,12 @@
  * under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 3 of
  * the License, or (at your option) any later version.
- *  
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -21,44 +21,30 @@ package com.qlvt.core.client.model;
 
 import com.qlvt.core.client.model.core.AbstractEntity;
 
-import javax.persistence.Transient;
-import java.util.List;
-
 /**
- * The Class Station.
+ * The Class StationLock.
  *
  * @author Nguyen Duc Dung
- * @since 12/29/11, 6:52 AM
+ * @since 6/5/12, 9:18 PM
  */
-public class Station extends AbstractEntity {
+public class StationLock extends AbstractEntity {
 
-    private String name;
-    private boolean company;
+    private Station station;
+    private int code;
 
-    @Transient
-    private List<Branch> branches;
-
-    public String getName() {
-        return name;
+    public Station getStation() {
+        return station;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStation(Station station) {
+        this.station = station;
     }
 
-    public boolean isCompany() {
-        return company;
+    public int getCode() {
+        return code;
     }
 
-    public void setCompany(boolean company) {
-        this.company = company;
-    }
-
-    public List<Branch> getBranches() {
-        return branches;
-    }
-
-    public void setBranches(List<Branch> branches) {
-        this.branches = branches;
+    public void setCode(int code) {
+        this.code = code;
     }
 }
