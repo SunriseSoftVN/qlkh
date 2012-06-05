@@ -9,15 +9,6 @@
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.qlvt.client.client.QlvtEntryPoint'/>
 
-    <!-- English language, independent of country -->
-    <extend-property name="locale" values="en"/>
-
-    <!-- VietNamese language, independent of country -->
-    <extend-property name="locale" values="vi"/>
-
-    <!-- Default English Language-->
-    <set-property-fallback name="locale" value="vi"/>
-
     <!-- Specify the paths for translatable code                    -->
     <source path='client'/>
 </module>
