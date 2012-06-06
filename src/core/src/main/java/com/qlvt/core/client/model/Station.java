@@ -38,6 +38,9 @@ public class Station extends AbstractEntity {
     @Transient
     private List<Branch> branches;
 
+    @Transient
+    private List<StationLock> stationLocks;
+
     public String getName() {
         return name;
     }
@@ -60,5 +63,13 @@ public class Station extends AbstractEntity {
 
     public void setBranches(List<Branch> branches) {
         this.branches = branches;
+    }
+
+    public List<StationLock> getStationLocks() {
+        return stationLocks;
+    }
+
+    public void setStationLocks(List<StationLock> stationLocks) {
+        this.stationLocks = stationLocks;
     }
 }

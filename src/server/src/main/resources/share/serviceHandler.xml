@@ -22,6 +22,7 @@
                 <bean class="com.qlvt.server.handler.subtask.LoadSubTaskDetailHandler"/>
                 <bean class="com.qlvt.server.handler.task.LoadUnusedTaskGridHandler"/>
                 <bean class="com.qlvt.server.handler.time.GetServerTimeHandler"/>
+                <bean class="com.qlvt.server.handler.station.LockStationHandler"/>
             </list>
         </property>
     </bean>

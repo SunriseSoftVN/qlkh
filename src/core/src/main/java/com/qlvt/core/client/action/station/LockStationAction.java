@@ -19,38 +19,46 @@
 
 package com.qlvt.core.client.action.station;
 
+import com.qlvt.core.client.constant.StationLockTypeEnum;
 import com.qlvt.core.client.model.Station;
-import net.customware.gwt.dispatch.shared.Result;
+import net.customware.gwt.dispatch.shared.Action;
 
-import java.util.List;
 
 /**
- * The Class LoadStationAndBranchResult.
+ * The Class LockStationAction.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 8:08 PM
+ * @since 6/6/12, 2:22 PM
  */
-public class LoadStationResult implements Result {
+public class LockStationAction implements Action<LockStationResult> {
 
     private Station station;
-    private List<Station> stations;
+    private StationLockTypeEnum lockType;
+    private boolean lock;
 
-    public LoadStationResult() {
+    public LockStationAction() {
     }
 
-    public LoadStationResult(Station station) {
+    public LockStationAction(StationLockTypeEnum lockType, boolean lock) {
+        this.lockType = lockType;
+        this.lock = lock;
+    }
+
+    public LockStationAction(Station station, StationLockTypeEnum lockType, boolean lock) {
         this.station = station;
+        this.lockType = lockType;
+        this.lock = lock;
     }
 
-    public LoadStationResult(List<Station> stations) {
-        this.stations = stations;
+    public StationLockTypeEnum getLockType() {
+        return lockType;
+    }
+
+    public boolean isLock() {
+        return lock;
     }
 
     public Station getStation() {
         return station;
-    }
-
-    public List<Station> getStations() {
-        return stations;
     }
 }

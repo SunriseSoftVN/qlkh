@@ -14,6 +14,8 @@
 
         <property name="code" column="code" not-null="true"/>
 
-        <one-to-one name="station" class="com.qlvt.core.client.model.Station" lazy="false" fetch="select"/>
+        <many-to-one name="station" class="com.qlvt.core.client.model.Station" lazy="false" fetch="join" outer-join="auto">
+            <column name="stationId" not-null="false"/>
+        </many-to-one>
     </class>
 </hibernate-mapping>

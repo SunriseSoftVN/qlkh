@@ -76,6 +76,15 @@ public class GeneralDaoImpl extends AbstractDao implements GeneralDao {
     }
 
     @Override
+    public <E extends AbstractEntity> void deleteByIds(Class<E> entityClass, List<Long> ids) {
+        for (Long id : ids) {
+            if (id != null) {
+                deleteById(entityClass, id);
+            }
+        }
+    }
+
+    @Override
     public <E extends AbstractEntity> void deleteById(String entityName, long id) {
         Object entity = getHibernateTemplate().get(entityName, id);
         if (entity != null) {
@@ -160,7 +169,8 @@ public class GeneralDaoImpl extends AbstractDao implements GeneralDao {
     }
 
     @Override
-    public <E extends AbstractEntity> void saveOrUpdate(List<E> entities) {
+    public <E extends AbstractEntity> List<E> saveOrUpdate(List<E> entities) {
         getHibernateTemplate().saveOrUpdateAll(entities);
+        return entities;
     }
 }

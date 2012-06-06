@@ -47,8 +47,7 @@ public class SaveHandler extends AbstractHandler<SaveAction, SaveResult> {
         if (action.getEntity() != null) {
             return new SaveResult(generalDao.saveOrUpdate(action.getEntity()));
         } else if (action.getEntities() != null) {
-            generalDao.saveOrUpdate(action.getEntities());
-            return new SaveResult();
+            return new SaveResult(generalDao.saveOrUpdate(action.getEntities()));
         }
         return null;
     }

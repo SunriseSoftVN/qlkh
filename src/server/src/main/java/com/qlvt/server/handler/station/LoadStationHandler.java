@@ -23,12 +23,15 @@ import com.qlvt.core.client.action.station.LoadStationAction;
 import com.qlvt.core.client.action.station.LoadStationResult;
 import com.qlvt.core.client.model.Branch;
 import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.StationLock;
 import com.qlvt.core.client.model.User;
 import com.qlvt.server.dao.BranchDao;
 import com.qlvt.server.dao.UserDao;
+import com.qlvt.server.dao.core.GeneralDao;
 import com.qlvt.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -40,6 +43,9 @@ import java.util.List;
  * @since 6/1/12, 8:11 PM
  */
 public class LoadStationHandler extends AbstractHandler<LoadStationAction, LoadStationResult> {
+
+    @Autowired
+    private GeneralDao generalDao;
 
     @Autowired
     private BranchDao branchDao;
@@ -54,12 +60,22 @@ public class LoadStationHandler extends AbstractHandler<LoadStationAction, LoadS
 
     @Override
     public LoadStationResult execute(LoadStationAction action, ExecutionContext context) throws DispatchException {
-        User user = userDao.findByUserName(action.getUserName());
-        if (user != null) {
-            Station station = user.getStation();
-            List<Branch> branches = branchDao.findByStationId(station.getId());
-            station.setBranches(branches);
-            return new LoadStationResult(station);
+        if(action.getUserName() != null) {
+            User user = userDao.findByUserName(action.getUserName());
+            if (user != null) {
+                Station station = user.getStation();
+                List<Branch> branches = branchDao.findByStationId(station.getId());
+                station.setBranches(branches);
+                return new LoadStationResult(station);
+            }
+        } else {
+            List<Station> stations = generalDao.getAll(Station.class);
+            for(Station station : stations) {
+                List<StationLock> stationLocks = generalDao.findCriteria(StationLock.class,
+                        Restrictions.eq("station.id", station.getId()));
+                station.setStationLocks(stationLocks);
+            }
+            return new LoadStationResult(stations);
         }
         return null;
     }

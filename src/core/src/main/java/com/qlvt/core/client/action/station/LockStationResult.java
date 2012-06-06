@@ -19,38 +19,13 @@
 
 package com.qlvt.core.client.action.station;
 
-import com.qlvt.core.client.model.Station;
 import net.customware.gwt.dispatch.shared.Result;
 
-import java.util.List;
-
 /**
- * The Class LoadStationAndBranchResult.
+ * The Class LockStationResult.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 8:08 PM
+ * @since 6/6/12, 2:22 PM
  */
-public class LoadStationResult implements Result {
-
-    private Station station;
-    private List<Station> stations;
-
-    public LoadStationResult() {
-    }
-
-    public LoadStationResult(Station station) {
-        this.station = station;
-    }
-
-    public LoadStationResult(List<Station> stations) {
-        this.stations = stations;
-    }
-
-    public Station getStation() {
-        return station;
-    }
-
-    public List<Station> getStations() {
-        return stations;
-    }
+public class LockStationResult implements Result {
 }

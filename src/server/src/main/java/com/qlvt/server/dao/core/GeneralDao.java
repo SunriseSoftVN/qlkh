@@ -49,7 +49,7 @@ public interface GeneralDao extends Dao {
 
     <E extends AbstractEntity> E saveOrUpdate(E entity);
 
-    <E extends AbstractEntity> void saveOrUpdate(List<E> entities);
+    <E extends AbstractEntity> List<E> saveOrUpdate(List<E> entities);
 
     <E extends AbstractEntity> void delete(E entity);
 
@@ -58,6 +58,8 @@ public interface GeneralDao extends Dao {
     <E extends AbstractEntity> void deleteById(Class<E> entityClass, long id);
 
     <E extends AbstractEntity> void deleteByIds(String entityName, List<Long> ids);
+
+    <E extends AbstractEntity> void deleteByIds(Class<E> entityClass, List<Long> ids);
 
     <E extends AbstractEntity> List<E> findRelateEntityById(String entityName, long id, String relateEntity);
 }
