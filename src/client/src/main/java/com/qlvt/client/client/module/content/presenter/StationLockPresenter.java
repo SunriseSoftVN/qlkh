@@ -52,7 +52,6 @@ import java.util.List;
 public class StationLockPresenter extends AbstractPresenter<StationLockView> {
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
-    private List<Station> stations;
 
     @Override
     public void onActivate() {
@@ -64,73 +63,63 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
         dispatch.execute(new LoadStationAction(), new AbstractAsyncCallback<LoadStationResult>() {
             @Override
             public void onSuccess(LoadStationResult result) {
-                stations = result.getStations();
                 for (final Station station : result.getStations()) {
                     view.addStationName(station.getName());
                     view.addAnnualButton(createAnnualLock(station), station.isCompany());
                     view.addNormalButton(createNormalLock(station, StationLockTypeEnum.KDK_Q1),
                             createNormalLock(station, StationLockTypeEnum.KDK_Q2),
                             createNormalLock(station, StationLockTypeEnum.KDK_Q3),
-                            createNormalLock(station, StationLockTypeEnum.KDK_Q4));
+                            createNormalLock(station, StationLockTypeEnum.KDK_Q4), station.isCompany());
                 }
-                view.checkAnnualCompanyCb();
+                view.checkCompanyCb(view.getAnnualCompanyCb(), view.getAnnualCbs());
+                view.checkCompanyCb(view.getQ1CompanyCb(), view.getQ1Cbs());
+                view.checkCompanyCb(view.getQ2CompanyCb(), view.getQ2Cbs());
+                view.checkCompanyCb(view.getQ3CompanyCb(), view.getQ3Cbs());
+                view.checkCompanyCb(view.getQ4CompanyCb(), view.getQ4Cbs());
                 view.layout();
             }
         });
     }
 
-    private CheckBox createNormalLock(final Station station, StationLockTypeEnum lockTypeEnum) {
+    private CheckBox createNormalLock(final Station station, StationLockTypeEnum lockType) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setValue(true);
         if (CollectionsUtils.isNotEmpty(station.getStationLocks())) {
             for (StationLock stationLock : station.getStationLocks()) {
-                if (lockTypeEnum.getCode() == stationLock.getCode()) {
+                if (lockType.getCode() == stationLock.getCode()) {
                     checkBox.setValue(false);
                     break;
                 }
             }
         }
-        checkBox.addListener(Events.Change, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                DiaLogUtils.notify(checkBox.getValue());
-            }
-        });
+        checkBox.addListener(Events.Change, new LockListener(station, lockType));
         return checkBox;
     }
 
     private CheckBox createAnnualLock(final Station station) {
         final CheckBox checkBox = new CheckBox();
-        StationLock currentStationLock = null;
         checkBox.setValue(true);
         if (CollectionsUtils.isNotEmpty(station.getStationLocks())) {
             for (StationLock stationLock : station.getStationLocks()) {
                 if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
                     checkBox.setValue(false);
-                    currentStationLock = stationLock;
                     break;
                 }
             }
         }
-        checkBox.addListener(Events.Change, new LockAnnualListener(station));
+        checkBox.addListener(Events.Change, new LockListener(station, StationLockTypeEnum.DK));
         return checkBox;
     }
 
-    private StationLock createStationLock(Station station) {
-        StationLock stationLock = new StationLock();
-        stationLock.setStation(station);
-        stationLock.setCreateBy(1l);
-        stationLock.setUpdateBy(1l);
-        stationLock.setCode(StationLockTypeEnum.DK.getCode());
-        return stationLock;
-    }
 
-    private class LockAnnualListener implements Listener<BaseEvent> {
+    private class LockListener implements Listener<BaseEvent> {
 
         private Station currentStation;
+        private StationLockTypeEnum lockType;
 
-        private LockAnnualListener(Station currentStation) {
+        private LockListener(Station currentStation, StationLockTypeEnum lockType) {
             this.currentStation = currentStation;
+            this.lockType = lockType;
         }
 
         @Override
@@ -138,8 +127,8 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
             final CheckBox checkBox = (CheckBox) be.getSource();
             checkBox.setEnabled(false);
             if (!currentStation.isCompany()) {
-                view.getAnnualCompanyCb().setEnabled(false);
-                dispatch.execute(new LockStationAction(currentStation, StationLockTypeEnum.DK, !checkBox.getValue()),
+                getCheckBox(lockType).setEnabled(false);
+                dispatch.execute(new LockStationAction(currentStation, lockType, !checkBox.getValue()),
                         new AbstractAsyncCallback<LockStationResult>() {
                             @Override
                             public void onSuccess(LockStationResult result) {
@@ -149,14 +138,14 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
                                     DiaLogUtils.notify(view.getConstant().lockSuccessful());
                                 }
                                 checkBox.setEnabled(true);
-                                view.getAnnualCompanyCb().setEnabled(true);
-                                view.checkAnnualCompanyCb();
+                                getCheckBox(lockType).setEnabled(true);
+                                view.checkCompanyCb(getCheckBox(lockType), getCheckBoxes(lockType));
                             }
                         });
 
             } else {
-                view.enableAllAnnualLock(false);
-                dispatch.execute(new LockStationAction(StationLockTypeEnum.DK, !checkBox.getValue()),
+                view.enableAllLock(getCheckBoxes(lockType), false);
+                dispatch.execute(new LockStationAction(lockType, !checkBox.getValue()),
                         new AbstractAsyncCallback<LockStationResult>() {
                             @Override
                             public void onSuccess(LockStationResult result) {
@@ -166,11 +155,41 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
                                     DiaLogUtils.notify(view.getConstant().lockSuccessful());
                                 }
                                 checkBox.setEnabled(true);
-                                view.checkAllAnnualLock(checkBox.getValue());
-                                view.enableAllAnnualLock(true);
+                                view.checkAllLock(getCheckBoxes(lockType), checkBox.getValue());
+                                view.enableAllLock(getCheckBoxes(lockType), true);
                             }
                         });
             }
         }
+    }
+
+    private CheckBox getCheckBox(StationLockTypeEnum typeEnum) {
+        if (typeEnum == StationLockTypeEnum.DK) {
+            return view.getAnnualCompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q1) {
+            return view.getQ1CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q2) {
+            return view.getQ2CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q3) {
+            return view.getQ3CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q4) {
+            return view.getQ4CompanyCb();
+        }
+        return null;
+    }
+
+    private List<CheckBox> getCheckBoxes(StationLockTypeEnum typeEnum) {
+        if (typeEnum == StationLockTypeEnum.DK) {
+            return view.getAnnualCbs();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q1) {
+            return view.getQ1Cbs();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q2) {
+            return view.getQ2Cbs();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q3) {
+            return view.getQ3Cbs();
+        } else if (typeEnum == StationLockTypeEnum.KDK_Q4) {
+            return view.getQ4Cbs();
+        }
+        return null;
     }
 }

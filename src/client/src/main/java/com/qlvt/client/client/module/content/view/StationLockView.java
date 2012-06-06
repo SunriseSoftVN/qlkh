@@ -63,7 +63,15 @@ public class StationLockView extends AbstractView<StationLockConstants> {
     private ContentPanel contentPanel = new ContentPanel();
 
     private List<CheckBox> annualCbs = new ArrayList<CheckBox>();
+    private List<CheckBox> q1Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> q2Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> q3Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> q4Cbs = new ArrayList<CheckBox>();
     public CheckBox annualCompanyCb;
+    public CheckBox q1CompanyCb;
+    public CheckBox q2CompanyCb;
+    public CheckBox q3CompanyCb;
+    public CheckBox q4CompanyCb;
 
     @Override
     protected void initializeView() {
@@ -112,7 +120,8 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         }
     }
 
-    public void addNormalButton(CheckBox cbQ1, CheckBox cbQ2, CheckBox cbQ3, CheckBox cbQ4) {
+    public void addNormalButton(CheckBox cbQ1, CheckBox cbQ2, CheckBox cbQ3, CheckBox cbQ4,
+                                boolean isCompany) {
         HorizontalPanel hp = new HorizontalPanel();
         cbQ1.setBoxLabel(getConstant().btnQ1());
         cbQ2.setBoxLabel(getConstant().btnQ2());
@@ -123,34 +132,45 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         hp.add(cbQ3);
         hp.add(cbQ4);
         normalButtonPanel.add(hp);
+        if(!isCompany) {
+            q1Cbs.add(cbQ1);
+            q2Cbs.add(cbQ2);
+            q3Cbs.add(cbQ3);
+            q4Cbs.add(cbQ4);
+        } else {
+            q1CompanyCb =cbQ1;
+            q2CompanyCb =cbQ2;
+            q3CompanyCb =cbQ3;
+            q4CompanyCb =cbQ4;
+        }
     }
 
-    public void checkAllAnnualLock(boolean value) {
-        for (CheckBox checkBox : annualCbs) {
+    public void checkAllLock(List<CheckBox> checkBoxes, boolean value) {
+        for (CheckBox checkBox : checkBoxes) {
             checkBox.disableEvents(true);
             checkBox.setValue(value);
             checkBox.disableEvents(false);
         }
     }
 
-    public void enableAllAnnualLock(boolean enabled) {
-        for (CheckBox checkBox : annualCbs) {
+    public void enableAllLock(List<CheckBox> checkBoxes, boolean enabled) {
+        for (CheckBox checkBox : checkBoxes) {
             checkBox.setEnabled(enabled);
             checkBox.enableEvents(enabled);
         }
     }
 
-    public void checkAnnualCompanyCb() {
+    public void checkCompanyCb(CheckBox cbCompany, List<CheckBox> checkBoxes) {
         boolean check = true;
-        for (CheckBox checkBox : annualCbs) {
+        for (CheckBox checkBox : checkBoxes) {
             if (!checkBox.getValue()) {
                 check = false;
                 break;
             }
         }
-        annualCompanyCb.enableEvents(false);
-        annualCompanyCb.setValue(check);
-        annualCompanyCb.enableEvents(true);
+        cbCompany.enableEvents(false);
+        cbCompany.setValue(check);
+        cbCompany.enableEvents(true);
     }
 
     public void layout() {
@@ -163,5 +183,41 @@ public class StationLockView extends AbstractView<StationLockConstants> {
 
     public CheckBox getAnnualCompanyCb() {
         return annualCompanyCb;
+    }
+
+    public List<CheckBox> getAnnualCbs() {
+        return annualCbs;
+    }
+
+    public List<CheckBox> getQ1Cbs() {
+        return q1Cbs;
+    }
+
+    public List<CheckBox> getQ2Cbs() {
+        return q2Cbs;
+    }
+
+    public List<CheckBox> getQ3Cbs() {
+        return q3Cbs;
+    }
+
+    public List<CheckBox> getQ4Cbs() {
+        return q4Cbs;
+    }
+
+    public CheckBox getQ1CompanyCb() {
+        return q1CompanyCb;
+    }
+
+    public CheckBox getQ2CompanyCb() {
+        return q2CompanyCb;
+    }
+
+    public CheckBox getQ3CompanyCb() {
+        return q3CompanyCb;
+    }
+
+    public CheckBox getQ4CompanyCb() {
+        return q4CompanyCb;
     }
 }
