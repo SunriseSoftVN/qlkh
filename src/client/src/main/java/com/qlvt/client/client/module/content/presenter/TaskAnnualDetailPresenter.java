@@ -46,12 +46,10 @@ import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
 import com.qlvt.core.client.action.time.GetServerTimeResult;
+import com.qlvt.core.client.constant.StationLockTypeEnum;
 import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.criterion.ClientRestrictions;
-import com.qlvt.core.client.model.Station;
-import com.qlvt.core.client.model.SubTaskAnnualDetail;
-import com.qlvt.core.client.model.Task;
-import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -121,9 +119,17 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     }
                 });
                 view.getTaskDetailGird().focus();
-
                 view.createSubTaskGrid(createSubTaskListStore());
                 view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
+
+                //Check lock status.
+                for (StationLock stationLock: currentStation.getStationLocks()) {
+                    if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
+                        DiaLogUtils.showMessage(view.getConstant().lockMessage());
+                        view.getContentPanel().setEnabled(false);
+                        break;
+                    }
+                }
             }
         });
 
@@ -140,25 +146,6 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                     taskEditWindow.show();
                 } else {
                     DiaLogUtils.notify(view.getConstant().loadStationError());
-                }
-            }
-        });
-        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (view.getTaskDetailGird().getSelectionModel().getSelectedItem() != null) {
-                    currentTaskDetail = view.getTaskDetailGird().getSelectionModel().getSelectedItem().getBean();
-                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
-                    BeanModel task = null;
-                    for (BeanModel model : view.getTaskGrid().getStore().getModels()) {
-                        if (model.<Task>getBean().getId().equals(currentTaskDetail.getTask().getId())) {
-                            task = model;
-                        }
-                    }
-                    view.getTxtTaskSearch().setValue(currentTaskDetail.getTask().getCode());
-                    view.getTaskGrid().getStore().applyFilters("");
-                    view.getTaskGrid().getSelectionModel().select(task, false);
-                    taskEditWindow.show();
                 }
             }
         });

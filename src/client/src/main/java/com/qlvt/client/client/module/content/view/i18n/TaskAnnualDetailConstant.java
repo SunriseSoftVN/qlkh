@@ -31,7 +31,6 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface TaskAnnualDetailConstant extends Constants {
     String btnDelete();
     String btnAdd();
-    String btnEdit();
     String btnRefresh();
     String sttColumnTitle();
     String taskNameColumnTitle();
@@ -59,4 +58,5 @@ public interface TaskAnnualDetailConstant extends Constants {
     String cbbTask();
     String txtTaskSearch();
     String conformExitMessage();
+    String lockMessage();
 }

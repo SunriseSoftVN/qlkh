@@ -20,8 +20,9 @@ CREATE TABLE IF NOT EXISTS `stationlock` (
   `createdDate` date NOT NULL,
   `createBy` bigint(20) NOT NULL,
   `updateBy` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `stationlock_index` (`stationId`,`code`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
 ALTER TABLE `branch` ENGINE = InnoDB;
 ALTER TABLE `station` ENGINE = InnoDB;
@@ -32,5 +33,4 @@ ALTER TABLE `taskdetail` ENGINE = InnoDB;
 ALTER TABLE `user` ENGINE = InnoDB;
 
 ALTER TABLE  `station` ADD  `company` BOOL NOT NULL AFTER  `name`;
-
-UPDATE  `qlvt`.`station` SET  `company` =  '1' WHERE  `station`.`id` =27 LIMIT 1;
+UPDATE  `qlvt`.`station` SET  `company` =  '1' WHERE  `station`.`id` =27;

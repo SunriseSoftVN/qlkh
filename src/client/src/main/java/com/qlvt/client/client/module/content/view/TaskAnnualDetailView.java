@@ -111,9 +111,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
     Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
-    Button btnEdit = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
-
-    @I18nField
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField(emptyText = true)
@@ -180,8 +177,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
                     btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 113 || e.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    btnEdit.fireEvent(Events.Select);
                 } else if (e.getKeyCode() == 115) {
                     btnRefresh.fireEvent(Events.Select);
                 }
@@ -195,8 +190,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         toolBar.add(txtSearch);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnEdit);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
@@ -475,10 +468,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         return btnDelete;
     }
 
-    public Button getBtnEdit() {
-        return btnEdit;
-    }
-
     public Button getBtnRefresh() {
         return btnRefresh;
     }
@@ -525,5 +514,9 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
 
     public PagingToolBar getTaskEditPagingToolBar() {
         return taskEditPagingToolBar;
+    }
+
+    public ContentPanel getContentPanel() {
+        return contentPanel;
     }
 }

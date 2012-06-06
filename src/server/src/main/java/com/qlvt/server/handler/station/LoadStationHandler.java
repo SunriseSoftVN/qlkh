@@ -60,17 +60,20 @@ public class LoadStationHandler extends AbstractHandler<LoadStationAction, LoadS
 
     @Override
     public LoadStationResult execute(LoadStationAction action, ExecutionContext context) throws DispatchException {
-        if(action.getUserName() != null) {
+        if (action.getUserName() != null) {
             User user = userDao.findByUserName(action.getUserName());
             if (user != null) {
                 Station station = user.getStation();
                 List<Branch> branches = branchDao.findByStationId(station.getId());
                 station.setBranches(branches);
+                List<StationLock> stationLocks = generalDao.findCriteria(StationLock.class,
+                        Restrictions.eq("station.id", station.getId()));
+                station.setStationLocks(stationLocks);
                 return new LoadStationResult(station);
             }
         } else {
             List<Station> stations = generalDao.getAll(Station.class);
-            for(Station station : stations) {
+            for (Station station : stations) {
                 List<StationLock> stationLocks = generalDao.findCriteria(StationLock.class,
                         Restrictions.eq("station.id", station.getId()));
                 station.setStationLocks(stationLocks);
