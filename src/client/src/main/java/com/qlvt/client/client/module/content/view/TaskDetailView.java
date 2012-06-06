@@ -204,9 +204,10 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         contentPanel.layout();
     }
 
-    public void createSubTaskGrid(ListStore<BeanModel> listStore) {
+    public void createSubTaskGrid(ListStore<BeanModel> listStore,
+                                  boolean q1, boolean q2, boolean q3, boolean q4) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs());
+        subTaskColumnModel = new ColumnModel(createSubTaskColumnConfigs(q1, q2, q3, q4));
         subTaskDetailGird = new EditorGrid<BeanModel>(listStore, subTaskColumnModel);
         subTaskDetailGird.setBorders(true);
         subTaskDetailGird.setLoadMask(true);
@@ -282,7 +283,7 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         return columnConfigs;
     }
 
-    private List<ColumnConfig> createSubTaskColumnConfigs() {
+    private List<ColumnConfig> createSubTaskColumnConfigs(boolean q1, boolean q2, boolean q3, boolean q4) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -303,27 +304,35 @@ public class TaskDetailView extends AbstractView<TaskDetailConstant> {
         columnConfigs.add(branchNameColumnConfig);
 
         ColumnConfig q1ColumnConfig = new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
-        MyNumberField q1NumberField = new MyNumberField();
-        q1NumberField.setSelectOnFocus(true);
-        q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
+        if (!q1) {
+            MyNumberField q1NumberField = new MyNumberField();
+            q1NumberField.setSelectOnFocus(true);
+            q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
+        }
         columnConfigs.add(q1ColumnConfig);
 
         ColumnConfig q2ColumnConfig = new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
-        MyNumberField q2NumberField = new MyNumberField();
-        q2NumberField.setSelectOnFocus(true);
-        q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
+        if (!q2) {
+            MyNumberField q2NumberField = new MyNumberField();
+            q2NumberField.setSelectOnFocus(true);
+            q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
+        }
         columnConfigs.add(q2ColumnConfig);
 
         ColumnConfig q3ColumnConfig = new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
-        MyNumberField q3NumberField = new MyNumberField();
-        q3NumberField.setSelectOnFocus(true);
-        q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
+        if (!q3) {
+            MyNumberField q3NumberField = new MyNumberField();
+            q3NumberField.setSelectOnFocus(true);
+            q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
+        }
         columnConfigs.add(q3ColumnConfig);
 
         ColumnConfig q4ColumnConfig = new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
-        MyNumberField q4NumberField = new MyNumberField();
-        q4NumberField.setSelectOnFocus(true);
-        q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
+        if (!q4) {
+            MyNumberField q4NumberField = new MyNumberField();
+            q4NumberField.setSelectOnFocus(true);
+            q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
+        }
         columnConfigs.add(q4ColumnConfig);
 
         return columnConfigs;

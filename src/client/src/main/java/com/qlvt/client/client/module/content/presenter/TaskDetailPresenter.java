@@ -46,12 +46,10 @@ import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlvt.core.client.action.taskdetail.DeleteTaskDetailResult;
 import com.qlvt.core.client.action.time.GetServerTimeAction;
 import com.qlvt.core.client.action.time.GetServerTimeResult;
+import com.qlvt.core.client.constant.StationLockTypeEnum;
 import com.qlvt.core.client.constant.TaskTypeEnum;
 import com.qlvt.core.client.criterion.ClientRestrictions;
-import com.qlvt.core.client.model.Station;
-import com.qlvt.core.client.model.SubTaskDetail;
-import com.qlvt.core.client.model.Task;
-import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -80,6 +78,11 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     private ListStore<BeanModel> taskDtoListStore;
     private Window taskEditWindow;
+
+    private boolean q1Lock;
+    private boolean q2Lock;
+    private boolean q3Lock;
+    private boolean q4Lock;
 
     @Override
     public void onActivate() {
@@ -117,7 +120,30 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     }
                 });
 
-                view.createSubTaskGrid(createSubTaskListStore());
+                // Check this station was locked or not.
+                String message = StringUtils.EMPTY;
+                for (StationLock stationLock : currentStation.getStationLocks()) {
+                    if (StationLockTypeEnum.KDK_Q1.getCode() == stationLock.getCode()) {
+                        q1Lock = true;
+                        message += "Q1 ";
+                    } else if (StationLockTypeEnum.KDK_Q2.getCode() == stationLock.getCode()) {
+                        q2Lock = true;
+                        message += ",Q2 ";
+                    } else if (StationLockTypeEnum.KDK_Q3.getCode() == stationLock.getCode()) {
+                        q3Lock = true;
+                        message += ",Q3 ";
+                    } else if (StationLockTypeEnum.KDK_Q4.getCode() == stationLock.getCode()) {
+                        q4Lock = true;
+                        message += ",Q4";
+                    }
+                }
+                if (q1Lock || q2Lock || q3Lock || q4Lock) {
+                    //Disable delete button when company locked something.
+                    view.getBtnDelete().setEnabled(false);
+                    DiaLogUtils.showMessage(StringUtils.substitute(view.getConstant().lockMessage(), message));
+                }
+
+                view.createSubTaskGrid(createSubTaskListStore(), q1Lock, q2Lock, q3Lock, q4Lock);
                 view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
             }
         });

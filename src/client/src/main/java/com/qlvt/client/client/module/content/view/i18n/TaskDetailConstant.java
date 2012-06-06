@@ -58,4 +58,5 @@ public interface TaskDetailConstant extends Constants {
     String taskQuotaColumnTitle();
     String txtTaskSearch();
     String conformExitMessage();
+    String lockMessage();
 }
