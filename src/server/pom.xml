@@ -126,6 +126,12 @@
             <version>${springVerion}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${springVerion}</version>
+        </dependency>
+
         <!--end-->
 
         <dependency>
@@ -199,8 +205,8 @@
             <version>${dozerVersion}</version>
             <exclusions>
                 <exclusion>
-                   <groupId>commons-logging</groupId>
-                   <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -269,6 +275,13 @@
             <version>3.7</version>
         </dependency>
         <!--end-->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junitVerion}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

@@ -45,4 +45,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <!--Hibernate Interceptor-->
+    <bean name="auditInterceptor" class="com.qlvt.server.Interceptor.AuditInterceptor"/>
+
 </beans>
