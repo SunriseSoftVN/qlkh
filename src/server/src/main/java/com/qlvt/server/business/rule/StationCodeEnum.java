@@ -28,7 +28,9 @@ package com.qlvt.server.business.rule;
 public enum StationCodeEnum {
 
     COMPANY(27l),
-    CAUGIAT(32l);
+    CAUGIAT(32l),
+    TN_FOR_REPORT(999998l),
+    ND_FOR_REPORT(999999l);
 
     private long id;
 

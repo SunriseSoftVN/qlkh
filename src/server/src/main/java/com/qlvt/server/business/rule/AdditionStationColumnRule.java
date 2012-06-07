@@ -22,16 +22,17 @@ package com.qlvt.server.business.rule;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.qlvt.core.client.constant.ReportTypeEnum;
 import com.qlvt.core.client.model.Station;
-import com.qlvt.core.client.model.SubTaskAnnualDetail;
-import com.qlvt.core.client.model.SubTaskDetail;
-import com.qlvt.core.client.model.TaskDetail;
+import com.qlvt.core.client.model.view.SubAnnualTaskDetailDataView;
+import com.qlvt.core.client.model.view.SubTaskDetailDataView;
+import com.qlvt.core.client.model.view.TaskDetailDataView;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.client.report.SumReportBean;
-import com.qlvt.server.dao.SubTaskAnnualDetailDao;
-import com.qlvt.server.dao.SubTaskDetailDao;
-import com.qlvt.server.dao.TaskDetailDao;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
+
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * The Class AdditionStationColumnRule.
@@ -45,9 +46,9 @@ public final class AdditionStationColumnRule {
     private static Station dsNDStation = new Station();
 
     static {
-        dsTNStation.setId(999998l);
+        dsTNStation.setId(StationCodeEnum.TN_FOR_REPORT.getId());
         dsTNStation.setName("ĐSTN");
-        dsNDStation.setId(999999l);
+        dsNDStation.setId(StationCodeEnum.ND_FOR_REPORT.getId());
         dsNDStation.setName("ĐSNĐ");
     }
 
@@ -82,22 +83,36 @@ public final class AdditionStationColumnRule {
         }
     }
 
-    public static void addDataForDSND(List<SumReportBean> beans, ReportTypeEnum reportTypeEnum, TaskDetailDao taskDetailDao,
-                                      SubTaskAnnualDetailDao subTaskAnnualDetailDao, SubTaskDetailDao subTaskDetailDao) {
+    public static void addDataForDSND(List<SumReportBean> beans, ReportTypeEnum reportTypeEnum,
+                                      List<TaskDetailDataView> taskDetailViews,
+                                      List<SubAnnualTaskDetailDataView> subAnnualTaskDetails,
+                                      List<SubTaskDetailDataView> subTaskDetails) {
         for (SumReportBean bean : beans) {
-            TaskDetail taskDetail = taskDetailDao.
-                    findCurrentByStationIdAndTaskId(StationCodeEnum.CAUGIAT.getId(), bean.getTask().getId());
+            List<TaskDetailDataView> selectTaskDetail = select(taskDetailViews,
+                    having(on(TaskDetailDataView.class).getTaskId(), equalTo(bean.getTask().getId()))
+                            .and(having(on(TaskDetailDataView.class).getStationId(), equalTo(StationCodeEnum.CAUGIAT.getId())))
+            );
+            Long taskDetailId = null;
+            Boolean annual = null;
+            if (CollectionUtils.isNotEmpty(selectTaskDetail)) {
+                taskDetailId = selectTaskDetail.get(0).getTaskDetailId();
+                annual = selectTaskDetail.get(0).isAnnual();
+            }
+
             Double value = 0d;
-            if (taskDetail != null) {
-                if (taskDetail.getAnnual()) {
-                    SubTaskAnnualDetail subTaskAnnualDetail = subTaskAnnualDetailDao.findByTaskDetaiIdAndBranchId(taskDetail.getId(),
-                            BranchCodeEnum.ND.getId());
+            if (taskDetailId != null) {
+                if (annual) {
+                    SubAnnualTaskDetailDataView subTaskAnnualDetail = selectUnique(subAnnualTaskDetails,
+                            having(on(SubAnnualTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId))
+                                    .and(having(on(SubAnnualTaskDetailDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
                     if (subTaskAnnualDetail != null) {
                         value = subTaskAnnualDetail.getRealValue();
                     }
                 } else {
-                    SubTaskDetail subTaskDetail = subTaskDetailDao.findByTaskDetaiIdAndBranchId(taskDetail.getId(),
-                            BranchCodeEnum.ND.getId());
+                    SubTaskDetailDataView subTaskDetail = selectUnique(subTaskDetails,
+                            having(on(SubTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId))
+                                    .and(having(on(SubTaskDetailDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
+
                     if (subTaskDetail != null) {
                         switch (reportTypeEnum) {
                             case Q1:

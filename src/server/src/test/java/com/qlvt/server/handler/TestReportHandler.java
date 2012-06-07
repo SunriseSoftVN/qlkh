@@ -24,7 +24,6 @@ import com.qlvt.core.client.action.report.ReportResult;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.client.constant.ReportTypeEnum;
 import net.customware.gwt.dispatch.server.Dispatch;
-import net.customware.gwt.dispatch.server.InstanceActionHandlerRegistry;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,12 +49,9 @@ import static org.junit.Assert.assertEquals;
 public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
-    private InstanceActionHandlerRegistry registry;
-
-    @Autowired
     private Dispatch dispatch;
 
-    @Test(timeout = 90000)
+    @Test(timeout = 20000)
     public void testReport() throws DispatchException {
         ReportResult result = dispatch.
                 execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFileTypeEnum.PDF, 27));

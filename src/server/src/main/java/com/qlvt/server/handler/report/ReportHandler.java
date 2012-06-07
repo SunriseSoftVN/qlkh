@@ -271,7 +271,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 getSubTaskDetailDataViews(stationIds, currentYear);
         List<SubAnnualTaskDetailDataView> subAnnualTaskDetails = sqlQueryDao
                 .getSubAnnualTaskDetailDataViews(stationIds, currentYear);
-        List<TaskDetailDataView> taskDetailDataViews = sqlQueryDao.getTaskDetailViews(currentYear);
+        List<TaskDetailDataView> taskDetailViews = sqlQueryDao.getTaskDetailViews(currentYear);
 
 
         List<SumReportBean> beans = new ArrayList<SumReportBean>();
@@ -282,7 +282,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             bean.setTask(task);
             for (Station station : stations) {
                 StationReportBean stationReport = calculateForStation(task, station, reportTypeEnum,
-                        taskDetailDataViews, subTaskDetails, subAnnualTaskDetails);
+                        taskDetailViews, subTaskDetails, subAnnualTaskDetails);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
@@ -294,8 +294,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
         //Add two more columns. Business rule.
         if (stationId == StationCodeEnum.COMPANY.getId()) {
-            AdditionStationColumnRule.addDataForDSND(beans, reportTypeEnum, taskDetailDao,
-                    subTaskAnnualDetailDao, subTaskDetailDao);
+            AdditionStationColumnRule.addDataForDSND(beans, reportTypeEnum, taskDetailViews,
+                    subAnnualTaskDetails, subTaskDetails);
         }
 
         //Build tree
@@ -503,16 +503,19 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             double sumTime = 0d;
             double sumValue = 0d;
             for (StationReportBean station : bean.getStations().values()) {
-                Double time = station.getTime();
-                Double value = station.getValue();
-                if (time == null) {
-                    time = 0D;
+                //We don't using Nghia Dam branch because we already calculated it.
+                if (station.getId() != StationCodeEnum.ND_FOR_REPORT.getId()) {
+                    Double time = station.getTime();
+                    Double value = station.getValue();
+                    if (time == null) {
+                        time = 0D;
+                    }
+                    if (value == null) {
+                        value = 0D;
+                    }
+                    sumTime += time;
+                    sumValue += value;
                 }
-                if (value == null) {
-                    value = 0D;
-                }
-                sumTime += time;
-                sumValue += value;
             }
             if (sumValue > 0) {
                 bean.getStations().get(String.valueOf(StationCodeEnum.COMPANY.getId())).setValue(sumValue);
