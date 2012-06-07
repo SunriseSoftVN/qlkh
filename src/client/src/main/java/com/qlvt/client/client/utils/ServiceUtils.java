@@ -19,7 +19,7 @@
 
 package com.qlvt.client.client.utils;
 
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationClientUtil;
 
 /**
  * The Class ServiceUtils.
@@ -34,15 +34,12 @@ public class ServiceUtils {
     }
 
     public static String getServiceEntryPoint() {
-        if (SystemUtil.isProductionMode()) {
-            return SystemUtil.getServerBaseUrl()
-                    + SystemUtil.getConfiguration().serverServletRootPath();
+        if (ConfigurationClientUtil.isProductionMode()) {
+            return ConfigurationClientUtil.getServerBaseUrl()
+                    + ConfigurationClientUtil.getConfiguration().serverServletRootPath();
         }
         //Set proxy servlet for development mode, to split up gwt server and gwt client to 2 projects.
-        return SystemUtil.getConfiguration().developmentModeClientBaseUrl()
-                + SystemUtil.getConfiguration().developmentModeClientProxyPath();
-    }
-
-    public static void configureServiceEntryPoint(Class<?> clazz, Object ourInstance) {
+        return ConfigurationClientUtil.getConfiguration().developmentModeClientBaseUrl()
+                + ConfigurationClientUtil.getConfiguration().developmentModeClientProxyPath();
     }
 }

@@ -19,7 +19,7 @@
 
 package com.qlvt.client.server.proxy;
 
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationServerUtil;
 
 import javax.servlet.ServletConfig;
 
@@ -33,9 +33,9 @@ public class MyProxyServlet extends ProxyServlet {
 
     @Override
     public void init(ServletConfig servletConfig) {
-        setProxyHost(SystemUtil.getConfiguration().developmentModeServerHostName());
+        setProxyHost(ConfigurationServerUtil.getConfiguration().developmentModeServerHostName());
         setFollowRedirects(false);
         setRemovePrefix(true);
-        setProxyPort(Integer.parseInt(SystemUtil.getConfiguration().developmentModeServerPort()));
+        setProxyPort(Integer.parseInt(ConfigurationServerUtil.getConfiguration().developmentModeServerPort()));
     }
 }

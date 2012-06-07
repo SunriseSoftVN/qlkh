@@ -20,7 +20,7 @@
 package com.qlvt.server.servlet;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationServerUtil;
 import com.qlvt.server.util.fixed.LegacySerializationPolicyFixed;
 import net.customware.gwt.dispatch.server.Dispatch;
 import net.customware.gwt.dispatch.server.standard.AbstractStandardDispatchServlet;
@@ -57,7 +57,7 @@ public class SpringStandardDispatchServlet extends AbstractStandardDispatchServl
 
     @Override
     protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL, String strongName) {
-        if (SystemUtil.isProductionMode()) {
+        if (ConfigurationServerUtil.isProductionMode()) {
             return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
         }
         return LegacySerializationPolicyFixed.getInstance();

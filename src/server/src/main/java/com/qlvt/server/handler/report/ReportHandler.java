@@ -38,7 +38,7 @@ import com.qlvt.core.client.model.view.SubTaskDetailDataView;
 import com.qlvt.core.client.model.view.TaskDetailDataView;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.client.report.SumReportBean;
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationServerUtil;
 import com.qlvt.server.business.rule.*;
 import com.qlvt.server.dao.SqlQueryDao;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
@@ -129,8 +129,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 ReportExporter.exportReportXls(jasperPrint, filePath);
             }
 
-            return new StringBuilder().append(SystemUtil.getServerBaseUrl())
-                    .append(SystemUtil.getConfiguration().serverServletRootPath())
+            return new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
+                    .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
                     .append(REPORT_SERVLET_URI)
                     .append(ReportServlet.REPORT_FILENAME)
                     .append("=")

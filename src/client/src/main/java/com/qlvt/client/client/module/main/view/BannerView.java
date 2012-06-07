@@ -21,7 +21,7 @@ package com.qlvt.client.client.module.main.view;
 
 import com.extjs.gxt.ui.client.widget.Html;
 import com.qlvt.client.client.constant.DomIdConstant;
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationClientUtil;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
@@ -36,9 +36,9 @@ public class BannerView extends AbstractView {
     @Override
     protected void initializeView() {
         setWidget(new Html("<h3 style='color:white'>" +
-                SystemUtil.getConfiguration().applicationTitle() +
+                ConfigurationClientUtil.getConfiguration().applicationTitle() +
                 " " +
-                SystemUtil.getConfiguration().applicationVersion() +
+                ConfigurationClientUtil.getConfiguration().applicationVersion() +
                 "<h3>"));
     }
 }

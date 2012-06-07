@@ -17,40 +17,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package com.qlvt.core.system;
+package com.qlvt.core.configuration;
 
 import com.google.gwt.core.client.GWT;
-import com.mattbertolini.hermes.Hermes;
-import com.qlvt.core.configuration.ApplicationConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
- * The Class SystemUtil.
- *<p>
+ * The Class SystemUtil for Client.
+ * <p>
  * <b>Note:</b>
- * This class will be shared between client and server.
- *</p>
+ * This class is only work on client side.
+ * </p>
+ *
  * @author Nguyen Duc Dung
  * @since 8/24/11, 7:50 PM
  */
-public final class SystemUtil {
-
-    private static Logger logger = LoggerFactory.getLogger(SystemUtil.class);
+public final class ConfigurationClientUtil {
 
     private static ApplicationConfiguration configuration;
 
-    static {
-        try {
-            configuration = Hermes.get(ApplicationConfiguration.class, "");
-        } catch (IOException e) {
-            logger.error("Can't find properties file.", e);
-        }
-    }
 
-    private SystemUtil() {
+    private ConfigurationClientUtil() {
         //Hide it.
     }
 
@@ -78,6 +64,7 @@ public final class SystemUtil {
 
     /**
      * Return Server base url
+     *
      * @return
      */
     public static String getServerBaseUrl() {

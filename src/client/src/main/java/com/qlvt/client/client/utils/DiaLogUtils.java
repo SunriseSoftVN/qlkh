@@ -29,7 +29,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationClientUtil;
 
 /**
  * The Class DiaLogUtils.
@@ -39,7 +39,7 @@ import com.qlvt.core.system.SystemUtil;
  */
 public final class DiaLogUtils {
 
-    private static final String APP_MESSAGE_TITLE = SystemUtil.getConfiguration().applicationName();
+    private static final String APP_MESSAGE_TITLE = ConfigurationClientUtil.getConfiguration().applicationName();
 
     private DiaLogUtils() {
         //Hide it.

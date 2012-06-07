@@ -19,7 +19,7 @@
 
 package com.qlvt.client.client.utils;
 
-import com.qlvt.core.system.SystemUtil;
+import com.qlvt.core.configuration.ConfigurationClientUtil;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 /**
@@ -43,7 +43,7 @@ public final class UrlUtils {
      * @return
      */
     public static String buildApplicationDownloadUrl(String relativeDownloadUrl) {
-        return SystemUtil.getServerBaseUrl() + relativeDownloadUrl;
+        return ConfigurationClientUtil.getServerBaseUrl() + relativeDownloadUrl;
     }
 
     /**
