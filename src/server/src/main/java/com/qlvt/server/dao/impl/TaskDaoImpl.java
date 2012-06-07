@@ -26,12 +26,15 @@ import com.qlvt.core.client.model.Task;
 import com.qlvt.core.client.model.TaskDetail;
 import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.core.AbstractDao;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.on;
 
 /**
  * The Class TaskDaoImpl.
@@ -48,23 +51,17 @@ public class TaskDaoImpl extends AbstractDao<Task> implements TaskDao {
         criteria.add(Restrictions.eq("annual", typeEnum == TaskTypeEnum.DK));
         criteria.add(Restrictions.eq("year", 1900 + new Date().getYear()));
         List<TaskDetail> taskDetails = getHibernateTemplate().findByCriteria(criteria);
-        List<Long> usedTaskIds = new ArrayList<Long>(taskDetails.size());
-        for (TaskDetail taskDetail : taskDetails) {
-            usedTaskIds.add(taskDetail.getTask().getId());
+        List<Long> usedTaskIds = extract(taskDetails, on(TaskDetail.class).getTask().getId());
+        BasePagingLoadResult<Task> taskResult;
+
+        if (CollectionUtils.isNotEmpty(usedTaskIds)) {
+            taskResult = getByBeanConfig(Task.class.getName(), config,
+                    Restrictions.eq("taskTypeCode", typeEnum.getCode()), Restrictions.not(Restrictions.in("id", usedTaskIds)));
+        } else {
+            taskResult = getByBeanConfig(Task.class.getName(), config,
+                    Restrictions.eq("taskTypeCode", typeEnum.getCode()));
         }
 
-        BasePagingLoadResult<Task> taskResult = getByBeanConfig(Task.class.getName(), config,
-                Restrictions.eq("taskTypeCode", typeEnum.getCode()));
-        List<Task> deleteTask = new ArrayList<Task>(taskResult.getTotalLength());
-        for (Task task : taskResult.getData()) {
-            for (Long usedTaskId : usedTaskIds) {
-                if (task.getId().equals(usedTaskId)) {
-                    deleteTask.add(task);
-                }
-            }
-        }
-        taskResult.getData().removeAll(deleteTask);
-        taskResult.setTotalLength(taskResult.getData().size());
         return taskResult;
     }
 }

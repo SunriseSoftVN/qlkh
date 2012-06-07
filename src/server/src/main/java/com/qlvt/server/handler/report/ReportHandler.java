@@ -198,12 +198,14 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 stations = generalDao.getAll(Station.class);
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
+                fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS " + reportTypeEnum.getValue()
+                        + " NĂM 2012 \\n CÔNG TY TTTH ĐS VINH \\n");
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
                 stations.add(station);
-                fastReportBuilder.setTitle("KẾ HOẠCH TÁC NGHIỆP KHỐI LƯỢNG SCTXĐK-KCHT TTTH ĐS "
-                        + reportTypeEnum.getValue() + " NĂM 2012 "
-                        + station.getName().toUpperCase());
+                fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
+                        + reportTypeEnum.getValue() + " NĂM 2012 \\n"
+                        + station.getName().toUpperCase() + "\\n");
             }
 
             if (CollectionUtils.isNotEmpty(stations)) {

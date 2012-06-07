@@ -68,17 +68,25 @@ public final class AdditionStationColumnRule {
             Double dsNDTime = bean.getStations().get(String.valueOf(dsNDStation.getId())).getTime();
 
             if (companyValue != null && companyValue > 0d) {
-                if (dsNDValue != null && dsNDValue > 0d) {
+                if (dsNDValue == null) {
+                    dsNDValue = 0d;
+                }
+                double result = companyValue - dsNDValue;
+                if (result > 0) {
                     bean.getStations().
-                            get(String.valueOf(dsTNStation.getId())).setValue(companyValue - dsNDValue);
+                            get(String.valueOf(dsTNStation.getId())).setValue(result);
                 }
             }
 
             if (companyTime != null && companyTime > 0d) {
-                if (dsNDTime != null && dsNDTime > 0d) {
-                    bean.getStations().
-                            get(String.valueOf(dsTNStation.getId())).setTime(companyTime - dsNDTime);
+                if (dsNDTime == null) {
+                    dsNDTime = 0d;
                 }
+                double result = companyTime - dsNDTime;
+                   if (result > 0) {
+                       bean.getStations().
+                               get(String.valueOf(dsTNStation.getId())).setTime(result);
+                   }
             }
         }
     }
