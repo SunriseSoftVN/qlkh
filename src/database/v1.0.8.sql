@@ -1,1 +1,0 @@
-UPDATE  `taskdetail` SET YEAR =2012;

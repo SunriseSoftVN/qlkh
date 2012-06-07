@@ -20,7 +20,12 @@
 package com.qlvt.core.system;
 
 import com.google.gwt.core.client.GWT;
+import com.mattbertolini.hermes.Hermes;
 import com.qlvt.core.configuration.ApplicationConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * The Class SystemUtil.
@@ -33,20 +38,20 @@ import com.qlvt.core.configuration.ApplicationConfiguration;
  */
 public final class SystemUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(SystemUtil.class);
+
     private static ApplicationConfiguration configuration;
 
-    public SystemUtil() {
-        //Hide it.
+    static {
+        try {
+            configuration = Hermes.get(ApplicationConfiguration.class, "");
+        } catch (IOException e) {
+            logger.error("Can't find properties file.", e);
+        }
     }
 
-    /**
-     * TODO using for sever side to set configuration.It will remove in the future @dungvn3000
-     *  Set application configurations.
-     * @param configuration
-     */
-    @Deprecated
-    public static void setConfiguration(ApplicationConfiguration configuration) {
-        SystemUtil.configuration = configuration;
+    private SystemUtil() {
+        //Hide it.
     }
 
     /**

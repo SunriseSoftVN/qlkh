@@ -20,6 +20,7 @@
 package com.qlvt.server.Interceptor;
 
 import com.qlvt.core.client.model.SystemLog;
+import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.dao.core.GeneralDao;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,14 @@ public class ExceptionsInterceptor implements ThrowsAdvice {
     private GeneralDao generalDao;
 
     public void afterThrowing(Method method, Object[] args, Object target, Exception ex) {
-        SystemLog systemLog = new SystemLog();
-        systemLog.setClassName(target.getClass().getName());
-        systemLog.setMethodName(method.getName());
-        systemLog.setExceptionClass(ex.getClass().getName());
-        systemLog.setContent(ex.getMessage());
-        generalDao.saveOrUpdate(systemLog);
+        if (SystemUtil.isProductionMode()) {
+            SystemLog systemLog = new SystemLog();
+            systemLog.setClassName(target.getClass().getName());
+            systemLog.setMethodName(method.getName());
+            systemLog.setExceptionClass(ex.getClass().getName());
+            systemLog.setContent(ex.getMessage());
+            generalDao.saveOrUpdate(systemLog);
+        }
     }
 
 }

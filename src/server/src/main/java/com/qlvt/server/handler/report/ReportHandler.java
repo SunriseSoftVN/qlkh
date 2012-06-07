@@ -31,21 +31,27 @@ import com.qlvt.core.client.action.report.ReportResult;
 import com.qlvt.core.client.constant.ReportFileTypeEnum;
 import com.qlvt.core.client.constant.ReportTypeEnum;
 import com.qlvt.core.client.constant.TaskTypeEnum;
-import com.qlvt.core.client.model.*;
+import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.Task;
+import com.qlvt.core.client.model.view.SubAnnualTaskDetailDataView;
+import com.qlvt.core.client.model.view.SubTaskDetailDataView;
+import com.qlvt.core.client.model.view.TaskDetailDataView;
 import com.qlvt.core.client.report.StationReportBean;
 import com.qlvt.core.client.report.SumReportBean;
 import com.qlvt.core.system.SystemUtil;
 import com.qlvt.server.business.rule.*;
+import com.qlvt.server.dao.SqlQueryDao;
 import com.qlvt.server.dao.SubTaskAnnualDetailDao;
 import com.qlvt.server.dao.SubTaskDetailDao;
-import com.qlvt.server.dao.TaskDao;
 import com.qlvt.server.dao.TaskDetailDao;
 import com.qlvt.server.dao.core.GeneralDao;
 import com.qlvt.server.handler.core.AbstractHandler;
 import com.qlvt.server.servlet.ReportServlet;
 import com.qlvt.server.util.ReportExporter;
 import com.qlvt.server.util.ServletUtils;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -59,9 +65,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-import static ch.lambdaj.Lambda.forEach;
+import static ch.lambdaj.Lambda.*;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlvt.core.client.constant.TaskTypeEnum.SUM;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * The Class ReportHandler.
@@ -82,9 +89,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private GeneralDao generalDao;
 
     @Autowired
-    private TaskDao taskDao;
-
-    @Autowired
     private TaskDetailDao taskDetailDao;
 
     @Autowired
@@ -92,6 +96,9 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     @Autowired
     private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+
+    @Autowired
+    private SqlQueryDao sqlQueryDao;
 
     @Override
     public Class<ReportAction> getActionType() {
@@ -103,7 +110,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return new ReportResult(reportForCompany(action.getReportTypeEnum(), action.getFileTypeEnum(), action.getStationId()));
     }
 
-    private String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) {
+    private String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) throws ActionException {
         try {
             DynamicReport dynamicReport = buildReport(reportTypeEnum, fileTypeEnum, stationId);
             JasperReport jasperReport = DynamicJasperHelper.
@@ -244,21 +251,38 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return fastReportBuilder.build();
     }
 
-    private List<SumReportBean> buildReportData(ReportTypeEnum reportTypeEnum, long stationId) {
+    private List<SumReportBean> buildReportData(ReportTypeEnum reportTypeEnum, long stationId) throws ActionException {
+        Station currentStation = generalDao.findById(Station.class, stationId);
+        if (currentStation == null) {
+            throw new ActionException(StringUtils.
+                    substitute("Station id {0} is not exist", stationId));
+        }
+        List<Station> stations = new ArrayList<Station>();
+        if (currentStation.isCompany()) {
+            stations = generalDao.getAll(Station.class);
+        } else {
+            stations.add(currentStation);
+        }
+
+        //Load all view from database for calculation
+        List<Long> stationIds = extract(stations, on(Station.class).getId());
+        int currentYear = 1900 + new Date().getYear();
+        List<SubTaskDetailDataView> subTaskDetails = sqlQueryDao.
+                getSubTaskDetailDataViews(stationIds, currentYear);
+        List<SubAnnualTaskDetailDataView> subAnnualTaskDetails = sqlQueryDao
+                .getSubAnnualTaskDetailDataViews(stationIds, currentYear);
+        List<TaskDetailDataView> taskDetailDataViews = sqlQueryDao.getTaskDetailViews(currentYear);
+
+
         List<SumReportBean> beans = new ArrayList<SumReportBean>();
         List<SumReportBean> parentBeans = new ArrayList<SumReportBean>();
         List<Task> tasks = generalDao.getAll(Task.class, Order.asc("code"));
-        List<Station> stations = new ArrayList<Station>();
-        if (stationId == StationCodeEnum.COMPANY.getId()) {
-            stations = generalDao.getAll(Station.class);
-        } else {
-            stations.add(generalDao.findById(Station.class, stationId));
-        }
         for (Task task : tasks) {
             SumReportBean bean = new SumReportBean();
             bean.setTask(task);
             for (Station station : stations) {
-                StationReportBean stationReport = calculate(task, station, reportTypeEnum);
+                StationReportBean stationReport = calculateForStation(task, station, reportTypeEnum,
+                        taskDetailDataViews, subTaskDetails, subAnnualTaskDetails);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
@@ -354,19 +378,33 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     }
 
 
-    private StationReportBean calculate(Task task, Station station, ReportTypeEnum reportTypeEnum) {
+    private StationReportBean calculateForStation(Task task, Station station, ReportTypeEnum reportTypeEnum,
+                                                  List<TaskDetailDataView> taskDetails, List<SubTaskDetailDataView> subTaskDetails,
+                                                  List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
         StationReportBean stationReport = new StationReportBean();
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
-        if (task.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()
-                || task.getTaskTypeCode() == TaskTypeEnum.DK.getCode()) {
-            TaskDetail taskDetail = taskDetailDao.findCurrentByStationIdAndTaskId(station.getId(), task.getId());
-            if (taskDetail != null) {
+        //We don't calculate for company because it is sum of another station.
+        if (!station.isCompany() && (task.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()
+                || task.getTaskTypeCode() == TaskTypeEnum.DK.getCode())) {
+
+            List<TaskDetailDataView> select = select(taskDetails,
+                    having(on(TaskDetailDataView.class).getTaskId(), equalTo(task.getId()))
+                            .and(having(on(TaskDetailDataView.class).getStationId(), equalTo(station.getId())))
+            );
+            Long taskDetailId = null;
+            Boolean annual = null;
+            if (CollectionUtils.isNotEmpty(select)) {
+                taskDetailId = select.get(0).getTaskDetailId();
+                annual = select.get(0).isAnnual();
+            }
+
+            if (taskDetailId != null) {
                 //Calculate Weight
-                if (taskDetail.getAnnual()) {
-                    calculateWeightForAnnualTask(stationReport, taskDetail);
+                if (annual) {
+                    calculateWeightForAnnualTask(stationReport, taskDetailId, subAnnualTaskDetails);
                 } else {
-                    calculateWeightForNormalTask(stationReport, taskDetail, reportTypeEnum);
+                    calculateWeightForNormalTask(stationReport, taskDetailId, reportTypeEnum, subTaskDetails);
                 }
                 //Calculate time
                 if (task.getDefaultValue() != null && stationReport.getValue() != null) {
@@ -378,12 +416,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return stationReport;
     }
 
-    private void calculateWeightForNormalTask(StationReportBean stationReport, TaskDetail taskDetail,
-                                              ReportTypeEnum reportTypeEnum) {
-        List<SubTaskDetail> subTaskDetails = subTaskDetailDao.findByTaskDetailId(taskDetail.getId());
-        if (CollectionUtils.isNotEmpty(subTaskDetails)) {
+    private void calculateWeightForNormalTask(StationReportBean stationReport, long taskDetailId,
+                                              ReportTypeEnum reportTypeEnum, List<SubTaskDetailDataView> subTaskDetails) {
+        List<SubTaskDetailDataView> select = select(subTaskDetails,
+                having(on(SubTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId)));
+        if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
-            for (SubTaskDetail subTaskDetail : subTaskDetails) {
+            for (SubTaskDetailDataView subTaskDetail : select) {
                 switch (reportTypeEnum) {
                     case Q1:
                         if (subTaskDetail.getQ1() != null) {
@@ -427,12 +466,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private void calculateWeightForAnnualTask(StationReportBean stationReport, TaskDetail taskDetail) {
-        List<SubTaskAnnualDetail> subTaskAnnualDetails = subTaskAnnualDetailDao
-                .findByTaskDetailId(taskDetail.getId());
-        if (CollectionUtils.isNotEmpty(subTaskAnnualDetails)) {
+    private void calculateWeightForAnnualTask(StationReportBean stationReport, long taskDetailId,
+                                              List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
+        List<SubAnnualTaskDetailDataView> select = select(subAnnualTaskDetails,
+                having(on(SubAnnualTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId)));
+        if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
-            for (SubTaskAnnualDetail subTaskAnnualDetail : subTaskAnnualDetails) {
+            for (SubAnnualTaskDetailDataView subTaskAnnualDetail : select) {
                 if (subTaskAnnualDetail.getRealValue() != null) {
                     weight += subTaskAnnualDetail.getRealValue();
                 } else {

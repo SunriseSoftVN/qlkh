@@ -41,12 +41,6 @@
     </servlet-mapping>
     <!--end-->
 
-    <!-- Application Context Listener -->
-    <listener>
-        <listener-class>com.qlvt.server.servlet.listener.ApplicationContextListener</listener-class>
-    </listener>
-    <!--end-->
-
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

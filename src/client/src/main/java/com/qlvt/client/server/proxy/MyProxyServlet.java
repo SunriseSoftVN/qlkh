@@ -19,13 +19,9 @@
 
 package com.qlvt.client.server.proxy;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.mattbertolini.hermes.Hermes;
-import com.qlvt.core.configuration.ApplicationConfiguration;
 import com.qlvt.core.system.SystemUtil;
 
 import javax.servlet.ServletConfig;
-import java.io.IOException;
 
 /**
  * The Class MyProxyServlet.
@@ -37,14 +33,6 @@ public class MyProxyServlet extends ProxyServlet {
 
     @Override
     public void init(ServletConfig servletConfig) {
-        if (SystemUtil.getConfiguration() == null) {
-            //It only run in development mode.
-            try {
-                SystemUtil.setConfiguration(Hermes.get(ApplicationConfiguration.class, ""));
-            } catch (IOException e) {
-                Log.error(e.getMessage(), e);
-            }
-        }
         setProxyHost(SystemUtil.getConfiguration().developmentModeServerHostName());
         setFollowRedirects(false);
         setRemovePrefix(true);

@@ -13,7 +13,7 @@
         <property name="updateBy" column="updateBy" not-null="true"/>
 
         <property name="type" column="type" not-null="true"/>
-        <property name="content" column="content" not-null="true"/>
+        <property name="content" column="content"/>
         <property name="className" column="className"/>
         <property name="methodName" column="methodName"/>
         <property name="exceptionClass" column="exceptionClass"/>

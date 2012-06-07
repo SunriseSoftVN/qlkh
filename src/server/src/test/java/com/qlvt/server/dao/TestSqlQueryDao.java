@@ -19,7 +19,11 @@
 
 package com.qlvt.server.dao;
 
+import com.qlvt.core.client.model.Station;
+import com.qlvt.core.client.model.view.SubAnnualTaskDetailDataView;
 import com.qlvt.core.client.model.view.SubTaskDetailDataView;
+import com.qlvt.core.client.model.view.TaskDetailDataView;
+import com.qlvt.server.dao.core.GeneralDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +35,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static ch.lambdaj.Lambda.extract;
+import static ch.lambdaj.Lambda.on;
 import static org.junit.Assert.assertEquals;
+
 
 /**
  * The Class TestDao.
@@ -46,12 +53,31 @@ import static org.junit.Assert.assertEquals;
 public class TestSqlQueryDao extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
+    private GeneralDao generalDao;
+
+    @Autowired
     private SqlQueryDao sqlQueryDao;
 
-    @Test
+    @Test(timeout = 1000)
+    public void testGetSubAnnualTaskDetailDataViews() {
+        List<Station> stations = generalDao.getAll(Station.class);
+        List<Long> stationIds = extract(stations, on(Station.class).getId());
+        List<SubAnnualTaskDetailDataView> list = sqlQueryDao.getSubAnnualTaskDetailDataViews(stationIds, 2012);
+        assertEquals(list.size() > 0, true);
+    }
+
+    @Test(timeout = 1000)
+    public void testGetTaskDetailViews() {
+        List<TaskDetailDataView> taskDetailDataViews = sqlQueryDao.getTaskDetailViews(2012);
+        assertEquals(taskDetailDataViews.size() > 0, true);
+    }
+
+    @Test(timeout = 1000)
     public void testGetSubTaskDetailDataViews() {
-        List<SubTaskDetailDataView> list = sqlQueryDao.getSubTaskDetailDataViews(70, 1043);
-        assertEquals(list.size(), 6);
+        List<Station> stations = generalDao.getAll(Station.class);
+        List<Long> stationIds = extract(stations, on(Station.class).getId());
+        List<SubTaskDetailDataView> list = sqlQueryDao.getSubTaskDetailDataViews(stationIds, 2012);
+        assertEquals(list.size() > 0, true);
     }
 
 }

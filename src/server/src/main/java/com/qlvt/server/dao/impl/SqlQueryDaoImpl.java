@@ -19,7 +19,9 @@
 
 package com.qlvt.server.dao.impl;
 
+import com.qlvt.core.client.model.view.SubAnnualTaskDetailDataView;
 import com.qlvt.core.client.model.view.SubTaskDetailDataView;
+import com.qlvt.core.client.model.view.TaskDetailDataView;
 import com.qlvt.server.dao.SqlQueryDao;
 import com.qlvt.server.dao.core.AbstractDao;
 import org.hibernate.HibernateException;
@@ -38,15 +40,45 @@ import java.util.List;
  * @since 6/6/12, 9:59 PM
  */
 public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
+
     @Override
-    public List<SubTaskDetailDataView> getSubTaskDetailDataViews(final long taskId, final long taskDetailId) {
+    public List<SubAnnualTaskDetailDataView> getSubAnnualTaskDetailDataViews(final List<Long> stationIds, final int year) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<SubAnnualTaskDetailDataView>>() {
+            @Override
+            public List<SubAnnualTaskDetailDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM subannualtaskdetail_view " +
+                        "WHERE year = :year AND stationId in (:stationIds)");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setParameterList("stationIds", stationIds);
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(SubAnnualTaskDetailDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
+
+    @Override
+    public List<TaskDetailDataView> getTaskDetailViews(final int year) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskDetailDataView>>() {
+            @Override
+            public List<TaskDetailDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM  taskdetail_view " +
+                        "WHERE year = :year");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
+
+    @Override
+    public List<SubTaskDetailDataView> getSubTaskDetailDataViews(final List<Long> stationIds, final int year) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<SubTaskDetailDataView>>() {
             @Override
             public List<SubTaskDetailDataView> doInHibernate(Session session) throws HibernateException, SQLException {
                 SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM subtaskdetail_view " +
-                        "WHERE taskId = :taskId AND taskDetailId = :taskDetailId");
-                sqlQuery.setParameter("taskId", taskId);
-                sqlQuery.setParameter("taskDetailId", taskDetailId);
+                        "WHERE year = :year AND stationId in (:stationIds)");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setParameterList("stationIds", stationIds);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(SubTaskDetailDataView.class));
                 return sqlQuery.list();
             }

@@ -19,7 +19,9 @@
 
 package com.qlvt.server.dao;
 
+import com.qlvt.core.client.model.view.SubAnnualTaskDetailDataView;
 import com.qlvt.core.client.model.view.SubTaskDetailDataView;
+import com.qlvt.core.client.model.view.TaskDetailDataView;
 import com.qlvt.server.dao.core.Dao;
 
 import java.util.List;
@@ -31,5 +33,7 @@ import java.util.List;
  * @since 6/6/12, 9:58 PM
  */
 public interface SqlQueryDao extends Dao {
-    List<SubTaskDetailDataView> getSubTaskDetailDataViews(long taskId, long taskDetailId);
+    List<SubTaskDetailDataView> getSubTaskDetailDataViews(List<Long> stationIds, int year);
+    List<SubAnnualTaskDetailDataView> getSubAnnualTaskDetailDataViews(List<Long> stationIds, int year);
+    List<TaskDetailDataView> getTaskDetailViews(int year);
 }
