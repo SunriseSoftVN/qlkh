@@ -16,15 +16,15 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>com/qlvt/core/client/model/User.hbm.xml</value>
-                <value>com/qlvt/core/client/model/Station.hbm.xml</value>
-                <value>com/qlvt/core/client/model/Task.hbm.xml</value>
-                <value>com/qlvt/core/client/model/TaskDetail.hbm.xml</value>
-                <value>com/qlvt/core/client/model/SubTaskDetail.hbm.xml</value>
-                <value>com/qlvt/core/client/model/SubTaskAnnualDetail.hbm.xml</value>
-                <value>com/qlvt/core/client/model/Branch.hbm.xml</value>
-                <value>com/qlvt/core/client/model/SystemLog.hbm.xml</value>
-                <value>com/qlvt/core/client/model/StationLock.hbm.xml</value>
+                <value>com/qlkh/core/client/model/User.hbm.xml</value>
+                <value>com/qlkh/core/client/model/Station.hbm.xml</value>
+                <value>com/qlkh/core/client/model/Task.hbm.xml</value>
+                <value>com/qlkh/core/client/model/TaskDetail.hbm.xml</value>
+                <value>com/qlkh/core/client/model/SubTaskDetail.hbm.xml</value>
+                <value>com/qlkh/core/client/model/SubTaskAnnualDetail.hbm.xml</value>
+                <value>com/qlkh/core/client/model/Branch.hbm.xml</value>
+                <value>com/qlkh/core/client/model/SystemLog.hbm.xml</value>
+                <value>com/qlkh/core/client/model/StationLock.hbm.xml</value>
             </list>
         </property>
     </bean>

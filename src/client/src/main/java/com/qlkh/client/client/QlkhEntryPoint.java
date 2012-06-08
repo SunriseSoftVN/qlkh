@@ -22,11 +22,11 @@ package com.qlkh.client.client;
 import com.smvp4g.mvp.client.AbstractEntryPoint;
 
 /**
- * The Class QlvtEntryPoint.
+ * The Class QlkhEntryPoint.
  *
  * @author Nguyen Duc Dung
  * @since 12/27/11, 10:31 AM
  */
-public class QlvtEntryPoint extends AbstractEntryPoint {
+public class QlkhEntryPoint extends AbstractEntryPoint {
 
 }

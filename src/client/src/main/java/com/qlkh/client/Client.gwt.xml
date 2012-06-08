@@ -4,10 +4,10 @@
     <inherits name='net.customware.gwt.dispatch.Dispatch'/>
 
     <inherits name='com.smvp4g.mvp.Mvp'/>
-    <inherits name='com.qlvt.core.Core'/>
+    <inherits name='com.qlkh.core.Core'/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='com.qlkh.client.client.QlvtEntryPoint'/>
+    <entry-point class='com.qlkh.client.client.QlkhEntryPoint'/>
 
     <!-- Specify the paths for translatable code                    -->
     <source path='client'/>
