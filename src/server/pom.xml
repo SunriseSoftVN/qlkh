@@ -297,11 +297,7 @@
         <!--end-->
 
         <!--Groovy-->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovyVersion}</version>
-        </dependency>
+
         <!--End-->
         <dependency>
             <groupId>junit</groupId>
