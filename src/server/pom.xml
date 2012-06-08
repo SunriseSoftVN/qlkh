@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>qlvt</artifactId>
+        <artifactId>qlkh</artifactId>
         <groupId>com</groupId>
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.qlvt</groupId>
+    <groupId>com.qlkh</groupId>
     <artifactId>server</artifactId>
     <packaging>war</packaging>
 
@@ -72,7 +72,7 @@
 
             <dependencies>
                 <dependency>
-                    <groupId>com.qlvt</groupId>
+                    <groupId>com.qlkh</groupId>
                     <artifactId>client</artifactId>
                     <version>1.0</version>
                     <!-- Because it has two package war and jar, We just using Jar -->
@@ -87,13 +87,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.qlvt</groupId>
+            <groupId>com.qlkh</groupId>
             <artifactId>core</artifactId>
             <version>1.0</version>
         </dependency>
 
         <dependency>
-            <groupId>com.qlvt</groupId>
+            <groupId>com.qlkh</groupId>
             <artifactId>client</artifactId>
             <version>1.0</version>
             <!-- Because it has two package war and jar, We just using Jar -->
