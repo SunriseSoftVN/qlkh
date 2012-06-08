@@ -276,6 +276,33 @@
         </dependency>
         <!--end-->
 
+        <!--Bean Lib-->
+        <dependency>
+            <groupId>net.sf.beanlib</groupId>
+            <artifactId>beanlib-hibernate</artifactId>
+            <version>${beanlibVerion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.beanlib</groupId>
+            <artifactId>beanlib</artifactId>
+            <version>${beanlibVerion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.beanlib</groupId>
+            <artifactId>beanlib-joda</artifactId>
+            <version>${beanlibVerion}</version>
+        </dependency>
+        <!--end-->
+
+        <!--Groovy-->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovyVersion}</version>
+        </dependency>
+        <!--End-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

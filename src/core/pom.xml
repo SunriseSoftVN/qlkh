@@ -99,7 +99,20 @@
             <artifactId>commons-collections</artifactId>
             <version>${collectionsVersion}</version>
         </dependency>
+        <!--End-->
 
+        <!--Google Collection-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guavaVerion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava-gwt</artifactId>
+            <version>${guavaVerion}</version>
+        </dependency>
         <!--End-->
 
         <dependency>
