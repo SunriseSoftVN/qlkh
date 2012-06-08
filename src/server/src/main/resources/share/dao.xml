@@ -3,43 +3,43 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean class="com.qlvt.server.dao.impl.BranchDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.BranchDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.StationDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.StationDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.SubTaskAnnualDetailDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.SubTaskAnnualDetailDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.SubTaskDetailDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.SubTaskDetailDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.TaskDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.TaskDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.TaskDetailDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.TaskDetailDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.UserDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.UserDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.GxtDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.GxtDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.GeneralDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.GeneralDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlvt.server.dao.impl.SqlQueryDaoImpl">
+    <bean class="com.qlkh.server.dao.impl.SqlQueryDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 

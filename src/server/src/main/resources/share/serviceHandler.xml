@@ -10,19 +10,19 @@
     <bean id="registry" class="net.customware.gwt.dispatch.server.DefaultActionHandlerRegistry">
         <property name="actionHandlers">
             <list>
-                <bean class="com.qlvt.server.handler.core.LoginHandler"/>
-                <bean class="com.qlvt.server.handler.gird.LoadGridDataHandler"/>
-                <bean class="com.qlvt.server.handler.core.LoadHandler"/>
-                <bean class="com.qlvt.server.handler.core.SaveHandler"/>
-                <bean class="com.qlvt.server.handler.core.DeleteHandler"/>
-                <bean class="com.qlvt.server.handler.report.ReportHandler"/>
-                <bean class="com.qlvt.server.handler.station.LoadStationHandler"/>
-                <bean class="com.qlvt.server.handler.subtask.LoadSubTaskAnnualHandler"/>
-                <bean class="com.qlvt.server.handler.taskdetail.DeleteTaskDetailHandler"/>
-                <bean class="com.qlvt.server.handler.subtask.LoadSubTaskDetailHandler"/>
-                <bean class="com.qlvt.server.handler.task.LoadUnusedTaskGridHandler"/>
-                <bean class="com.qlvt.server.handler.time.GetServerTimeHandler"/>
-                <bean class="com.qlvt.server.handler.station.LockStationHandler"/>
+                <bean class="com.qlkh.server.handler.core.LoginHandler"/>
+                <bean class="com.qlkh.server.handler.gird.LoadGridDataHandler"/>
+                <bean class="com.qlkh.server.handler.core.LoadHandler"/>
+                <bean class="com.qlkh.server.handler.core.SaveHandler"/>
+                <bean class="com.qlkh.server.handler.core.DeleteHandler"/>
+                <bean class="com.qlkh.server.handler.report.ReportHandler"/>
+                <bean class="com.qlkh.server.handler.station.LoadStationHandler"/>
+                <bean class="com.qlkh.server.handler.subtask.LoadSubTaskAnnualHandler"/>
+                <bean class="com.qlkh.server.handler.taskdetail.DeleteTaskDetailHandler"/>
+                <bean class="com.qlkh.server.handler.subtask.LoadSubTaskDetailHandler"/>
+                <bean class="com.qlkh.server.handler.task.LoadUnusedTaskGridHandler"/>
+                <bean class="com.qlkh.server.handler.time.GetServerTimeHandler"/>
+                <bean class="com.qlkh.server.handler.station.LockStationHandler"/>
             </list>
         </property>
     </bean>

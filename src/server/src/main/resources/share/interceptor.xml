@@ -6,7 +6,7 @@
     <bean id="exceptionAspect" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
         <property name="beanNames">
             <list>
-                <value>com.qlvt.server.handler.*</value>
+                <value>com.qlkh.server.handler.*</value>
             </list>
         </property>
         <property name="interceptorNames">
@@ -28,7 +28,7 @@
         </property>
     </bean>
 
-    <bean name="exceptionsInterceptor" class="com.qlvt.server.Interceptor.ExceptionsInterceptor"/>
+    <bean name="exceptionsInterceptor" class="com.qlkh.server.Interceptor.ExceptionsInterceptor"/>
 
     <!--Transaction Manager-->
     <bean name="transactionInterceptor"
@@ -46,6 +46,6 @@
     </bean>
 
     <!--Hibernate Interceptor-->
-    <bean name="auditInterceptor" class="com.qlvt.server.Interceptor.AuditInterceptor"/>
+    <bean name="auditInterceptor" class="com.qlkh.server.Interceptor.AuditInterceptor"/>
 
 </beans>

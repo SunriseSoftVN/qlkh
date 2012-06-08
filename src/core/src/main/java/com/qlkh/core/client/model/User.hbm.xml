@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.qlkh.core.client.model.User" table="user" schema="" catalog="qlkh">
+        <id name="id" column="id">
+            <generator class="identity"/>
+        </id>
+        <property name="createdDate" column="createdDate" not-null="true"/>
+        <property name="updatedDate" column="updatedDate" not-null="true"/>
+        <property name="createBy" column="createBy" not-null="true"/>
+        <property name="updateBy" column="updateBy" not-null="true"/>
+
+        <property name="userName" column="userName" not-null="true"/>
+        <property name="passWord" column="passWord" not-null="true"/>
+        <property name="userRole" column="userRole" not-null="true"/>
+        <many-to-one name="station" class="com.qlkh.core.client.model.Station" lazy="false" fetch="join" outer-join="auto">
+            <column name="stationId" not-null="false"/>
+        </many-to-one>
+    </class>
+</hibernate-mapping>
