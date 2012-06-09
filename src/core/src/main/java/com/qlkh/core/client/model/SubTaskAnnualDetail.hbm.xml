@@ -15,7 +15,6 @@
         <property name="lastYearValue" column="lastYearValue"/>
         <property name="increaseValue" column="increaseValue"/>
         <property name="decreaseValue" column="decreaseValue"/>
-        <property name="realValue" column="realValue"/>
 
         <many-to-one name="taskDetail" class="com.qlkh.core.client.model.TaskDetail" lazy="false" fetch="join" outer-join="auto">
             <column name="taskDetailId" not-null="true"/>

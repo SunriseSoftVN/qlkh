@@ -6,6 +6,8 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
+import javax.persistence.Transient;
+
 /**
  * The Class SubTaskAnnualDetail.
  *
@@ -19,7 +21,6 @@ public class SubTaskAnnualDetail extends AbstractEntity {
     private Double lastYearValue;
     private Double increaseValue;
     private Double decreaseValue;
-    private Double realValue;
 
     public TaskDetail getTaskDetail() {
         return taskDetail;
@@ -61,11 +62,21 @@ public class SubTaskAnnualDetail extends AbstractEntity {
         this.decreaseValue = decreaseValue;
     }
 
+    @Transient
     public Double getRealValue() {
-        return realValue;
-    }
-
-    public void setRealValue(Double realValue) {
-        this.realValue = realValue;
+        if (lastYearValue == null && increaseValue == null
+                && decreaseValue == null) {
+            return null;
+        }
+        if (increaseValue == null) {
+            increaseValue = 0d;
+        }
+        if (decreaseValue == null) {
+            decreaseValue = 0d;
+        }
+        if (lastYearValue == null) {
+            lastYearValue = 0d;
+        }
+        return lastYearValue + increaseValue - decreaseValue;
     }
 }

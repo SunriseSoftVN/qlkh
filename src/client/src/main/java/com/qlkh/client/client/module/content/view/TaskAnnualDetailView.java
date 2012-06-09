@@ -317,32 +317,6 @@ public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant>
         SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(REAL_VALUE_COLUMN,
                 getConstant().realValueColumnTitle(), REAL_VALUE_WIDTH);
         realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
-        realValueColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
-            @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<BeanModel> taskDetailDtoListStore, Grid<BeanModel> taskDetailDtoGrid) {
-                SubTaskAnnualDetail taskAnnualDetail = model.getBean();
-                Double increaseValue = taskAnnualDetail.getIncreaseValue();
-                if (increaseValue == null) {
-                    increaseValue = 0d;
-                }
-                Double decreaseValue = taskAnnualDetail.getDecreaseValue();
-                if (decreaseValue == null) {
-                    decreaseValue = 0d;
-                }
-                Double lastYearValue = taskAnnualDetail.getLastYearValue();
-                if (lastYearValue == null) {
-                    lastYearValue = 0d;
-                }
-                Double result = lastYearValue + increaseValue - decreaseValue;
-                if (result == 0) {
-                    return "";
-                }
-                SubTaskAnnualDetail subTaskAnnualDetail = model.getBean();
-                subTaskAnnualDetail.setRealValue(result);
-                return result;
-            }
-        });
         columnConfigs.add(realValueColumnConfig);
         return columnConfigs;
     }

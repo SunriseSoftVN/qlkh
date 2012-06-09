@@ -26,7 +26,6 @@ public class SubAnnualTaskDetailDataView implements IsSerializable {
     private Double lastYearValue;
     private Double increaseValue;
     private Double decreaseValue;
-    private Double realValue;
 
     public long getTaskId() {
         return taskId;
@@ -109,10 +108,21 @@ public class SubAnnualTaskDetailDataView implements IsSerializable {
     }
 
     public Double getRealValue() {
-        return realValue;
+        if (lastYearValue == null && increaseValue == null
+                && decreaseValue == null) {
+            return null;
+        }
+        if (increaseValue == null) {
+            increaseValue = 0d;
+        }
+        if (decreaseValue == null) {
+            decreaseValue = 0d;
+        }
+        if (lastYearValue == null) {
+            lastYearValue = 0d;
+        }
+        return lastYearValue + increaseValue - decreaseValue;
     }
 
-    public void setRealValue(Double realValue) {
-        this.realValue = realValue;
-    }
+
 }

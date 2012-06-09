@@ -462,21 +462,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             for (SubAnnualTaskDetailDataView subTaskAnnualDetail : select) {
                 if (subTaskAnnualDetail.getRealValue() != null) {
                     weight += subTaskAnnualDetail.getRealValue();
-                } else {
-                    Double increaseValue = subTaskAnnualDetail.getIncreaseValue();
-                    if (increaseValue == null) {
-                        increaseValue = 0d;
-                    }
-                    Double decreaseValue = subTaskAnnualDetail.getDecreaseValue();
-                    if (decreaseValue == null) {
-                        decreaseValue = 0d;
-                    }
-                    Double lastYearValue = subTaskAnnualDetail.getLastYearValue();
-                    if (lastYearValue == null) {
-                        lastYearValue = 0d;
-                    }
-                    Double result = lastYearValue + increaseValue - decreaseValue;
-                    weight += result;
                 }
             }
             if (weight > 0) {
