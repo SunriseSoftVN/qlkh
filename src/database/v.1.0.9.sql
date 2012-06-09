@@ -17,3 +17,5 @@ subtaskannualdetail.decreaseValue
 FROM task
 INNER JOIN taskdetail ON task.id = taskdetail.taskId
 INNER JOIN subtaskannualdetail ON taskdetail.id = subtaskannualdetail.taskDetailId;
+
+ALTER TABLE `subtaskannualdetail` DROP `realValue`;
