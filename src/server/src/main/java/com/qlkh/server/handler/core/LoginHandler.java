@@ -8,7 +8,6 @@ import com.qlkh.core.client.action.core.LoginAction;
 import com.qlkh.core.client.action.core.LoginResult;
 import com.qlkh.core.client.model.User;
 import com.qlkh.server.dao.UserDao;
-import com.qlkh.server.handler.Dung;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ public class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
 
     @Override
     public LoginResult execute(LoginAction action, ExecutionContext context) throws DispatchException {
-        Dung dung = new Dung();
-        dung.test();
         User user = userDao.findByUserName(action.getUserName());
         if (user != null && user.getPassWord().equals(action.getPassWord())) {
             return new LoginResult(user);

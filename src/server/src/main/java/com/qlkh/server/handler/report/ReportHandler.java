@@ -51,6 +51,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
+import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -72,15 +73,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     @Autowired
     private GeneralDao generalDao;
-
-    @Autowired
-    private TaskDetailDao taskDetailDao;
-
-    @Autowired
-    private SubTaskDetailDao subTaskDetailDao;
-
-    @Autowired
-    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
 
     @Autowired
     private SqlQueryDao sqlQueryDao;
@@ -389,7 +381,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             if (taskDetailId != null) {
                 //Calculate Weight
                 if (annual) {
-                    calculateWeightForAnnualTask(stationReport, taskDetailId, subAnnualTaskDetails);
+                    calculateWeightForAnnualTask(stationReport, taskDetailId, reportTypeEnum,subAnnualTaskDetails);
                 } else {
                     calculateWeightForNormalTask(stationReport, taskDetailId, reportTypeEnum, subTaskDetails);
                 }
@@ -453,7 +445,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private void calculateWeightForAnnualTask(StationReportBean stationReport, long taskDetailId,
+    private void calculateWeightForAnnualTask(StationReportBean stationReport, long taskDetailId, ReportTypeEnum reportTypeEnum,
                                               List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
         List<SubAnnualTaskDetailDataView> select = select(subAnnualTaskDetails,
                 having(on(SubAnnualTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId)));
@@ -465,6 +457,9 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 }
             }
             if (weight > 0) {
+                if (reportTypeEnum == CA_NAM) {
+                    weight *= 4;
+                }
                 stationReport.setValue(weight);
             }
         }

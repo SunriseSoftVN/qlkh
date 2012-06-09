@@ -6,8 +6,6 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
-import javax.persistence.Transient;
-
 /**
  * The Class SubTaskAnnualDetail.
  *
@@ -62,7 +60,7 @@ public class SubTaskAnnualDetail extends AbstractEntity {
         this.decreaseValue = decreaseValue;
     }
 
-    @Transient
+    @SuppressWarnings("JpaAttributeMemberSignatureInspection")
     public Double getRealValue() {
         if (lastYearValue == null && increaseValue == null
                 && decreaseValue == null) {
