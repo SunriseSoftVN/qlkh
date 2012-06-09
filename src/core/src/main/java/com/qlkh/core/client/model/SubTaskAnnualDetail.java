@@ -62,18 +62,21 @@ public class SubTaskAnnualDetail extends AbstractEntity {
 
     @SuppressWarnings("JpaAttributeMemberSignatureInspection")
     public Double getRealValue() {
+        Double lastYearValue = getLastYearValue();
+        Double increaseValue = getIncreaseValue();
+        Double decreaseValue = getDecreaseValue();
         if (lastYearValue == null && increaseValue == null
                 && decreaseValue == null) {
             return null;
         }
         if (increaseValue == null) {
-            increaseValue = 0d;
+            increaseValue = 0D;
         }
         if (decreaseValue == null) {
-            decreaseValue = 0d;
+            decreaseValue = 0D;
         }
         if (lastYearValue == null) {
-            lastYearValue = 0d;
+            lastYearValue = 0D;
         }
         return lastYearValue + increaseValue - decreaseValue;
     }

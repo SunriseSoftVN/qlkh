@@ -381,13 +381,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             if (taskDetailId != null) {
                 //Calculate Weight
                 if (annual) {
-                    calculateWeightForAnnualTask(stationReport, taskDetailId, reportTypeEnum,subAnnualTaskDetails);
+                    calculateWeightForAnnualTask(stationReport, taskDetailId, subAnnualTaskDetails);
                 } else {
                     calculateWeightForNormalTask(stationReport, taskDetailId, reportTypeEnum, subTaskDetails);
                 }
                 //Calculate time
                 if (task.getDefaultValue() != null && stationReport.getValue() != null) {
                     Double time = task.getDefaultValue() * task.getQuota() * stationReport.getValue();
+                    if (CA_NAM == reportTypeEnum && annual) {
+                        time *= 4;
+                    }
                     stationReport.setTime(time);
                 }
             }
@@ -445,7 +448,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private void calculateWeightForAnnualTask(StationReportBean stationReport, long taskDetailId, ReportTypeEnum reportTypeEnum,
+    private void calculateWeightForAnnualTask(StationReportBean stationReport, long taskDetailId,
                                               List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
         List<SubAnnualTaskDetailDataView> select = select(subAnnualTaskDetails,
                 having(on(SubAnnualTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId)));
@@ -457,9 +460,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 }
             }
             if (weight > 0) {
-                if (reportTypeEnum == CA_NAM) {
-                    weight *= 4;
-                }
                 stationReport.setValue(weight);
             }
         }
