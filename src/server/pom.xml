@@ -281,6 +281,16 @@
             <groupId>net.sf.beanlib</groupId>
             <artifactId>beanlib-hibernate</artifactId>
             <version>${beanlibVerion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -289,11 +299,11 @@
             <version>${beanlibVerion}</version>
         </dependency>
 
-        <dependency>
-            <groupId>net.sf.beanlib</groupId>
-            <artifactId>beanlib-joda</artifactId>
-            <version>${beanlibVerion}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.sf.beanlib</groupId>-->
+            <!--<artifactId>beanlib-joda</artifactId>-->
+            <!--<version>${beanlibVerion}</version>-->
+        <!--</dependency>-->
         <!--end-->
 
         <!--Groovy-->

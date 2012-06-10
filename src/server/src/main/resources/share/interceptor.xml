@@ -19,7 +19,7 @@
 
     <bean id="exceptionAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice">
-            <ref local="exceptionsInterceptor"/>
+            <ref bean="exceptionsInterceptor"/>
         </property>
         <property name="patterns">
             <list>
