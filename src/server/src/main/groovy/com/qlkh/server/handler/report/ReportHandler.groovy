@@ -4,57 +4,54 @@
 
 package com.qlkh.server.handler.report;
 
-import ar.com.fdvs.dj.core.DynamicJasperHelper;
-import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
-import ar.com.fdvs.dj.domain.DynamicReport;
-import ar.com.fdvs.dj.domain.Style;
-import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
-import ar.com.fdvs.dj.domain.constants.*;
-import com.qlkh.client.client.utils.TaskCodeUtils;
-import com.qlkh.core.client.action.report.ReportAction;
-import com.qlkh.core.client.action.report.ReportResult;
-import com.qlkh.core.client.constant.ReportFileTypeEnum;
-import com.qlkh.core.client.constant.ReportTypeEnum;
-import com.qlkh.core.client.constant.TaskTypeEnum;
-import com.qlkh.core.client.model.Station;
-import com.qlkh.core.client.model.Task;
-import com.qlkh.core.client.model.view.SubAnnualTaskDetailDataView;
-import com.qlkh.core.client.model.view.SubTaskDetailDataView;
-import com.qlkh.core.client.model.view.TaskDetailDataView;
-import com.qlkh.core.client.report.StationReportBean;
-import com.qlkh.core.client.report.SumReportBean;
-import com.qlkh.core.configuration.ConfigurationServerUtil;
-import com.qlkh.server.business.rule.*;
-import com.qlkh.server.dao.SqlQueryDao;
-import com.qlkh.server.dao.SubTaskAnnualDetailDao;
-import com.qlkh.server.dao.SubTaskDetailDao;
-import com.qlkh.server.dao.TaskDetailDao;
-import com.qlkh.server.dao.core.GeneralDao;
-import com.qlkh.server.handler.core.AbstractHandler;
-import com.qlkh.server.servlet.ReportServlet;
-import com.qlkh.server.util.ReportExporter;
-import com.qlkh.server.util.ServletUtils;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
-import net.customware.gwt.dispatch.shared.DispatchException;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.criterion.Order;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.FileNotFoundException;
-import java.util.*;
+import ar.com.fdvs.dj.core.DynamicJasperHelper
+import ar.com.fdvs.dj.core.layout.ClassicLayoutManager
+import ar.com.fdvs.dj.domain.DynamicReport
+import ar.com.fdvs.dj.domain.Style
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder
+import com.qlkh.client.client.utils.TaskCodeUtils
+import com.qlkh.core.client.action.report.ReportAction
+import com.qlkh.core.client.action.report.ReportResult
+import com.qlkh.core.client.constant.ReportFileTypeEnum
+import com.qlkh.core.client.constant.ReportTypeEnum
+import com.qlkh.core.client.constant.TaskTypeEnum
+import com.qlkh.core.client.model.Station
+import com.qlkh.core.client.model.Task
+import com.qlkh.core.client.model.view.SubAnnualTaskDetailDataView
+import com.qlkh.core.client.model.view.SubTaskDetailDataView
+import com.qlkh.core.client.model.view.TaskDetailDataView
+import com.qlkh.core.client.report.StationReportBean
+import com.qlkh.core.client.report.SumReportBean
+import com.qlkh.core.configuration.ConfigurationServerUtil
+import com.qlkh.server.dao.SqlQueryDao
+import com.qlkh.server.dao.core.GeneralDao
+import com.qlkh.server.handler.core.AbstractHandler
+import com.qlkh.server.servlet.ReportServlet
+import com.qlkh.server.util.ReportExporter
+import com.qlkh.server.util.ServletUtils
+import com.smvp4g.mvp.client.core.utils.StringUtils
+import net.customware.gwt.dispatch.server.ExecutionContext
+import net.customware.gwt.dispatch.shared.ActionException
+import net.customware.gwt.dispatch.shared.DispatchException
+import net.sf.jasperreports.engine.JRException
+import net.sf.jasperreports.engine.JasperFillManager
+import net.sf.jasperreports.engine.JasperPrint
+import net.sf.jasperreports.engine.JasperReport
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
+import org.apache.commons.collections.CollectionUtils
+import org.hibernate.criterion.Order
+import org.springframework.beans.factory.annotation.Autowired
+import ar.com.fdvs.dj.domain.constants.*
+import com.qlkh.server.business.rule.*
 
-import static ch.lambdaj.Lambda.*;
-import static com.qlkh.core.client.constant.ReportTypeEnum.*;
-import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
-import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static ch.lambdaj.Lambda.*
+import static com.qlkh.core.client.constant.ReportTypeEnum.*
+import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM
+import static com.qlkh.core.client.constant.TaskTypeEnum.SUM
+import static org.hamcrest.core.IsEqual.equalTo
+import static com.qlkh.core.client.constant.TaskTypeEnum.DK
+import com.qlkh.core.client.report.TaskReportBean
 
 /**
  * The Class ReportHandler.
@@ -168,7 +165,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                     .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
                     .addColumn("Định mức", "task.defaultValue", Double.class, 15, detailStyle)
-                    .addColumn("Số lần", "task.quota", Integer.class, 10, detailStyle);
+                    .addColumn("Số lần", "task.quota", Integer.class, 15, detailStyle);
 
             List<Station> stations = new ArrayList<Station>();
             if (stationId == StationCodeEnum.COMPANY.getId()) {
@@ -259,8 +256,12 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         for (Task task : tasks) {
             SumReportBean bean = new SumReportBean();
             bean.setTask(task);
+            if (CA_NAM == reportTypeEnum && task.taskTypeCode == DK.code) {
+                //Because time of DK task will be count four time for all year.
+                bean.task.quota *= 4;
+            }
             for (Station station : stations) {
-                StationReportBean stationReport = calculateForStation(task, station, reportTypeEnum,
+                StationReportBean stationReport = calculateForStation(bean.task, station, reportTypeEnum,
                         taskDetailViews, subTaskDetails, subAnnualTaskDetails);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
@@ -357,7 +358,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     }
 
 
-    private StationReportBean calculateForStation(Task task, Station station, ReportTypeEnum reportTypeEnum,
+    private StationReportBean calculateForStation(TaskReportBean task, Station station, ReportTypeEnum reportTypeEnum,
                                                   List<TaskDetailDataView> taskDetails, List<SubTaskDetailDataView> subTaskDetails,
                                                   List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
         StationReportBean stationReport = new StationReportBean();
@@ -365,7 +366,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         stationReport.setName(station.getName());
         //We don't calculate for company because it is sum of another station.
         if (!station.isCompany() && (task.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()
-                || task.getTaskTypeCode() == TaskTypeEnum.DK.getCode())) {
+                || task.getTaskTypeCode() == DK.getCode())) {
 
             List<TaskDetailDataView> select = select(taskDetails,
                     having(on(TaskDetailDataView.class).getTaskId(), equalTo(task.getId()))
@@ -388,9 +389,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 //Calculate time
                 if (task.getDefaultValue() != null && stationReport.getValue() != null) {
                     Double time = task.getDefaultValue() * task.getQuota() * stationReport.getValue();
-                    if (CA_NAM == reportTypeEnum && annual) {
-                        time *= 4;
-                    }
                     stationReport.setTime(time);
                 }
             }

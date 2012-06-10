@@ -100,6 +100,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskQuota().setValue(selectedTask.getQuota());
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
+                    //We not allow change task type.
+                    view.getCbbTaskType().setEnabled(false);
                     currentTask = selectedTask;
                     taskEditWindow.show();
                 }
