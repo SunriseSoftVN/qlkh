@@ -29,8 +29,6 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
-
 /**
  * The Class AbstractTaskDetailPresenter.
  *
@@ -62,7 +60,7 @@ public class AbstractTaskDetailPresenter<V extends
             @Override
             public void onSuccess(LoadStationResult result) {
                 currentStation = result.getStation();
-                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.eq("taskTypeCode", DK.getCode())));
+                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.eq("taskTypeCode", getTaskTypeCode())));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
                 resetView();
                 view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
@@ -153,5 +151,9 @@ public class AbstractTaskDetailPresenter<V extends
 
     protected void checkLockAndCreateSubTaskGrid() {
 
+    }
+
+    protected Integer getTaskTypeCode() {
+        return null;
     }
 }

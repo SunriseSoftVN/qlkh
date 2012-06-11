@@ -10,7 +10,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.TaskDetailKDKPlace;
@@ -21,18 +20,16 @@ import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.subtask.LoadSubTaskDetailAction;
 import com.qlkh.core.client.action.subtask.LoadSubTaskDetailResult;
-import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.StationLock;
-import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailKDK;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
-import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.qlkh.core.client.constant.StationLockTypeEnum.*;
+import static com.qlkh.core.client.constant.TaskTypeEnum.KDK;
 
 /**
  * The Class TaskDetailPresenter.
@@ -130,5 +127,10 @@ public class TaskDetailKDKPresenter extends AbstractTaskDetailPresenter<TaskDeta
 
         view.createSubTaskGrid(createSubTaskListStore(), q1Lock, q2Lock, q3Lock, q4Lock);
         view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
+    }
+
+    @Override
+    protected Integer getTaskTypeCode() {
+        return KDK.getCode();
     }
 }

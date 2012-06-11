@@ -28,6 +28,8 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
+
 /**
  * The Class TaskAnnualDetailPresenter.
  *
@@ -107,5 +109,10 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
                 break;
             }
         }
+    }
+
+    @Override
+    protected Integer getTaskTypeCode() {
+        return DK.getCode();
     }
 }
