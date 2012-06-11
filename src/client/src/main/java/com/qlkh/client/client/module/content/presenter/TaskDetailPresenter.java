@@ -159,11 +159,11 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
+                List<TaskDetailKDK> taskDetailKDKs = new ArrayList<TaskDetailKDK>();
                 for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
-                    subTaskDetails.add(((BeanModel) record.getModel()).<SubTaskDetail>getBean());
+                    taskDetailKDKs.add(((BeanModel) record.getModel()).<TaskDetailKDK>getBean());
                 }
-                dispatch.execute(new SaveAction(subTaskDetails), new AbstractAsyncCallback<SaveResult>() {
+                dispatch.execute(new SaveAction(taskDetailKDKs), new AbstractAsyncCallback<SaveResult>() {
                     @Override
                     public void onSuccess(SaveResult result) {
                         DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
@@ -297,8 +297,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
             }
         };
 
-        PagingLoader<PagingLoadResult<SubTaskDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<SubTaskDetail>>(rpcProxy, new LoadGridDataReader()) {
+        PagingLoader<PagingLoadResult<TaskDetailKDK>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<TaskDetailKDK>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);

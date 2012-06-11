@@ -9,7 +9,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlkh.core.client.action.subtask.LoadSubTaskDetailAction;
 import com.qlkh.core.client.action.subtask.LoadSubTaskDetailResult;
 import com.qlkh.core.client.model.Branch;
-import com.qlkh.core.client.model.SubTaskDetail;
+import com.qlkh.core.client.model.TaskDetailKDK;
 import com.qlkh.core.client.model.TaskDetail;
 import com.qlkh.server.dao.BranchDao;
 import com.qlkh.server.dao.SubTaskDetailDao;
@@ -47,31 +47,31 @@ public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailA
 
     @Override
     public LoadSubTaskDetailResult execute(LoadSubTaskDetailAction action, ExecutionContext context) throws DispatchException {
-        BasePagingLoadResult<SubTaskDetail> result = getSubTaskDetails(action.getLoadConfig(), action.getTaskDetailId());
+        BasePagingLoadResult<TaskDetailKDK> result = getSubTaskDetails(action.getLoadConfig(), action.getTaskDetailId());
         return new LoadSubTaskDetailResult(result);
     }
 
-    public BasePagingLoadResult<SubTaskDetail> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
-        List<SubTaskDetail> subTaskDetails = new ArrayList<SubTaskDetail>();
+    public BasePagingLoadResult<TaskDetailKDK> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId) {
+        List<TaskDetailKDK> taskDetailKDKs = new ArrayList<TaskDetailKDK>();
         TaskDetail taskDetail = generalDao.findById(TaskDetail.class, taskDetailId);
         if (taskDetail != null) {
             List<Branch> branches = branchDao.findByStationId(taskDetail.getStation().getId());
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
-                    SubTaskDetail subTaskDetail = subTaskDetailDao.
+                    TaskDetailKDK taskDetailKDK = subTaskDetailDao.
                             findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
-                    if (subTaskDetail == null) {
-                        subTaskDetail = new SubTaskDetail();
-                        subTaskDetail.setTaskDetail(taskDetail);
-                        subTaskDetail.setBranch(branch);
-                        subTaskDetail.setCreateBy(1l);
-                        subTaskDetail.setUpdateBy(1l);
+                    if (taskDetailKDK == null) {
+                        taskDetailKDK = new TaskDetailKDK();
+                        taskDetailKDK.setTaskDetail(taskDetail);
+                        taskDetailKDK.setBranch(branch);
+                        taskDetailKDK.setCreateBy(1l);
+                        taskDetailKDK.setUpdateBy(1l);
                     }
-                    subTaskDetails.add(subTaskDetail);
+                    taskDetailKDKs.add(taskDetailKDK);
                 }
             }
         }
-        return new BasePagingLoadResult<SubTaskDetail>(subTaskDetails, loadConfig.getOffset(),
-                subTaskDetails.size());
+        return new BasePagingLoadResult<TaskDetailKDK>(taskDetailKDKs, loadConfig.getOffset(),
+                taskDetailKDKs.size());
     }
 }

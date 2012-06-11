@@ -144,11 +144,11 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
         view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                List<SubTaskAnnualDetail> subTaskAnnualDetails = new ArrayList<SubTaskAnnualDetail>();
+                List<TaskDetailDK> taskDetailDKs = new ArrayList<TaskDetailDK>();
                 for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
-                    subTaskAnnualDetails.add(((BeanModel) record.getModel()).<SubTaskAnnualDetail>getBean());
+                    taskDetailDKs.add(((BeanModel) record.getModel()).<TaskDetailDK>getBean());
                 }
-                dispatch.execute(new SaveAction(subTaskAnnualDetails), new AbstractAsyncCallback<SaveResult>() {
+                dispatch.execute(new SaveAction(taskDetailDKs), new AbstractAsyncCallback<SaveResult>() {
                     @Override
                     public void onSuccess(SaveResult result) {
                         DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
@@ -284,8 +284,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
             }
         };
 
-        PagingLoader<PagingLoadResult<SubTaskAnnualDetail>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<SubTaskAnnualDetail>>(rpcProxy, new LoadGridDataReader()) {
+        PagingLoader<PagingLoadResult<TaskDetailDK>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<TaskDetailDK>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);

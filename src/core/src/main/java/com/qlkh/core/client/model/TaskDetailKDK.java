@@ -12,21 +12,21 @@ import com.qlkh.core.client.model.core.AbstractEntity;
  * @author Nguyen Duc Dung
  * @since 1/3/12, 8:59 AM
  */
-public class SubTaskDetail extends AbstractEntity {
+public class TaskDetailKDK extends AbstractEntity {
 
-    private TaskDetail taskDetail;
+    private Task task;
     private Branch branch;
     private Double q1;
     private Double q2;
     private Double q3;
     private Double q4;
 
-    public TaskDetail getTaskDetail() {
-        return taskDetail;
+    public Task getTask() {
+        return task;
     }
 
-    public void setTaskDetail(TaskDetail taskDetail) {
-        this.taskDetail = taskDetail;
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public Branch getBranch() {

@@ -24,12 +24,12 @@
     </mapping>
 
     <mapping>
-        <class-a>com.qlkh.core.client.model.SubTaskDetail</class-a>
+        <class-a>com.qlkh.core.client.model.TaskDetailKDK</class-a>
         <class-b>com.qlkh.core.client.dto.SubTaskDetailDto</class-b>
     </mapping>
 
     <mapping>
-        <class-a>com.qlkh.core.client.model.SubTaskAnnualDetail</class-a>
+        <class-a>com.qlkh.core.client.model.TaskDetailDK</class-a>
         <class-b>com.qlkh.core.client.dto.SubTaskAnnualDetailDto</class-b>
     </mapping>
 

@@ -27,8 +27,8 @@ import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
-import com.qlkh.core.client.model.SubTaskAnnualDetail;
-import com.qlkh.core.client.model.SubTaskDetail;
+import com.qlkh.core.client.model.TaskDetailDK;
+import com.qlkh.core.client.model.TaskDetailKDK;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -47,7 +47,7 @@ import java.util.List;
 @Presenter(view = BranchManagerView.class, place = BranchManagerPlace.class)
 public class BranchManagerPresenter extends AbstractPresenter<BranchManagerView> {
 
-    private static final String[] RELATE_ENTITY_NAMES = {SubTaskDetail.class.getName(), SubTaskAnnualDetail.class.getName()};
+    private static final String[] RELATE_ENTITY_NAMES = {TaskDetailKDK.class.getName(), TaskDetailDK.class.getName()};
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 

@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.qlkh.core.client.model.SubTaskDetail" table="subtaskdetail" schema="" catalog="qlkh">
+    <class name="com.qlkh.core.client.model.TaskDetailDK" table="taskdetail_dk" schema="" catalog="qlkh">
         <id name="id" column="id">
             <generator class="identity"/>
         </id>
@@ -12,12 +12,12 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
-        <property name="q1" column="q1"/>
-        <property name="q2" column="q2"/>
-        <property name="q3" column="q3"/>
-        <property name="q4" column="q4"/>
-        <many-to-one name="taskDetail" class="com.qlkh.core.client.model.TaskDetail" lazy="false" fetch="join" outer-join="auto">
-            <column name="taskDetailId" not-null="true"/>
+        <property name="lastYearValue" column="lastYearValue"/>
+        <property name="increaseValue" column="increaseValue"/>
+        <property name="decreaseValue" column="decreaseValue"/>
+
+        <many-to-one name="task" class="com.qlkh.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
+            <column name="taskId" not-null="true"/>
         </many-to-one>
         <many-to-one name="branch" class="com.qlkh.core.client.model.Branch" lazy="false" fetch="join" outer-join="true">
             <column name="branchId" not-null="true"/>

@@ -4,7 +4,7 @@
 
 package com.qlkh.server.dao;
 
-import com.qlkh.core.client.model.SubTaskAnnualDetail;
+import com.qlkh.core.client.model.TaskDetailDK;
 import com.qlkh.server.dao.core.Dao;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/4/12, 9:08 PM
  */
-public interface SubTaskAnnualDetailDao extends Dao<SubTaskAnnualDetail> {
-    SubTaskAnnualDetail findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId);
+public interface SubTaskAnnualDetailDao extends Dao<TaskDetailDK> {
+    TaskDetailDK findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId);
     void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds);
-    List<SubTaskAnnualDetail> findByBrandId(long brandId);
-    List<SubTaskAnnualDetail> findByTaskDetailId(long taskDetailId);
+    List<TaskDetailDK> findByBrandId(long brandId);
+    List<TaskDetailDK> findByTaskDetailId(long taskDetailId);
 }

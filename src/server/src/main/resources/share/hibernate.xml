@@ -19,12 +19,12 @@
                 <value>com/qlkh/core/client/model/User.hbm.xml</value>
                 <value>com/qlkh/core/client/model/Station.hbm.xml</value>
                 <value>com/qlkh/core/client/model/Task.hbm.xml</value>
-                <value>com/qlkh/core/client/model/TaskDetail.hbm.xml</value>
-                <value>com/qlkh/core/client/model/SubTaskDetail.hbm.xml</value>
-                <value>com/qlkh/core/client/model/SubTaskAnnualDetail.hbm.xml</value>
                 <value>com/qlkh/core/client/model/Branch.hbm.xml</value>
                 <value>com/qlkh/core/client/model/SystemLog.hbm.xml</value>
                 <value>com/qlkh/core/client/model/StationLock.hbm.xml</value>
+                <value>com/qlkh/core/client/model/TaskDetailDK.hbm.xml</value>
+                <value>com/qlkh/core/client/model/TaskDetailKDK.hbm.xml</value>
+                <value>com/qlkh/core/client/model/TaskDetailNam.hbm.xml</value>
             </list>
         </property>
     </bean>

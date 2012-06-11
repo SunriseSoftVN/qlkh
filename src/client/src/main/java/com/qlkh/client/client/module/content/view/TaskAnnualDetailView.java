@@ -27,7 +27,6 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
 import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailSecurity;
 import com.qlkh.client.client.widget.MyNumberField;
-import com.qlkh.core.client.model.SubTaskAnnualDetail;
 import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
