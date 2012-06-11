@@ -24,8 +24,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
-import com.qlkh.client.client.module.content.view.i18n.TaskDetailConstant;
-import com.qlkh.client.client.module.content.view.security.TaskDetailSecurity;
+import com.qlkh.client.client.module.content.view.i18n.TaskDetailKDKConstant;
+import com.qlkh.client.client.module.content.view.security.TaskDetailKDKSecurity;
 import com.qlkh.client.client.widget.MyCheckBoxSelectionModel;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.qlkh.core.client.model.Task;
@@ -44,9 +44,9 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:36 PM
  */
-@ViewSecurity(configuratorClass = TaskDetailSecurity.class)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = TaskDetailConstant.class)
-public class TaskDetailView extends AbstractView<TaskDetailConstant> {
+@ViewSecurity(configuratorClass = TaskDetailKDKSecurity.class)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = TaskDetailKDKConstant.class)
+public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";

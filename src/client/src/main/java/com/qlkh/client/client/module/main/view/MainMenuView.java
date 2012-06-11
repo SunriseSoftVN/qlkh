@@ -63,7 +63,7 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mnlTaskDetail = new MenuLink(TaskDetailPlace.class);
+    MenuLink mnlTaskDetail = new MenuLink(TaskDetailKDKPlace.class);
 
     @FieldSecurity
     @HistoryHandler

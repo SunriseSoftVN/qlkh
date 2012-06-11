@@ -16,7 +16,7 @@ import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.TaskAnnualDetailPlace;
 import com.qlkh.client.client.module.content.view.TaskAnnualDetailView;
-import com.qlkh.client.client.module.content.view.TaskDetailView;
+import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
@@ -227,8 +227,8 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskDetailView.TASK_NAME_COLUMN, st);
-                        filters.put(TaskDetailView.TASK_CODE_COLUMN, st);
+                        filters.put(TaskDetailKDKView.TASK_NAME_COLUMN, st);
+                        filters.put(TaskDetailKDKView.TASK_CODE_COLUMN, st);
                         loadConfig.set("filters", filters);
                     } else {
                         resetTaskGirdFilter();

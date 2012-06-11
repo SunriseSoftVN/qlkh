@@ -12,33 +12,18 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
-import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlkh.client.client.module.content.place.TaskDetailPlace;
+import com.qlkh.client.client.module.content.place.TaskDetailKDKPlace;
 import com.qlkh.client.client.module.content.view.TaskAnnualDetailView;
-import com.qlkh.client.client.module.content.view.TaskDetailView;
+import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.client.client.utils.GridUtils;
-import com.qlkh.client.client.utils.LoadingUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.station.LoadStationAction;
-import com.qlkh.core.client.action.station.LoadStationResult;
-import com.qlkh.core.client.action.subtask.LoadSubTaskDetailAction;
-import com.qlkh.core.client.action.subtask.LoadSubTaskDetailResult;
-import com.qlkh.core.client.action.task.LoadUnusedTaskGridAction;
 import com.qlkh.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlkh.core.client.action.taskdetail.DeleteTaskDetailResult;
-import com.qlkh.core.client.action.time.GetServerTimeAction;
-import com.qlkh.core.client.action.time.GetServerTimeResult;
-import com.qlkh.core.client.constant.StationLockTypeEnum;
-import com.qlkh.core.client.constant.TaskTypeEnum;
-import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
-import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
@@ -53,8 +38,8 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 1/1/12, 3:40 PM
  */
-@Presenter(view = TaskDetailView.class, place = TaskDetailPlace.class)
-public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
+@Presenter(view = TaskDetailKDKView.class, place = TaskDetailKDKPlace.class)
+public class TaskDetailKDKPresenter extends AbstractPresenter<TaskDetailKDKView> {
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
@@ -253,8 +238,8 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskDetailView.TASK_NAME_COLUMN, st);
-                        filters.put(TaskDetailView.TASK_CODE_COLUMN, st);
+                        filters.put(TaskDetailKDKView.TASK_NAME_COLUMN, st);
+                        filters.put(TaskDetailKDKView.TASK_CODE_COLUMN, st);
                         loadConfig.set("filters", filters);
                     } else {
                         resetTaskGirdFilter();

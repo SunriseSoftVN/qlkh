@@ -14,5 +14,5 @@ import com.smvp4g.mvp.client.core.place.Place;
  * @since 1/1/12, 3:35 PM
  */
 @Place
-public class TaskDetailPlace extends AbstractPlace {
+public class TaskDetailKDKPlace extends AbstractPlace {
 }
