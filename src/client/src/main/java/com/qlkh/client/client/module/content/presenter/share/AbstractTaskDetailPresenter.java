@@ -9,13 +9,17 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.view.TaskDetailDKView;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
+import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.action.core.SaveAction;
+import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.station.LoadStationAction;
 import com.qlkh.core.client.action.station.LoadStationResult;
 import com.qlkh.core.client.criterion.ClientRestrictions;
@@ -26,7 +30,9 @@ import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -121,6 +127,30 @@ public class AbstractTaskDetailPresenter<V extends
                     };
                     timer.schedule(100);
                 }
+            }
+        });
+        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (currentTask != null) {
+                    view.getSubTaskPagingToolBar().refresh();
+                }
+            }
+        });
+        view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                List entities = new ArrayList();
+                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
+                    entities.add(((BeanModel) record.getModel()).getBean());
+                }
+                dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
+                    @Override
+                    public void onSuccess(SaveResult result) {
+                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                        view.getSubTaskPagingToolBar().refresh();
+                    }
+                });
             }
         });
     }

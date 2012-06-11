@@ -5,10 +5,7 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
@@ -16,8 +13,6 @@ import com.qlkh.client.client.module.content.place.TaskDetailDKPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
 import com.qlkh.client.client.module.content.view.TaskDetailDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.core.client.action.core.SaveAction;
-import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKAction;
 import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
@@ -26,9 +21,6 @@ import com.qlkh.core.client.constant.StationLockTypeEnum;
 import com.qlkh.core.client.model.StationLock;
 import com.qlkh.core.client.model.TaskDetailDK;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
 
@@ -40,36 +32,6 @@ import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
  */
 @Presenter(view = TaskDetailDKView.class, place = TaskDetailDKPlace.class)
 public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetailDKView> {
-
-    @Override
-    protected void doBind() {
-        super.doBind();
-        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (currentTask != null) {
-                    view.getSubTaskPagingToolBar().refresh();
-                }
-            }
-        });
-
-        view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                List<TaskDetailDK> taskDetailDKs = new ArrayList<TaskDetailDK>();
-                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
-                    taskDetailDKs.add(((BeanModel) record.getModel()).<TaskDetailDK>getBean());
-                }
-                dispatch.execute(new SaveAction(taskDetailDKs), new AbstractAsyncCallback<SaveResult>() {
-                    @Override
-                    public void onSuccess(SaveResult result) {
-                        DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                        view.getSubTaskPagingToolBar().refresh();
-                    }
-                });
-            }
-        });
-    }
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {

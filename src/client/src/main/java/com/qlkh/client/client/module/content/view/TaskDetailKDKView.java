@@ -4,10 +4,8 @@
 
 package com.qlkh.client.client.module.content.view;
 
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailKDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskDetailKDKSecurity;
@@ -49,19 +47,6 @@ public class TaskDetailKDKView extends AbstractTaskDetailView<TaskDetailKDKConst
     @Override
     protected List<ColumnConfig> createSubTaskColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
-        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
-            @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
-                if (model.get(STT_COLUMN) == null) {
-                    model.set(STT_COLUMN, rowIndex + 1);
-                }
-                return new Text(String.valueOf(model.get(STT_COLUMN)));
-            }
-        });
-        columnConfigs.add(sttColumnConfig);
 
         ColumnConfig branchNameColumnConfig = new ColumnConfig(BRANCH_NAME_COLUMN, getConstant().branchNameColumnTitle(),
                 BRANCH_NAME_WIDTH);

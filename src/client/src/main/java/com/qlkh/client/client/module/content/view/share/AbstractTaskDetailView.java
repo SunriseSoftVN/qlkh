@@ -40,7 +40,7 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
-    public static final int STT_COLUMN_WIDTH = 40;
+    public static final int STT_COLUMN_WIDTH = 35;
     public static final String TASK_CODE_COLUMN = "code";
     public static final int TASK_CODE_WIDTH = 60;
     public static final String TASK_NAME_COLUMN = "name";

@@ -19,7 +19,7 @@
                 <bean class="com.qlkh.server.handler.station.LoadStationHandler"/>
                 <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailDKHandler"/>
                 <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailKDKHandler"/>
-                <bean class="com.qlkh.server.handler.task.LoadUnusedTaskGridHandler"/>
+                <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailNamHandler"/>
                 <bean class="com.qlkh.server.handler.time.GetServerTimeHandler"/>
                 <bean class="com.qlkh.server.handler.station.LockStationHandler"/>
             </list>
