@@ -22,9 +22,9 @@ import java.util.List;
 public class SubTaskAnnualDetailDaoImpl extends AbstractDao<TaskDetailDK> implements SubTaskAnnualDetailDao {
 
     @Override
-    public TaskDetailDK findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
+    public TaskDetailDK findByTaskIdAndBranchId(long taskId, long branchId) {
         DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailDK.class).
-                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
+                add(Restrictions.eq("task.id", taskId)).add(Restrictions.eq("branch.id", branchId));
         List<TaskDetailDK> taskDetailDKs = getHibernateTemplate().findByCriteria(criteria);
         if (CollectionUtils.isNotEmpty(taskDetailDKs)) {
             return taskDetailDKs.get(0);

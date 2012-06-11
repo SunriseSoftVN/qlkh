@@ -56,7 +56,7 @@ public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailA
 //            if (CollectionUtils.isNotEmpty(branches)) {
 //                for (Branch branch : branches) {
 //                    TaskDetailKDK taskDetailKDK = subTaskDetailDao.
-//                            findByTaskDetaiIdAndBranchId(taskDetail.getId(), branch.getId());
+//                            findByTaskIdAndBranchId(taskDetail.getId(), branch.getId());
 //                    if (taskDetailKDK == null) {
 //                        taskDetailKDK = new TaskDetailKDK();
 //                        taskDetailKDK.setTaskDetail(taskDetail);

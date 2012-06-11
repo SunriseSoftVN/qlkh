@@ -12,7 +12,6 @@ import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -21,13 +20,11 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailDK;
 import com.qlkh.client.client.widget.MyNumberField;
-import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -92,8 +89,8 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
-    private Grid<BeanModel> taskDetailGird;
-    private ColumnModel taskDetailColumnModel;
+    private Grid<BeanModel> taskGird;
+    private ColumnModel taskColumnModel;
 
     private ContentPanel subTaskPanel = new ContentPanel();
     private PagingToolBar subTaskPagingToolBar;
@@ -113,17 +110,17 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
      */
     public void createTaskGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        taskDetailColumnModel = new ColumnModel(createTaskDetailColumnConfig(selectionModel));
-        taskDetailGird = new Grid<BeanModel>(listStore, taskDetailColumnModel);
-        taskDetailGird.setBorders(true);
-        taskDetailGird.setLoadMask(true);
-        taskDetailGird.setStripeRows(true);
-        taskDetailGird.setSelectionModel(selectionModel);
-        taskDetailGird.addPlugin(selectionModel);
-        taskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        taskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
-        taskDetailGird.setWidth(500);
-        taskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
+        taskColumnModel = new ColumnModel(createTaskDetailColumnConfig(selectionModel));
+        taskGird = new Grid<BeanModel>(listStore, taskColumnModel);
+        taskGird.setBorders(true);
+        taskGird.setLoadMask(true);
+        taskGird.setStripeRows(true);
+        taskGird.setSelectionModel(selectionModel);
+        taskGird.addPlugin(selectionModel);
+        taskGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        taskGird.getStore().getLoader().setSortField(ID_COLUMN);
+        taskGird.setWidth(500);
+        taskGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 115) {
@@ -143,7 +140,7 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
         taskPanel.setHeight(Window.getClientHeight() - 90);
         taskPanel.setLayout(new FitLayout());
         taskPanel.setWidth("50%");
-        taskPanel.add(taskDetailGird);
+        taskPanel.add(taskGird);
         taskPanel.setTopComponent(toolBar);
         taskPanel.setBottomComponent(taskPagingToolBar);
         taskPanel.setBodyBorder(false);
@@ -281,8 +278,8 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
         return columnConfigs;
     }
 
-    public Grid<BeanModel> getTaskDetailGird() {
-        return taskDetailGird;
+    public Grid<BeanModel> getTaskGird() {
+        return taskGird;
     }
 
     public Button getBtnRefresh() {
@@ -311,5 +308,9 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
 
     public ContentPanel getContentPanel() {
         return contentPanel;
+    }
+
+    public Button getBtnSubTaskRefresh() {
+        return btnSubTaskRefresh;
     }
 }

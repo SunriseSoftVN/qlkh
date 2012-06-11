@@ -76,10 +76,10 @@ public class TaskDetailKDKPresenter extends AbstractPresenter<TaskDetailKDKView>
 //                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.KDK));
 ////                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
 ////                        currentStation.getId()), ClientRestrictions.eq("annual", false)));
-//                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+//                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
 //                resetView();
-//                view.getTaskDetailGird().focus();
-//                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+//                view.getTaskGird().focus();
+//                view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
 //                    @Override
 //                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
 //                        int index = se.getSelection().size() - 1;
@@ -254,20 +254,20 @@ public class TaskDetailKDKPresenter extends AbstractPresenter<TaskDetailKDKView>
 //        boolean isNotFound = true;
 //        BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
 //        BeanModel updateModel = factory.createModel(taskDetail);
-//        for (BeanModel model : view.getTaskDetailGird().getStore().getModels()) {
+//        for (BeanModel model : view.getTaskGird().getStore().getModels()) {
 //            if (taskDetail.getId().equals(model.<TaskDetail>getBean().getId())) {
-//                int index = view.getTaskDetailGird().getStore().indexOf(model);
-//                view.getTaskDetailGird().getStore().remove(model);
-//                view.getTaskDetailGird().getStore().insert(updateModel, index);
+//                int index = view.getTaskGird().getStore().indexOf(model);
+//                view.getTaskGird().getStore().remove(model);
+//                view.getTaskGird().getStore().insert(updateModel, index);
 //                isNotFound = false;
 //            }
 //        }
 //        if (isNotFound) {
-//            view.getTaskDetailGird().getStore().add(updateModel);
-//            view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
+//            view.getTaskGird().getStore().add(updateModel);
+//            view.getTaskGird().getView().ensureVisible(view.getTaskGird()
 //                    .getStore().getCount() - 1, 1, false);
 //        }
-//        view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
+//        view.getTaskGird().getSelectionModel().select(updateModel, false);
 //    }
 
 //    private ListStore<BeanModel> createSubTaskListStore() {
@@ -298,7 +298,7 @@ public class TaskDetailKDKPresenter extends AbstractPresenter<TaskDetailKDKView>
 //    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
 //        @Override
 //        public void componentSelected(ButtonEvent ce) {
-//            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
+//            final List<BeanModel> models = view.getTaskGird().getSelectionModel().getSelectedItems();
 //            if (CollectionsUtils.isNotEmpty(models)) {
 //                if (models.size() == 1) {
 //                    final TaskDetail taskDetail = models.get(0).getBean();

@@ -4,30 +4,26 @@
 
 package com.qlkh.client.client.module.content.presenter;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
+import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.TaskDetailDKPlace;
 import com.qlkh.client.client.module.content.view.TaskDetailDKView;
-import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.station.LoadStationAction;
 import com.qlkh.core.client.action.station.LoadStationResult;
-import com.qlkh.core.client.action.taskdetail.DeleteTaskDetailAction;
-import com.qlkh.core.client.action.taskdetail.DeleteTaskDetailResult;
+import com.qlkh.core.client.action.subtask.LoadSubTaskAnnualAction;
+import com.qlkh.core.client.action.subtask.LoadSubTaskAnnualResult;
 import com.qlkh.core.client.constant.StationLockTypeEnum;
-import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.StationLock;
@@ -58,7 +54,7 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Station currentStation;
-//    private TaskDetail currentTaskDetail;
+    private Task currentTask;
 
 
     @Override
@@ -68,8 +64,8 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
             //Reload view
             resetView();
         }
-        if (view.getTaskDetailGird() != null) {
-            view.getTaskDetailGird().focus();
+        if (view.getTaskGird() != null) {
+            view.getTaskGird().focus();
         }
     }
 
@@ -80,29 +76,29 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
             public void onSuccess(LoadStationResult result) {
                 currentStation = result.getStation();
                 view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.eq("taskTypeCode", DK.getCode())));
-                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
                 resetView();
-//                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
-//                    @Override
-//                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
-//                        int index = se.getSelection().size() - 1;
-//                        if (index >= 0) {
-//                            TaskDetail taskDetail = se.getSelection().get(index).getBean();
-//                            if (taskDetail.getId() != null) {
-//                                currentTaskDetail = taskDetail;
-//                                view.getSubTaskPagingToolBar().refresh();
-//                            } else {
-//                                emptySubGird();
-//                            }
-//                        }
-//                    }
-//                });
-                view.getTaskDetailGird().focus();
-//                view.createSubTaskGrid(createSubTaskListStore());
-//                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
+                view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
+                        int index = se.getSelection().size() - 1;
+                        if (index >= 0) {
+                            Task task = se.getSelection().get(index).getBean();
+                            if (task.getId() != null) {
+                                currentTask = task;
+                                view.getSubTaskPagingToolBar().refresh();
+                            } else {
+                                emptySubGird();
+                            }
+                        }
+                    }
+                });
+                view.getTaskGird().focus();
+                view.createSubTaskGrid(createSubTaskListStore());
+                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
 
                 //Check lock status.
-                for (StationLock stationLock: currentStation.getStationLocks()) {
+                for (StationLock stationLock : currentStation.getStationLocks()) {
                     if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
                         DiaLogUtils.showMessage(view.getConstant().lockMessage());
                         view.getContentPanel().setEnabled(false);
@@ -112,22 +108,6 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
             }
         });
 
-//        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
-//        view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                if (currentStation != null) {
-//                    taskEditWindow = view.createTaskEditWindow(taskDtoListStore);
-//                    resetTaskGirdFilter();
-//                    view.getTaskEditPagingToolBar().bind((PagingLoader<?>) view.getTaskGrid().getStore().getLoader());
-//                    view.getTaskEditPagingToolBar().refresh();
-//                    currentTaskDetail = new TaskDetail();
-//                    taskEditWindow.show();
-//                } else {
-//                    DiaLogUtils.notify(view.getConstant().loadStationError());
-//                }
-//            }
-//        });
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -157,7 +137,7 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
                 String st = view.getTxtSearch().getValue();
                 if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
                     if (StringUtils.isNotBlank(st)) {
-                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskDetailGird().
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
@@ -182,109 +162,44 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
                 }
             }
         });
-//        view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                if (currentTaskDetail != null && view.getTaskGrid().getSelectionModel().getSelectedItem() != null) {
-//                    Task task = view.getTaskGrid().getSelectionModel().getSelectedItem().getBean();
-//                    currentTaskDetail.setTask(task);
-//                    currentTaskDetail.setAnnual(true);
-//                    currentTaskDetail.setStation(currentStation);
-//                    currentTaskDetail.setCreateBy(1l);
-//                    currentTaskDetail.setUpdateBy(1l);
-//                    LoadingUtils.showLoading();
-//                    dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
-//                        @Override
-//                        public void onSuccess(GetServerTimeResult result) {
-//                            currentTaskDetail.setYear(result.getYear());
-//                            dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
-//                                @Override
-//                                public void onSuccess(SaveResult result) {
-//                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-//                                    taskEditWindow.hide();
-//                                    updateGrid(result.<TaskDetail>getEntity());
-//                                }
-//                            });
-//                        }
-//                    });
-//                }
-//            }
-//        });
 
-//        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
-//            @Override
-//            public void componentSelected(ButtonEvent ce) {
-//                if (currentTaskDetail != null) {
-//                    view.getSubTaskPagingToolBar().refresh();
-//                }
-//            }
-//        });
+        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                if (currentTask != null) {
+                    view.getSubTaskPagingToolBar().refresh();
+                }
+            }
+        });
 
     }
 
-//    private void updateGrid(TaskDetail taskDetail) {
-//        boolean isNotFound = true;
-//        BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
-//        BeanModel updateModel = factory.createModel(taskDetail);
-//        for (BeanModel model : view.getTaskDetailGird().getStore().getModels()) {
-//            if (taskDetail.getId().equals(model.<TaskDetail>getBean().getId())) {
-//                int index = view.getTaskDetailGird().getStore().indexOf(model);
-//                view.getTaskDetailGird().getStore().remove(model);
-//                view.getTaskDetailGird().getStore().insert(updateModel, index);
-//                isNotFound = false;
-//            }
-//        }
-//        if (isNotFound) {
-//            view.getTaskDetailGird().getStore().add(updateModel);
-//            view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
-//                    .getStore().getCount() - 1, 1, false);
-//        }
-//        view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
-//    }
 
-//    private ListStore<BeanModel> createSubTaskListStore() {
-//        RpcProxy<LoadSubTaskAnnualResult> rpcProxy = new RpcProxy<LoadSubTaskAnnualResult>() {
-//            @Override
-//            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskAnnualResult> callback) {
-//                long currentTaskDetailId = -1;
-//                if (currentTaskDetail != null) {
-//                    currentTaskDetailId = currentTaskDetail.getId();
-//                }
-//                dispatch.execute(new LoadSubTaskAnnualAction((BasePagingLoadConfig) loadConfig, currentTaskDetailId), callback);
-//            }
-//        };
-//
-//        PagingLoader<PagingLoadResult<TaskDetailDK>> pagingLoader =
-//                new BasePagingLoader<PagingLoadResult<TaskDetailDK>>(rpcProxy, new LoadGridDataReader()) {
-//                    @Override
-//                    protected void onLoadFailure(Object loadConfig, Throwable t) {
-//                        super.onLoadFailure(loadConfig, t);
-//                        //Log load exception.
-//                        DiaLogUtils.logAndShowRpcErrorMessage(t);
-//                    }
-//                };
-//
-//        return new ListStore<BeanModel>(pagingLoader);
-//    }
+    private ListStore<BeanModel> createSubTaskListStore() {
+        RpcProxy<LoadSubTaskAnnualResult> rpcProxy = new RpcProxy<LoadSubTaskAnnualResult>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskAnnualResult> callback) {
+                long currentTaskId = -1;
+                if (currentTask != null) {
+                    currentTaskId = currentTask.getId();
+                }
+                dispatch.execute(new LoadSubTaskAnnualAction((BasePagingLoadConfig) loadConfig,
+                        currentTaskId, currentStation.getId()), callback);
+            }
+        };
 
-//    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
-//        @Override
-//        public void componentSelected(ButtonEvent ce) {
-//            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
-//            if (CollectionsUtils.isNotEmpty(models)) {
-//                if (models.size() == 1) {
-//                    final TaskDetail taskDetail = models.get(0).getBean();
-//                    showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
-//                } else {
-//                    List<Long> taskDetailIds = new ArrayList<Long>(models.size());
-//                    for (BeanModel model : models) {
-//                        taskDetailIds.add(model.<TaskDetail>getBean().getId());
-//                    }
-//                    showDeleteTagConform(taskDetailIds, null);
-//                }
-//            }
-//        }
-//    }
+        PagingLoader<PagingLoadResult<TaskDetailDK>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<TaskDetailDK>>(rpcProxy, new LoadGridDataReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
+    }
 
 
     private void emptySubGird() {
@@ -294,7 +209,7 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
     }
 
     private void resetFilter() {
-        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskDetailGird().
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
                 getStore().getLoadConfig();
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
