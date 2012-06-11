@@ -60,8 +60,6 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
     private Station currentStation;
 //    private TaskDetail currentTaskDetail;
 
-    private ListStore<BeanModel> taskDtoListStore;
-    private Window taskEditWindow;
 
     @Override
     public void onActivate() {
@@ -212,12 +210,7 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
 //                }
 //            }
 //        });
-        view.getBtnTaskEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                taskEditWindow.hide();
-            }
-        });
+
 //        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
 //            @Override
 //            public void componentSelected(ButtonEvent ce) {
@@ -226,26 +219,7 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
 //                }
 //            }
 //        });
-        view.getTxtTaskSearch().addKeyListener(new KeyListener() {
-            @Override
-            public void componentKeyUp(ComponentEvent event) {
-                String st = view.getTxtTaskSearch().getValue();
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    if (StringUtils.isNotBlank(st)) {
-                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGrid().
-                                getStore().getLoadConfig();
-                        loadConfig.set("hasFilter", true);
-                        Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskDetailKDKView.TASK_NAME_COLUMN, st);
-                        filters.put(TaskDetailKDKView.TASK_CODE_COLUMN, st);
-                        loadConfig.set("filters", filters);
-                    } else {
-                        resetTaskGirdFilter();
-                    }
-                    view.getTaskEditPagingToolBar().refresh();
-                }
-            }
-        });
+
     }
 
 //    private void updateGrid(TaskDetail taskDetail) {
@@ -327,33 +301,9 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
         view.getTxtSearch().clear();
     }
 
-    private void resetTaskGirdFilter() {
-        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGrid().
-                getStore().getLoadConfig();
-        if (loadConfig != null) {
-            loadConfig.set("hasFilter", false);
-            loadConfig.set("filters", null);
-            view.getTxtTaskSearch().clear();
-        }
-    }
 
     private void resetView() {
         view.getTaskPagingToolBar().refresh();
         emptySubGird();
-    }
-
-    @Override
-    public String mayStop() {
-        if (taskEditWindow != null && taskEditWindow.isVisible()) {
-            return view.getConstant().conformExitMessage();
-        }
-        return null;
-    }
-
-    @Override
-    public void onCancel() {
-        if (taskEditWindow != null && taskEditWindow.isVisible()) {
-            taskEditWindow.hide();
-        }
     }
 }
