@@ -12,7 +12,7 @@ import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;
 import com.qlkh.server.dao.BranchDao;
-import com.qlkh.server.dao.SubTaskAnnualDetailDao;
+import com.qlkh.server.dao.TaskDetailDKDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -38,7 +38,7 @@ public class LoadSubTaskAnnualHandler extends AbstractHandler<LoadSubTaskAnnualA
     private BranchDao branchDao;
 
     @Autowired
-    private SubTaskAnnualDetailDao subTaskAnnualDetailDao;
+    private TaskDetailDKDao taskDetailDKDao;
 
     @Override
     public Class<LoadSubTaskAnnualAction> getActionType() {
@@ -58,7 +58,7 @@ public class LoadSubTaskAnnualHandler extends AbstractHandler<LoadSubTaskAnnualA
             List<Branch> branches = branchDao.findByStationId(stationId);
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
-                    TaskDetailDK taskDetailDK = subTaskAnnualDetailDao.
+                    TaskDetailDK taskDetailDK = taskDetailDKDao.
                             findByTaskIdAndBranchId(taskId, branch.getId());
                     if (taskDetailDK == null) {
                         taskDetailDK = new TaskDetailDK();

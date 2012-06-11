@@ -5,7 +5,7 @@
 package com.qlkh.server.dao.impl;
 
 import com.qlkh.core.client.model.TaskDetailDK;
-import com.qlkh.server.dao.SubTaskAnnualDetailDao;
+import com.qlkh.server.dao.TaskDetailDKDao;
 import com.qlkh.server.dao.core.AbstractDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.DetachedCriteria;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/4/12, 9:09 PM
  */
-public class SubTaskAnnualDetailDaoImpl extends AbstractDao<TaskDetailDK> implements SubTaskAnnualDetailDao {
+public class TaskDetailDKDaoImpl extends AbstractDao<TaskDetailDK> implements TaskDetailDKDao {
 
     @Override
     public TaskDetailDK findByTaskIdAndBranchId(long taskId, long branchId) {

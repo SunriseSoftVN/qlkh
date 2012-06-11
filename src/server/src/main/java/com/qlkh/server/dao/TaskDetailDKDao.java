@@ -15,7 +15,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/4/12, 9:08 PM
  */
-public interface SubTaskAnnualDetailDao extends Dao<TaskDetailDK> {
+public interface TaskDetailDKDao extends Dao<TaskDetailDK> {
     TaskDetailDK findByTaskIdAndBranchId(long taskDetailId, long branchId);
     void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds);
     List<TaskDetailDK> findByBrandId(long brandId);

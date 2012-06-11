@@ -12,7 +12,6 @@ import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
@@ -21,14 +20,12 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailKDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskDetailKDKSecurity;
 import com.qlkh.client.client.widget.MyCheckBoxSelectionModel;
 import com.qlkh.client.client.widget.MyNumberField;
-import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -51,27 +48,16 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
-    public static final String TASK_DETAIL_CODE_COLUMN = "task.code";
+    public static final String TASK_DETAIL_CODE_COLUMN = "code";
     public static final int TASK_DETAIL_CODE_WIDTH = 60;
-    public static final String TASK_DETAIL_NAME_COLUMN = "task.name";
+    public static final String TASK_DETAIL_NAME_COLUMN = "name";
     public static final int TASK_DETAIL_NAME_WIDTH = 300;
-    public static final String TASK_DETAIL_UNIT_COLUMN = "task.unit";
+    public static final String TASK_DETAIL_UNIT_COLUMN = "unit";
     public static final int TASK_DETAIL_UNIT_WIDTH = 70;
-    public static final String TASK_DETAIL_DEFAULT_COLUMN = "task.defaultValue";
+    public static final String TASK_DETAIL_DEFAULT_COLUMN = "defaultValue";
     public static final int TASK_DETAIL_DEFAULT_WIDTH = 60;
-    public static final String TASK_DETAIL_QUOTA_COLUMN = "task.quota";
+    public static final String TASK_DETAIL_QUOTA_COLUMN = "quota";
     public static final int TASK_DETAIL_QUOTA_WIDTH = 50;
-
-    public static final String TASK_CODE_COLUMN = "code";
-    public static final int TASK_CODE_WIDTH = 60;
-    public static final String TASK_NAME_COLUMN = "name";
-    public static final int TASK_NAME_WIDTH = 300;
-    public static final String TASK_UNIT_COLUMN = "unit";
-    public static final int TASK_UNIT_WIDTH = 70;
-    public static final String TASK_DEFAULT_COLUMN = "defaultValue";
-    public static final int TASK_DEFAULT_WIDTH = 70;
-    public static final String TASK_QUOTA_COLUMN = "quota";
-    public static final int TASK_QUOTA_WIDTH = 60;
 
     public static final String BRANCH_NAME_COLUMN = "branch.name";
     public static int BRANCH_NAME_WIDTH = 150;
@@ -88,12 +74,6 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
     public static final int TASK_EDIT_LIST_SIZE = 20;
 
     @I18nField
-    Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
-
-    @I18nField
-    Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
-
-    @I18nField
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
@@ -105,32 +85,17 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
     @I18nField(emptyText = true)
     TextField<String> txtSearch = new TextField<String>();
 
-    @I18nField(emptyText = true)
-    TextField<String> txtTaskSearch = new TextField<String>();
-
-    @I18nField
-    Button btnTaskEditOk = new Button();
-
-    @I18nField
-    Button btnTaskEditCancel = new Button();
-
     private ContentPanel contentPanel = new ContentPanel();
 
     private ContentPanel taskPanel = new ContentPanel(new FillLayout());
     private PagingToolBar taskPagingToolBar;
-    private Grid<BeanModel> taskDetailGird;
-    private ColumnModel taskDetailColumnModel;
+    private Grid<BeanModel> taskGrid;
+    private ColumnModel taskColumnModel;
 
     private ContentPanel subTaskPanel = new ContentPanel(new FillLayout());
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
     private ColumnModel subTaskColumnModel;
-
-    private VerticalPanel taskEditPanel = new VerticalPanel();
-    private ContentPanel taskGridPanel = new ContentPanel();
-    private Grid<BeanModel> taskGrid;
-    private ColumnModel taskColumnModel;
-    private PagingToolBar taskEditPagingToolBar;
 
 
     @Override
@@ -146,22 +111,20 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
      */
     public void createTaskGrid(ListStore<BeanModel> listStore) {
         MyCheckBoxSelectionModel<BeanModel> selectionModel = new MyCheckBoxSelectionModel<BeanModel>();
-        taskDetailColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
-        taskDetailGird = new Grid<BeanModel>(listStore, taskDetailColumnModel);
-        taskDetailGird.setBorders(true);
-        taskDetailGird.setLoadMask(true);
-        taskDetailGird.setStripeRows(true);
-        taskDetailGird.setSelectionModel(selectionModel);
-        taskDetailGird.addPlugin(selectionModel);
-        taskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        taskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
-        taskDetailGird.setWidth(500);
-        taskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
+        taskColumnModel = new ColumnModel(createTaskColumnConfig(selectionModel));
+        taskGrid = new Grid<BeanModel>(listStore, taskColumnModel);
+        taskGrid.setBorders(true);
+        taskGrid.setLoadMask(true);
+        taskGrid.setStripeRows(true);
+        taskGrid.setSelectionModel(selectionModel);
+        taskGrid.addPlugin(selectionModel);
+        taskGrid.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        taskGrid.getStore().getLoader().setSortField(ID_COLUMN);
+        taskGrid.setWidth(500);
+        taskGrid.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
-                if (e.getKeyCode() == 112) {
-                    btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 115) {
+                if (e.getKeyCode() == 115) {
                     btnRefresh.fireEvent(Events.Select);
                 }
             }
@@ -173,15 +136,11 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
         txtSearch.setWidth(170);
         toolBar.add(txtSearch);
         toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnAdd);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnDelete);
-        toolBar.add(new SeparatorToolItem());
         toolBar.add(btnRefresh);
         taskPanel.setHeaderVisible(false);
         taskPanel.setHeight(Window.getClientHeight() - 90);
         taskPanel.setWidth("50%");
-        taskPanel.add(taskDetailGird);
+        taskPanel.add(taskGrid);
         taskPanel.setTopComponent(toolBar);
         taskPanel.setBottomComponent(taskPagingToolBar);
         taskPanel.setBodyBorder(false);
@@ -323,112 +282,6 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
         return columnConfigs;
     }
 
-    private List<ColumnConfig> createTaskColumnConfigs() {
-        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
-        taskCodeColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
-            @Override
-            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                                 ListStore<BeanModel> taskDetailDtoListStore, Grid<BeanModel> taskDetailDtoGrid) {
-                Task task = model.getBean();
-                return new Text(task.getCode());
-            }
-        });
-
-        columnConfigs.add(taskCodeColumnConfig);
-        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
-                TASK_NAME_WIDTH);
-        columnConfigs.add(taskNameColumnConfig);
-
-        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
-                TASK_UNIT_WIDTH);
-        columnConfigs.add(unitColumnConfig);
-
-        ColumnConfig defaultColumnConfig = new ColumnConfig(TASK_DEFAULT_COLUMN, getConstant().taskDefaultValueColumnTitle(),
-                TASK_DEFAULT_WIDTH);
-        columnConfigs.add(defaultColumnConfig);
-
-        ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
-                TASK_QUOTA_WIDTH);
-        columnConfigs.add(quotaColumnConfig);
-
-        for (ColumnConfig columnConfig : columnConfigs) {
-            columnConfig.setMenuDisabled(true);
-        }
-
-        return columnConfigs;
-    }
-
-    public com.extjs.gxt.ui.client.widget.Window createTaskEditWindow(ListStore<BeanModel> taskListStore) {
-        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
-        if (!taskEditPanel.isRendered()) {
-            taskEditPanel.setBorders(false);
-            taskEditPanel.setSpacing(4);
-            taskEditPanel.setTableHeight("100%");
-            taskEditPanel.setTableWidth("100%");
-        }
-
-        if (!txtTaskSearch.isRendered()) {
-            txtTaskSearch.setSelectOnFocus(true);
-            txtTaskSearch.setWidth(170);
-            taskEditPanel.add(txtTaskSearch);
-        }
-        window.setFocusWidget(txtTaskSearch);
-
-        if (taskGrid == null) {
-            taskColumnModel = new ColumnModel(createTaskColumnConfigs());
-            taskGrid = new Grid<BeanModel>(taskListStore, taskColumnModel);
-            taskGrid.addListener(Events.OnKeyDown, new KeyListener() {
-                @Override
-                public void handleEvent(ComponentEvent e) {
-                    if (e.getKeyCode() == KeyCodes.KEY_ENTER) {
-                        btnTaskEditOk.fireEvent(Events.Select);
-                    }
-                }
-            });
-            taskGrid.setLoadMask(true);
-            taskGrid.setHeight(270);
-            taskGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-            taskGridPanel.add(taskGrid);
-
-            taskEditPagingToolBar = new PagingToolBar(TASK_EDIT_LIST_SIZE);
-            taskGridPanel.setBottomComponent(taskEditPagingToolBar);
-            taskGridPanel.setBodyBorder(false);
-            taskGridPanel.setHeaderVisible(false);
-            taskEditPanel.add(taskGridPanel);
-        }
-
-        window.add(taskEditPanel);
-        window.addButton(btnTaskEditOk);
-        window.addButton(btnTaskEditCancel);
-        window.setSize(640, 400);
-        window.setResizable(false);
-        window.setModal(true);
-        window.setHeading(getConstant().taskEditPanelTitle());
-        window.addWindowListener(new WindowListener() {
-            @Override
-            public void windowHide(WindowEvent we) {
-                txtTaskSearch.clear();
-                taskGrid.getStore().clearFilters();
-                taskDetailGird.focus();
-            }
-        });
-        return window;
-    }
-
-    public Grid<BeanModel> getTaskDetailGird() {
-        return taskDetailGird;
-    }
-
-    public Button getBtnAdd() {
-        return btnAdd;
-    }
-
-    public Button getBtnDelete() {
-        return btnDelete;
-    }
-
     public Button getBtnRefresh() {
         return btnRefresh;
     }
@@ -457,23 +310,7 @@ public class TaskDetailKDKView extends AbstractView<TaskDetailKDKConstant> {
         return txtSearch;
     }
 
-    public Button getBtnTaskEditOk() {
-        return btnTaskEditOk;
-    }
-
-    public Button getBtnTaskEditCancel() {
-        return btnTaskEditCancel;
-    }
-
     public Grid<BeanModel> getTaskGrid() {
         return taskGrid;
-    }
-
-    public TextField<String> getTxtTaskSearch() {
-        return txtTaskSearch;
-    }
-
-    public PagingToolBar getTaskEditPagingToolBar() {
-        return taskEditPagingToolBar;
     }
 }

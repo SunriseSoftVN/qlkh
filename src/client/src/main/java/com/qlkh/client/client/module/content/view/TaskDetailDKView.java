@@ -49,16 +49,16 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
-    public static final String TASK_DETAIL_CODE_COLUMN = "code";
-    public static final int TASK_DETAIL_CODE_WIDTH = 60;
-    public static final String TASK_DETAIL_NAME_COLUMN = "name";
-    public static final int TASK_DETAIL_NAME_WIDTH = 300;
-    public static final String TASK_DETAIL_UNIT_COLUMN = "unit";
-    public static final int TASK_DETAIL_UNIT_WIDTH = 70;
-    public static final String TASK_DETAIL_DEFAULT_COLUMN = "defaultValue";
-    public static final int TASK_DETAIL_DEFAULT_WIDTH = 60;
-    public static final String TASK_DETAIL_QUOTA_COLUMN = "quota";
-    public static final int TASK_DETAIL_QUOTA_WIDTH = 50;
+    public static final String TASK_CODE_COLUMN = "code";
+    public static final int TASK_CODE_WIDTH = 60;
+    public static final String TASK_NAME_COLUMN = "name";
+    public static final int TASK_NAME_WIDTH = 300;
+    public static final String TASK_UNIT_COLUMN = "unit";
+    public static final int TASK_UNIT_WIDTH = 70;
+    public static final String TASK_DEFAULT_COLUMN = "defaultValue";
+    public static final int TASK_DEFAULT_WIDTH = 60;
+    public static final String TASK_QUOTA_COLUMN = "quota";
+    public static final int TASK_QUOTA_WIDTH = 50;
 
     public static final String BRANCH_NAME_COLUMN = "branch.name";
     public static int BRANCH_NAME_WIDTH = 150;
@@ -204,23 +204,23 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_DETAIL_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_DETAIL_CODE_WIDTH);
+        ColumnConfig taskCodeColumnConfig = new ColumnConfig(TASK_CODE_COLUMN, getConstant().taskCodeColumnTitle(), TASK_CODE_WIDTH);
         columnConfigs.add(taskCodeColumnConfig);
 
-        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_DETAIL_NAME_COLUMN, getConstant().taskNameColumnTitle(),
-                TASK_DETAIL_NAME_WIDTH);
+        ColumnConfig taskNameColumnConfig = new ColumnConfig(TASK_NAME_COLUMN, getConstant().taskNameColumnTitle(),
+                TASK_NAME_WIDTH);
         columnConfigs.add(taskNameColumnConfig);
 
-        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_DETAIL_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
-                TASK_DETAIL_UNIT_WIDTH);
+        ColumnConfig unitColumnConfig = new ColumnConfig(TASK_UNIT_COLUMN, getConstant().taskUnitColumnTitle(),
+                TASK_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
-        ColumnConfig defaultColumnConfig = new ColumnConfig(TASK_DETAIL_DEFAULT_COLUMN, getConstant().taskDefaultValueColumnTitle(),
-                TASK_DETAIL_DEFAULT_WIDTH);
+        ColumnConfig defaultColumnConfig = new ColumnConfig(TASK_DEFAULT_COLUMN, getConstant().taskDefaultValueColumnTitle(),
+                TASK_DEFAULT_WIDTH);
         columnConfigs.add(defaultColumnConfig);
 
-        ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_DETAIL_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
-                TASK_DETAIL_QUOTA_WIDTH);
+        ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
+                TASK_QUOTA_WIDTH);
         columnConfigs.add(quotaColumnConfig);
 
         return columnConfigs;

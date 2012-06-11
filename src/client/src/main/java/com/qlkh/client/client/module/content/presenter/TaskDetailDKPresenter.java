@@ -141,9 +141,9 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskDetailDKView.TASK_DETAIL_NAME_COLUMN,
+                        filters.put(TaskDetailDKView.TASK_NAME_COLUMN,
                                 view.getTxtSearch().getValue());
-                        filters.put(TaskDetailDKView.TASK_DETAIL_CODE_COLUMN,
+                        filters.put(TaskDetailDKView.TASK_CODE_COLUMN,
                                 view.getTxtSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {

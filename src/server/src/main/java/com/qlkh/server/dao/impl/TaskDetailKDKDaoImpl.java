@@ -5,7 +5,7 @@
 package com.qlkh.server.dao.impl;
 
 import com.qlkh.core.client.model.TaskDetailKDK;
-import com.qlkh.server.dao.SubTaskDetailDao;
+import com.qlkh.server.dao.TaskDetailKDKDao;
 import com.qlkh.server.dao.core.AbstractDao;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.DetachedCriteria;
@@ -19,12 +19,12 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/3/12, 8:39 PM
  */
-public class SubTaskDetailDaoImpl extends AbstractDao<TaskDetailKDK> implements SubTaskDetailDao {
+public class TaskDetailKDKDaoImpl extends AbstractDao<TaskDetailKDK> implements TaskDetailKDKDao {
 
     @Override
-    public TaskDetailKDK findByTaskDetaiIdAndBranchId(long taskDetailId, long branchId) {
+    public TaskDetailKDK findByTaskIdAndBranchId(long taskId, long branchId) {
         DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailKDK.class).
-                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.eq("branch.id", branchId));
+                add(Restrictions.eq("task.id", taskId)).add(Restrictions.eq("branch.id", branchId));
         List<TaskDetailKDK> taskDetailKDKs = getHibernateTemplate().findByCriteria(criteria);
         if (CollectionUtils.isNotEmpty(taskDetailKDKs)) {
             return taskDetailKDKs.get(0);
