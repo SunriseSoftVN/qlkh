@@ -42,11 +42,11 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
         return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.USER};
     }
 
-    public HasRole[] mnlTaskDetail() {
+    public HasRole[] mnlTaskDetailKDK() {
         return new HasRole[]{UserRoleEnum.USER};
     }
 
-    public HasRole[] mnlTaskAnnualDetail() {
+    public HasRole[] mnlTaskDetailDK() {
         return new HasRole[]{UserRoleEnum.USER};
     }
 

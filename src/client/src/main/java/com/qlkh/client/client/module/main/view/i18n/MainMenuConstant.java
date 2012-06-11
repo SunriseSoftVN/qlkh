@@ -18,8 +18,8 @@ public interface MainMenuConstant extends Constants {
     String mnlStationManager();
     String mnlBranchManager();
     String mnlTaskManage();
-    String mnlTaskDetail();
-    String mnlTaskAnnualDetail();
+    String mnlTaskDetailKDK();
+    String mnlTaskDetailDK();
     String mnlReport();
     String ancLogout();
     String lblWelcome();

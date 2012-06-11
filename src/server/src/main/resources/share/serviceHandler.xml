@@ -18,7 +18,6 @@
                 <bean class="com.qlkh.server.handler.report.ReportHandler"/>
                 <bean class="com.qlkh.server.handler.station.LoadStationHandler"/>
                 <bean class="com.qlkh.server.handler.subtask.LoadSubTaskAnnualHandler"/>
-                <bean class="com.qlkh.server.handler.taskdetail.DeleteTaskDetailHandler"/>
                 <bean class="com.qlkh.server.handler.subtask.LoadSubTaskDetailHandler"/>
                 <bean class="com.qlkh.server.handler.task.LoadUnusedTaskGridHandler"/>
                 <bean class="com.qlkh.server.handler.time.GetServerTimeHandler"/>

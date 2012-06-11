@@ -63,12 +63,12 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mnlTaskDetail = new MenuLink(TaskDetailKDKPlace.class);
+    MenuLink mnlTaskDetailKDK = new MenuLink(TaskDetailKDKPlace.class);
 
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mnlTaskAnnualDetail = new MenuLink(TaskDetailDKPlace.class);
+    MenuLink mnlTaskDetailDK = new MenuLink(TaskDetailDKPlace.class);
 
     @FieldSecurity
     @HistoryHandler
@@ -111,10 +111,10 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mainPanel.add(mnlTaskManage, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //User
-        mnlTaskAnnualDetail.setStyleName("menulink");
-        mainPanel.add(mnlTaskAnnualDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
-        mnlTaskDetail.setStyleName("menulink");
-        mainPanel.add(mnlTaskDetail, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mnlTaskDetailDK.setStyleName("menulink");
+        mainPanel.add(mnlTaskDetailDK, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mnlTaskDetailKDK.setStyleName("menulink");
+        mainPanel.add(mnlTaskDetailKDK, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //Report
         mnlReport.setStyleName("menulink");

@@ -23,10 +23,6 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean class="com.qlkh.server.dao.impl.TaskDetailDaoImpl">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-
     <bean class="com.qlkh.server.dao.impl.UserDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
