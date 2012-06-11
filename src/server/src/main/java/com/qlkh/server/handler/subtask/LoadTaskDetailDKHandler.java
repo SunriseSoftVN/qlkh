@@ -6,8 +6,8 @@ package com.qlkh.server.handler.subtask;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlkh.core.client.action.subtask.LoadSubTaskAnnualAction;
-import com.qlkh.core.client.action.subtask.LoadSubTaskAnnualResult;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailDKAction;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailDKResult;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;
@@ -21,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 9:10 PM
  */
-public class LoadSubTaskAnnualHandler extends AbstractHandler<LoadSubTaskAnnualAction, LoadSubTaskAnnualResult> {
+public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAction, LoadTaskDetailDKResult> {
 
     @Autowired
     private GeneralDao generalDao;
@@ -41,13 +42,13 @@ public class LoadSubTaskAnnualHandler extends AbstractHandler<LoadSubTaskAnnualA
     private TaskDetailDKDao taskDetailDKDao;
 
     @Override
-    public Class<LoadSubTaskAnnualAction> getActionType() {
-        return LoadSubTaskAnnualAction.class;
+    public Class<LoadTaskDetailDKAction> getActionType() {
+        return LoadTaskDetailDKAction.class;
     }
 
     @Override
-    public LoadSubTaskAnnualResult execute(LoadSubTaskAnnualAction action, ExecutionContext context) throws DispatchException {
-        return new LoadSubTaskAnnualResult(getSubTaskAnnualDetails(action.getLoadConfig(), action.getTaskId(), action.getStationId()));
+    public LoadTaskDetailDKResult execute(LoadTaskDetailDKAction action, ExecutionContext context) throws DispatchException {
+        return new LoadTaskDetailDKResult(getSubTaskAnnualDetails(action.getLoadConfig(), action.getTaskId(), action.getStationId()));
     }
 
     public BasePagingLoadResult<TaskDetailDK> getSubTaskAnnualDetails(BasePagingLoadConfig loadConfig,
@@ -62,6 +63,7 @@ public class LoadSubTaskAnnualHandler extends AbstractHandler<LoadSubTaskAnnualA
                             findByTaskIdAndBranchId(taskId, branch.getId());
                     if (taskDetailDK == null) {
                         taskDetailDK = new TaskDetailDK();
+                        taskDetailDK.setYear(1900 + new Date().getYear());
                         taskDetailDK.setTask(task);
                         taskDetailDK.setBranch(branch);
                         taskDetailDK.setCreateBy(1l);

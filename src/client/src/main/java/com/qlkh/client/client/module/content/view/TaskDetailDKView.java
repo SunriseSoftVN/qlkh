@@ -18,7 +18,6 @@ import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,6 +41,8 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
     public static final String REAL_VALUE_COLUMN = "realValue";
     public static final int REAL_VALUE_WIDTH = 80;
 
+    private int currentYear;
+
     @Override
     protected List<ColumnConfig> createSubTaskColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
@@ -63,9 +64,8 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
                 BRANCH_NAME_WIDTH);
         columnConfigs.add(branchNameColumnConfig);
 
-        String year = " " + String.valueOf((1900 + new Date().getYear() - 1));
         ColumnConfig lastYearValueColumnConfig = new ColumnConfig(LAST_YEAR_VALUE_COLUMN,
-                getConstant().lastYearValueColumnTitle() + year, LAST_YEAR_VALUE_WIDTH);
+                getConstant().lastYearValueColumnTitle() + " " + (currentYear - 1), LAST_YEAR_VALUE_WIDTH);
         MyNumberField lastYearValueNumberField = new MyNumberField();
         lastYearValueNumberField.setSelectOnFocus(true);
         lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
@@ -89,10 +89,13 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
         columnConfigs.add(decreaseValueColumnConfig);
 
         SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(REAL_VALUE_COLUMN,
-                getConstant().realValueColumnTitle(), REAL_VALUE_WIDTH);
+                getConstant().realValueColumnTitle() + " " + currentYear, REAL_VALUE_WIDTH);
         realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
         columnConfigs.add(realValueColumnConfig);
         return columnConfigs;
     }
 
+    public void setCurrentYear(int currentYear) {
+        this.currentYear = currentYear;
+    }
 }

@@ -6,8 +6,8 @@ package com.qlkh.server.handler.subtask;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlkh.core.client.action.subtask.LoadSubTaskDetailAction;
-import com.qlkh.core.client.action.subtask.LoadSubTaskDetailResult;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailKDKAction;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailKDKResult;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailKDK;
@@ -21,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 6/2/12, 12:45 PM
  */
-public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailAction, LoadSubTaskDetailResult> {
+public class LoadTaskDetailKDKHandler extends AbstractHandler<LoadTaskDetailKDKAction, LoadTaskDetailKDKResult> {
 
     @Autowired
     private GeneralDao generalDao;
@@ -41,15 +42,15 @@ public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailA
     private TaskDetailKDKDao taskDetailKDKDao;
 
     @Override
-    public Class<LoadSubTaskDetailAction> getActionType() {
-        return LoadSubTaskDetailAction.class;
+    public Class<LoadTaskDetailKDKAction> getActionType() {
+        return LoadTaskDetailKDKAction.class;
     }
 
     @Override
-    public LoadSubTaskDetailResult execute(LoadSubTaskDetailAction action, ExecutionContext context) throws DispatchException {
-        BasePagingLoadResult<TaskDetailKDK> result = getSubTaskDetails(action.getLoadConfig(),
-                action.getTaskId(), action.getStationId());
-        return new LoadSubTaskDetailResult(result);
+    public LoadTaskDetailKDKResult execute(LoadTaskDetailKDKAction KDKAction, ExecutionContext context) throws DispatchException {
+        BasePagingLoadResult<TaskDetailKDK> result = getSubTaskDetails(KDKAction.getLoadConfig(),
+                KDKAction.getTaskId(), KDKAction.getStationId());
+        return new LoadTaskDetailKDKResult(result);
     }
 
     public BasePagingLoadResult<TaskDetailKDK> getSubTaskDetails(BasePagingLoadConfig loadConfig, long taskDetailId, long stationId) {
@@ -64,6 +65,7 @@ public class LoadSubTaskDetailHandler extends AbstractHandler<LoadSubTaskDetailA
                     if (taskDetailKDK == null) {
                         taskDetailKDK = new TaskDetailKDK();
                         taskDetailKDK.setTask(task);
+                        taskDetailKDK.setYear(1900 + new Date().getYear());
                         taskDetailKDK.setBranch(branch);
                         taskDetailKDK.setCreateBy(1l);
                         taskDetailKDK.setUpdateBy(1l);

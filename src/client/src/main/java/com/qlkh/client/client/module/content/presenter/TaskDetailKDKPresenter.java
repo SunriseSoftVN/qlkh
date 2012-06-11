@@ -18,8 +18,8 @@ import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.subtask.LoadSubTaskDetailAction;
-import com.qlkh.core.client.action.subtask.LoadSubTaskDetailResult;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailKDKAction;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailKDKResult;
 import com.qlkh.core.client.model.StationLock;
 import com.qlkh.core.client.model.TaskDetailKDK;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -77,14 +77,14 @@ public class TaskDetailKDKPresenter extends AbstractTaskDetailPresenter<TaskDeta
 
     @Override
     public ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<LoadSubTaskDetailResult> rpcProxy = new RpcProxy<LoadSubTaskDetailResult>() {
+        RpcProxy<LoadTaskDetailKDKResult> rpcProxy = new RpcProxy<LoadTaskDetailKDKResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskDetailResult> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadTaskDetailKDKResult> callback) {
                 long currentTaskId = -1;
                 if (currentTask != null) {
                     currentTaskId = currentTask.getId();
                 }
-                dispatch.execute(new LoadSubTaskDetailAction((BasePagingLoadConfig) loadConfig,
+                dispatch.execute(new LoadTaskDetailKDKAction((BasePagingLoadConfig) loadConfig,
                         currentTaskId, currentStation.getId()), callback);
             }
         };

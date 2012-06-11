@@ -8,22 +8,21 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class LoadSubTaskAnnualAction.
+ * The Class LoadSubTaskDetailAction.
  *
  * @author Nguyen Duc Dung
- * @since 6/1/12, 9:08 PM
+ * @since 6/2/12, 12:43 PM
  */
-public class LoadSubTaskAnnualAction implements Action<LoadSubTaskAnnualResult> {
+public class LoadTaskDetailKDKAction implements Action<LoadTaskDetailKDKResult> {
 
     private BasePagingLoadConfig loadConfig;
     private long taskId;
     private long stationId;
 
-    public LoadSubTaskAnnualAction() {
+    public LoadTaskDetailKDKAction() {
     }
 
-    public LoadSubTaskAnnualAction(BasePagingLoadConfig loadConfig,
-                                   long taskId, long stationId) {
+    public LoadTaskDetailKDKAction(BasePagingLoadConfig loadConfig, long taskId, long stationId) {
         this.loadConfig = loadConfig;
         this.taskId = taskId;
         this.stationId = stationId;

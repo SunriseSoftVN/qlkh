@@ -14,12 +14,12 @@ import net.customware.gwt.dispatch.shared.Result;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 9:08 PM
  */
-public class LoadSubTaskAnnualResult extends LoadGridDataResult implements Result {
+public class LoadTaskDetailDKResult extends LoadGridDataResult implements Result {
 
-    public LoadSubTaskAnnualResult() {
+    public LoadTaskDetailDKResult() {
     }
 
-    public LoadSubTaskAnnualResult(BasePagingLoadResult result) {
+    public LoadTaskDetailDKResult(BasePagingLoadResult result) {
         super(result);
     }
 }

@@ -18,8 +18,10 @@ import com.qlkh.client.client.module.content.view.TaskDetailDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.subtask.LoadSubTaskAnnualAction;
-import com.qlkh.core.client.action.subtask.LoadSubTaskAnnualResult;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailDKAction;
+import com.qlkh.core.client.action.subtask.LoadTaskDetailDKResult;
+import com.qlkh.core.client.action.time.GetServerTimeAction;
+import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.StationLockTypeEnum;
 import com.qlkh.core.client.model.StationLock;
 import com.qlkh.core.client.model.TaskDetailDK;
@@ -71,14 +73,14 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<LoadSubTaskAnnualResult> rpcProxy = new RpcProxy<LoadSubTaskAnnualResult>() {
+        RpcProxy<LoadTaskDetailDKResult> rpcProxy = new RpcProxy<LoadTaskDetailDKResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskAnnualResult> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadTaskDetailDKResult> callback) {
                 long currentTaskId = -1;
                 if (currentTask != null) {
                     currentTaskId = currentTask.getId();
                 }
-                dispatch.execute(new LoadSubTaskAnnualAction((BasePagingLoadConfig) loadConfig,
+                dispatch.execute(new LoadTaskDetailDKAction((BasePagingLoadConfig) loadConfig,
                         currentTaskId, currentStation.getId()), callback);
             }
         };
@@ -98,17 +100,23 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
 
     @Override
     protected void checkLockAndCreateSubTaskGrid() {
-        view.createSubTaskGrid(createSubTaskListStore());
-        view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
+        dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
+            @Override
+            public void onSuccess(GetServerTimeResult result) {
+                view.setCurrentYear(result.getYear());
+                view.createSubTaskGrid(createSubTaskListStore());
+                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
 
-        //Check lock status.
-        for (StationLock stationLock : currentStation.getStationLocks()) {
-            if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
-                DiaLogUtils.showMessage(view.getConstant().lockMessage());
-                view.getContentPanel().setEnabled(false);
-                break;
+                //Check lock status.
+                for (StationLock stationLock : currentStation.getStationLocks()) {
+                    if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
+                        DiaLogUtils.showMessage(view.getConstant().lockMessage());
+                        view.getContentPanel().setEnabled(false);
+                        break;
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override

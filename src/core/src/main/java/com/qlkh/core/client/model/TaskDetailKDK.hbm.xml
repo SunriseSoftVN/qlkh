@@ -12,6 +12,7 @@
         <property name="createBy" column="createBy" not-null="true"/>
         <property name="updateBy" column="updateBy" not-null="true"/>
 
+        <property name="year" column="year" not-null="true"/>
         <property name="q1" column="q1"/>
         <property name="q2" column="q2"/>
         <property name="q3" column="q3"/>

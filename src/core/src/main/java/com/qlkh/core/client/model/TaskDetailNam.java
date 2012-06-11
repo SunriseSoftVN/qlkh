@@ -16,6 +16,7 @@ public class TaskDetailNam extends AbstractEntity {
 
     private Task task;
     private Branch branch;
+    private int year;
     private Double lastYearValue;
     private Double increaseValue;
     private Double decreaseValue;
@@ -38,6 +39,14 @@ public class TaskDetailNam extends AbstractEntity {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public Double getLastYearValue() {

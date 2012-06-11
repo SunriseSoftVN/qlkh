@@ -16,6 +16,7 @@ public class TaskDetailKDK extends AbstractEntity {
 
     private Task task;
     private Branch branch;
+    private int year;
     private Double q1;
     private Double q2;
     private Double q3;
@@ -35,6 +36,14 @@ public class TaskDetailKDK extends AbstractEntity {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public Double getQ1() {
