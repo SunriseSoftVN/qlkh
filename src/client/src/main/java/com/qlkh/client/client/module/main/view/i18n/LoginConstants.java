@@ -18,6 +18,6 @@ public interface LoginConstants extends Constants {
     String btnOk();
     String btnCancel();
     String loginPanel();
-    String worngUserNameOrPassword();
-    String downloadChrome();
+    String wrongUserNameOrPassword();
+    String downloadChromeOrFireFox();
 }

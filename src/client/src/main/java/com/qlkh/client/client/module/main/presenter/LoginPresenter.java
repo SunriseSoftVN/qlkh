@@ -76,7 +76,7 @@ public class LoginPresenter extends AbstractPresenter<LoginView> {
                     //Reload page and go to home page.
                     goToHomePage();
                 } else {
-                    DiaLogUtils.showMessage(view.getConstant().worngUserNameOrPassword());
+                    DiaLogUtils.showMessage(view.getConstant().wrongUserNameOrPassword());
                 }
             }
         });

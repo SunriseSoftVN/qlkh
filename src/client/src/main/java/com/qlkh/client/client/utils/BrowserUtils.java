@@ -21,4 +21,7 @@ public final class BrowserUtils {
         return is_chrome;
     }-*/;
 
+    public static native boolean is_firefox() /*-{
+        return navigator.userAgent.indexOf("Firefox")!=-1;
+    }-*/;
 }

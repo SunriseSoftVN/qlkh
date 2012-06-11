@@ -30,7 +30,7 @@ import com.smvp4g.mvp.client.widget.TextField;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = LoginConstants.class)
 public class LoginView extends AbstractView<LoginConstants> {
 
-    private Html downloadChromeHtml = new Html(getConstant().downloadChrome());
+    private Html downloadChromeOrFireFoxHtml = new Html(getConstant().downloadChromeOrFireFox());
 
     private ContentPanel contentPanel = new ContentPanel(new CenterLayout());
 
@@ -64,8 +64,8 @@ public class LoginView extends AbstractView<LoginConstants> {
 
         contentPanel.add(loginPanel);
 
-        if (!BrowserUtils.is_chrome()) {
-            contentPanel.add(downloadChromeHtml);
+        if (!BrowserUtils.is_chrome() && !BrowserUtils.is_firefox()) {
+            contentPanel.add(downloadChromeOrFireFoxHtml);
         }
 
         contentPanel.setHeight(Window.getClientHeight() - 90);
