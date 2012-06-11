@@ -30,7 +30,8 @@ public class LoadUnusedTaskGridHandler extends AbstractHandler<LoadUnusedTaskGri
 
     @Override
     public LoadUnusedTaskGridResult execute(LoadUnusedTaskGridAction action, ExecutionContext context) throws DispatchException {
-        return new LoadUnusedTaskGridResult(taskDao.getUnusedTask(action.getStationId(),
-                action.getTypeEnum(), action.getConfig()));
+//        return new LoadUnusedTaskGridResult(taskDao.getUnusedTask(action.getStationId(),
+//                action.getTypeEnum(), action.getConfig()));
+        return null;
     }
 }

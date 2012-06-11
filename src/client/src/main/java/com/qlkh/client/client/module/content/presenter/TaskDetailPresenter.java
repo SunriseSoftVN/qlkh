@@ -59,7 +59,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Station currentStation;
-    private TaskDetail currentTaskDetail;
+//    private TaskDetail currentTaskDetail;
 
     private ListStore<BeanModel> taskDtoListStore;
     private Window taskEditWindow;
@@ -83,57 +83,57 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
 
     @Override
     protected void doBind() {
-        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
-            @Override
-            public void onSuccess(LoadStationResult result) {
-                currentStation = result.getStation();
-                taskDtoListStore = GridUtils.createListStore(Task.class,
-                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.KDK));
-                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
-                        currentStation.getId()), ClientRestrictions.eq("annual", false)));
-                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-                resetView();
-                view.getTaskDetailGird().focus();
-                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
-                    @Override
-                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
-                        int index = se.getSelection().size() - 1;
-                        if (index >= 0) {
-                            currentTaskDetail = se.getSelection().get(index).getBean();
-                            view.getSubTaskPagingToolBar().refresh();
-                        }
-                    }
-                });
+//        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
+//            @Override
+//            public void onSuccess(LoadStationResult result) {
+//                currentStation = result.getStation();
+//                taskDtoListStore = GridUtils.createListStore(Task.class,
+//                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.KDK));
+////                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
+////                        currentStation.getId()), ClientRestrictions.eq("annual", false)));
+//                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+//                resetView();
+//                view.getTaskDetailGird().focus();
+//                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+//                    @Override
+//                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
+//                        int index = se.getSelection().size() - 1;
+//                        if (index >= 0) {
+////                            currentTaskDetail = se.getSelection().get(index).getBean();
+//                            view.getSubTaskPagingToolBar().refresh();
+//                        }
+//                    }
+//                });
+//
+//                // Check this station was locked or not.
+//                String message = StringUtils.EMPTY;
+//                for (StationLock stationLock : currentStation.getStationLocks()) {
+//                    if (StationLockTypeEnum.KDK_Q1.getCode() == stationLock.getCode()) {
+//                        q1Lock = true;
+//                        message += "Q1 ";
+//                    } else if (StationLockTypeEnum.KDK_Q2.getCode() == stationLock.getCode()) {
+//                        q2Lock = true;
+//                        message += ",Q2 ";
+//                    } else if (StationLockTypeEnum.KDK_Q3.getCode() == stationLock.getCode()) {
+//                        q3Lock = true;
+//                        message += ",Q3 ";
+//                    } else if (StationLockTypeEnum.KDK_Q4.getCode() == stationLock.getCode()) {
+//                        q4Lock = true;
+//                        message += ",Q4";
+//                    }
+//                }
+//                if (q1Lock || q2Lock || q3Lock || q4Lock) {
+//                    //Disable delete button when company locked something.
+//                    view.getBtnDelete().setEnabled(false);
+//                    DiaLogUtils.showMessage(StringUtils.substitute(view.getConstant().lockMessage(), message));
+//                }
+//
+//                view.createSubTaskGrid(createSubTaskListStore(), q1Lock, q2Lock, q3Lock, q4Lock);
+//                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
+//            }
+//        });
 
-                // Check this station was locked or not.
-                String message = StringUtils.EMPTY;
-                for (StationLock stationLock : currentStation.getStationLocks()) {
-                    if (StationLockTypeEnum.KDK_Q1.getCode() == stationLock.getCode()) {
-                        q1Lock = true;
-                        message += "Q1 ";
-                    } else if (StationLockTypeEnum.KDK_Q2.getCode() == stationLock.getCode()) {
-                        q2Lock = true;
-                        message += ",Q2 ";
-                    } else if (StationLockTypeEnum.KDK_Q3.getCode() == stationLock.getCode()) {
-                        q3Lock = true;
-                        message += ",Q3 ";
-                    } else if (StationLockTypeEnum.KDK_Q4.getCode() == stationLock.getCode()) {
-                        q4Lock = true;
-                        message += ",Q4";
-                    }
-                }
-                if (q1Lock || q2Lock || q3Lock || q4Lock) {
-                    //Disable delete button when company locked something.
-                    view.getBtnDelete().setEnabled(false);
-                    DiaLogUtils.showMessage(StringUtils.substitute(view.getConstant().lockMessage(), message));
-                }
-
-                view.createSubTaskGrid(createSubTaskListStore(), q1Lock, q2Lock, q3Lock, q4Lock);
-                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
-            }
-        });
-
-        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+//        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -142,7 +142,7 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                     resetTaskGirdFilter();
                     view.getTaskEditPagingToolBar().bind((PagingLoader<?>) view.getTaskGrid().getStore().getLoader());
                     view.getTaskEditPagingToolBar().refresh();
-                    currentTaskDetail = new TaskDetail();
+//                    currentTaskDetail = new TaskDetail();
                     taskEditWindow.show();
                 } else {
                     DiaLogUtils.notify(view.getConstant().loadStationError());
@@ -201,48 +201,48 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
                 }
             }
         });
-        view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (currentTaskDetail != null && view.getTaskGrid().getSelectionModel().getSelectedItem() != null) {
-                    Task task = view.getTaskGrid().getSelectionModel().getSelectedItem().getBean();
-                    currentTaskDetail.setTask(task);
-                    currentTaskDetail.setAnnual(false);
-                    currentTaskDetail.setStation(currentStation);
-                    currentTaskDetail.setCreateBy(1l);
-                    currentTaskDetail.setUpdateBy(1l);
-                    LoadingUtils.showLoading();
-                    dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
-                        @Override
-                        public void onSuccess(GetServerTimeResult result) {
-                            currentTaskDetail.setYear(result.getYear());
-                            dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
-                                @Override
-                                public void onSuccess(SaveResult result) {
-                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                                    taskEditWindow.hide();
-                                    updateGrid(result.<TaskDetail>getEntity());
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
+//        view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                if (currentTaskDetail != null && view.getTaskGrid().getSelectionModel().getSelectedItem() != null) {
+//                    Task task = view.getTaskGrid().getSelectionModel().getSelectedItem().getBean();
+//                    currentTaskDetail.setTask(task);
+//                    currentTaskDetail.setAnnual(false);
+//                    currentTaskDetail.setStation(currentStation);
+//                    currentTaskDetail.setCreateBy(1l);
+//                    currentTaskDetail.setUpdateBy(1l);
+//                    LoadingUtils.showLoading();
+//                    dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
+//                        @Override
+//                        public void onSuccess(GetServerTimeResult result) {
+//                            currentTaskDetail.setYear(result.getYear());
+//                            dispatch.execute(new SaveAction(currentTaskDetail), new AbstractAsyncCallback<SaveResult>() {
+//                                @Override
+//                                public void onSuccess(SaveResult result) {
+//                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+//                                    taskEditWindow.hide();
+//                                    updateGrid(result.<TaskDetail>getEntity());
+//                                }
+//                            });
+//                        }
+//                    });
+//                }
+//            }
+//        });
         view.getBtnTaskEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 taskEditWindow.hide();
             }
         });
-        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if (currentTaskDetail != null) {
-                    view.getSubTaskPagingToolBar().refresh();
-                }
-            }
-        });
+//        view.getBtnSubTaskRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
+//            @Override
+//            public void componentSelected(ButtonEvent ce) {
+//                if (currentTaskDetail != null) {
+//                    view.getSubTaskPagingToolBar().refresh();
+//                }
+//            }
+//        });
         view.getTxtTaskSearch().addKeyListener(new KeyListener() {
             @Override
             public void componentKeyUp(ComponentEvent event) {
@@ -265,69 +265,69 @@ public class TaskDetailPresenter extends AbstractPresenter<TaskDetailView> {
         });
     }
 
-    private void updateGrid(TaskDetail taskDetail) {
-        boolean isNotFound = true;
-        BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
-        BeanModel updateModel = factory.createModel(taskDetail);
-        for (BeanModel model : view.getTaskDetailGird().getStore().getModels()) {
-            if (taskDetail.getId().equals(model.<TaskDetail>getBean().getId())) {
-                int index = view.getTaskDetailGird().getStore().indexOf(model);
-                view.getTaskDetailGird().getStore().remove(model);
-                view.getTaskDetailGird().getStore().insert(updateModel, index);
-                isNotFound = false;
-            }
-        }
-        if (isNotFound) {
-            view.getTaskDetailGird().getStore().add(updateModel);
-            view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
-                    .getStore().getCount() - 1, 1, false);
-        }
-        view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
-    }
+//    private void updateGrid(TaskDetail taskDetail) {
+//        boolean isNotFound = true;
+//        BeanModelFactory factory = BeanModelLookup.get().getFactory(TaskDetail.class);
+//        BeanModel updateModel = factory.createModel(taskDetail);
+//        for (BeanModel model : view.getTaskDetailGird().getStore().getModels()) {
+//            if (taskDetail.getId().equals(model.<TaskDetail>getBean().getId())) {
+//                int index = view.getTaskDetailGird().getStore().indexOf(model);
+//                view.getTaskDetailGird().getStore().remove(model);
+//                view.getTaskDetailGird().getStore().insert(updateModel, index);
+//                isNotFound = false;
+//            }
+//        }
+//        if (isNotFound) {
+//            view.getTaskDetailGird().getStore().add(updateModel);
+//            view.getTaskDetailGird().getView().ensureVisible(view.getTaskDetailGird()
+//                    .getStore().getCount() - 1, 1, false);
+//        }
+//        view.getTaskDetailGird().getSelectionModel().select(updateModel, false);
+//    }
 
-    private ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<LoadSubTaskDetailResult> rpcProxy = new RpcProxy<LoadSubTaskDetailResult>() {
-            @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskDetailResult> callback) {
-                long currentTaskDetailId = -1;
-                if (currentTaskDetail != null) {
-                    currentTaskDetailId = currentTaskDetail.getId();
-                }
-                dispatch.execute(new LoadSubTaskDetailAction((BasePagingLoadConfig) loadConfig, currentTaskDetailId), callback);
-            }
-        };
-
-        PagingLoader<PagingLoadResult<TaskDetailKDK>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetailKDK>>(rpcProxy, new LoadGridDataReader()) {
-                    @Override
-                    protected void onLoadFailure(Object loadConfig, Throwable t) {
-                        super.onLoadFailure(loadConfig, t);
-                        //Log load exception.
-                        DiaLogUtils.logAndShowRpcErrorMessage(t);
-                    }
-                };
-
-        return new ListStore<BeanModel>(pagingLoader);
-    }
-
-    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
-        @Override
-        public void componentSelected(ButtonEvent ce) {
-            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
-            if (CollectionsUtils.isNotEmpty(models)) {
-                if (models.size() == 1) {
-                    final TaskDetail taskDetail = models.get(0).getBean();
-                    showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
-                } else {
-                    List<Long> taskDetailIds = new ArrayList<Long>(models.size());
-                    for (BeanModel model : models) {
-                        taskDetailIds.add(model.<TaskDetail>getBean().getId());
-                    }
-                    showDeleteTagConform(taskDetailIds, null);
-                }
-            }
-        }
-    }
+//    private ListStore<BeanModel> createSubTaskListStore() {
+//        RpcProxy<LoadSubTaskDetailResult> rpcProxy = new RpcProxy<LoadSubTaskDetailResult>() {
+//            @Override
+//            protected void load(Object loadConfig, AsyncCallback<LoadSubTaskDetailResult> callback) {
+//                long currentTaskDetailId = -1;
+//                if (currentTaskDetail != null) {
+//                    currentTaskDetailId = currentTaskDetail.getId();
+//                }
+//                dispatch.execute(new LoadSubTaskDetailAction((BasePagingLoadConfig) loadConfig, currentTaskDetailId), callback);
+//            }
+//        };
+//
+//        PagingLoader<PagingLoadResult<TaskDetailKDK>> pagingLoader =
+//                new BasePagingLoader<PagingLoadResult<TaskDetailKDK>>(rpcProxy, new LoadGridDataReader()) {
+//                    @Override
+//                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+//                        super.onLoadFailure(loadConfig, t);
+//                        //Log load exception.
+//                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+//                    }
+//                };
+//
+//        return new ListStore<BeanModel>(pagingLoader);
+//    }
+//
+//    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
+//        @Override
+//        public void componentSelected(ButtonEvent ce) {
+//            final List<BeanModel> models = view.getTaskDetailGird().getSelectionModel().getSelectedItems();
+//            if (CollectionsUtils.isNotEmpty(models)) {
+//                if (models.size() == 1) {
+//                    final TaskDetail taskDetail = models.get(0).getBean();
+//                    showDeleteTagConform(taskDetail.getId(), taskDetail.getTask().getName());
+//                } else {
+//                    List<Long> taskDetailIds = new ArrayList<Long>(models.size());
+//                    for (BeanModel model : models) {
+//                        taskDetailIds.add(model.<TaskDetail>getBean().getId());
+//                    }
+//                    showDeleteTagConform(taskDetailIds, null);
+//                }
+//            }
+//        }
+//    }
 
     private void showDeleteTagConform(long tagDetailId, String tagName) {
         List<Long> tagIds = new ArrayList<Long>(1);

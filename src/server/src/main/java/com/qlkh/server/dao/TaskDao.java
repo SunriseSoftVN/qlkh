@@ -17,5 +17,4 @@ import com.qlkh.server.dao.core.Dao;
  * @since 12/31/11, 2:34 PM
  */
 public interface TaskDao extends Dao<Task> {
-    BasePagingLoadResult<Task> getUnusedTask(long stationId, TaskTypeEnum typeEnum, BasePagingLoadConfig config);
 }

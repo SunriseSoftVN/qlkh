@@ -24,10 +24,7 @@ import com.qlkh.core.client.action.core.DeleteAction;
 import com.qlkh.core.client.action.core.DeleteResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.model.Branch;
-import com.qlkh.core.client.model.Station;
-import com.qlkh.core.client.model.TaskDetail;
-import com.qlkh.core.client.model.User;
+import com.qlkh.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -46,7 +43,9 @@ import java.util.List;
 @Presenter(view = StationManagerView.class, place = StationManagerPlace.class)
 public class StationManagerPresenter extends AbstractPresenter<StationManagerView> {
 
-    private static final String[] RELATE_ENTITY_NAMES = {User.class.getName(), Branch.class.getName(), TaskDetail.class.getName()};
+    private static final String[] RELATE_ENTITY_NAMES = {User.class.getName(), Branch.class.getName(),
+            TaskDetailDK.class.getName(), TaskDetailKDK.class.getName(), TaskDetailNam.class.getName()};
+
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
     private Station currentStation;

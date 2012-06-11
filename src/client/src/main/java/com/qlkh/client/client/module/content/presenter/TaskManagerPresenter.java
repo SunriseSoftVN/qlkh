@@ -28,7 +28,9 @@ import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.core.*;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Task;
-import com.qlkh.core.client.model.TaskDetail;
+import com.qlkh.core.client.model.TaskDetailDK;
+import com.qlkh.core.client.model.TaskDetailKDK;
+import com.qlkh.core.client.model.TaskDetailNam;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -50,7 +52,8 @@ import java.util.Map;
 @Presenter(view = TaskManagerView.class, place = TaskManagerPlace.class)
 public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
-    private static final String[] RELATE_ENTITY_NAMES = {TaskDetail.class.getName()};
+    private static final String[] RELATE_ENTITY_NAMES = {TaskDetailDK.class.getName(),
+            TaskDetailKDK.class.getName(), TaskDetailNam.class.getName()};
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 

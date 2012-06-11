@@ -14,6 +14,7 @@ public enum TaskTypeEnum {
 
     DK(3),
     KDK(0),
+    NAM(4),
     SUM(1),
     SUBSUM(2);
 
