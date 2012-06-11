@@ -125,7 +125,11 @@ public class TaskDetailKDKPresenter extends AbstractTaskDetailPresenter<TaskDeta
             DiaLogUtils.showMessage(StringUtils.substitute(view.getConstant().lockMessage(), message));
         }
 
-        view.createSubTaskGrid(createSubTaskListStore(), q1Lock, q2Lock, q3Lock, q4Lock);
+        view.setQ1Lock(q1Lock);
+        view.setQ2Lock(q2Lock);
+        view.setQ3Lock(q3Lock);
+        view.setQ4Lock(q4Lock);
+        view.createSubTaskGrid(createSubTaskListStore());
         view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
     }
 

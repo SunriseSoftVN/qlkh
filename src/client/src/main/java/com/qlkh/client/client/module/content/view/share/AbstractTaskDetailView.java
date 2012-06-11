@@ -24,7 +24,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
-import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.widget.TextField;
 
@@ -59,17 +58,25 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
     private Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
     private TextField<String> txtSearch = new TextField<String>();
+    private Button btnSubTaskSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
+    private Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
+
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
     private Grid<BeanModel> taskGird;
     private ColumnModel taskColumnModel;
 
+    private ContentPanel subTaskPanel = new ContentPanel();
+    private PagingToolBar subTaskPagingToolBar;
+    private EditorGrid<BeanModel> subTaskDetailGird;
 
     @Override
     protected void initializeView() {
         btnRefresh.setText(getConstant().btnRefresh());
         txtSearch.setEmptyText(getConstant().txtSearch());
+        btnSubTaskSave.setText(getConstant().btnSubTaskSave());
+        btnSubTaskRefresh.setText(getConstant().btnSubTaskRefresh());
         contentPanel.setHeaderVisible(false);
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
@@ -178,19 +185,62 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
     }
 
     public void createSubTaskGrid(ListStore<BeanModel> listStore) {
+        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
+        subTaskDetailGird = new EditorGrid<BeanModel>(listStore,
+                new ColumnModel(createSubTaskColumnConfigs()));
+        subTaskDetailGird.setBorders(true);
+        subTaskDetailGird.setLoadMask(true);
+        subTaskDetailGird.setStripeRows(true);
+        subTaskDetailGird.setSelectionModel(selectionModel);
+        subTaskDetailGird.addPlugin(selectionModel);
+        subTaskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        subTaskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
+        subTaskDetailGird.setWidth(500);
+        subTaskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
+            @Override
+            public void handleEvent(ComponentEvent e) {
+                if (e.getKeyCode() == 113) {
+                    btnSubTaskSave.fireEvent(Events.Select);
+                } else if (e.getKeyCode() == 115) {
+                    btnSubTaskRefresh.fireEvent(Events.Select);
+                }
+            }
+        });
 
+        subTaskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(btnSubTaskSave);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnSubTaskRefresh);
+        subTaskPanel.setBodyBorder(false);
+        subTaskPanel.setHeaderVisible(false);
+        subTaskPanel.setHeight(Window.getClientHeight() - 90);
+        subTaskPanel.setLayout(new FitLayout());
+        subTaskPanel.setWidth("50%");
+        subTaskPanel.add(subTaskDetailGird);
+        subTaskPanel.setTopComponent(toolBar);
+        subTaskPanel.setBottomComponent(subTaskPagingToolBar);
+        contentPanel.add(subTaskPanel, new RowData(-1, 1));
+        contentPanel.layout();
     }
 
-    public void createSubTaskGrid(ListStore<BeanModel> listStore,
-                                  boolean q1, boolean q2, boolean q3, boolean q4) {
-
+    public EditorGrid<BeanModel> getSubTaskDetailGird() {
+        return subTaskDetailGird;
     }
 
     public PagingToolBar getSubTaskPagingToolBar() {
-        return null;
+        return subTaskPagingToolBar;
     }
 
-    public Grid<BeanModel> getSubTaskDetailGird() {
+    public Button getBtnSubTaskSave() {
+        return btnSubTaskSave;
+    }
+
+    public Button getBtnSubTaskRefresh() {
+        return btnSubTaskRefresh;
+    }
+
+    protected List<ColumnConfig> createSubTaskColumnConfigs() {
         return null;
     }
 }

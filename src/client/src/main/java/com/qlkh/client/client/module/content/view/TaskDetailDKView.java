@@ -6,31 +6,16 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.IconHelper;
-import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailDK;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
 import com.qlkh.client.client.widget.MyNumberField;
-import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
-import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
-import com.smvp4g.mvp.client.widget.TextField;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,59 +42,8 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
     public static final String REAL_VALUE_COLUMN = "realValue";
     public static final int REAL_VALUE_WIDTH = 80;
 
-    @I18nField
-    Button btnSubTaskSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
-
-    @I18nField
-    Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
-
-    private ContentPanel subTaskPanel = new ContentPanel();
-    private PagingToolBar subTaskPagingToolBar;
-    private EditorGrid<BeanModel> subTaskDetailGird;
-
-
     @Override
-    public void createSubTaskGrid(ListStore<BeanModel> listStore) {
-        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        subTaskDetailGird = new EditorGrid<BeanModel>(listStore,
-                new ColumnModel(createSubTaskColumnConfigs()));
-        subTaskDetailGird.setBorders(true);
-        subTaskDetailGird.setLoadMask(true);
-        subTaskDetailGird.setStripeRows(true);
-        subTaskDetailGird.setSelectionModel(selectionModel);
-        subTaskDetailGird.addPlugin(selectionModel);
-        subTaskDetailGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        subTaskDetailGird.getStore().getLoader().setSortField(ID_COLUMN);
-        subTaskDetailGird.setWidth(500);
-        subTaskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
-            @Override
-            public void handleEvent(ComponentEvent e) {
-                if (e.getKeyCode() == 113) {
-                    btnSubTaskSave.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 115) {
-                    btnSubTaskRefresh.fireEvent(Events.Select);
-                }
-            }
-        });
-
-        subTaskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
-        ToolBar toolBar = new ToolBar();
-        toolBar.add(btnSubTaskSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSubTaskRefresh);
-        subTaskPanel.setBodyBorder(false);
-        subTaskPanel.setHeaderVisible(false);
-        subTaskPanel.setHeight(Window.getClientHeight() - 90);
-        subTaskPanel.setLayout(new FitLayout());
-        subTaskPanel.setWidth("50%");
-        subTaskPanel.add(subTaskDetailGird);
-        subTaskPanel.setTopComponent(toolBar);
-        subTaskPanel.setBottomComponent(subTaskPagingToolBar);
-        contentPanel.add(subTaskPanel, new RowData(-1, 1));
-        contentPanel.layout();
-    }
-
-    private List<ColumnConfig> createSubTaskColumnConfigs() {
+    protected List<ColumnConfig> createSubTaskColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -161,20 +95,4 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
         return columnConfigs;
     }
 
-
-    public EditorGrid<BeanModel> getSubTaskDetailGird() {
-        return subTaskDetailGird;
-    }
-
-    public PagingToolBar getSubTaskPagingToolBar() {
-        return subTaskPagingToolBar;
-    }
-
-    public Button getBtnSubTaskSave() {
-        return btnSubTaskSave;
-    }
-
-    public Button getBtnSubTaskRefresh() {
-        return btnSubTaskRefresh;
-    }
 }
