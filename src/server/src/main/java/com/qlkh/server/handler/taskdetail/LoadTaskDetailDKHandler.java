@@ -2,12 +2,12 @@
  * Copyright (C) 2012 - 2013 Nguyen Duc Dung (dungvn3000@gmail.com)
  */
 
-package com.qlkh.server.handler.subtask;
+package com.qlkh.server.handler.taskdetail;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlkh.core.client.action.subtask.LoadTaskDetailDKAction;
-import com.qlkh.core.client.action.subtask.LoadTaskDetailDKResult;
+import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKAction;
+import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKResult;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;

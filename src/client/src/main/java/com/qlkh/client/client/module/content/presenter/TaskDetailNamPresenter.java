@@ -9,6 +9,8 @@ import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailP
 import com.qlkh.client.client.module.content.view.TaskDetailNamView;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
+import static com.qlkh.core.client.constant.TaskTypeEnum.NAM;
+
 /**
  * The Class TaskDetailNamPresenter.
  *
@@ -17,4 +19,9 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
  */
 @Presenter(view = TaskDetailNamView.class, place = TaskDetailNamPlace.class)
 public class TaskDetailNamPresenter extends AbstractTaskDetailPresenter<TaskDetailNamView> {
+
+    @Override
+    protected Integer getTaskTypeCode() {
+        return NAM.getCode();
+    }
 }

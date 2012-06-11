@@ -2,7 +2,7 @@
  * Copyright (C) 2012 - 2013 Nguyen Duc Dung (dungvn3000@gmail.com)
  */
 
-package com.qlkh.core.client.action.subtask;
+package com.qlkh.core.client.action.taskdetail;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import net.customware.gwt.dispatch.shared.Action;
