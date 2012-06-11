@@ -14,8 +14,6 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  */
 @SuppressWarnings("UnusedDeclaration")
 public interface TaskDetailDKConstant extends Constants {
-    String btnDelete();
-    String btnAdd();
     String btnRefresh();
     String sttColumnTitle();
     String taskNameColumnTitle();
@@ -24,8 +22,6 @@ public interface TaskDetailDKConstant extends Constants {
     String taskDefaultValueColumnTitle();
     String taskQuotaColumnTitle();
     String deleteTaskMessageSuccess();
-    String deleteAllTaskMessage();
-    String deleteTaskMessage();
     String saveMessageSuccess();
     String loadStationError();
     String taskHeaderGroup();

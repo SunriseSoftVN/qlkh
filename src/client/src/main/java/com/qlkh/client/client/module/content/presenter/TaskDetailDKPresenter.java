@@ -6,6 +6,7 @@ package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
@@ -18,14 +19,23 @@ import com.qlkh.client.client.module.content.place.TaskDetailDKPlace;
 import com.qlkh.client.client.module.content.view.TaskDetailDKView;
 import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
+import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
+import com.qlkh.core.client.action.station.LoadStationAction;
+import com.qlkh.core.client.action.station.LoadStationResult;
 import com.qlkh.core.client.action.taskdetail.DeleteTaskDetailAction;
 import com.qlkh.core.client.action.taskdetail.DeleteTaskDetailResult;
+import com.qlkh.core.client.constant.StationLockTypeEnum;
+import com.qlkh.core.client.constant.TaskTypeEnum;
+import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.model.Station;
+import com.qlkh.core.client.model.StationLock;
+import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
@@ -33,6 +43,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
 
 /**
  * The Class TaskAnnualDetailPresenter.
@@ -65,16 +77,13 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
 
     @Override
     protected void doBind() {
-//        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
-//            @Override
-//            public void onSuccess(LoadStationResult result) {
-//                currentStation = result.getStation();
-//                taskDtoListStore = GridUtils.createListStore(Task.class,
-//                        new LoadUnusedTaskGridAction(currentStation.getId(), TaskTypeEnum.DK));
-//                view.createTaskGrid(GridUtils.createListStore(TaskDetail.class, ClientRestrictions.eq("station.id",
-//                        currentStation.getId()), ClientRestrictions.eq("annual", true)));
-//                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
-//                resetView();
+        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
+            @Override
+            public void onSuccess(LoadStationResult result) {
+                currentStation = result.getStation();
+                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.eq("taskTypeCode", DK.getCode())));
+                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskDetailGird().getStore().getLoader());
+                resetView();
 //                view.getTaskDetailGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
 //                    @Override
 //                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
@@ -90,20 +99,20 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
 //                        }
 //                    }
 //                });
-//                view.getTaskDetailGird().focus();
+                view.getTaskDetailGird().focus();
 //                view.createSubTaskGrid(createSubTaskListStore());
 //                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
-//
-//                //Check lock status.
-//                for (StationLock stationLock: currentStation.getStationLocks()) {
-//                    if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
-//                        DiaLogUtils.showMessage(view.getConstant().lockMessage());
-//                        view.getContentPanel().setEnabled(false);
-//                        break;
-//                    }
-//                }
-//            }
-//        });
+
+                //Check lock status.
+                for (StationLock stationLock: currentStation.getStationLocks()) {
+                    if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
+                        DiaLogUtils.showMessage(view.getConstant().lockMessage());
+                        view.getContentPanel().setEnabled(false);
+                        break;
+                    }
+                }
+            }
+        });
 
 //        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
 //        view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -303,43 +312,6 @@ public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
 //        }
 //    }
 
-    private void showDeleteTagConform(long tagDetailId, String tagName) {
-        List<Long> tagIds = new ArrayList<Long>(1);
-        tagIds.add(tagDetailId);
-        showDeleteTagConform(tagIds, tagName);
-    }
-
-    private void showDeleteTagConform(final List<Long> taskDetailIds, String tagName) {
-        assert taskDetailIds != null;
-        String deleteMessage;
-        final AsyncCallback<DeleteTaskDetailResult> callback = new AbstractAsyncCallback<DeleteTaskDetailResult>() {
-            @Override
-            public void onSuccess(DeleteTaskDetailResult result) {
-                //Reload grid.
-                resetView();
-                DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
-            }
-        };
-        final boolean hasManyTag = taskDetailIds.size() > 1;
-        if (hasManyTag) {
-            deleteMessage = view.getConstant().deleteAllTaskMessage();
-        } else {
-            deleteMessage = StringUtils.substitute(view.getConstant().deleteTaskMessage(), tagName);
-        }
-
-        DiaLogUtils.conform(deleteMessage, new Listener<MessageBoxEvent>() {
-            @Override
-            public void handleEvent(MessageBoxEvent be) {
-                if (be.getButtonClicked().getText().equals("Yes")) {
-                    if (hasManyTag) {
-                        dispatch.execute(new DeleteTaskDetailAction(taskDetailIds), callback);
-                    } else {
-                        dispatch.execute(new DeleteTaskDetailAction(taskDetailIds.get(0)), callback);
-                    }
-                }
-            }
-        });
-    }
 
     private void emptySubGird() {
         if (view.getSubTaskDetailGird() != null) {

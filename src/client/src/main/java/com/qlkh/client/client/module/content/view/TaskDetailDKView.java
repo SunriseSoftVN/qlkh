@@ -52,15 +52,15 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
     public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
-    public static final String TASK_DETAIL_CODE_COLUMN = "task.code";
+    public static final String TASK_DETAIL_CODE_COLUMN = "code";
     public static final int TASK_DETAIL_CODE_WIDTH = 60;
-    public static final String TASK_DETAIL_NAME_COLUMN = "task.name";
+    public static final String TASK_DETAIL_NAME_COLUMN = "name";
     public static final int TASK_DETAIL_NAME_WIDTH = 300;
-    public static final String TASK_DETAIL_UNIT_COLUMN = "task.unit";
+    public static final String TASK_DETAIL_UNIT_COLUMN = "unit";
     public static final int TASK_DETAIL_UNIT_WIDTH = 70;
-    public static final String TASK_DETAIL_DEFAULT_COLUMN = "task.defaultValue";
+    public static final String TASK_DETAIL_DEFAULT_COLUMN = "defaultValue";
     public static final int TASK_DETAIL_DEFAULT_WIDTH = 60;
-    public static final String TASK_DETAIL_QUOTA_COLUMN = "task.quota";
+    public static final String TASK_DETAIL_QUOTA_COLUMN = "quota";
     public static final int TASK_DETAIL_QUOTA_WIDTH = 50;
 
     public static final String TASK_CODE_COLUMN = "code";
@@ -87,12 +87,6 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
 
     public static final int TASK_LIST_SIZE = 100;
     public static final int TASK_EDIT_LIST_SIZE = 20;
-
-    @I18nField
-    Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
-
-    @I18nField
-    Button btnDelete = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
 
     @I18nField
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
@@ -159,9 +153,7 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
         taskDetailGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
-                if (e.getKeyCode() == 112) {
-                    btnAdd.fireEvent(Events.Select);
-                } else if (e.getKeyCode() == 115) {
+                if (e.getKeyCode() == 115) {
                     btnRefresh.fireEvent(Events.Select);
                 }
             }
@@ -172,10 +164,6 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
 
         txtSearch.setWidth(170);
         toolBar.add(txtSearch);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnAdd);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnRefresh);
         taskPanel.setHeaderVisible(false);
@@ -416,14 +404,6 @@ public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
 
     public Grid<BeanModel> getTaskDetailGird() {
         return taskDetailGird;
-    }
-
-    public Button getBtnAdd() {
-        return btnAdd;
-    }
-
-    public Button getBtnDelete() {
-        return btnDelete;
     }
 
     public Button getBtnRefresh() {
