@@ -21,7 +21,6 @@ public interface TaskDetailDKConstant extends Constants {
     String taskUnitColumnTitle();
     String taskDefaultValueColumnTitle();
     String taskQuotaColumnTitle();
-    String deleteTaskMessageSuccess();
     String saveMessageSuccess();
     String loadStationError();
     String taskHeaderGroup();
@@ -33,11 +32,5 @@ public interface TaskDetailDKConstant extends Constants {
     String btnSubTaskSave();
     String btnSubTaskRefresh();
     String branchNameColumnTitle();
-    String taskEditPanelTitle();
-    String btnTaskEditOk();
-    String btnTaskEditCancel();
-    String cbbTask();
-    String txtTaskSearch();
-    String conformExitMessage();
     String lockMessage();
 }

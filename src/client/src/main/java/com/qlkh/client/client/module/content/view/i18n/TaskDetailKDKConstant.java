@@ -14,17 +14,12 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  */
 @SuppressWarnings("UnusedDeclaration")
 public interface TaskDetailKDKConstant extends Constants {
-    String btnDelete();
-    String btnAdd();
     String btnRefresh();
     String sttColumnTitle();
     String taskNameColumnTitle();
     String taskCodeColumnTitle();
     String taskUnitColumnTitle();
     String taskDefaultValueColumnTitle();
-    String deleteTaskMessageSuccess();
-    String deleteAllTaskMessage();
-    String deleteTaskMessage();
     String saveMessageSuccess();
     String loadStationError();
     String taskHeaderGroup();
@@ -36,12 +31,6 @@ public interface TaskDetailKDKConstant extends Constants {
     String btnSubTaskRefresh();
     String txtSearch();
     String branchNameColumnTitle();
-    String taskEditPanelTitle();
-    String btnTaskEditOk();
-    String btnTaskEditCancel();
-    String cbbTask();
     String taskQuotaColumnTitle();
-    String txtTaskSearch();
-    String conformExitMessage();
     String lockMessage();
 }
