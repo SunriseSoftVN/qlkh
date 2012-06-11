@@ -13,7 +13,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 1/1/12, 3:37 PM
  */
 @SuppressWarnings("UnusedDeclaration")
-public interface TaskDetailKDKConstant extends Constants {
+public interface TaskDetailKDKConstant extends TaskDetailDKConstant {
     String btnRefresh();
     String sttColumnTitle();
     String taskNameColumnTitle();
