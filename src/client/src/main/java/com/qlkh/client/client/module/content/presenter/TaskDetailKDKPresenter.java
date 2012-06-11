@@ -14,7 +14,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.TaskDetailKDKPlace;
-import com.qlkh.client.client.module.content.view.TaskAnnualDetailView;
+import com.qlkh.client.client.module.content.view.TaskDetailDKView;
 import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
@@ -167,8 +167,8 @@ public class TaskDetailKDKPresenter extends AbstractPresenter<TaskDetailKDKView>
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskAnnualDetailView.TASK_DETAIL_NAME_COLUMN, st);
-                        filters.put(TaskAnnualDetailView.TASK_DETAIL_CODE_COLUMN, st);
+                        filters.put(TaskDetailDKView.TASK_DETAIL_NAME_COLUMN, st);
+                        filters.put(TaskDetailDKView.TASK_DETAIL_CODE_COLUMN, st);
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();

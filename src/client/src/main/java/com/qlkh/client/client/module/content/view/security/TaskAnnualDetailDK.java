@@ -14,7 +14,7 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
  * @author Nguyen Duc Dung
  * @since 1/4/12, 9:17 PM
  */
-public class TaskAnnualDetailSecurity implements ViewSecurityConfigurator {
+public class TaskAnnualDetailDK implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
         return new HasRole[]{UserRoleEnum.USER};

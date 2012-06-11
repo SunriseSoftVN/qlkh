@@ -14,8 +14,8 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlkh.client.client.module.content.place.TaskAnnualDetailPlace;
-import com.qlkh.client.client.module.content.view.TaskAnnualDetailView;
+import com.qlkh.client.client.module.content.place.TaskDetailDKPlace;
+import com.qlkh.client.client.module.content.view.TaskDetailDKView;
 import com.qlkh.client.client.module.content.view.TaskDetailKDKView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
@@ -40,8 +40,8 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 1/4/12, 9:14 PM
  */
-@Presenter(view = TaskAnnualDetailView.class, place = TaskAnnualDetailPlace.class)
-public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetailView> {
+@Presenter(view = TaskDetailDKView.class, place = TaskDetailDKPlace.class)
+public class TaskDetailDKPresenter extends AbstractPresenter<TaskDetailDKView> {
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
 
@@ -154,9 +154,9 @@ public class TaskAnnualDetailPresenter extends AbstractPresenter<TaskAnnualDetai
                                 getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put(TaskAnnualDetailView.TASK_DETAIL_NAME_COLUMN,
+                        filters.put(TaskDetailDKView.TASK_DETAIL_NAME_COLUMN,
                                 view.getTxtSearch().getValue());
-                        filters.put(TaskAnnualDetailView.TASK_DETAIL_CODE_COLUMN,
+                        filters.put(TaskDetailDKView.TASK_DETAIL_CODE_COLUMN,
                                 view.getTxtSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {

@@ -24,8 +24,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
-import com.qlkh.client.client.module.content.view.i18n.TaskAnnualDetailConstant;
-import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailSecurity;
+import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
+import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailDK;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -44,9 +44,9 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 1/4/12, 9:12 PM
  */
-@ViewSecurity(configuratorClass = TaskAnnualDetailSecurity.class)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = TaskAnnualDetailConstant.class)
-public class TaskAnnualDetailView extends AbstractView<TaskAnnualDetailConstant> {
+@ViewSecurity(configuratorClass = TaskAnnualDetailDK.class)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = TaskDetailDKConstant.class)
+public class TaskDetailDKView extends AbstractView<TaskDetailDKConstant> {
 
 
     public static final String ID_COLUMN = "id";
