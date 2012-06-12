@@ -19,14 +19,17 @@ public class ReportAction implements Action<ReportResult> {
     private ReportTypeEnum reportTypeEnum;
     private ReportFileTypeEnum fileTypeEnum;
     private long stationId;
+    private Long branchId;
 
     public ReportAction() {
     }
 
-    public ReportAction(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) {
+    public ReportAction(ReportTypeEnum reportTypeEnum,
+                        ReportFileTypeEnum fileTypeEnum, long stationId, Long branchId) {
         this.reportTypeEnum = reportTypeEnum;
         this.fileTypeEnum = fileTypeEnum;
         this.stationId = stationId;
+        this.branchId = branchId;
     }
 
     public ReportTypeEnum getReportTypeEnum() {
@@ -39,5 +42,9 @@ public class ReportAction implements Action<ReportResult> {
 
     public long getStationId() {
         return stationId;
+    }
+
+    public Long getBranchId() {
+        return branchId;
     }
 }

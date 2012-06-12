@@ -23,4 +23,8 @@ public class ReportSecurity implements ViewSecurityConfigurator {
     public HasRole[] cbbReportStation() {
         return new HasRole[]{UserRoleEnum.MANAGER};
     }
+
+    public HasRole[] cbbReportBranch() {
+        return new HasRole[]{UserRoleEnum.USER};
+    }
 }

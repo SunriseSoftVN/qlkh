@@ -6,6 +6,7 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -45,8 +46,10 @@ public class ReportView extends AbstractView<ReportConstant> {
     SimpleComboBox<ReportTypeEnum> cbbReportType = new SimpleComboBox<ReportTypeEnum>();
 
     @FieldSecurity
-    @I18nField
     ComboBox<BeanModel> cbbReportStation = new ComboBox<BeanModel>();
+
+    @FieldSecurity
+    ComboBox<BeanModel> cbbReportBranch = new ComboBox<BeanModel>();
 
     SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
 
@@ -72,6 +75,12 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbReportStation.setEditable(false);
 
+        cbbReportBranch.setDisplayField(BranchManagerView.BRANCH_NAME_COLUMN);
+        cbbReportBranch.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbReportBranch.setEditable(false);
+        //Set empty store for waiting for loading data for the sever.
+        cbbReportBranch.setStore(new ListStore<BeanModel>());
+
         cbbReportType.add(Arrays.asList(ReportTypeEnum.values()));
         cbbReportType.setSimpleValue(ReportTypeEnum.CA_NAM);
         cbbReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -89,6 +98,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(4);
         hp.add(cbbReportStation);
+        hp.add(cbbReportBranch);
         hp.add(cbbReportType);
         hp.add(cbbYear);
         hp.add(btnPlanReportPdf);
@@ -117,6 +127,7 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public void setEnableReportButton(boolean enable) {
         cbbReportStation.setEnabled(enable);
+        cbbReportBranch.setEnabled(enable);
         cbbYear.setEnabled(enable);
         cbbReportType.setEnabled(enable);
         btnPlanReportPdf.setEnabled(enable);
@@ -145,5 +156,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public SimpleComboBox<Integer> getCbbYear() {
         return cbbYear;
+    }
+
+    public ComboBox<BeanModel> getCbbReportBranch() {
+        return cbbReportBranch;
     }
 }

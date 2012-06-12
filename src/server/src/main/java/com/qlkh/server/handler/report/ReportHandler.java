@@ -82,10 +82,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     @Override
     public ReportResult execute(ReportAction action, ExecutionContext context) throws DispatchException {
-        return new ReportResult(reportForCompany(action.getReportTypeEnum(), action.getFileTypeEnum(), action.getStationId()));
+        return new ReportResult(reportForCompany(action));
     }
 
-    private String reportForCompany(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum fileTypeEnum, long stationId) throws ActionException {
+    private String reportForCompany(ReportAction action) throws ActionException {
+        ReportTypeEnum reportTypeEnum = action.getReportTypeEnum();
+        ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
+        long stationId = action.getStationId();
         try {
             DynamicReport dynamicReport = buildReport(reportTypeEnum, fileTypeEnum, stationId);
             JasperReport jasperReport = DynamicJasperHelper.
