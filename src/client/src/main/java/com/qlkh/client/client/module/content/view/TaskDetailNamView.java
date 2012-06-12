@@ -124,16 +124,11 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                 TaskDetailNam taskDetailNam = model.getBean();
                 if (taskDetailNam != null) {
                     Double q1 = taskDetailNam.getQ1();
-                    if (q1 == null) {
-                        q1 = 0d;
-                    }
                     Double q2 = taskDetailNam.getQ2();
-                    if (q2 == null) {
-                        q2 = 0d;
-                    }
                     Double q3 = taskDetailNam.getQ3();
-                    if (q3 == null) {
-                        q3 = 0d;
+                    if (q1 == null || q2 == null || q3 == null) {
+                        taskDetailNam.setQ4(null);
+                        return null;
                     }
                     Double total = taskDetailNam.getRealValue();
                     if (total != null && total > 0) {
