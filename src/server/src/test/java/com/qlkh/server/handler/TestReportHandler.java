@@ -39,7 +39,7 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
     @Test(timeout = 20000)
     public void testReport() throws DispatchException {
         ReportResult result = dispatch.
-                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFileTypeEnum.PDF, 27));
+                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFileTypeEnum.PDF, 27, null));
         assertEquals(result.getReportUrl(), "http://127.0.0.1:8080/service/report?reportName=kehoachtacnghiep.pdf");
     }
 }

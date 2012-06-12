@@ -10,12 +10,14 @@ import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.*;
+import ch.lambdaj.function.matcher.LambdaJMatcher;
 import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.report.ReportAction;
 import com.qlkh.core.client.action.report.ReportResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.constant.TaskTypeEnum;
+import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
@@ -90,12 +92,12 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
         long stationId = action.getStationId();
         try {
-            DynamicReport dynamicReport = buildReport(reportTypeEnum, fileTypeEnum, stationId);
+            DynamicReport dynamicReport = buildReportLayout(action);
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(reportTypeEnum, stationId)));
+                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(action)));
 
             String filePath = ServletUtils.getInstance().
                     getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME
@@ -123,7 +125,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return null;
     }
 
-    private DynamicReport buildReport(ReportTypeEnum reportTypeEnum, ReportFileTypeEnum reportFileTypeEnum, long stationId) {
+    private DynamicReport buildReportLayout(ReportAction action) {
+
+        ReportTypeEnum reportTypeEnum = action.getReportTypeEnum();
+        ReportFileTypeEnum reportFileTypeEnum = action.getFileTypeEnum();
+        long stationId = action.getStationId();
+        Long branchId = action.getBranchId();
+
         FastReportBuilder fastReportBuilder = new FastReportBuilder();
 
         Style titleStyle = new Style();
@@ -181,9 +189,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
                 stations.add(station);
-                fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
-                        + reportTypeEnum.getValue() + " NĂM 2012 \\n"
-                        + station.getName().toUpperCase() + "\\n");
+                if (branchId != null) {
+                    Branch branch = generalDao.findById(Branch.class, branchId);
+                    fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
+                            + reportTypeEnum.getValue() + " NĂM 2012 \\n"
+                            + branch.getName().toUpperCase() + "\\n");
+                } else {
+                    fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
+                            + reportTypeEnum.getValue() + " NĂM 2012 \\n"
+                            + station.getName().toUpperCase() + "\\n");
+                }
             }
 
             if (CollectionUtils.isNotEmpty(stations)) {
@@ -231,7 +246,11 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return fastReportBuilder.build();
     }
 
-    private List<SumReportBean> buildReportData(ReportTypeEnum reportTypeEnum, long stationId) throws ActionException {
+    private List<SumReportBean> buildReportData(ReportAction reportAction) throws ActionException {
+        ReportTypeEnum reportTypeEnum = reportAction.getReportTypeEnum();
+        long stationId = reportAction.getStationId();
+        Long branchId = reportAction.getBranchId();
+
         Station currentStation = generalDao.findById(Station.class, stationId);
         if (currentStation == null) {
             throw new ActionException(StringUtils.
@@ -265,7 +284,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 bean.getTask().setQuota(quota);
             }
             for (Station station : stations) {
-                StationReportBean stationReport = calculateForStation(bean.getTask(), station, reportTypeEnum,
+                StationReportBean stationReport = calculateForStation(bean.getTask(), station,
+                        branchId, reportTypeEnum,
                         subTaskDetails, subAnnualTaskDetails, taskDetailNams);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
@@ -361,7 +381,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     }
 
 
-    private StationReportBean calculateForStation(TaskReportBean task, Station station, ReportTypeEnum reportTypeEnum,
+    private StationReportBean calculateForStation(TaskReportBean task, Station station,
+                                                  Long branchId, ReportTypeEnum reportTypeEnum,
                                                   List<TaskDetailKDKDataView> taskDetailKDKs,
                                                   List<TaskDetailDKDataView> taskDetailDKs,
                                                   List<TaskDetailNamDataView> taskDetailNams) {
@@ -374,11 +395,11 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 || task.getTaskTypeCode() == TaskTypeEnum.NAM.getCode()) {
             //Calculate Weight
             if (TaskTypeEnum.DK.getCode() == task.getTaskTypeCode()) {
-                calculateWeightForDKTask(stationReport, task.getId(), taskDetailDKs);
+                calculateWeightForDKTask(stationReport, branchId, task.getId(), taskDetailDKs);
             } else if (TaskTypeEnum.KDK.getCode() == task.getTaskTypeCode()) {
-                calculateWeightForKDKTask(stationReport, task.getId(), reportTypeEnum, taskDetailKDKs);
+                calculateWeightForKDKTask(stationReport, branchId, task.getId(), reportTypeEnum, taskDetailKDKs);
             } else if (TaskTypeEnum.NAM.getCode() == task.getTaskTypeCode()) {
-                calculateWeightForNamTask(stationReport, task.getId(), reportTypeEnum, taskDetailNams);
+                calculateWeightForNamTask(stationReport, branchId, task.getId(), reportTypeEnum, taskDetailNams);
             }
             //Calculate time
             if (task.getDefaultValue() != null && stationReport.getValue() != null) {
@@ -389,11 +410,15 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return stationReport;
     }
 
-    private void calculateWeightForKDKTask(StationReportBean station, long taskId,
+    private void calculateWeightForKDKTask(StationReportBean station, Long branchId, long taskId,
                                            ReportTypeEnum reportTypeEnum, List<TaskDetailKDKDataView> subTaskDetails) {
-        List<TaskDetailKDKDataView> select = select(subTaskDetails,
-                having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(taskId)).
-                        and(having(on(TaskDetailKDKDataView.class).getStationId(), equalTo(station.getId()))));
+        LambdaJMatcher<Object> matcher = having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(taskId)).
+                and(having(on(TaskDetailKDKDataView.class).getStationId(), equalTo(station.getId())));
+        if (branchId != null) {
+            matcher.and(having(on(TaskDetailKDKDataView.class).getBranchId(), equalTo(branchId)));
+        }
+        List<TaskDetailKDKDataView> select = select(subTaskDetails, matcher);
+
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
             for (TaskDetailKDKDataView taskDetail : select) {
@@ -440,11 +465,15 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private void calculateWeightForNamTask(StationReportBean station, long taskId,
+    private void calculateWeightForNamTask(StationReportBean station, Long branchId, long taskId,
                                            ReportTypeEnum reportTypeEnum, List<TaskDetailNamDataView> subTaskDetails) {
-        List<TaskDetailNamDataView> select = select(subTaskDetails,
-                having(on(TaskDetailNamDataView.class).getTaskId(), equalTo(taskId)).
-                        and(having(on(TaskDetailNamDataView.class).getStationId(), equalTo(station.getId()))));
+        LambdaJMatcher<Object> matcher = having(on(TaskDetailNamDataView.class).getTaskId(), equalTo(taskId)).
+                and(having(on(TaskDetailNamDataView.class).getStationId(), equalTo(station.getId())));
+        if (branchId != null) {
+            matcher.and(having(on(TaskDetailNamDataView.class).getBranchId(), equalTo(branchId)));
+        }
+
+        List<TaskDetailNamDataView> select = select(subTaskDetails, matcher);
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
             for (TaskDetailNamDataView taskDetail : select) {
@@ -491,11 +520,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private void calculateWeightForDKTask(StationReportBean station, long taskId,
+    private void calculateWeightForDKTask(StationReportBean station, Long branchId, long taskId,
                                           List<TaskDetailDKDataView> subAnnualTaskDetails) {
-        List<TaskDetailDKDataView> select = select(subAnnualTaskDetails,
-                having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(taskId)).
-                        and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))));
+        LambdaJMatcher<Object> matcher = having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(taskId)).
+                and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId())));
+
+        if (branchId != null) {
+            matcher.and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(branchId)));
+        }
+
+        List<TaskDetailDKDataView> select = select(subAnnualTaskDetails, matcher);
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
             for (TaskDetailDKDataView subTaskAnnualDetail : select) {
