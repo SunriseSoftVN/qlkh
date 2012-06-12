@@ -26,6 +26,8 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.core.*;
+import com.qlkh.core.client.action.task.CanEditAction;
+import com.qlkh.core.client.action.task.CanEditResult;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;
@@ -104,10 +106,16 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskQuota().setValue(selectedTask.getQuota());
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
-                    //We not allow change task type.
-                    view.getCbbTaskType().setEnabled(false);
                     currentTask = selectedTask;
-                    taskEditWindow.show();
+                    dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES) ,
+                            new AbstractAsyncCallback<CanEditResult>() {
+                        @Override
+                        public void onSuccess(CanEditResult result) {
+                            view.getCbbTaskType().setEnabled(result.isEditable());
+                            view.getWarningMessage().setVisible(!result.isEditable());
+                            taskEditWindow.show();
+                        }
+                    });
                 }
             }
         });

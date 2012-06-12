@@ -10,10 +10,7 @@ import com.extjs.gxt.ui.client.data.ModelProcessor;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -142,6 +139,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private VerticalPanel addChildTaskPanel;
     private Grid<BeanModel> childTaskGrid;
     private ColumnModel childTaskColumnModel;
+
+    private Html warningMessage = new Html();
 
     /**
      * Create Grid on View.
@@ -343,10 +342,15 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(cbbTaskType);
 
+        warningMessage.setHtml(getConstant().warningMessage());
+        warningMessage.setVisible(false);
+        taskEditPanel.add(warningMessage);
+
         window.add(taskEditPanel);
         window.addButton(btnTaskEditOk);
         window.addButton(btnTaskEditCancel);
         window.setSize(380, 250);
+        window.setAutoHeight(true);
         window.setResizable(false);
         window.setModal(true);
         window.setHeading(getConstant().taskEditPanel());
@@ -515,5 +519,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public TextField<String> getTxtCodeSearch() {
         return txtCodeSearch;
+    }
+
+    public Html getWarningMessage() {
+        return warningMessage;
     }
 }

@@ -9,6 +9,7 @@ import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
 import com.qlkh.server.dao.core.GeneralDao;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(locations = "/applicationContext.xml")
 @TransactionConfiguration
 @Transactional
+@Ignore
 public class TestSqlQueryDao extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
