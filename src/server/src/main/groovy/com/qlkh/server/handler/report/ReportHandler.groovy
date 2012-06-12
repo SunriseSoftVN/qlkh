@@ -4,7 +4,6 @@
 
 package com.qlkh.server.handler.report;
 
-
 import ar.com.fdvs.dj.core.DynamicJasperHelper
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager
 import ar.com.fdvs.dj.domain.DynamicReport
@@ -18,11 +17,11 @@ import com.qlkh.core.client.constant.ReportTypeEnum
 import com.qlkh.core.client.constant.TaskTypeEnum
 import com.qlkh.core.client.model.Station
 import com.qlkh.core.client.model.Task
-import com.qlkh.core.client.model.view.SubAnnualTaskDetailDataView
-import com.qlkh.core.client.model.view.SubTaskDetailDataView
-import com.qlkh.core.client.model.view.TaskDetailDataView
+import com.qlkh.core.client.model.view.TaskDetailDKDataView
+import com.qlkh.core.client.model.view.TaskDetailKDKDataView
 import com.qlkh.core.client.report.StationReportBean
 import com.qlkh.core.client.report.SumReportBean
+import com.qlkh.core.client.report.TaskReportBean
 import com.qlkh.core.configuration.ConfigurationServerUtil
 import com.qlkh.server.dao.SqlQueryDao
 import com.qlkh.server.dao.core.GeneralDao
@@ -47,11 +46,7 @@ import com.qlkh.server.business.rule.*
 
 import static ch.lambdaj.Lambda.*
 import static com.qlkh.core.client.constant.ReportTypeEnum.*
-import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM
-import static com.qlkh.core.client.constant.TaskTypeEnum.SUM
 import static org.hamcrest.core.IsEqual.equalTo
-import static com.qlkh.core.client.constant.TaskTypeEnum.DK
-import com.qlkh.core.client.report.TaskReportBean
 
 /**
  * The Class ReportHandler.
@@ -243,12 +238,10 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         //Load all view from database for calculation
         List<Long> stationIds = extract(stations, on(Station.class).getId());
         int currentYear = 1900 + new Date().getYear();
-        List<SubTaskDetailDataView> subTaskDetails = sqlQueryDao.
-                getSubTaskDetailDataViews(stationIds, currentYear);
-        List<SubAnnualTaskDetailDataView> subAnnualTaskDetails = sqlQueryDao
-                .getSubAnnualTaskDetailDataViews(stationIds, currentYear);
-        List<TaskDetailDataView> taskDetailViews = sqlQueryDao.getTaskDetailViews(currentYear);
-
+        List<TaskDetailKDKDataView> subTaskDetails = sqlQueryDao.
+                getTaskDetailKDK(stationIds, currentYear);
+        List<TaskDetailDKDataView> subAnnualTaskDetails = sqlQueryDao
+                .getTaskDetailDK(stationIds, currentYear);
 
         List<SumReportBean> beans = new ArrayList<SumReportBean>();
         List<SumReportBean> parentBeans = new ArrayList<SumReportBean>();
@@ -256,26 +249,25 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         for (Task task : tasks) {
             SumReportBean bean = new SumReportBean();
             bean.setTask(task);
-            if (CA_NAM == reportTypeEnum && task.taskTypeCode == DK.code) {
+            if (CA_NAM == reportTypeEnum && task.taskTypeCode == TaskTypeEnum.DK.code) {
                 //Because time of DK task will be count four time for all year.
                 bean.task.quota *= 4;
             }
             for (Station station : stations) {
                 StationReportBean stationReport = calculateForStation(bean.task, station, reportTypeEnum,
-                        taskDetailViews, subTaskDetails, subAnnualTaskDetails);
+                        subTaskDetails, subAnnualTaskDetails);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
-            if (task.getTaskTypeCode() == SUBSUM.getCode()
-                    || task.getTaskTypeCode() == SUM.getCode()) {
+            if (task.taskTypeCode == TaskTypeEnum.SUBSUM.code
+                    || task.taskTypeCode == TaskTypeEnum.SUM.code) {
                 parentBeans.add(bean);
             }
         }
 
         //Add two more columns. Business rule.
         if (stationId == StationCodeEnum.COMPANY.getId()) {
-            AdditionStationColumnRule.addDataForDSND(beans, reportTypeEnum, taskDetailViews,
-                    subAnnualTaskDetails, subTaskDetails);
+            AdditionStationColumnRule.addDataForDSND(beans, reportTypeEnum, subAnnualTaskDetails, subTaskDetails);
         }
 
         //Build tree
@@ -335,7 +327,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private boolean isParent(SumReportBean parentBean, SumReportBean childBean) {
         if (!childBean.getTask().getCode().equals(parentBean.getTask().getCode())) {
             switch (TaskTypeEnum.valueOf(parentBean.getTask().getTaskTypeCode())) {
-                case SUBSUM:
+                case TaskTypeEnum.SUBSUM:
                     if (parentBean.getTask().getCode().length() > 3
                             && childBean.getTask().getCode().length() > 3) {
                         String parentPrefix = parentBean.getTask().getCode().substring(0, 3);
@@ -345,7 +337,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                         }
                     }
                     break;
-                case SUM:
+                case TaskTypeEnum.SUM:
                     List<String> childTaskCodes = TaskCodeUtils
                             .getChildTaskCodes(parentBean.getTask().getChildTasks());
                     if (CollectionUtils.isNotEmpty(childTaskCodes)
@@ -359,32 +351,23 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
 
     private StationReportBean calculateForStation(TaskReportBean task, Station station, ReportTypeEnum reportTypeEnum,
-                                                  List<TaskDetailDataView> taskDetails, List<SubTaskDetailDataView> subTaskDetails,
-                                                  List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
+                                                  List<TaskDetailKDKDataView> taskDetailKDKs,
+                                                  List<TaskDetailDKDataView> taskDetailDKs) {
         StationReportBean stationReport = new StationReportBean();
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
         //We don't calculate for company because it is sum of another station.
         if (!station.isCompany() && (task.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()
-                || task.getTaskTypeCode() == DK.getCode())) {
+                || task.getTaskTypeCode() == TaskTypeEnum.DK.getCode())) {
 
-            List<TaskDetailDataView> select = select(taskDetails,
-                    having(on(TaskDetailDataView.class).getTaskId(), equalTo(task.getId()))
-                            .and(having(on(TaskDetailDataView.class).getStationId(), equalTo(station.getId())))
-            );
-            Long taskDetailId = null;
-            Boolean annual = null;
-            if (CollectionUtils.isNotEmpty(select)) {
-                taskDetailId = select.get(0).getTaskDetailId();
-                annual = select.get(0).isAnnual();
-            }
+            Long taskId = task.id;
 
-            if (taskDetailId != null) {
+            if (taskId != null) {
                 //Calculate Weight
-                if (annual) {
-                    calculateWeightForAnnualTask(stationReport, taskDetailId, subAnnualTaskDetails);
+                if (TaskTypeEnum.DK.code == task.taskTypeCode) {
+                    calculateWeightForDKTask(stationReport, taskId, taskDetailDKs);
                 } else {
-                    calculateWeightForNormalTask(stationReport, taskDetailId, reportTypeEnum, subTaskDetails);
+                    calculateWeightForKDKTask(stationReport, taskId, reportTypeEnum, taskDetailKDKs);
                 }
                 //Calculate time
                 if (task.getDefaultValue() != null && stationReport.getValue() != null) {
@@ -396,13 +379,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return stationReport;
     }
 
-    private void calculateWeightForNormalTask(StationReportBean stationReport, long taskDetailId,
-                                              ReportTypeEnum reportTypeEnum, List<SubTaskDetailDataView> subTaskDetails) {
-        List<SubTaskDetailDataView> select = select(subTaskDetails,
-                having(on(SubTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId)));
+    private void calculateWeightForKDKTask(StationReportBean stationReport, long taskId,
+                                           ReportTypeEnum reportTypeEnum, List<TaskDetailKDKDataView> subTaskDetails) {
+        List<TaskDetailKDKDataView> select = select(subTaskDetails,
+                having(on(TaskDetailKDKDataView.class).taskId, equalTo(taskId)));
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
-            for (SubTaskDetailDataView subTaskDetail : select) {
+            for (TaskDetailKDKDataView subTaskDetail : select) {
                 switch (reportTypeEnum) {
                     case Q1:
                         if (subTaskDetail.getQ1() != null) {
@@ -446,13 +429,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private void calculateWeightForAnnualTask(StationReportBean stationReport, long taskDetailId,
-                                              List<SubAnnualTaskDetailDataView> subAnnualTaskDetails) {
-        List<SubAnnualTaskDetailDataView> select = select(subAnnualTaskDetails,
-                having(on(SubAnnualTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId)));
+    private void calculateWeightForDKTask(StationReportBean stationReport, long taskId,
+                                          List<TaskDetailDKDataView> subAnnualTaskDetails) {
+        List<TaskDetailDKDataView> select = select(subAnnualTaskDetails,
+                having(on(TaskDetailDKDataView.class).taskId, equalTo(taskId)));
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
-            for (SubAnnualTaskDetailDataView subTaskAnnualDetail : select) {
+            for (TaskDetailDKDataView subTaskAnnualDetail : select) {
                 if (subTaskAnnualDetail.getRealValue() != null) {
                     weight += subTaskAnnualDetail.getRealValue();
                 }

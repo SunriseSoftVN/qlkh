@@ -14,18 +14,17 @@ import java.math.BigInteger;
  * @author Nguyen Duc Dung
  * @since 6/7/12, 9:56 AM
  */
-public class SubAnnualTaskDetailDataView implements IsSerializable {
+public class TaskDetailDKDataView implements IsSerializable {
 
     private long taskId;
-    private long taskDetailId;
-    private long stationId;
-    private int year;
-    private boolean annual;
     private long subTaskId;
     private long branchId;
+    private long stationId;
+    private int taskTypeCode;
     private Double lastYearValue;
     private Double increaseValue;
     private Double decreaseValue;
+    private int year;
 
     public long getTaskId() {
         return taskId;
@@ -33,38 +32,6 @@ public class SubAnnualTaskDetailDataView implements IsSerializable {
 
     public void setTaskId(BigInteger taskId) {
         this.taskId = taskId.longValue();
-    }
-
-    public long getTaskDetailId() {
-        return taskDetailId;
-    }
-
-    public void setTaskDetailId(BigInteger taskDetailId) {
-        this.taskDetailId = taskDetailId.longValue();
-    }
-
-    public long getStationId() {
-        return stationId;
-    }
-
-    public void setStationId(BigInteger stationId) {
-        this.stationId = stationId.longValue();
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public boolean isAnnual() {
-        return annual;
-    }
-
-    public void setAnnual(boolean annual) {
-        this.annual = annual;
     }
 
     public long getSubTaskId() {
@@ -81,6 +48,14 @@ public class SubAnnualTaskDetailDataView implements IsSerializable {
 
     public void setBranchId(BigInteger branchId) {
         this.branchId = branchId.longValue();
+    }
+
+    public long getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(BigInteger stationId) {
+        this.stationId = stationId.longValue();
     }
 
     public Double getLastYearValue() {
@@ -105,6 +80,22 @@ public class SubAnnualTaskDetailDataView implements IsSerializable {
 
     public void setDecreaseValue(Double decreaseValue) {
         this.decreaseValue = decreaseValue;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getTaskTypeCode() {
+        return taskTypeCode;
+    }
+
+    public void setTaskTypeCode(int taskTypeCode) {
+        this.taskTypeCode = taskTypeCode;
     }
 
     public Double getRealValue() {

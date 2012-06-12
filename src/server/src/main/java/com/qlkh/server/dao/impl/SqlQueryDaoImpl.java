@@ -4,9 +4,8 @@
 
 package com.qlkh.server.dao.impl;
 
-import com.qlkh.core.client.model.view.SubAnnualTaskDetailDataView;
-import com.qlkh.core.client.model.view.SubTaskDetailDataView;
-import com.qlkh.core.client.model.view.TaskDetailDataView;
+import com.qlkh.core.client.model.view.TaskDetailDKDataView;
+import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.AbstractDao;
 import org.hibernate.HibernateException;
@@ -27,44 +26,30 @@ import java.util.List;
 public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
 
     @Override
-    public List<SubAnnualTaskDetailDataView> getSubAnnualTaskDetailDataViews(final List<Long> stationIds, final int year) {
-        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<SubAnnualTaskDetailDataView>>() {
+    public List<TaskDetailDKDataView> getTaskDetailDK(final List<Long> stationIds, final int year) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskDetailDKDataView>>() {
             @Override
-            public List<SubAnnualTaskDetailDataView> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM subannualtaskdetail_view " +
+            public List<TaskDetailDKDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM taskdetail_dk_view " +
                         "WHERE year = :year AND stationId in (:stationIds)");
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
-                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(SubAnnualTaskDetailDataView.class));
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailDKDataView.class));
                 return sqlQuery.list();
             }
         });
     }
 
     @Override
-    public List<TaskDetailDataView> getTaskDetailViews(final int year) {
-        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskDetailDataView>>() {
+    public List<TaskDetailKDKDataView> getTaskDetailKDK(final List<Long> stationIds, final int year) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskDetailKDKDataView>>() {
             @Override
-            public List<TaskDetailDataView> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM  taskdetail_view " +
-                        "WHERE year = :year");
-                sqlQuery.setParameter("year", year);
-                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailDataView.class));
-                return sqlQuery.list();
-            }
-        });
-    }
-
-    @Override
-    public List<SubTaskDetailDataView> getSubTaskDetailDataViews(final List<Long> stationIds, final int year) {
-        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<SubTaskDetailDataView>>() {
-            @Override
-            public List<SubTaskDetailDataView> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM subtaskdetail_view " +
+            public List<TaskDetailKDKDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM taskdetail_kdk_view " +
                         "WHERE year = :year AND stationId in (:stationIds)");
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
-                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(SubTaskDetailDataView.class));
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailKDKDataView.class));
                 return sqlQuery.list();
             }
         });

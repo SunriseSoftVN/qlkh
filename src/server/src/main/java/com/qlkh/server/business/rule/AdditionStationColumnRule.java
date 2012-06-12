@@ -7,16 +7,15 @@ package com.qlkh.server.business.rule;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.model.Station;
-import com.qlkh.core.client.model.view.SubAnnualTaskDetailDataView;
-import com.qlkh.core.client.model.view.SubTaskDetailDataView;
-import com.qlkh.core.client.model.view.TaskDetailDataView;
+import com.qlkh.core.client.model.view.TaskDetailDKDataView;
+import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.SumReportBean;
-import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 
 import static ch.lambdaj.Lambda.*;
+import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
@@ -77,69 +76,60 @@ public final class AdditionStationColumnRule {
     }
 
     public static void addDataForDSND(List<SumReportBean> beans, ReportTypeEnum reportTypeEnum,
-                                      List<TaskDetailDataView> taskDetailViews,
-                                      List<SubAnnualTaskDetailDataView> subAnnualTaskDetails,
-                                      List<SubTaskDetailDataView> subTaskDetails) {
+                                      List<TaskDetailDKDataView> taskDetailDKs,
+                                      List<TaskDetailKDKDataView> taskDetailKDKs) {
         for (SumReportBean bean : beans) {
-            List<TaskDetailDataView> selectTaskDetail = select(taskDetailViews,
-                    having(on(TaskDetailDataView.class).getTaskId(), equalTo(bean.getTask().getId()))
-                            .and(having(on(TaskDetailDataView.class).getStationId(), equalTo(StationCodeEnum.CAUGIAT.getId())))
-            );
-            Long taskDetailId = null;
-            Boolean annual = null;
-            if (CollectionUtils.isNotEmpty(selectTaskDetail)) {
-                taskDetailId = selectTaskDetail.get(0).getTaskDetailId();
-                annual = selectTaskDetail.get(0).isAnnual();
-            }
+
+            Long taskId = bean.getTask().getId();
 
             Double value = 0d;
-            if (taskDetailId != null) {
-                if (annual) {
-                    SubAnnualTaskDetailDataView subTaskAnnualDetail = selectUnique(subAnnualTaskDetails,
-                            having(on(SubAnnualTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId))
-                                    .and(having(on(SubAnnualTaskDetailDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
-                    if (subTaskAnnualDetail != null) {
-                        value = subTaskAnnualDetail.getRealValue();
+            if (taskId != null) {
+                if (DK.getCode() == bean.getTask().getTaskTypeCode()) {
+                    TaskDetailDKDataView detailDK = selectUnique(taskDetailDKs,
+                            having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(taskId))
+                                    .and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
+                    if (detailDK != null) {
+                        value = detailDK.getRealValue();
                     }
                 } else {
-                    SubTaskDetailDataView subTaskDetail = selectUnique(subTaskDetails,
-                            having(on(SubTaskDetailDataView.class).getTaskDetailId(), equalTo(taskDetailId))
-                                    .and(having(on(SubTaskDetailDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
+                    TaskDetailKDKDataView taskDetailKDK = selectUnique(taskDetailKDKs,
+                            having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(taskId))
+                                    .and(having(on(TaskDetailKDKDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
 
-                    if (subTaskDetail != null) {
+                    if (taskDetailKDK != null) {
                         switch (reportTypeEnum) {
                             case Q1:
-                                if (subTaskDetail.getQ1() != null) {
-                                    value += subTaskDetail.getQ1();
+                                if (taskDetailKDK.getQ1() != null) {
+                                    value += taskDetailKDK.getQ1();
                                 }
                                 break;
                             case Q2:
-                                if (subTaskDetail.getQ2() != null) {
-                                    value += subTaskDetail.getQ2();
+                                if (taskDetailKDK.getQ2() != null) {
+                                    value += taskDetailKDK.getQ2();
                                 }
                                 break;
                             case Q3:
-                                if (subTaskDetail.getQ3() != null) {
-                                    value += subTaskDetail.getQ3();
+                                if (taskDetailKDK.getQ3() != null) {
+                                    value += taskDetailKDK.getQ3();
                                 }
                                 break;
                             case Q4:
-                                if (subTaskDetail.getQ4() != null) {
-                                    value += subTaskDetail.getQ4();
+                                if (taskDetailKDK.getQ4() != null) {
+                                    value += taskDetailKDK.getQ4();
                                 }
                                 break;
                             case CA_NAM:
-                                if (subTaskDetail.getQ1() != null) {
-                                    value += subTaskDetail.getQ1();
+                                if (taskDetailKDK.getQ1() != null) {
+                                    value += taskDetailKDK.getQ1();
                                 }
-                                if (subTaskDetail.getQ2() != null) {
-                                    value += subTaskDetail.getQ2();
+                                if (taskDetailKDK.getQ2() != null) {
+                                    value += taskDetailKDK.getQ2();
                                 }
-                                if (subTaskDetail.getQ3() != null) {
-                                    value += subTaskDetail.getQ3();
+                                if (taskDetailKDK.getQ3() != null) {
+                                    value += taskDetailKDK.getQ3();
                                 }
-                                if (subTaskDetail.getQ4() != null) {
-                                    value += subTaskDetail.getQ4();
+                                if (taskDetailKDK.getQ4() != null) {
+                                    value += taskDetailKDK.getQ4();
                                 }
                                 break;
                         }
