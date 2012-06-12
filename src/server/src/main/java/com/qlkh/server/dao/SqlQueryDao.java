@@ -6,6 +6,7 @@ package com.qlkh.server.dao;
 
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
+import com.qlkh.core.client.model.view.TaskDetailNamDataView;
 import com.qlkh.server.dao.core.Dao;
 
 import java.util.List;
@@ -19,4 +20,5 @@ import java.util.List;
 public interface SqlQueryDao extends Dao {
     List<TaskDetailKDKDataView> getTaskDetailKDK(List<Long> stationIds, int year);
     List<TaskDetailDKDataView> getTaskDetailDK(List<Long> stationIds, int year);
+    List<TaskDetailNamDataView> getTaskDetailNam(List<Long> stationIds, int year);
 }

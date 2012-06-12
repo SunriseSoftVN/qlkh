@@ -56,4 +56,12 @@ public class TestSqlQueryDao extends AbstractTransactionalJUnit4SpringContextTes
         assertEquals(list.size() > 0, true);
     }
 
+    @Test(timeout = 1000l)
+    public void testGetTaskDetailNam() {
+        List<Station> stations = generalDao.getAll(Station.class);
+        List<Long> stationIds = extract(stations, on(Station.class).getId());
+        def list = sqlQueryDao.getTaskDetailNam(stationIds, 2012);
+        assertEquals(list.size() > 0, true);
+    }
+
 }

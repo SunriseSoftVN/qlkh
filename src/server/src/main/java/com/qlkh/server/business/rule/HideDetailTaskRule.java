@@ -4,13 +4,14 @@
 
 package com.qlkh.server.business.rule;
 
-import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.SumReportBean;
 import com.qlkh.core.client.report.TaskReportBean;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
+
+import static com.qlkh.core.client.constant.TaskTypeEnum.*;
 
 /**
  * The Class HideWeightTaskRule.
@@ -41,10 +42,8 @@ public final class HideDetailTaskRule {
     }
 
     private static boolean isTask(TaskReportBean task) {
-        if (TaskTypeEnum.DK.getCode() != task.getTaskTypeCode()
-                && TaskTypeEnum.KDK.getCode() != task.getTaskTypeCode()) {
-            return true;
-        }
-        return false;
+        return DK.getCode() != task.getTaskTypeCode()
+                && KDK.getCode() != task.getTaskTypeCode()
+                && NAM.getCode() != task.getTaskTypeCode();
     }
 }

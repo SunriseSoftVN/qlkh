@@ -6,6 +6,7 @@ package com.qlkh.server.dao.impl;
 
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
+import com.qlkh.core.client.model.view.TaskDetailNamDataView;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.AbstractDao;
 import org.hibernate.HibernateException;
@@ -24,6 +25,21 @@ import java.util.List;
  * @since 6/6/12, 9:59 PM
  */
 public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
+
+    @Override
+    public List<TaskDetailNamDataView> getTaskDetailNam(final List<Long> stationIds, final int year) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskDetailNamDataView>>() {
+            @Override
+            public List<TaskDetailNamDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM taskdetail_nam_view " +
+                        "WHERE year = :year AND stationId in (:stationIds)");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setParameterList("stationIds", stationIds);
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailNamDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
 
     @Override
     public List<TaskDetailDKDataView> getTaskDetailDK(final List<Long> stationIds, final int year) {
