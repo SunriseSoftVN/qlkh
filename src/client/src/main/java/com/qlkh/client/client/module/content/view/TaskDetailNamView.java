@@ -5,14 +5,15 @@
 package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
+import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailNamConstant;
 import com.qlkh.client.client.module.content.view.security.TaskDetailNamSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
 import com.qlkh.client.client.widget.MyNumberField;
+import com.qlkh.core.client.model.TaskDetailNam;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
@@ -116,11 +117,38 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
         columnConfigs.add(q3ColumnConfig);
 
         ColumnConfig q4ColumnConfig = new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
-        if (!q4Lock) {
-            MyNumberField q4NumberField = new MyNumberField();
-            q4NumberField.setSelectOnFocus(true);
-            q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
-        }
+        q4ColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                TaskDetailNam taskDetailNam = model.getBean();
+                if (taskDetailNam != null) {
+                    Double q1 = taskDetailNam.getQ1();
+                    if (q1 == null) {
+                        q1 = 0d;
+                    }
+                    Double q2 = taskDetailNam.getQ2();
+                    if (q2 == null) {
+                        q2 = 0d;
+                    }
+                    Double q3 = taskDetailNam.getQ3();
+                    if (q3 == null) {
+                        q3 = 0d;
+                    }
+                    Double total = taskDetailNam.getRealValue();
+                    if (total != null && total > 0) {
+                        Double q4 = total - q1 - q2 - q3;
+                        if (q4 > 0) {
+                            taskDetailNam.setQ4(q4);
+                        } else {
+                            taskDetailNam.setQ4(null);
+                        }
+                        return q4;
+                    }
+                }
+                return null;
+            }
+        });
         columnConfigs.add(q4ColumnConfig);
 
         return columnConfigs;

@@ -30,7 +30,8 @@ public class GeneralDaoImpl extends AbstractDao implements GeneralDao {
     public <E extends AbstractEntity> List<E> findRelateEntityById(String entityName, long id, String relateEntity) {
         Type entityType = getSessionFactory().getTypeHelper().entity(entityName);
         Type relateEntityType = getSessionFactory().getTypeHelper().entity(relateEntity);
-        if (entityType != null && relateEntityType != null) {
+        if (entityType != null && entityType.getReturnedClass() != null
+                && relateEntityType != null && relateEntityType.getReturnedClass() != null) {
             Class<?> entityClass = entityType.getReturnedClass();
             Class<?> relateEntityClass = relateEntityType.getReturnedClass();
 

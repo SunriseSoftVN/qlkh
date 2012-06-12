@@ -386,10 +386,11 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return stationReport;
     }
 
-    private void calculateWeightForKDKTask(StationReportBean stationReport, long taskId,
+    private void calculateWeightForKDKTask(StationReportBean station, long taskId,
                                            ReportTypeEnum reportTypeEnum, List<TaskDetailKDKDataView> subTaskDetails) {
         List<TaskDetailKDKDataView> select = select(subTaskDetails,
-                having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(taskId)));
+                having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(taskId)).
+                        and(having(on(TaskDetailKDKDataView.class).getStationId(), equalTo(station.getId()))));
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
             for (TaskDetailKDKDataView taskDetail : select) {
@@ -431,15 +432,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 }
             }
             if (weight > 0) {
-                stationReport.setValue(weight);
+                station.setValue(weight);
             }
         }
     }
 
-    private void calculateWeightForNamTask(StationReportBean stationReport, long taskId,
+    private void calculateWeightForNamTask(StationReportBean station, long taskId,
                                            ReportTypeEnum reportTypeEnum, List<TaskDetailNamDataView> subTaskDetails) {
         List<TaskDetailNamDataView> select = select(subTaskDetails,
-                having(on(TaskDetailNamDataView.class).getTaskId(), equalTo(taskId)));
+                having(on(TaskDetailNamDataView.class).getTaskId(), equalTo(taskId)).
+                        and(having(on(TaskDetailNamDataView.class).getStationId(), equalTo(station.getId()))));
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
             for (TaskDetailNamDataView taskDetail : select) {
@@ -481,15 +483,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 }
             }
             if (weight > 0) {
-                stationReport.setValue(weight);
+                station.setValue(weight);
             }
         }
     }
 
-    private void calculateWeightForDKTask(StationReportBean stationReport, long taskId,
+    private void calculateWeightForDKTask(StationReportBean station, long taskId,
                                           List<TaskDetailDKDataView> subAnnualTaskDetails) {
         List<TaskDetailDKDataView> select = select(subAnnualTaskDetails,
-                having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(taskId)));
+                having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(taskId)).
+                        and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))));
         if (CollectionUtils.isNotEmpty(select)) {
             Double weight = 0d;
             for (TaskDetailDKDataView subTaskAnnualDetail : select) {
@@ -498,7 +501,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 }
             }
             if (weight > 0) {
-                stationReport.setValue(weight);
+                station.setValue(weight);
             }
         }
     }

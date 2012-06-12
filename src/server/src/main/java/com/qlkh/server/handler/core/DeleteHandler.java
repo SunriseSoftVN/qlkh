@@ -38,7 +38,7 @@ public class DeleteHandler extends AbstractHandler<DeleteAction, DeleteResult> {
                 List result;
                 String entityName = null;
                 List<Long> ids = new ArrayList<Long>();
-                if (action.getEntity() != null) {
+                if (action.getEntityName() != null) {
                     entityName = action.getEntityName();
                 } else if (action.getEntity() != null) {
                     entityName = action.getEntity().getClass().getName();
