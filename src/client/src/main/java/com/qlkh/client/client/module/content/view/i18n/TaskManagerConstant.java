@@ -53,4 +53,9 @@ public interface TaskManagerConstant extends Constants {
     String cbbChildTask();
     String btnDeleteTaskChild();
     String warningMessage();
+    String btnPickTaskChildOk();
+    String btnPickTaskChildCancel();
+    String lblFromCode();
+    String lblToCode();
+    String codeIsNotNumberOrTooShort();
 }

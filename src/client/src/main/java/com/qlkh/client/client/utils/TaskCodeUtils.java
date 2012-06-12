@@ -4,6 +4,7 @@
 
 package com.qlkh.client.client.utils;
 
+import com.google.common.base.Preconditions;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -18,9 +19,17 @@ import java.util.List;
 public final class TaskCodeUtils {
 
     public static final String CODE_SEPARATOR = " ; ";
+    public static final String CODE_JOIN = " - ";
 
     private TaskCodeUtils() {
 
+    }
+
+    public static int convert(String code) {
+        Preconditions.checkArgument(StringUtils.isNotBlank(code));
+        Preconditions.checkArgument(code.length() >= 5);
+        Preconditions.checkArgument(NumberUtils.isNumber(code));
+        return Integer.valueOf(code.replace(".",""));
     }
 
     public static List<String> getChildTaskCodes(String childTasks) {
@@ -34,6 +43,48 @@ public final class TaskCodeUtils {
             }
         }
         return childTaskCodes;
+    }
+
+    public static String extractFormCode(String childTasks) {
+        if (StringUtils.isNotBlank(childTasks)) {
+            int index = childTasks.indexOf(CODE_JOIN);
+            if (index > 0) {
+                return childTasks.substring(0, index);
+            }
+        }
+        return null;
+    }
+
+    public static String extractToCode(String childTasks) {
+        if (StringUtils.isNotBlank(childTasks)) {
+            int index = childTasks.indexOf(CODE_JOIN);
+            if (index > 0) {
+                return childTasks.substring(index + CODE_JOIN.length(), childTasks.length());
+            }
+        }
+        return null;
+    }
+
+    public static String getFromCode(String code) {
+        if (StringUtils.isNotEmpty(code) && code.length() >= 5) {
+            int index = code.indexOf(".") + 1;
+            if (index > 1) {
+                String first = code.substring(0, index);
+                String last = code.substring(index, code.length());
+                Integer from = Integer.valueOf(last) + 1;
+                return first + from;
+            }
+        }
+        return code;
+    }
+
+    public static String getToCode(String code) {
+        if (StringUtils.isNotEmpty(code) && code.length() >= 5) {
+            String first = code.substring(0, code.length() - 2);
+            String last = "99";
+            return first + last;
+        }
+        return code;
     }
 
 }

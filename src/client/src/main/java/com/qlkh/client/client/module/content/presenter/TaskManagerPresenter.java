@@ -24,6 +24,7 @@ import com.qlkh.client.client.module.content.place.TaskManagerPlace;
 import com.qlkh.client.client.module.content.view.TaskManagerView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.client.client.utils.NumberUtils;
 import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.core.*;
 import com.qlkh.core.client.action.task.CanEditAction;
@@ -45,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.qlkh.core.client.constant.TaskTypeEnum.*;
+
 /**
  * The Class TaskManagerPresenter.
  *
@@ -61,6 +64,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     private Window taskEditWindow;
     private Window addChildTaskWindow;
+    private Window pickChildTaskWindow;
     private Task currentTask;
 
     @Override
@@ -80,7 +84,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             public void componentSelected(ButtonEvent ce) {
                 taskEditWindow = view.createTaskEditWindow();
                 view.getTaskEditPanel().clear();
-                view.getCbbTaskType().setSimpleValue(TaskTypeEnum.DK);
+                view.getCbbTaskType().setSimpleValue(DK);
                 view.getCbbTaskType().setEnabled(true);
                 currentTask = new Task();
                 taskEditWindow.show();
@@ -107,15 +111,15 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
                     currentTask = selectedTask;
-                    dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES) ,
+                    dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES),
                             new AbstractAsyncCallback<CanEditResult>() {
-                        @Override
-                        public void onSuccess(CanEditResult result) {
-                            view.getCbbTaskType().setEnabled(result.isEditable());
-                            view.getWarningMessage().setVisible(!result.isEditable());
-                            taskEditWindow.show();
-                        }
-                    });
+                                @Override
+                                public void onSuccess(CanEditResult result) {
+                                    view.getCbbTaskType().setEnabled(result.isEditable());
+                                    view.getWarningMessage().setVisible(!result.isEditable());
+                                    taskEditWindow.show();
+                                }
+                            });
                 }
             }
         });
@@ -197,8 +201,17 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             getSimpleValue().getCode());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
-                    if (currentTask.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()) {
+                    if (currentTask.getTaskTypeCode() == KDK.getCode()
+                            || currentTask.getTaskTypeCode() == DK.getCode()
+                            || currentTask.getTaskTypeCode() == NAM.getCode()) {
                         currentTask.setChildTasks(StringUtils.EMPTY);
+                    }
+                    if (currentTask.getTaskTypeCode() == SUBSUM.getCode()) {
+                        if (!NumberUtils.isNumber(currentTask.getCode())
+                                || currentTask.getCode().length() < 5) {
+                            DiaLogUtils.showMessage(view.getConstant().codeIsNotNumberOrTooShort());
+                            return;
+                        }
                     }
                     dispatch.execute(new SaveAction(currentTask), new AbstractAsyncCallback<SaveResult>() {
 
@@ -277,6 +290,37 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 });
             }
         });
+        view.getBtnPickTaskChildCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                pickChildTaskWindow.hide();
+            }
+        });
+        view.getBtnPickTaskChildOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                String toCode = view.getTxtToCode().getValue();
+                String fromCode = view.getTxtFormCode().getValue();
+                if (StringUtils.isNotBlank(toCode)) {
+                    if (!NumberUtils.isNumber(toCode) || toCode.length() < 5) {
+                        DiaLogUtils.showMessage(view.getConstant().codeIsNotNumberOrTooShort());
+                    } else {
+                        final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                        selectedTask.setChildTasks(fromCode + TaskCodeUtils.CODE_JOIN + toCode);
+                        dispatch.execute(new SaveAction(selectedTask), new AbstractAsyncCallback<SaveResult>() {
+                            @Override
+                            public void onSuccess(SaveResult result) {
+                                if (result.getEntity() != null) {
+                                    updateGrid(selectedTask);
+                                    pickChildTaskWindow.hide();
+                                    DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     private void updateGrid(Task task) {
@@ -304,13 +348,41 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
             Task task = model.getBean();
             if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUM.getCode()) {
-                return createTaskChildOptionAnchor();
+                return createAddTaskChildAnchor();
+            } else if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUBSUM.getCode()) {
+                return createPickTaskRangeAnchor();
             }
             return null;
         }
     }
 
-    private Anchor createTaskChildOptionAnchor() {
+    private Anchor createPickTaskRangeAnchor() {
+        Anchor anchor = new Anchor(view.getConstant().taskChildOptionAnchor());
+        anchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                if (selectedTask != null) {
+                    if (StringUtils.isNotBlank(selectedTask.getChildTasks())) {
+                        view.getTxtFormCode().setValue(TaskCodeUtils.
+                                extractFormCode(selectedTask.getChildTasks()));
+                        view.getTxtToCode().setValue(TaskCodeUtils.
+                                extractToCode(selectedTask.getChildTasks()));
+                    } else {
+                        view.getTxtFormCode().setValue(TaskCodeUtils.
+                                getFromCode(selectedTask.getCode()));
+                        view.getTxtToCode().setValue(TaskCodeUtils.
+                                getToCode(selectedTask.getCode()));
+                    }
+                    pickChildTaskWindow = view.createPickTaskRangeWindow();
+                    pickChildTaskWindow.show();
+                }
+            }
+        });
+        return anchor;
+    }
+
+    private Anchor createAddTaskChildAnchor() {
         Anchor anchor = new Anchor(view.getConstant().taskChildOptionAnchor());
         anchor.addClickHandler(new ClickHandler() {
             @Override

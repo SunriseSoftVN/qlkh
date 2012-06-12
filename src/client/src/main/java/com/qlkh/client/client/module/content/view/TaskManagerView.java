@@ -124,11 +124,27 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     @I18nField
     Button btnAddTaskChildCancel = new Button();
 
+    @I18nField
+    Button btnPickTaskChildOk = new Button();
+
+    @I18nField
+    Button btnPickTaskChildCancel = new Button();
+
     @I18nField(emptyText = true)
     TextField<String> txtNameSearch = new TextField<String>();
 
     @I18nField(emptyText = true)
     TextField<String> txtCodeSearch = new TextField<String>();
+
+    @I18nField
+    Label lblFromCode = new Label();
+
+    @I18nField
+    Label lblToCode = new Label();
+
+    TextField<String> txtFormCode = new TextField<String>();
+
+    TextField<String> txtToCode = new TextField<String>();
 
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
@@ -364,6 +380,34 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return window;
     }
 
+    public com.extjs.gxt.ui.client.widget.Window createPickTaskRangeWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.setSpacing(4);
+        hp.add(lblFromCode);
+        txtFormCode.setEnabled(false);
+        hp.add(txtFormCode);
+        hp.add(lblToCode);
+        hp.add(txtToCode);
+        window.add(hp);
+        window.addButton(btnPickTaskChildOk);
+        window.addButton(btnPickTaskChildCancel);
+        window.setAutoHeight(true);
+        window.setAutoWidth(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().addChildTaskPanel());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                cbbChildTask.reset();
+                childTaskGrid.focus();
+            }
+        });
+        return window;
+    }
+
+
     public com.extjs.gxt.ui.client.widget.Window createAddTaskChildWindow(ListStore<BeanModel> childTaskGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         addChildTaskPanel = new VerticalPanel();
@@ -523,5 +567,29 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public Html getWarningMessage() {
         return warningMessage;
+    }
+
+    public Button getBtnPickTaskChildOk() {
+        return btnPickTaskChildOk;
+    }
+
+    public void setBtnPickTaskChildOk(Button btnPickTaskChildOk) {
+        this.btnPickTaskChildOk = btnPickTaskChildOk;
+    }
+
+    public Button getBtnPickTaskChildCancel() {
+        return btnPickTaskChildCancel;
+    }
+
+    public void setBtnPickTaskChildCancel(Button btnPickTaskChildCancel) {
+        this.btnPickTaskChildCancel = btnPickTaskChildCancel;
+    }
+
+    public TextField<String> getTxtFormCode() {
+        return txtFormCode;
+    }
+
+    public TextField<String> getTxtToCode() {
+        return txtToCode;
     }
 }

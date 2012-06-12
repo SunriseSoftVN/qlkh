@@ -10,6 +10,7 @@ import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.*;
+import com.qlkh.client.client.utils.NumberUtils;
 import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.report.ReportAction;
 import com.qlkh.core.client.action.report.ReportResult;
@@ -358,12 +359,28 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         if (!childBean.getTask().getCode().equals(parentBean.getTask().getCode())) {
             switch (TaskTypeEnum.valueOf(parentBean.getTask().getTaskTypeCode())) {
                 case SUBSUM:
-                    if (parentBean.getTask().getCode().length() > 3
-                            && childBean.getTask().getCode().length() > 3) {
-                        String parentPrefix = parentBean.getTask().getCode().substring(0, 3);
-                        String childPrefix = childBean.getTask().getCode().substring(0, 3);
-                        if (parentPrefix.equals(childPrefix)) {
-                            return true;
+                    if (StringUtils.isEmpty(parentBean.getTask().getChildTasks())) {
+                        if (parentBean.getTask().getCode().length() > 3
+                                && childBean.getTask().getCode().length() > 3) {
+                            String parentPrefix = parentBean.getTask().getCode().substring(0, 3);
+                            String childPrefix = childBean.getTask().getCode().substring(0, 3);
+                            if (parentPrefix.equals(childPrefix)) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        String fromCode = TaskCodeUtils.extractFormCode(parentBean.getTask().getChildTasks());
+                        String toCode = TaskCodeUtils.extractToCode(parentBean.getTask().getChildTasks());
+
+                        Integer from = TaskCodeUtils.convert(fromCode);
+                        Integer to = TaskCodeUtils.convert(toCode);
+
+                        if (NumberUtils.isNumber(childBean.getTask().getCode())
+                                && childBean.getTask().getCode().length() >= 5) {
+                            Integer childCode = TaskCodeUtils.convert(childBean.getTask().getCode());
+                            if (childCode >= from && childCode <= to) {
+                                return true;
+                            }
                         }
                     }
                     break;
