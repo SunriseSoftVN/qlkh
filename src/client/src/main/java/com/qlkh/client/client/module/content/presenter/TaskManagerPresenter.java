@@ -79,6 +79,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 taskEditWindow = view.createTaskEditWindow();
                 view.getTaskEditPanel().clear();
                 view.getCbbTaskType().setSimpleValue(TaskTypeEnum.DK);
+                view.getCbbTaskType().setEnabled(true);
                 currentTask = new Task();
                 taskEditWindow.show();
             }
