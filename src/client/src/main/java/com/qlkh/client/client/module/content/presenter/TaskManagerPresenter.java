@@ -368,7 +368,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
             @Override
             public void onSuccess(DeleteResult result) {
-                if (result.isResult()) {
+                if (result.isDelete()) {
                     //Reload grid.
                     view.getPagingToolBar().refresh();
                     DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());

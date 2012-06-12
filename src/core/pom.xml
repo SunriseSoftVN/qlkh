@@ -121,13 +121,6 @@
             <version>${gwtDispatchVersion}</version>
         </dependency>
 
-        <!--Groovy-->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovyVersion}</version>
-        </dependency>
-        <!--End-->
     </dependencies>
 
 </project>

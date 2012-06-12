@@ -23,7 +23,7 @@ public class DeleteResult implements Result {
         this.result = result;
     }
 
-    public boolean isResult() {
+    public boolean isDelete() {
         return result;
     }
 }
