@@ -65,6 +65,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     private Window taskEditWindow;
     private Window addChildTaskWindow;
     private Window pickChildTaskWindow;
+    private Window defaultValueWindow;
     private Task currentTask;
 
     @Override
@@ -110,6 +111,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskQuota().setValue(selectedTask.getQuota());
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
+                    view.getCbDynamicDefaultValue().setValue(selectedTask.isDynamicDefaultValue());
                     currentTask = selectedTask;
                     dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES),
                             new AbstractAsyncCallback<CanEditResult>() {
@@ -199,6 +201,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     }
                     currentTask.setTaskTypeCode(view.getCbbTaskType().
                             getSimpleValue().getCode());
+                    currentTask.setDynamicDefaultValue(view.getCbDynamicDefaultValue().getValue());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
                     if (currentTask.getTaskTypeCode() == KDK.getCode()
@@ -321,6 +324,20 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 }
             }
         });
+
+        view.getCbDynamicDefaultValue().addListener(Events.Change, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                view.getTxtTaskDefault()
+                        .setEnabled(!view.getCbDynamicDefaultValue().getValue());
+            }
+        });
+        view.getBtnDefaultValueCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                defaultValueWindow.hide();
+            }
+        });
     }
 
     private void updateGrid(Task task) {
@@ -351,9 +368,23 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 return createAddTaskChildAnchor();
             } else if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUBSUM.getCode()) {
                 return createPickTaskRangeAnchor();
+            } else if (task != null && task.isDynamicDefaultValue()) {
+                return createEditDefaulValueAnchor();
             }
             return null;
         }
+    }
+
+    private Anchor createEditDefaulValueAnchor() {
+        Anchor anchor = new Anchor(view.getConstant().taskChildOptionAnchor());
+        anchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                defaultValueWindow = view.createDefaultValueWindow();
+                defaultValueWindow.show();
+            }
+        });
+        return anchor;
     }
 
     private Anchor createPickTaskRangeAnchor() {

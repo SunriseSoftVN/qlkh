@@ -58,4 +58,12 @@ public interface TaskManagerConstant extends Constants {
     String lblFromCode();
     String lblToCode();
     String codeIsNotNumberOrTooShort();
+    String cbDynamicDefaultValue();
+    String cbbYear();
+    String txtDefaultQ1();
+    String txtDefaultQ2();
+    String txtDefaultQ3();
+    String txtDefaultQ4();
+    String btnDefaultValueCancel();
+    String btnDefaultValueOk();
 }

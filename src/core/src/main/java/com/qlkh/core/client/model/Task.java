@@ -21,6 +21,7 @@ public class Task extends AbstractEntity {
     private int quota;
     private int taskTypeCode;
     private String childTasks;
+    private boolean dynamicDefaultValue;
 
     public String getName() {
         return name;
@@ -76,5 +77,13 @@ public class Task extends AbstractEntity {
 
     public void setChildTasks(String childTasks) {
         this.childTasks = childTasks;
+    }
+
+    public boolean isDynamicDefaultValue() {
+        return dynamicDefaultValue;
+    }
+
+    public void setDynamicDefaultValue(boolean dynamicDefaultValue) {
+        this.dynamicDefaultValue = dynamicDefaultValue;
     }
 }

@@ -12,10 +12,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -69,7 +66,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final String TASK_CHILD_COLUMN = "childTasks";
     public static final int TASK_CHILD_WIDTH = 170;
     public static final String TASK_CHILD_OPTION_COLUMN = "childTaskOptions";
-    public static final int TASK_CHILD_OPTION_WIDTH = 70;
+    public static final int TASK_CHILD_OPTION_WIDTH = 100;
 
     public static final int TASK_LIST_SIZE = 200;
 
@@ -96,6 +93,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     @I18nField
     MyNumberField txtTaskDefault = new MyNumberField();
+
+    @I18nField
+    CheckBox cbDynamicDefaultValue = new CheckBox();
 
     @I18nField
     MyNumberField txtTaskQuota = new MyNumberField();
@@ -128,6 +128,12 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Button btnPickTaskChildOk = new Button();
 
     @I18nField
+    Button btnDefaultValueCancel = new Button();
+
+    @I18nField
+    Button btnDefaultValueOk = new Button();
+
+    @I18nField
     Button btnPickTaskChildCancel = new Button();
 
     @I18nField(emptyText = true)
@@ -142,6 +148,21 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     @I18nField
     Label lblToCode = new Label();
 
+    @I18nField
+    SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
+
+    @I18nField
+    TextField<String> txtDefaultQ1 = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtDefaultQ2 = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtDefaultQ3 = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtDefaultQ4 = new TextField<String>();
+
     TextField<String> txtFormCode = new TextField<String>();
 
     TextField<String> txtToCode = new TextField<String>();
@@ -155,6 +176,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private VerticalPanel addChildTaskPanel;
     private Grid<BeanModel> childTaskGrid;
     private ColumnModel childTaskColumnModel;
+
+    private FormPanel defaultValuePanel = new FormPanel();
 
     private Html warningMessage = new Html();
 
@@ -341,6 +364,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(txtTaskDefault);
 
+        taskEditPanel.add(cbDynamicDefaultValue);
+
         if (!txtTaskQuota.isRendered()) {
             txtTaskQuota.setSelectOnFocus(true);
             txtTaskQuota.setAllowBlank(false);
@@ -380,6 +405,40 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return window;
     }
 
+    public com.extjs.gxt.ui.client.widget.Window createDefaultValueWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+
+        if (!defaultValuePanel.isRendered()) {
+            defaultValuePanel.setHeaderVisible(false);
+            defaultValuePanel.setBodyBorder(false);
+            defaultValuePanel.setBorders(false);
+            defaultValuePanel.setLabelWidth(50);
+        }
+
+        defaultValuePanel.add(cbbYear);
+        defaultValuePanel.add(txtDefaultQ1);
+        defaultValuePanel.add(txtDefaultQ2);
+        defaultValuePanel.add(txtDefaultQ3);
+        defaultValuePanel.add(txtDefaultQ4);
+
+        window.add(defaultValuePanel);
+        window.addButton(btnDefaultValueOk);
+        window.addButton(btnDefaultValueCancel);
+        window.setAutoHeight(true);
+        window.setAutoWidth(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().addChildTaskPanel());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                cbbChildTask.reset();
+                childTaskGrid.focus();
+            }
+        });
+        return window;
+    }
+
     public com.extjs.gxt.ui.client.widget.Window createPickTaskRangeWindow() {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         HorizontalPanel hp = new HorizontalPanel();
@@ -390,8 +449,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         hp.add(lblToCode);
         hp.add(txtToCode);
         window.add(hp);
-        window.addButton(btnPickTaskChildOk);
-        window.addButton(btnPickTaskChildCancel);
+        window.addButton(btnDefaultValueOk);
+        window.addButton(btnDefaultValueCancel);
         window.setAutoHeight(true);
         window.setAutoWidth(true);
         window.setResizable(false);
@@ -591,5 +650,17 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public TextField<String> getTxtToCode() {
         return txtToCode;
+    }
+
+    public CheckBox getCbDynamicDefaultValue() {
+        return cbDynamicDefaultValue;
+    }
+
+    public Button getBtnDefaultValueCancel() {
+        return btnDefaultValueCancel;
+    }
+
+    public Button getBtnDefaultValueOk() {
+        return btnDefaultValueOk;
     }
 }

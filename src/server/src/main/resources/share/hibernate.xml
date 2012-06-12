@@ -25,6 +25,7 @@
                 <value>com/qlkh/core/client/model/TaskDetailDK.hbm.xml</value>
                 <value>com/qlkh/core/client/model/TaskDetailKDK.hbm.xml</value>
                 <value>com/qlkh/core/client/model/TaskDetailNam.hbm.xml</value>
+                <value>com/qlkh/core/client/model/TaskDefaultValue.hbm.xml</value>
             </list>
         </property>
     </bean>
