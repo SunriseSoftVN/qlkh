@@ -295,13 +295,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                         bean.getTask().setQuota(quota);
                     }
                 } else if (Q1 == reportTypeEnum && task.isDynamicQuota()) {
-                    task.setQuota(taskQuota.getQ1());
+                    bean.getTask().setQuota(taskQuota.getQ1());
                 } else if (Q2 == reportTypeEnum && task.isDynamicQuota()) {
-                    task.setQuota(taskQuota.getQ2());
+                    bean.getTask().setQuota(taskQuota.getQ2());
                 } else if (Q3 == reportTypeEnum && task.isDynamicQuota()) {
-                    task.setQuota(taskQuota.getQ3());
+                    bean.getTask().setQuota(taskQuota.getQ3());
                 } else if (Q4 == reportTypeEnum && task.isDynamicQuota()) {
-                    task.setQuota(taskQuota.getQ4());
+                    bean.getTask().setQuota(taskQuota.getQ4());
                 }
             }
             for (Station station : stations) {

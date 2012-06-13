@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
@@ -379,6 +380,23 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtQuotaQ2().clearInvalid();
                     view.getTxtQuotaQ3().clearInvalid();
                     view.getTxtQuotaQ4().clearInvalid();
+                }
+            }
+        });
+        view.getCbbTaskType().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<TaskTypeEnum>>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<TaskTypeEnum>> se) {
+                if(se.getSelectedItem() != null) {
+                    if (se.getSelectedItem().getValue() != DK) {
+                        view.getCbDynamicQuota().setEnabled(false);
+                        view.getCbDynamicQuota().setValue(false);
+                        view.getTxtQuotaQ1().clear();
+                        view.getTxtQuotaQ2().clear();
+                        view.getTxtQuotaQ3().clear();
+                        view.getTxtQuotaQ4().clear();
+                    } else {
+                        view.getCbDynamicQuota().setEnabled(true);
+                    }
                 }
             }
         });
