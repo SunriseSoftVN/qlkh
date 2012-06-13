@@ -95,7 +95,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     MyNumberField txtTaskDefault = new MyNumberField();
 
     @I18nField
-    CheckBox cbDynamicDefaultValue = new CheckBox();
+    CheckBox cbDynamicQuota = new CheckBox();
 
     @I18nField
     MyNumberField txtTaskQuota = new MyNumberField();
@@ -128,12 +128,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Button btnPickTaskChildOk = new Button();
 
     @I18nField
-    Button btnDefaultValueCancel = new Button();
-
-    @I18nField
-    Button btnDefaultValueOk = new Button();
-
-    @I18nField
     Button btnPickTaskChildCancel = new Button();
 
     @I18nField(emptyText = true)
@@ -152,16 +146,16 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
 
     @I18nField
-    TextField<String> txtDefaultQ1 = new TextField<String>();
+    MyNumberField txtQuotaQ1 = new MyNumberField();
 
     @I18nField
-    TextField<String> txtDefaultQ2 = new TextField<String>();
+    MyNumberField txtQuotaQ2 = new MyNumberField();
 
     @I18nField
-    TextField<String> txtDefaultQ3 = new TextField<String>();
+    MyNumberField txtQuotaQ3 = new MyNumberField();
 
     @I18nField
-    TextField<String> txtDefaultQ4 = new TextField<String>();
+    MyNumberField txtQuotaQ4 = new MyNumberField();
 
     TextField<String> txtFormCode = new TextField<String>();
 
@@ -170,14 +164,13 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private ContentPanel contentPanel = new ContentPanel();
     private PagingToolBar pagingToolBar;
     private Grid<BeanModel> taskGird;
-    private GridCellRenderer<BeanModel> taskChildOptionCellRenderer;
+    private GridCellRenderer<BeanModel> taskChildRenderer;
+    private GridCellRenderer<BeanModel> quotaRenderer;
 
     private FormPanel taskEditPanel = new FormPanel();
     private VerticalPanel addChildTaskPanel;
     private Grid<BeanModel> childTaskGrid;
     private ColumnModel childTaskColumnModel;
-
-    private FormPanel defaultValuePanel = new FormPanel();
 
     private Html warningMessage = new Html();
 
@@ -274,6 +267,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
                 TASK_QUOTA_WIDTH);
+        quotaColumnConfig.setRenderer(quotaRenderer);
         columnConfigs.add(quotaColumnConfig);
 
         ColumnConfig taskTypeCodeColumnConfig = new ColumnConfig(TASK_TYPE_CODE_COLUMN, getConstant().taskTypeCodeColumnTitle(),
@@ -298,7 +292,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         ColumnConfig taskChildOptionColumnConfig = new ColumnConfig(TASK_CHILD_OPTION_COLUMN,
                 getConstant().taskChildOptionColumnTitle(), TASK_CHILD_OPTION_WIDTH);
-        taskChildOptionColumnConfig.setRenderer(getTaskChildOptionCellRenderer());
+        taskChildOptionColumnConfig.setRenderer(taskChildRenderer);
         columnConfigs.add(taskChildOptionColumnConfig);
 
         return columnConfigs;
@@ -335,7 +329,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
             taskEditPanel.setHeaderVisible(false);
             taskEditPanel.setBodyBorder(false);
             taskEditPanel.setBorders(false);
-            taskEditPanel.setLabelWidth(120);
+            taskEditPanel.setLabelWidth(150);
         }
 
         if (!txtTaskCode.isRendered()) {
@@ -364,15 +358,47 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(txtTaskDefault);
 
-        taskEditPanel.add(cbDynamicDefaultValue);
-
         if (!txtTaskQuota.isRendered()) {
             txtTaskQuota.setSelectOnFocus(true);
             txtTaskQuota.setAllowBlank(false);
             txtTaskQuota.setAllowDecimals(false);
             txtTaskQuota.setAllowNegative(false);
         }
+
         taskEditPanel.add(txtTaskQuota);
+
+        taskEditPanel.add(cbDynamicQuota);
+
+        if (!cbbYear.isRendered()) {
+            for (int i = 2012; i < 2100; i++) {
+                cbbYear.add(i);
+            }
+            cbbYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+            //TODO remove @dungvn3000
+            cbbYear.setSimpleValue(2012);
+            cbbYear.setEditable(false);
+        }
+
+        taskEditPanel.add(cbbYear);
+
+        if (!txtQuotaQ1.isRendered()) {
+            txtQuotaQ1.setAllowBlank(false);
+        }
+        if (!txtQuotaQ2.isRendered()) {
+            txtQuotaQ2.setAllowBlank(false);
+        }
+        if (!txtQuotaQ3.isRendered()) {
+            txtQuotaQ3.setAllowBlank(false);
+        }
+        if (!txtQuotaQ4.isRendered()) {
+            txtQuotaQ4.setAllowBlank(false);
+        }
+
+        taskEditPanel.add(txtQuotaQ1);
+        taskEditPanel.add(txtQuotaQ2);
+        taskEditPanel.add(txtQuotaQ3);
+        taskEditPanel.add(txtQuotaQ4);
+
         if (!cbbTaskType.isRendered()) {
             cbbTaskType.setEditable(false);
             cbbTaskType.setAllowBlank(false);
@@ -390,7 +416,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.add(taskEditPanel);
         window.addButton(btnTaskEditOk);
         window.addButton(btnTaskEditCancel);
-        window.setSize(380, 250);
+        window.setSize(400, 250);
         window.setAutoHeight(true);
         window.setResizable(false);
         window.setModal(true);
@@ -398,42 +424,10 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                taskEditPanel.reset();
+                cbbYear.enableEvents(false);
+                taskEditPanel.clear();
+                cbbYear.enableEvents(true);
                 taskGird.focus();
-            }
-        });
-        return window;
-    }
-
-    public com.extjs.gxt.ui.client.widget.Window createDefaultValueWindow() {
-        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
-
-        if (!defaultValuePanel.isRendered()) {
-            defaultValuePanel.setHeaderVisible(false);
-            defaultValuePanel.setBodyBorder(false);
-            defaultValuePanel.setBorders(false);
-            defaultValuePanel.setLabelWidth(50);
-        }
-
-        defaultValuePanel.add(cbbYear);
-        defaultValuePanel.add(txtDefaultQ1);
-        defaultValuePanel.add(txtDefaultQ2);
-        defaultValuePanel.add(txtDefaultQ3);
-        defaultValuePanel.add(txtDefaultQ4);
-
-        window.add(defaultValuePanel);
-        window.addButton(btnDefaultValueOk);
-        window.addButton(btnDefaultValueCancel);
-        window.setAutoHeight(true);
-        window.setAutoWidth(true);
-        window.setResizable(false);
-        window.setModal(true);
-        window.setHeading(getConstant().addChildTaskPanel());
-        window.addWindowListener(new WindowListener() {
-            @Override
-            public void windowHide(WindowEvent we) {
-                cbbChildTask.reset();
-                childTaskGrid.focus();
             }
         });
         return window;
@@ -449,8 +443,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         hp.add(lblToCode);
         hp.add(txtToCode);
         window.add(hp);
-        window.addButton(btnDefaultValueOk);
-        window.addButton(btnDefaultValueCancel);
+        window.addButton(btnPickTaskChildOk);
+        window.addButton(btnPickTaskChildCancel);
         window.setAutoHeight(true);
         window.setAutoWidth(true);
         window.setResizable(false);
@@ -459,8 +453,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                cbbChildTask.reset();
-                childTaskGrid.focus();
+                taskGird.focus();
             }
         });
         return window;
@@ -517,7 +510,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
             @Override
             public void windowHide(WindowEvent we) {
                 cbbChildTask.reset();
-                childTaskGrid.focus();
+                taskGird.focus();
             }
         });
 
@@ -588,12 +581,12 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return cbbTaskType;
     }
 
-    public GridCellRenderer<BeanModel> getTaskChildOptionCellRenderer() {
-        return taskChildOptionCellRenderer;
+    public void setQuotaRenderer(GridCellRenderer<BeanModel> quotaRenderer) {
+        this.quotaRenderer = quotaRenderer;
     }
 
-    public void setTaskChildOptionCellRenderer(GridCellRenderer<BeanModel> taskChildOptionCellRenderer) {
-        this.taskChildOptionCellRenderer = taskChildOptionCellRenderer;
+    public void setTaskChildRenderer(GridCellRenderer<BeanModel> taskChildRenderer) {
+        this.taskChildRenderer = taskChildRenderer;
     }
 
     public ComboBox<BeanModel> getCbbChildTask() {
@@ -652,15 +645,27 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return txtToCode;
     }
 
-    public CheckBox getCbDynamicDefaultValue() {
-        return cbDynamicDefaultValue;
+    public CheckBox getCbDynamicQuota() {
+        return cbDynamicQuota;
     }
 
-    public Button getBtnDefaultValueCancel() {
-        return btnDefaultValueCancel;
+    public MyNumberField getTxtQuotaQ4() {
+        return txtQuotaQ4;
     }
 
-    public Button getBtnDefaultValueOk() {
-        return btnDefaultValueOk;
+    public MyNumberField getTxtQuotaQ1() {
+        return txtQuotaQ1;
+    }
+
+    public MyNumberField getTxtQuotaQ2() {
+        return txtQuotaQ2;
+    }
+
+    public MyNumberField getTxtQuotaQ3() {
+        return txtQuotaQ3;
+    }
+
+    public SimpleComboBox<Integer> getCbbYear() {
+        return cbbYear;
     }
 }

@@ -19,6 +19,6 @@
         <property name="quota" column="quota" not-null="true"/>
         <property name="taskTypeCode" column="taskTypeCode" not-null="true"/>
         <property name="childTasks" column="childTasks" />
-        <property name="dynamicDefaultValue" column="dynamicDefaultValue" not-null="true"/>
+        <property name="dynamicQuota" column="dynamicQuota" not-null="true"/>
     </class>
 </hibernate-mapping>

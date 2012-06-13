@@ -1,8 +1,8 @@
-ALTER TABLE `task`  ADD `dynamicDefaultValue` BOOL NOT NULL AFTER `defaultValue`;
+ALTER TABLE `task`  ADD `dynamicQuota` BOOL NOT NULL AFTER `quota`;
 ALTER TABLE `task` CHANGE `defaultValue` `defaultValue` DOUBLE NULL;
 ALTER TABLE `systemlog` CHANGE `id` `id` BIGINT(11) NOT NULL AUTO_INCREMENT;
 
-CREATE TABLE IF NOT EXISTS `taskdefaultvalue` (
+CREATE TABLE IF NOT EXISTS `taskquota` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `taskId` bigint(11) NOT NULL,
   `q1` double NOT NULL,
@@ -17,10 +17,12 @@ CREATE TABLE IF NOT EXISTS `taskdefaultvalue` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 
-ALTER TABLE `qlkh`.`taskdefaultvalue`
+ALTER TABLE `qlkh`.`taskquota`
   ADD CONSTRAINT `fk_taskdefaultvalue_task1`
   FOREIGN KEY (`taskId` )
   REFERENCES `qlkh`.`task` (`id` )
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_taskdefaultvalue_task1` (`taskId` ASC);
+
+ALTER TABLE `qlkh`.`taskquota` ADD UNIQUE `task_index` (`taskId`, `year`);

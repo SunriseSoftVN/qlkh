@@ -91,6 +91,7 @@ public class ReportView extends AbstractView<ReportConstant> {
             cbbYear.add(i);
         }
         cbbYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+        //TODO remove @dungvn3000
         cbbYear.setSimpleValue(2012);
         cbbYear.setWidth(60);
         cbbYear.setEditable(false);

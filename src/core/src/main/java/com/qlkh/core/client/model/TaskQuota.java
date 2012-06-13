@@ -12,7 +12,7 @@ import com.qlkh.core.client.model.core.AbstractEntity;
  * @author Nguyen Duc Dung
  * @since 6/13/12, 2:10 AM
  */
-public class TaskDefaultValue extends AbstractEntity {
+public class TaskQuota extends AbstractEntity {
 
     private Task task;
     private double q1;

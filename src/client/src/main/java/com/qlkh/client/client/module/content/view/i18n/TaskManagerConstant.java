@@ -49,6 +49,7 @@ public interface TaskManagerConstant extends Constants {
     String btnAddTaskChildOk();
     String btnAddTaskChildCancel();
     String addChildTaskPanel();
+    String quotaPanel();
     String btnAddTaskChild();
     String cbbChildTask();
     String btnDeleteTaskChild();
@@ -58,12 +59,10 @@ public interface TaskManagerConstant extends Constants {
     String lblFromCode();
     String lblToCode();
     String codeIsNotNumberOrTooShort();
-    String cbDynamicDefaultValue();
+    String cbDynamicQuota();
     String cbbYear();
-    String txtDefaultQ1();
-    String txtDefaultQ2();
-    String txtDefaultQ3();
-    String txtDefaultQ4();
-    String btnDefaultValueCancel();
-    String btnDefaultValueOk();
+    String txtQuotaQ1();
+    String txtQuotaQ2();
+    String txtQuotaQ3();
+    String txtQuotaQ4();
 }
