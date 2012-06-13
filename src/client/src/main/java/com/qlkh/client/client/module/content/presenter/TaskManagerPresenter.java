@@ -95,6 +95,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     @Override
                     public void onSuccess(GetServerTimeResult result) {
                         loadTaskQuota(currentTask, result.getYear());
+                        //Disable cbYear for new task.
+                        view.getCbbYear().setEnabled(false);
                         taskEditWindow.show();
                     }
                 });
@@ -362,7 +364,9 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             public void handleEvent(BaseEvent be) {
                 view.getTxtTaskQuota()
                         .setEnabled(!view.getCbDynamicQuota().getValue());
-                view.getCbbYear().setEnabled(view.getCbDynamicQuota().getValue());
+                if (currentTask != null && currentTask.getId() != null) {
+                    view.getCbbYear().setEnabled(view.getCbDynamicQuota().getValue());
+                }
                 view.getTxtQuotaQ1().setEnabled(view.getCbDynamicQuota().getValue());
                 view.getTxtQuotaQ2().setEnabled(view.getCbDynamicQuota().getValue());
                 view.getTxtQuotaQ3().setEnabled(view.getCbDynamicQuota().getValue());
@@ -375,6 +379,11 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             view.getCbbYear().setSimpleValue(result.getYear());
                         }
                     });
+                } else {
+                    view.getTxtQuotaQ1().clearInvalid();
+                    view.getTxtQuotaQ2().clearInvalid();
+                    view.getTxtQuotaQ3().clearInvalid();
+                    view.getTxtQuotaQ4().clearInvalid();
                 }
             }
         });

@@ -49,7 +49,6 @@ public interface TaskManagerConstant extends Constants {
     String btnAddTaskChildOk();
     String btnAddTaskChildCancel();
     String addChildTaskPanel();
-    String quotaPanel();
     String btnAddTaskChild();
     String cbbChildTask();
     String btnDeleteTaskChild();
