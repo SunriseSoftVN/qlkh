@@ -143,7 +143,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Label lblToCode = new Label();
 
     @I18nField
-    SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
+    MyNumberField txtYear = new MyNumberField();
 
     @I18nField
     MyNumberField txtQuotaQ1 = new MyNumberField();
@@ -369,17 +369,11 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         taskEditPanel.add(cbDynamicQuota);
 
-        if (!cbbYear.isRendered()) {
-            for (int i = 2012; i < 2100; i++) {
-                cbbYear.add(i);
-            }
-            cbbYear.setTriggerAction(ComboBox.TriggerAction.ALL);
-            //TODO remove @dungvn3000
-            cbbYear.setSimpleValue(2012);
-            cbbYear.setEditable(false);
+        if (!txtYear.isRendered()) {
+            txtYear.setEditable(false);
         }
 
-        taskEditPanel.add(cbbYear);
+        taskEditPanel.add(txtYear);
 
         if (!txtQuotaQ1.isRendered()) {
             txtQuotaQ1.setAllowBlank(false);
@@ -424,9 +418,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                cbbYear.enableEvents(false);
                 taskEditPanel.clear();
-                cbbYear.enableEvents(true);
                 taskGird.focus();
             }
         });
@@ -665,7 +657,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return txtQuotaQ3;
     }
 
-    public SimpleComboBox<Integer> getCbbYear() {
-        return cbbYear;
+    public MyNumberField getTxtYear() {
+        return txtYear;
     }
 }

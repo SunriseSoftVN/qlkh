@@ -9,7 +9,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
@@ -95,8 +94,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     @Override
                     public void onSuccess(GetServerTimeResult result) {
                         loadTaskQuota(currentTask, result.getYear());
-                        //Disable cbYear for new task.
-                        view.getCbbYear().setEnabled(false);
                         taskEditWindow.show();
                     }
                 });
@@ -123,7 +120,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
                     view.getCbDynamicQuota().setValue(selectedTask.isDynamicQuota());
-                    view.getCbbYear().setEnabled(view.getCbDynamicQuota().getValue());
+                    view.getTxtYear().setEnabled(view.getCbDynamicQuota().getValue());
                     view.getTxtQuotaQ1().setEnabled(view.getCbDynamicQuota().getValue());
                     view.getTxtQuotaQ2().setEnabled(view.getCbDynamicQuota().getValue());
                     view.getTxtQuotaQ3().setEnabled(view.getCbDynamicQuota().getValue());
@@ -242,7 +239,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     List entities = new ArrayList();
                     entities.add(currentTask);
                     if (view.getCbDynamicQuota().getValue()) {
-                        currentTaskQuota.setYear(view.getCbbYear().getSimpleValue());
+                        currentTaskQuota.setYear(view.getTxtYear().getValue().intValue());
                         currentTaskQuota.setQ1(view.getTxtQuotaQ1().getValue().doubleValue());
                         currentTaskQuota.setQ2(view.getTxtQuotaQ2().getValue().doubleValue());
                         currentTaskQuota.setQ3(view.getTxtQuotaQ3().getValue().doubleValue());
@@ -364,9 +361,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             public void handleEvent(BaseEvent be) {
                 view.getTxtTaskQuota()
                         .setEnabled(!view.getCbDynamicQuota().getValue());
-                if (currentTask != null && currentTask.getId() != null) {
-                    view.getCbbYear().setEnabled(view.getCbDynamicQuota().getValue());
-                }
+                view.getTxtYear().setEnabled(view.getCbDynamicQuota().getValue());
                 view.getTxtQuotaQ1().setEnabled(view.getCbDynamicQuota().getValue());
                 view.getTxtQuotaQ2().setEnabled(view.getCbDynamicQuota().getValue());
                 view.getTxtQuotaQ3().setEnabled(view.getCbDynamicQuota().getValue());
@@ -376,7 +371,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
                         @Override
                         public void onSuccess(GetServerTimeResult result) {
-                            view.getCbbYear().setSimpleValue(result.getYear());
+                            view.getTxtYear().setValue(result.getYear());
                         }
                     });
                 } else {
@@ -384,17 +379,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtQuotaQ2().clearInvalid();
                     view.getTxtQuotaQ3().clearInvalid();
                     view.getTxtQuotaQ4().clearInvalid();
-                }
-            }
-        });
-        view.getCbbYear().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<Integer>>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<Integer>> se) {
-                if (view.getTaskGird().getSelectionModel().getSelectedItem() != null) {
-                    Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
-                    if (selectedTask != null) {
-                        loadTaskQuota(selectedTask, se.getSelectedItem().getValue());
-                    }
                 }
             }
         });
@@ -440,7 +424,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             Task task = model.getBean();
             if (task != null) {
                 if (task.isDynamicQuota()) {
-                    return new Label("N");
+                    return new Label("Theo quý");
                 } else {
                     return new Label(String.valueOf(task.getQuota()));
                 }
@@ -451,17 +435,12 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     private void loadTaskQuota(final Task selectedTask, final Integer year) {
         if (selectedTask.getId() == null) {
-            currentTaskQuota = new TaskQuota();
-            currentTaskQuota.setCreateBy(1l);
-            currentTaskQuota.setUpdateBy(1l);
-            currentTaskQuota.setTask(selectedTask);
-            view.getCbbYear().enableEvents(false);
-            view.getCbbYear().setSimpleValue(year);
-            view.getCbbYear().enableEvents(true);
-            view.getTxtQuotaQ1().clear();
-            view.getTxtQuotaQ2().clear();
-            view.getTxtQuotaQ3().clear();
-            view.getTxtQuotaQ4().clear();
+            createTaskQuota(selectedTask, year);
+            view.getTxtYear().setEnabled(false);
+            view.getTxtQuotaQ1().setEnabled(false);
+            view.getTxtQuotaQ2().setEnabled(false);
+            view.getTxtQuotaQ3().setEnabled(false);
+            view.getTxtQuotaQ4().setEnabled(false);
         } else {
             dispatch.execute(new LoadAction(TaskQuota.class.getName(),
                     ClientRestrictions.eq("task.id", selectedTask.getId()), ClientRestrictions.eq("year", year)),
@@ -469,22 +448,10 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         @Override
                         public void onSuccess(LoadResult result) {
                             if (CollectionsUtils.isEmpty(result.getList())) {
-                                currentTaskQuota = new TaskQuota();
-                                currentTaskQuota.setCreateBy(1l);
-                                currentTaskQuota.setUpdateBy(1l);
-                                currentTaskQuota.setTask(selectedTask);
-                                view.getCbbYear().enableEvents(false);
-                                view.getCbbYear().setSimpleValue(year);
-                                view.getCbbYear().enableEvents(true);
-                                view.getTxtQuotaQ1().clear();
-                                view.getTxtQuotaQ2().clear();
-                                view.getTxtQuotaQ3().clear();
-                                view.getTxtQuotaQ4().clear();
+                                createTaskQuota(selectedTask, year);
                             } else {
                                 currentTaskQuota = (TaskQuota) result.getList().get(0);
-                                view.getCbbYear().enableEvents(false);
-                                view.getCbbYear().setSimpleValue(currentTaskQuota.getYear());
-                                view.getCbbYear().enableEvents(true);
+                                view.getTxtYear().setValue(currentTaskQuota.getYear());
                                 view.getTxtQuotaQ1().setValue(currentTaskQuota.getQ1());
                                 view.getTxtQuotaQ2().setValue(currentTaskQuota.getQ2());
                                 view.getTxtQuotaQ3().setValue(currentTaskQuota.getQ3());
@@ -493,6 +460,18 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         }
                     });
         }
+    }
+
+    private void createTaskQuota(final Task selectedTask, final Integer year) {
+        currentTaskQuota = new TaskQuota();
+        currentTaskQuota.setCreateBy(1l);
+        currentTaskQuota.setUpdateBy(1l);
+        currentTaskQuota.setTask(selectedTask);
+        view.getTxtYear().setValue(year);
+        view.getTxtQuotaQ1().clear();
+        view.getTxtQuotaQ2().clear();
+        view.getTxtQuotaQ3().clear();
+        view.getTxtQuotaQ4().clear();
     }
 
     private Anchor createPickTaskRangeAnchor() {

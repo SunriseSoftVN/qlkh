@@ -59,7 +59,7 @@ public interface TaskManagerConstant extends Constants {
     String lblToCode();
     String codeIsNotNumberOrTooShort();
     String cbDynamicQuota();
-    String cbbYear();
+    String txtYear();
     String txtQuotaQ1();
     String txtQuotaQ2();
     String txtQuotaQ3();
