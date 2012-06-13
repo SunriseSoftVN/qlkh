@@ -240,10 +240,10 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     entities.add(currentTask);
                     if (view.getCbDynamicQuota().getValue()) {
                         currentTaskQuota.setYear(view.getTxtYear().getValue().intValue());
-                        currentTaskQuota.setQ1(view.getTxtQuotaQ1().getValue().doubleValue());
-                        currentTaskQuota.setQ2(view.getTxtQuotaQ2().getValue().doubleValue());
-                        currentTaskQuota.setQ3(view.getTxtQuotaQ3().getValue().doubleValue());
-                        currentTaskQuota.setQ4(view.getTxtQuotaQ4().getValue().doubleValue());
+                        currentTaskQuota.setQ1(view.getTxtQuotaQ1().getValue().intValue());
+                        currentTaskQuota.setQ2(view.getTxtQuotaQ2().getValue().intValue());
+                        currentTaskQuota.setQ3(view.getTxtQuotaQ3().getValue().intValue());
+                        currentTaskQuota.setQ4(view.getTxtQuotaQ4().getValue().intValue());
                         entities.add(currentTaskQuota);
                     }
 

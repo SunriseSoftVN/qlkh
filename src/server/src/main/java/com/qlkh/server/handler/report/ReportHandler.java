@@ -20,6 +20,7 @@ import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.Task;
+import com.qlkh.core.client.model.TaskQuota;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
@@ -51,7 +52,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
-import static com.qlkh.core.client.constant.ReportTypeEnum.CA_NAM;
+import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -271,6 +272,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         List<TaskDetailDKDataView> subAnnualTaskDetails = sqlQueryDao
                 .getTaskDetailDK(stationIds, currentYear);
         List<TaskDetailNamDataView> taskDetailNams = sqlQueryDao.getTaskDetailNam(stationIds, currentYear);
+        List<TaskQuota> taskQuotas = generalDao.getAll(TaskQuota.class);
 
         List<SumReportBean> beans = new ArrayList<SumReportBean>();
         List<SumReportBean> parentBeans = new ArrayList<SumReportBean>();
@@ -278,15 +280,34 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         for (Task task : tasks) {
             SumReportBean bean = new SumReportBean();
             bean.setTask(task);
-            if (CA_NAM == reportTypeEnum && task.getTaskTypeCode() == TaskTypeEnum.DK.getCode()) {
-                //Because time of DK task will be count four time for all year.
-                int quota = bean.getTask().getQuota() * 4;
-                bean.getTask().setQuota(quota);
+            if (task.getTaskTypeCode() == TaskTypeEnum.DK.getCode()) {
+                List<TaskQuota> select = select(taskQuotas,
+                        having(on(TaskQuota.class).getTask().getId(), equalTo(task.getId())));
+                TaskQuota taskQuota = selectMax(select, on(TaskQuota.class).getYear());
+                if (CA_NAM == reportTypeEnum) {
+                    if (!bean.getTask().isDynamicQuota()) {
+                        //Because time of DK task will be count four time for all year.
+                        int quota = bean.getTask().getQuota() * 4;
+                        bean.getTask().setQuota(quota);
+                    } else {
+                        int quota = taskQuota.getQ1() + taskQuota.getQ2()
+                                + taskQuota.getQ3() + taskQuota.getQ4();
+                        bean.getTask().setQuota(quota);
+                    }
+                } else if (Q1 == reportTypeEnum && task.isDynamicQuota()) {
+                    task.setQuota(taskQuota.getQ1());
+                } else if (Q2 == reportTypeEnum && task.isDynamicQuota()) {
+                    task.setQuota(taskQuota.getQ2());
+                } else if (Q3 == reportTypeEnum && task.isDynamicQuota()) {
+                    task.setQuota(taskQuota.getQ3());
+                } else if (Q4 == reportTypeEnum && task.isDynamicQuota()) {
+                    task.setQuota(taskQuota.getQ4());
+                }
             }
             for (Station station : stations) {
                 StationReportBean stationReport = calculateForStation(bean.getTask(), station,
                         branchId, reportTypeEnum,
-                        subTaskDetails, subAnnualTaskDetails, taskDetailNams);
+                        subTaskDetails, subAnnualTaskDetails, taskDetailNams, taskQuotas);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
             beans.add(bean);
@@ -401,7 +422,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                                                   Long branchId, ReportTypeEnum reportTypeEnum,
                                                   List<TaskDetailKDKDataView> taskDetailKDKs,
                                                   List<TaskDetailDKDataView> taskDetailDKs,
-                                                  List<TaskDetailNamDataView> taskDetailNams) {
+                                                  List<TaskDetailNamDataView> taskDetailNams,
+                                                  List<TaskQuota> taskQuotas) {
         StationReportBean stationReport = new StationReportBean();
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
