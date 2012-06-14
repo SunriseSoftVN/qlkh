@@ -10,6 +10,7 @@ import ar.com.fdvs.dj.domain.DynamicReport;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.*;
+import com.google.common.base.Preconditions;
 import com.qlkh.client.client.utils.NumberUtils;
 import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.report.ReportAction;
@@ -55,6 +56,7 @@ import static ch.lambdaj.Lambda.*;
 import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
@@ -281,28 +283,34 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             SumReportBean bean = new SumReportBean();
             bean.setTask(task);
             if (task.getTaskTypeCode() == TaskTypeEnum.DK.getCode()) {
-                List<TaskQuota> select = select(taskQuotas,
-                        having(on(TaskQuota.class).getTask().getId(), equalTo(task.getId())));
-                TaskQuota taskQuota = selectMax(select, on(TaskQuota.class).getYear());
-                if (CA_NAM == reportTypeEnum) {
-                    if (!bean.getTask().isDynamicQuota()) {
-                        //Because time of DK task will be count four time for all year.
-                        int quota = bean.getTask().getQuota() * 4;
-                        bean.getTask().setQuota(quota);
-                    } else {
+                if (task.isDynamicQuota()) {
+                    List<TaskQuota> select = select(taskQuotas,
+                            having(on(TaskQuota.class).getTask().getId(), equalTo(task.getId())).
+                                    and(having(on(TaskQuota.class).getYear(), lessThanOrEqualTo(currentYear))));
+                    TaskQuota taskQuota = selectMax(select, on(TaskQuota.class).getYear());
+                    Preconditions.checkNotNull(taskQuota, "No task quota for this task's id "
+                            + task.getId() + " in year " + currentYear);
+                    if (CA_NAM == reportTypeEnum) {
                         int quota = taskQuota.getQ1() + taskQuota.getQ2()
                                 + taskQuota.getQ3() + taskQuota.getQ4();
                         bean.getTask().setQuota(quota);
+                    } else if (Q1 == reportTypeEnum) {
+                        bean.getTask().setQuota(taskQuota.getQ1());
+                    } else if (Q2 == reportTypeEnum) {
+                        bean.getTask().setQuota(taskQuota.getQ2());
+                    } else if (Q3 == reportTypeEnum) {
+                        bean.getTask().setQuota(taskQuota.getQ3());
+                    } else if (Q4 == reportTypeEnum) {
+                        bean.getTask().setQuota(taskQuota.getQ4());
                     }
-                } else if (Q1 == reportTypeEnum && task.isDynamicQuota()) {
-                    bean.getTask().setQuota(taskQuota.getQ1());
-                } else if (Q2 == reportTypeEnum && task.isDynamicQuota()) {
-                    bean.getTask().setQuota(taskQuota.getQ2());
-                } else if (Q3 == reportTypeEnum && task.isDynamicQuota()) {
-                    bean.getTask().setQuota(taskQuota.getQ3());
-                } else if (Q4 == reportTypeEnum && task.isDynamicQuota()) {
-                    bean.getTask().setQuota(taskQuota.getQ4());
+                } else {
+                    if (CA_NAM == reportTypeEnum) {
+                        //Because time of DK task will be count four time for all year.
+                        int quota = bean.getTask().getQuota() * 4;
+                        bean.getTask().setQuota(quota);
+                    }
                 }
+
             }
             for (Station station : stations) {
                 StationReportBean stationReport = calculateForStation(bean.getTask(), station,
