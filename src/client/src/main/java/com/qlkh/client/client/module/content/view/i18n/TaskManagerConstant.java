@@ -64,4 +64,8 @@ public interface TaskManagerConstant extends Constants {
     String txtQuotaQ2();
     String txtQuotaQ3();
     String txtQuotaQ4();
+    String txtDefaultValue();
+    String changeDefaultValueTitle();
+    String btnDefaultValueCancel();
+    String btnDefaultValueOk();
 }

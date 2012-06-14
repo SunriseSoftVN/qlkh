@@ -130,6 +130,12 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     @I18nField
     Button btnPickTaskChildCancel = new Button();
 
+    @I18nField
+    Button btnDefaultValueOk = new Button();
+
+    @I18nField
+    Button btnDefaultValueCancel = new Button();
+
     @I18nField(emptyText = true)
     TextField<String> txtNameSearch = new TextField<String>();
 
@@ -157,6 +163,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     @I18nField
     MyNumberField txtQuotaQ4 = new MyNumberField();
 
+    @I18nField
+    MyNumberField txtDefaultValue = new MyNumberField();
+
     TextField<String> txtFormCode = new TextField<String>();
 
     TextField<String> txtToCode = new TextField<String>();
@@ -171,6 +180,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private VerticalPanel addChildTaskPanel;
     private Grid<BeanModel> childTaskGrid;
     private ColumnModel childTaskColumnModel;
+
+    private FormPanel defaultValuePanel = new FormPanel();
+
 
     private Html warningMessage = new Html();
 
@@ -425,6 +437,41 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return window;
     }
 
+    public com.extjs.gxt.ui.client.widget.Window createChangeTaskDefaultWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!defaultValuePanel.isRendered()) {
+            defaultValuePanel.setHeaderVisible(false);
+            defaultValuePanel.setBodyBorder(false);
+            defaultValuePanel.setBorders(false);
+            defaultValuePanel.setLabelWidth(150);
+        }
+
+        if(!txtDefaultValue.isRendered()) {
+            txtDefaultValue.setSelectOnFocus(true);
+            txtDefaultValue.setAllowBlank(false);
+        }
+
+        defaultValuePanel.add(txtDefaultValue);
+
+        window.add(defaultValuePanel);
+        window.addButton(btnDefaultValueOk);
+        window.addButton(btnDefaultValueCancel);
+        window.setFocusWidget(txtDefaultValue);
+        window.setAutoHeight(true);
+        window.setAutoWidth(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().changeDefaultValueTitle());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                defaultValuePanel.clear();
+                taskGird.focus();
+            }
+        });
+        return window;
+    }
+
     public com.extjs.gxt.ui.client.widget.Window createPickTaskRangeWindow() {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         HorizontalPanel hp = new HorizontalPanel();
@@ -659,5 +706,21 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public MyNumberField getTxtYear() {
         return txtYear;
+    }
+
+    public Button getBtnDefaultValueOk() {
+        return btnDefaultValueOk;
+    }
+
+    public Button getBtnDefaultValueCancel() {
+        return btnDefaultValueCancel;
+    }
+
+    public MyNumberField getTxtDefaultValue() {
+        return txtDefaultValue;
+    }
+
+    public FormPanel getDefaultValuePanel() {
+        return defaultValuePanel;
     }
 }

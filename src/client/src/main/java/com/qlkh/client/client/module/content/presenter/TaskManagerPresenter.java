@@ -32,10 +32,7 @@ import com.qlkh.core.client.action.core.LoadAction;
 import com.qlkh.core.client.action.core.LoadResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.task.CanEditAction;
-import com.qlkh.core.client.action.task.CanEditResult;
-import com.qlkh.core.client.action.task.DeleteTaskAction;
-import com.qlkh.core.client.action.task.DeleteTaskResult;
+import com.qlkh.core.client.action.task.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.TaskTypeEnum;
@@ -72,6 +69,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     private Window taskEditWindow;
     private Window addChildTaskWindow;
     private Window pickChildTaskWindow;
+    private Window defaultValueWindow;
     private Task currentTask;
     private TaskQuota currentTaskQuota;
 
@@ -405,6 +403,33 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 }
             }
         });
+        view.getBtnDefaultValueCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                defaultValueWindow.hide();
+            }
+        });
+        view.getBtnDefaultValueOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                if (selectedTask != null) {
+                    TaskDefaultValue taskDefaultValue = new TaskDefaultValue();
+                    taskDefaultValue.setTask(selectedTask);
+                    taskDefaultValue.setCreateBy(1l);
+                    taskDefaultValue.setUpdateBy(1l);
+                    taskDefaultValue.setDefaultValue(view.getTxtDefaultValue().
+                            getValue().doubleValue());
+                    dispatch.execute(new SaveAction(taskDefaultValue), new AbstractAsyncCallback<SaveResult>() {
+                        @Override
+                        public void onSuccess(SaveResult result) {
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            defaultValueWindow.hide();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void updateGrid(Task task) {
@@ -436,7 +461,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             } else if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUBSUM.getCode()) {
                 return createPickTaskRangeAnchor();
             }
-            return null;
+            return createChangeDefaultValueAnchor();
         }
     }
 
@@ -495,6 +520,30 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getTxtQuotaQ2().clear();
         view.getTxtQuotaQ3().clear();
         view.getTxtQuotaQ4().clear();
+    }
+
+    private Anchor createChangeDefaultValueAnchor() {
+        Anchor anchor = new Anchor(view.getConstant().taskChildOptionAnchor());
+        anchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                if (selectedTask != null) {
+                    dispatch.execute(new LoadTaskDefaultAction(selectedTask.getId()),
+                            new AbstractAsyncCallback<LoadTaskDefaultResult>() {
+                                @Override
+                                public void onSuccess(LoadTaskDefaultResult result) {
+                                    if (result.getTaskDefaultValue() != null) {
+                                        view.getTxtDefaultValue().setValue(result.getTaskDefaultValue().getDefaultValue());
+                                    }
+                                    defaultValueWindow = view.createChangeTaskDefaultWindow();
+                                    defaultValueWindow.show();
+                                }
+                            });
+                }
+            }
+        });
+        return anchor;
     }
 
     private Anchor createPickTaskRangeAnchor() {

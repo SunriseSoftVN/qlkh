@@ -24,6 +24,7 @@
                 <bean class="com.qlkh.server.handler.station.LockStationHandler"/>
                 <bean class="com.qlkh.server.handler.task.CanEditHandler"/>
                 <bean class="com.qlkh.server.handler.task.DeleteTaskHandler"/>
+                <bean class="com.qlkh.server.handler.task.LoadTaskDefaultHandler"/>
             </list>
         </property>
     </bean>
