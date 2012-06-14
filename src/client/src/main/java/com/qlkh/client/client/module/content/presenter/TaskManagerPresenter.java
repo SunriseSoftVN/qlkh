@@ -28,9 +28,14 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.client.client.utils.NumberUtils;
 import com.qlkh.client.client.utils.TaskCodeUtils;
-import com.qlkh.core.client.action.core.*;
+import com.qlkh.core.client.action.core.LoadAction;
+import com.qlkh.core.client.action.core.LoadResult;
+import com.qlkh.core.client.action.core.SaveAction;
+import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.task.CanEditAction;
 import com.qlkh.core.client.action.task.CanEditResult;
+import com.qlkh.core.client.action.task.DeleteTaskAction;
+import com.qlkh.core.client.action.task.DeleteTaskResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.TaskTypeEnum;
@@ -386,7 +391,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         view.getCbbTaskType().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<TaskTypeEnum>>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<TaskTypeEnum>> se) {
-                if(se.getSelectedItem() != null) {
+                if (se.getSelectedItem() != null) {
                     if (se.getSelectedItem().getValue() != DK) {
                         view.getCbDynamicQuota().setEnabled(false);
                         view.getCbDynamicQuota().setValue(false);
@@ -582,15 +587,28 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     private void showDeleteTagConform(final List<Long> taskIds, String tagName) {
         assert taskIds != null;
         String deleteMessage;
-        final AsyncCallback<DeleteResult> callback = new AbstractAsyncCallback<DeleteResult>() {
+        final AsyncCallback<DeleteTaskResult> callback = new AbstractAsyncCallback<DeleteTaskResult>() {
             @Override
-            public void onSuccess(DeleteResult result) {
-                if (result.isDelete()) {
+            public void onSuccess(DeleteTaskResult result) {
+                if (result.isDeleted()) {
                     //Reload grid.
                     view.getPagingToolBar().refresh();
                     DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
                 } else {
-                    DiaLogUtils.showMessage(view.getConstant().deleteTaskMessageError());
+                    DiaLogUtils.conform(view.getConstant().deleteTaskMessageError(), new Listener<MessageBoxEvent>() {
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (be.getButtonClicked().getText().equals("Yes")) {
+                                dispatch.execute(new DeleteTaskAction(taskIds, true), new AbstractAsyncCallback<DeleteTaskResult>() {
+                                    @Override
+                                    public void onSuccess(DeleteTaskResult result) {
+                                        view.getPagingToolBar().refresh();
+                                        DiaLogUtils.notify(view.getConstant().deleteTaskMessageSuccess());
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             }
         };
@@ -605,13 +623,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    if (hasManyTag) {
-                        dispatch.execute(new DeleteAction(Task.class.getName(), taskIds,
-                                RELATE_ENTITY_NAMES), callback);
-                    } else {
-                        dispatch.execute(new DeleteAction(Task.class.getName(), taskIds.get(0),
-                                RELATE_ENTITY_NAMES), callback);
-                    }
+                    dispatch.execute(new DeleteTaskAction(taskIds), callback);
                 }
             }
         });

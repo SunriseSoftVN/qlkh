@@ -23,6 +23,7 @@
                 <bean class="com.qlkh.server.handler.time.GetServerTimeHandler"/>
                 <bean class="com.qlkh.server.handler.station.LockStationHandler"/>
                 <bean class="com.qlkh.server.handler.task.CanEditHandler"/>
+                <bean class="com.qlkh.server.handler.task.DeleteTaskHandler"/>
             </list>
         </property>
     </bean>
