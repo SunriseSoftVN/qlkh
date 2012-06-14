@@ -26,3 +26,15 @@ ALTER TABLE `qlkh`.`taskquota`
 , ADD INDEX `fk_taskdefaultvalue_task1` (`taskId` ASC);
 
 ALTER TABLE `qlkh`.`taskquota` ADD UNIQUE `task_index` (`taskId`, `year`);
+
+
+CREATE TABLE IF NOT EXISTS `taskdefaultvalue` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `taskId` bigint(11) NOT NULL,
+  `defaultValue` double NOT NULL,
+  `createBy` bigint(20) NOT NULL,
+  `updateBy` bigint(20) NOT NULL,
+  `createdDate` date NOT NULL,
+  `updatedDate` date NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
