@@ -6,12 +6,12 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailDK;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
+import com.qlkh.client.client.widget.DefaultAggregationRenderer;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -91,15 +91,7 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
         AggregationRowConfig<BeanModel> sumRow = new AggregationRowConfig<BeanModel>();
         sumRow.setHtml(DECREASE_VALUE_COLUMN, getConstant().sumKLTitle());
         sumRow.setSummaryType(REAL_VALUE_COLUMN, SummaryType.SUM);
-        sumRow.setRenderer(REAL_VALUE_COLUMN, new AggregationRenderer<BeanModel>() {
-            @Override
-            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid, ListStore<BeanModel> beanModelListStore) {
-                if (value != null) {
-                    return "<p style='font-size:14px;'><b>" + value.doubleValue() + "</b></p>";
-                }
-                return null;
-            }
-        });
+        sumRow.setRenderer(REAL_VALUE_COLUMN, new DefaultAggregationRenderer());
         columnModel.addAggregationRow(sumRow);
         return columnModel;
     }
