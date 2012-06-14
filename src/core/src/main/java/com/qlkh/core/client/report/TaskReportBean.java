@@ -24,7 +24,6 @@ public class TaskReportBean implements Serializable {
     private Integer quota;
     private int taskTypeCode;
     private String childTasks;
-    private boolean dynamicQuota;
 
     public TaskReportBean() {
     }
@@ -38,7 +37,6 @@ public class TaskReportBean implements Serializable {
         quota = task.getQuota();
         taskTypeCode = task.getTaskTypeCode();
         childTasks = task.getChildTasks();
-        dynamicQuota = task.isDynamicQuota();
     }
 
     public long getId() {
@@ -103,9 +101,5 @@ public class TaskReportBean implements Serializable {
 
     public void setChildTasks(String childTasks) {
         this.childTasks = childTasks;
-    }
-
-    public boolean isDynamicQuota() {
-        return dynamicQuota;
     }
 }

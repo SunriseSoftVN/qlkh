@@ -12,7 +12,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -25,6 +28,7 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskManagerConstant;
 import com.qlkh.client.client.module.content.view.security.TaskManagerSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
+import com.qlkh.client.client.widget.MyFormPanel;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Task;
@@ -93,9 +97,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     @I18nField
     MyNumberField txtTaskDefault = new MyNumberField();
-
-    @I18nField
-    CheckBox cbDynamicQuota = new CheckBox();
 
     @I18nField
     MyNumberField txtTaskQuota = new MyNumberField();
@@ -176,7 +177,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private GridCellRenderer<BeanModel> taskChildRenderer;
     private GridCellRenderer<BeanModel> quotaRenderer;
 
-    private FormPanel taskEditPanel = new FormPanel();
+    private MyFormPanel taskEditPanel = new MyFormPanel();
     private VerticalPanel addChildTaskPanel;
     private Grid<BeanModel> childTaskGrid;
     private ColumnModel childTaskColumnModel;
@@ -379,12 +380,10 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         taskEditPanel.add(txtTaskQuota);
 
-        taskEditPanel.add(cbDynamicQuota);
-
         if (!txtYear.isRendered()) {
             txtYear.setEditable(false);
+            txtYear.setEnabled(false);
         }
-
         taskEditPanel.add(txtYear);
 
         if (!txtQuotaQ1.isRendered()) {
@@ -584,7 +583,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return txtNameSearch;
     }
 
-    public FormPanel getTaskEditPanel() {
+    public MyFormPanel getTaskEditPanel() {
         return taskEditPanel;
     }
 
@@ -684,10 +683,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return txtToCode;
     }
 
-    public CheckBox getCbDynamicQuota() {
-        return cbDynamicQuota;
-    }
-
     public MyNumberField getTxtQuotaQ4() {
         return txtQuotaQ4;
     }
@@ -718,9 +713,5 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public MyNumberField getTxtDefaultValue() {
         return txtDefaultValue;
-    }
-
-    public FormPanel getDefaultValuePanel() {
-        return defaultValuePanel;
     }
 }
