@@ -4,8 +4,6 @@
 
 package com.qlkh.client.client.module.content.view.i18n;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
-
 /**
  * The Class TaskDetailConstant.
  *
@@ -33,4 +31,5 @@ public interface TaskDetailKDKConstant extends TaskDetailDKConstant {
     String branchNameColumnTitle();
     String taskQuotaColumnTitle();
     String lockMessage();
+    String sumKLTitle();
 }

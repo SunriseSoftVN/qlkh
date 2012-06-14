@@ -34,4 +34,5 @@ public interface TaskDetailNamConstant extends TaskDetailDKConstant {
     String q2ColumnTitle();
     String q3ColumnTitle();
     String q4ColumnTitle();
+    String sumKLTitle();
 }

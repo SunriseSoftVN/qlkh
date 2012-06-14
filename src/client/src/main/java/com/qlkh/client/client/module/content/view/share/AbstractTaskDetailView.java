@@ -186,8 +186,7 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
     public void createSubTaskGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        subTaskDetailGird = new EditorGrid<BeanModel>(listStore,
-                new ColumnModel(createSubTaskColumnConfigs()));
+        subTaskDetailGird = new EditorGrid<BeanModel>(listStore, createSubTaskModel());
         subTaskDetailGird.setBorders(true);
         subTaskDetailGird.setLoadMask(true);
         subTaskDetailGird.setStripeRows(true);
@@ -212,13 +211,14 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
         toolBar.add(btnSubTaskSave);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnSubTaskRefresh);
+        subTaskPanel.setTopComponent(toolBar);
+
         subTaskPanel.setBodyBorder(false);
         subTaskPanel.setHeaderVisible(false);
         subTaskPanel.setHeight(Window.getClientHeight() - 90);
         subTaskPanel.setLayout(new FitLayout());
         subTaskPanel.setWidth("50%");
         subTaskPanel.add(subTaskDetailGird);
-        subTaskPanel.setTopComponent(toolBar);
         subTaskPanel.setBottomComponent(subTaskPagingToolBar);
         contentPanel.add(subTaskPanel, new RowData(-1, 1));
         contentPanel.layout();
@@ -238,6 +238,10 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
     public Button getBtnSubTaskRefresh() {
         return btnSubTaskRefresh;
+    }
+
+    protected ColumnModel createSubTaskModel() {
+        return new ColumnModel(createSubTaskColumnConfigs());
     }
 
     protected List<ColumnConfig> createSubTaskColumnConfigs() {

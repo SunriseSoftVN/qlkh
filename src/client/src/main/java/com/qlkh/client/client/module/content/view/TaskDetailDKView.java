@@ -5,9 +5,9 @@
 package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.SummaryColumnConfig;
+import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailDK;
@@ -83,5 +83,24 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
 
     public void setCurrentYear(int currentYear) {
         this.currentYear = currentYear;
+    }
+
+    @Override
+    protected ColumnModel createSubTaskModel() {
+        ColumnModel columnModel = super.createSubTaskModel();
+        AggregationRowConfig<BeanModel> sumRow = new AggregationRowConfig<BeanModel>();
+        sumRow.setHtml(DECREASE_VALUE_COLUMN, getConstant().sumKLTitle());
+        sumRow.setSummaryType(REAL_VALUE_COLUMN, SummaryType.SUM);
+        sumRow.setRenderer(REAL_VALUE_COLUMN, new AggregationRenderer<BeanModel>() {
+            @Override
+            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid, ListStore<BeanModel> beanModelListStore) {
+                if (value != null) {
+                    return "<p style='font-size:14px;'><b>" + value.doubleValue() + "</b></p>";
+                }
+                return null;
+            }
+        });
+        columnModel.addAggregationRow(sumRow);
+        return columnModel;
     }
 }

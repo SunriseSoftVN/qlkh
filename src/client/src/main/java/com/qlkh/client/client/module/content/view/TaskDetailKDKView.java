@@ -4,14 +4,17 @@
 
 package com.qlkh.client.client.module.content.view;
 
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailKDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskDetailKDKSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
 import com.qlkh.client.client.widget.MyNumberField;
+import com.qlkh.core.client.model.TaskDetailKDK;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
 import java.util.ArrayList;
@@ -85,6 +88,81 @@ public class TaskDetailKDKView extends AbstractTaskDetailView<TaskDetailKDKConst
         columnConfigs.add(q4ColumnConfig);
 
         return columnConfigs;
+    }
+
+    @Override
+    protected ColumnModel createSubTaskModel() {
+        ColumnModel columnModel = super.createSubTaskModel();
+        AggregationRowConfig<BeanModel> sumRow = new AggregationRowConfig<BeanModel>();
+        sumRow.setRenderer(BRANCH_NAME_COLUMN, new AggregationRenderer<BeanModel>() {
+            @Override
+            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid,
+                                 ListStore<BeanModel> beanModelListStore) {
+                Double sum = 0d;
+                for (BeanModel beanModel : beanModelListStore.getModels()) {
+                    TaskDetailKDK taskDetailKDK = beanModel.getBean();
+                    if (taskDetailKDK.getQ1() != null) {
+                        sum += taskDetailKDK.getQ1();
+                    }
+                    if (taskDetailKDK.getQ2() != null) {
+                        sum += taskDetailKDK.getQ2();
+                    }
+                    if (taskDetailKDK.getQ3() != null) {
+                        sum += taskDetailKDK.getQ3();
+                    }
+                    if (taskDetailKDK.getQ4() != null) {
+                        sum += taskDetailKDK.getQ4();
+                    }
+                }
+                if (sum == 0) {
+                    sum = null;
+                }
+                return StringUtils.substitute(getConstant().sumKLTitle(), sum);
+            }
+        });
+        sumRow.setSummaryType(Q1_UNIT_COLUMN, SummaryType.SUM);
+        sumRow.setRenderer(Q1_UNIT_COLUMN, new AggregationRenderer<BeanModel>() {
+            @Override
+            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid, ListStore<BeanModel> beanModelListStore) {
+                if(value != null) {
+                    return "<p style='font-size:14px;'>" + value.doubleValue() + "</p>";
+                }
+                return null;
+            }
+        });
+        sumRow.setSummaryType(Q2_UNIT_COLUMN, SummaryType.SUM);
+        sumRow.setRenderer(Q2_UNIT_COLUMN, new AggregationRenderer<BeanModel>() {
+            @Override
+            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid, ListStore<BeanModel> beanModelListStore) {
+                if(value != null) {
+                    return "<p style='font-size:14px;'>" + value.doubleValue() + "</p>";
+                }
+                return null;
+            }
+        });
+        sumRow.setSummaryType(Q3_UNIT_COLUMN, SummaryType.SUM);
+        sumRow.setRenderer(Q3_UNIT_COLUMN, new AggregationRenderer<BeanModel>() {
+            @Override
+            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid, ListStore<BeanModel> beanModelListStore) {
+                if(value != null) {
+                    return "<p style='font-size:14px;'>" + value.doubleValue() + "</p>";
+                }
+                return null;
+            }
+        });
+        sumRow.setSummaryType(Q4_UNIT_COLUMN, SummaryType.SUM);
+        sumRow.setRenderer(Q4_UNIT_COLUMN, new AggregationRenderer<BeanModel>() {
+            @Override
+            public Object render(Number value, int colIndex, Grid<BeanModel> beanModelGrid, ListStore<BeanModel> beanModelListStore) {
+                if(value != null) {
+                    return "<p style='font-size:14px;'>" + value.doubleValue() + "</p>";
+                }
+                return null;
+            }
+        });
+
+        columnModel.addAggregationRow(sumRow);
+        return columnModel;
     }
 
     public void setQ1Lock(boolean q1Lock) {

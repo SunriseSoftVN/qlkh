@@ -33,4 +33,5 @@ public interface TaskDetailDKConstant extends Constants {
     String btnSubTaskRefresh();
     String branchNameColumnTitle();
     String lockMessage();
+    String sumKLTitle();
 }
