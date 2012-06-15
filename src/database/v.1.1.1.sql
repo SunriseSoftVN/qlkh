@@ -1,4 +1,4 @@
-ALTER TABLE `task` CHANGE `defaultValue` `defaultValue` DOUBLE NULL;
+ALTER TABLE `task` CHANGE `quota` `quota` INT(11) NULL
 ALTER TABLE `systemlog` CHANGE `id` `id` BIGINT(11) NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE IF NOT EXISTS `taskquota` (

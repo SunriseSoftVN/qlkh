@@ -98,6 +98,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     public void onSuccess(GetServerTimeResult result) {
                         loadTaskQuota(currentTask, result.getYear());
                         taskEditWindow.show();
+                        view.getTxtTaskQuota().setVisible(false);
+                        taskEditWindow.layout(true);
                     }
                 });
             }
@@ -119,7 +121,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskName().setValue(selectedTask.getName());
                     view.getTxtTaskUnit().setValue(selectedTask.getUnit());
                     view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
-                    view.getTxtTaskQuota().setValue(selectedTask.getQuota());
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
                     currentTask = selectedTask;
@@ -136,6 +137,17 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                                     view.getCbbTaskType().setEnabled(result.isEditable());
                                     view.getWarningMessage().setVisible(!result.isEditable());
                                     taskEditWindow.show();
+                                    if (currentTask.getTaskTypeCode() == DK.getCode()) {
+                                        view.getTxtTaskQuota().setVisible(false);
+                                    } else {
+                                        view.getTxtTaskQuota().setValue(currentTask.getQuota());
+                                        view.getTxtYear().setVisible(false);
+                                        view.getTxtQuotaQ1().setVisible(false);
+                                        view.getTxtQuotaQ2().setVisible(false);
+                                        view.getTxtQuotaQ3().setVisible(false);
+                                        view.getTxtQuotaQ4().setVisible(false);
+                                    }
+                                    taskEditWindow.layout(true);
                                 }
                             });
                 }
@@ -209,9 +221,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     currentTask.setCode(view.getTxtTaskCode().getValue());
                     currentTask.setName(view.getTxtTaskName().getValue());
                     currentTask.setUnit(view.getTxtTaskUnit().getValue());
-                    if (view.getTxtTaskDefault().getValue() != null) {
-                        currentTask.setDefaultValue(view.getTxtTaskDefault().getValue().doubleValue());
-                    }
+                    currentTask.setDefaultValue(view.getTxtTaskDefault().getValue().doubleValue());
                     if (view.getTxtTaskQuota().getValue() != null) {
                         currentTask.setQuota(view.getTxtTaskQuota().getValue().intValue());
                     }
@@ -360,14 +370,14 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         view.getTxtQuotaQ2().clear();
                         view.getTxtQuotaQ3().clear();
                         view.getTxtQuotaQ4().clear();
-                        view.getTxtTaskDefault().setVisible(true);
+                        view.getTxtTaskQuota().setVisible(true);
                         view.getTxtYear().setVisible(false);
                         view.getTxtQuotaQ1().setVisible(false);
                         view.getTxtQuotaQ2().setVisible(false);
                         view.getTxtQuotaQ3().setVisible(false);
                         view.getTxtQuotaQ4().setVisible(false);
                     } else {
-                        view.getTxtTaskDefault().setVisible(false);
+                        view.getTxtTaskQuota().setVisible(false);
                         view.getTxtYear().setVisible(true);
                         view.getTxtQuotaQ1().setVisible(true);
                         view.getTxtQuotaQ2().setVisible(true);
@@ -395,11 +405,20 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     taskDefaultValue.setUpdateBy(1l);
                     taskDefaultValue.setDefaultValue(view.getTxtDefaultValue().
                             getValue().doubleValue());
-                    dispatch.execute(new SaveAction(taskDefaultValue), new AbstractAsyncCallback<SaveResult>() {
+                    selectedTask.setDefaultValue(taskDefaultValue.getDefaultValue());
+
+                    List entities = new ArrayList();
+                    entities.add(taskDefaultValue);
+                    entities.add(selectedTask);
+
+                    dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onSuccess(SaveResult result) {
-                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            defaultValueWindow.hide();
+                            if (CollectionsUtils.isNotEmpty(result.getEntities())) {
+                                DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                                defaultValueWindow.hide();
+                                updateGrid((Task) result.getEntities().get(1));
+                            }
                         }
                     });
                 }

@@ -18,7 +18,7 @@ public class Task extends AbstractEntity {
     private String code;
     private Double defaultValue;
     private String unit;
-    private int quota;
+    private Integer quota;
     private int taskTypeCode;
     private String childTasks;
 
@@ -54,11 +54,11 @@ public class Task extends AbstractEntity {
         this.unit = unit;
     }
 
-    public int getQuota() {
+    public Integer getQuota() {
         return quota;
     }
 
-    public void setQuota(int quota) {
+    public void setQuota(Integer quota) {
         this.quota = quota;
     }
 

@@ -14,9 +14,9 @@
 
         <property name="name" column="name" not-null="true"/>
         <property name="code" column="code" not-null="true"/>
-        <property name="defaultValue" column="defaultValue" not-null="false"/>
+        <property name="defaultValue" column="defaultValue" not-null="true"/>
         <property name="unit" column="unit" not-null="true"/>
-        <property name="quota" column="quota" not-null="true"/>
+        <property name="quota" column="quota" not-null="false"/>
         <property name="taskTypeCode" column="taskTypeCode" not-null="true"/>
         <property name="childTasks" column="childTasks" />
     </class>
