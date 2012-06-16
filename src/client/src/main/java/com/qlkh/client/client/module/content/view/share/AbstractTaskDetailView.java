@@ -24,6 +24,8 @@ import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
+import com.qlkh.core.client.constant.TaskTypeEnum;
+import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.widget.TextField;
 
@@ -159,6 +161,16 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
         ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
                 TASK_QUOTA_WIDTH);
+        quotaColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                Task task = model.getBean();
+                if (TaskTypeEnum.DK.getCode() == task.getTaskTypeCode()) {
+                    return "Theo quý";
+                }
+                return task.getQuota();
+            }
+        });
         columnConfigs.add(quotaColumnConfig);
 
         return columnConfigs;

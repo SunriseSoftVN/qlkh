@@ -33,7 +33,8 @@ public class DeleteTaskHandler extends AbstractHandler<DeleteTaskAction, DeleteT
             TaskDetailKDK.class.getName(), TaskDetailNam.class.getName()};
 
     private static final String[] RELATE_DELETE_ENTITY_NAMES = {TaskDetailDK.class.getName(),
-            TaskDetailKDK.class.getName(), TaskDetailNam.class.getName(), TaskQuota.class.getName()};
+            TaskDetailKDK.class.getName(), TaskDetailNam.class.getName(),
+            TaskQuota.class.getName(), TaskDefaultValue.class.getName()};
 
 
     @Autowired
