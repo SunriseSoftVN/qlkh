@@ -398,27 +398,14 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
-                if (selectedTask != null) {
-                    TaskDefaultValue taskDefaultValue = new TaskDefaultValue();
-                    taskDefaultValue.setTask(selectedTask);
-                    taskDefaultValue.setCreateBy(1l);
-                    taskDefaultValue.setUpdateBy(1l);
-                    taskDefaultValue.setDefaultValue(view.getTxtDefaultValue().
-                            getValue().doubleValue());
-                    selectedTask.setDefaultValue(taskDefaultValue.getDefaultValue());
-
-                    List entities = new ArrayList();
-                    entities.add(taskDefaultValue);
-                    entities.add(selectedTask);
-
-                    dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
+                if (selectedTask != null && view.getDefaultValuePanel().isValid()) {
+                    dispatch.execute(new SaveTaskDefaultValueAction(selectedTask,
+                            view.getTxtDefaultValue().getValue().doubleValue()),
+                            new AbstractAsyncCallback<SaveTaskDefaultValueResult>() {
                         @Override
-                        public void onSuccess(SaveResult result) {
-                            if (CollectionsUtils.isNotEmpty(result.getEntities())) {
-                                DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                                defaultValueWindow.hide();
-                                updateGrid((Task) result.getEntities().get(1));
-                            }
+                        public void onSuccess(SaveTaskDefaultValueResult result) {
+                            defaultValueWindow.hide();
+                            updateGrid(result.getTask());
                         }
                     });
                 }
@@ -521,19 +508,10 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
         anchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                 if (selectedTask != null) {
-                    dispatch.execute(new LoadTaskDefaultAction(selectedTask.getId()),
-                            new AbstractAsyncCallback<LoadTaskDefaultResult>() {
-                                @Override
-                                public void onSuccess(LoadTaskDefaultResult result) {
-                                    if (result.getTaskDefaultValue() != null) {
-                                        view.getTxtDefaultValue().setValue(result.getTaskDefaultValue().getDefaultValue());
-                                    }
-                                    defaultValueWindow = view.createChangeTaskDefaultWindow();
-                                    defaultValueWindow.show();
-                                }
-                            });
+                    defaultValueWindow = view.createChangeTaskDefaultWindow();
+                    defaultValueWindow.show();
                 }
             }
         });

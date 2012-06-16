@@ -13,6 +13,8 @@
         <property name="updateBy" column="updateBy" not-null="true"/>
 
         <property name="defaultValue" column="defaultValue" not-null="true" />
+        <property name="quarter" column="quarter" not-null="true" />
+        <property name="year" column="year" not-null="true" />
 
         <many-to-one name="task" class="com.qlkh.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
             <column name="taskId" not-null="true"/>

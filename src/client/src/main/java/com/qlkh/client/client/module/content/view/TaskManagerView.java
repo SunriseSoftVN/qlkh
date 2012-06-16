@@ -714,4 +714,8 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public MyNumberField getTxtDefaultValue() {
         return txtDefaultValue;
     }
+
+    public FormPanel getDefaultValuePanel() {
+        return defaultValuePanel;
+    }
 }

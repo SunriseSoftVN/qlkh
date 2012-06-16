@@ -15,6 +15,8 @@ import com.qlkh.core.client.model.core.AbstractEntity;
 public class TaskDefaultValue extends AbstractEntity {
 
     private double defaultValue;
+    private int quarter;
+    private int year;
     private Task task;
 
     public double getDefaultValue() {
@@ -31,5 +33,21 @@ public class TaskDefaultValue extends AbstractEntity {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    public int getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(int quarter) {
+        this.quarter = quarter;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

@@ -11,19 +11,25 @@ package com.qlkh.core.client.constant;
  * @since 3/12/12, 1:50 PM
  */
 public enum ReportTypeEnum {
-    Q1("QUÝ I"),
-    Q2("QUÝ II"),
-    Q3("QUÝ III"),
-    Q4("QUÝ IV"),
-    CA_NAM("");
+    Q1("QUÝ I", 1),
+    Q2("QUÝ II", 2),
+    Q3("QUÝ III", 3),
+    Q4("QUÝ IV", 4),
+    CA_NAM("", 0);
 
-    private String value;
+    private String name;
+    private int value;
 
-    ReportTypeEnum(String value) {
+    ReportTypeEnum(String name, int value) {
+        this.name = name;
         this.value = value;
     }
 
-    public String getValue() {
+    public String getName() {
+        return name;
+    }
+
+    public int getValue() {
         return value;
     }
 }

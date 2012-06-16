@@ -18,6 +18,19 @@ public class NumberUtils {
 
     }
 
+
+    /**
+     * Convert null value to 0d;
+     * @param nullDouble null double
+     * @return 0d;
+     */
+    public static double convertNullToDouble(Double nullDouble) {
+        if (nullDouble == null) {
+            return 0d;
+        }
+        return nullDouble;
+    }
+
     /**
      * <p>Checks whether the String a valid Java number.</p>
      * <p/>

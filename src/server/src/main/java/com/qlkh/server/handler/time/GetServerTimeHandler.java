@@ -10,7 +10,8 @@ import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 
-import java.util.Date;
+import static com.qlkh.server.util.DateTimeUtils.getCurrentQuarter;
+import static com.qlkh.server.util.DateTimeUtils.getCurrentYear;
 
 /**
  * The Class GetServerTimeHandler.
@@ -26,6 +27,6 @@ public class GetServerTimeHandler extends AbstractHandler<GetServerTimeAction, G
 
     @Override
     public GetServerTimeResult execute(GetServerTimeAction action, ExecutionContext context) throws DispatchException {
-        return new GetServerTimeResult(1900 + new Date().getYear());
+        return new GetServerTimeResult(getCurrentYear(), getCurrentQuarter());
     }
 }

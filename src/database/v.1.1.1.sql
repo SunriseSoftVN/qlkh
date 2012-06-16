@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS `taskdefaultvalue` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `taskId` bigint(11) NOT NULL,
   `defaultValue` double NOT NULL,
+  `quarter` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
   `createBy` bigint(20) NOT NULL,
   `updateBy` bigint(20) NOT NULL,
   `createdDate` date NOT NULL,

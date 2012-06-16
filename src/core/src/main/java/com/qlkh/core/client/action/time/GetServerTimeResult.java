@@ -14,15 +14,21 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class GetServerTimeResult implements Result {
     private int year;
+    private int quarter;
 
     public GetServerTimeResult() {
     }
 
-    public GetServerTimeResult(int year) {
+    public GetServerTimeResult(int year, int quarter) {
         this.year = year;
+        this.quarter = quarter;
     }
 
     public int getYear() {
         return year;
+    }
+
+    public int getQuarter() {
+        return quarter;
     }
 }

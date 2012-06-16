@@ -26,6 +26,7 @@
                 <bean class="com.qlkh.server.handler.task.DeleteTaskHandler"/>
                 <bean class="com.qlkh.server.handler.task.LoadTaskDefaultHandler"/>
                 <bean class="com.qlkh.server.handler.task.LoadTaskQuotaHandler"/>
+                <bean class="com.qlkh.server.handler.task.SaveTaskDefaultValueHandler"/>
             </list>
         </property>
     </bean>
