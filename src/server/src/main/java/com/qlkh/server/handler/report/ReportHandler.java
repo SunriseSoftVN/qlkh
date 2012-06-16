@@ -175,7 +175,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)
                     .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
-                    .addColumn("Định mức", "task.defaultValue", Double.class, 15, false, "###,###.##", detailStyle)
+                    .addColumn("Định mức", "task.defaultValue", Double.class, 15, false, "###,###.###", detailStyle)
                     .addColumn("Số lần", "task.quota", Integer.class, 15, detailStyle);
 
             List<Station> stations = new ArrayList<Station>();
