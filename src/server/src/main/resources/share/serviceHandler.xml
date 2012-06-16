@@ -27,6 +27,7 @@
                 <bean class="com.qlkh.server.handler.task.LoadTaskDefaultHandler"/>
                 <bean class="com.qlkh.server.handler.task.LoadTaskQuotaHandler"/>
                 <bean class="com.qlkh.server.handler.task.SaveTaskDefaultValueHandler"/>
+                <bean class="com.qlkh.server.handler.system.UpgradeDatabaseHandler"/>
             </list>
         </property>
     </bean>
