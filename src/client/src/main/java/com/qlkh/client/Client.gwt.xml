@@ -6,6 +6,8 @@
     <inherits name='com.smvp4g.mvp.Mvp'/>
     <inherits name='com.qlkh.core.Core'/>
 
+    <inherits name="com.google.common.base.Base"/>
+
     <!-- Specify the app entry point class.                         -->
     <entry-point class='com.qlkh.client.client.QlkhEntryPoint'/>
 
