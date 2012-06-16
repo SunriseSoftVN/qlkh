@@ -365,6 +365,16 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(txtTaskUnit);
 
+        if (!cbbTaskType.isRendered()) {
+            cbbTaskType.setEditable(false);
+            cbbTaskType.setAllowBlank(false);
+            cbbTaskType.setSelectOnFocus(true);
+            cbbTaskType.add(Arrays.asList(TaskTypeEnum.values()));
+            cbbTaskType.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbbTaskType.setForceSelection(true);
+        }
+        taskEditPanel.add(cbbTaskType);
+
         if (!txtTaskDefault.isRendered()) {
             txtTaskDefault.setSelectOnFocus(true);
             txtTaskDefault.setAllowBlank(false);
@@ -403,16 +413,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         taskEditPanel.add(txtQuotaQ2);
         taskEditPanel.add(txtQuotaQ3);
         taskEditPanel.add(txtQuotaQ4);
-
-        if (!cbbTaskType.isRendered()) {
-            cbbTaskType.setEditable(false);
-            cbbTaskType.setAllowBlank(false);
-            cbbTaskType.setSelectOnFocus(true);
-            cbbTaskType.add(Arrays.asList(TaskTypeEnum.values()));
-            cbbTaskType.setTriggerAction(ComboBox.TriggerAction.ALL);
-            cbbTaskType.setForceSelection(true);
-        }
-        taskEditPanel.add(cbbTaskType);
 
         warningMessage.setHtml(getConstant().warningMessage());
         warningMessage.setVisible(false);
