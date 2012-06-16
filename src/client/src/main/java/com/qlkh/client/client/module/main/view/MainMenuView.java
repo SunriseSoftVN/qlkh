@@ -20,6 +20,7 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.place.*;
 import com.qlkh.client.client.module.main.view.i18n.MainMenuConstant;
 import com.qlkh.client.client.module.main.view.security.MainMenuViewSecutiry;
+import com.qlkh.client.client.module.system.place.ApplicationUpgradePlace;
 import com.qlkh.client.client.module.user.place.UserManagerPlace;
 import com.smvp4g.mvp.client.core.eventbus.annotation.HistoryHandler;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -86,6 +87,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     MenuLink mlLock = new MenuLink(StationLockPlace.class);
 
     @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mlUpgrade = new MenuLink(ApplicationUpgradePlace.class);
+
+    @FieldSecurity
     @I18nField
     Anchor ancLogout = new Anchor("");
 
@@ -130,6 +136,10 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         //Lock
         mlLock.setStyleName("menulink");
         mainPanel.add(mlLock, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        //For developer
+        mlUpgrade.setStyleName("menulink");
+        mainPanel.add(mlUpgrade, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         HBoxLayoutData flex = new HBoxLayoutData();
         flex.setFlex(1);

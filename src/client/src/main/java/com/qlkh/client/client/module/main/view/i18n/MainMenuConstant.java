@@ -25,4 +25,5 @@ public interface MainMenuConstant extends Constants {
     String ancLogout();
     String lblWelcome();
     String mlLock();
+    String mlUpgrade();
 }
