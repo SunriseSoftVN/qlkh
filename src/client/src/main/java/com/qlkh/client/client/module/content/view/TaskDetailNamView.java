@@ -22,6 +22,8 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.gwt.i18n.client.NumberFormat.getFormat;
+
 /**
  * The Class TaskDetailNamView.
  *
@@ -176,9 +178,9 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                     }
                 }
                 if (sum == 0) {
-                    sum = null;
+                    return StringUtils.substitute(getConstant().sumKLTitle(), StringUtils.EMPTY);
                 }
-                return StringUtils.substitute(getConstant().sumKLTitle(), sum);
+                return StringUtils.substitute(getConstant().sumKLTitle(), getFormat("###,###.##").format(sum));
             }
         });
         sumRow.setSummaryType(Q1_UNIT_COLUMN, SummaryType.SUM);
