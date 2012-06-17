@@ -16,7 +16,11 @@ public enum StationLockTypeEnum {
     KDK_Q1(1),
     KDK_Q2(2),
     KDK_Q3(3),
-    KDK_Q4(4);
+    KDK_Q4(4),
+    NAM_Q1(5),
+    NAM_Q2(6),
+    NAM_Q3(7),
+    NAM_Q4(8);
 
     private int code;
 

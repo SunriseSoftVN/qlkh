@@ -35,53 +35,54 @@ import java.util.List;
 public class StationLockView extends AbstractView<StationLockConstants> {
 
     @I18nField
-    FormPanel annualLockPanel = new FormPanel();
+    FormPanel dkLockPanel = new FormPanel();
 
     @I18nField
-    FormPanel normalLockPanel = new FormPanel();
+    FormPanel kdkLockPanel = new FormPanel();
 
     private HorizontalPanel horizontalPanel = new HorizontalPanel();
-    private VerticalPanel annualStationNamePanel = new VerticalPanel();
-    private VerticalPanel annualButtonPanel = new VerticalPanel();
-    private VerticalPanel normalStationNamePanel = new VerticalPanel();
-    private VerticalPanel normalButtonPanel = new VerticalPanel();
+    private VerticalPanel dkStationNamePanel = new VerticalPanel();
+    private VerticalPanel dkButtonPanel = new VerticalPanel();
+    private VerticalPanel kdkStationNamePanel = new VerticalPanel();
+    private VerticalPanel kdkButtonPanel = new VerticalPanel();
     private ContentPanel contentPanel = new ContentPanel();
 
-    private List<CheckBox> annualCbs = new ArrayList<CheckBox>();
-    private List<CheckBox> q1Cbs = new ArrayList<CheckBox>();
-    private List<CheckBox> q2Cbs = new ArrayList<CheckBox>();
-    private List<CheckBox> q3Cbs = new ArrayList<CheckBox>();
-    private List<CheckBox> q4Cbs = new ArrayList<CheckBox>();
-    public CheckBox annualCompanyCb;
-    public CheckBox q1CompanyCb;
-    public CheckBox q2CompanyCb;
-    public CheckBox q3CompanyCb;
-    public CheckBox q4CompanyCb;
+    private List<CheckBox> dkCbs = new ArrayList<CheckBox>();
+    private List<CheckBox> kdkQ1Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> kdkQ2Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> kdkQ3Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> kdkQ4Cbs = new ArrayList<CheckBox>();
+
+    public CheckBox dkCompanyCb;
+    public CheckBox kdkQ1CompanyCb;
+    public CheckBox kdkQ2CompanyCb;
+    public CheckBox kdkQ3CompanyCb;
+    public CheckBox kdkQ4CompanyCb;
 
     @Override
     protected void initializeView() {
-        annualLockPanel.setFrame(true);
-        annualLockPanel.setAutoHeight(true);
-        annualLockPanel.setAutoWidth(true);
+        dkLockPanel.setFrame(true);
+        dkLockPanel.setAutoHeight(true);
+        dkLockPanel.setAutoWidth(true);
         HorizontalPanel hp1 = new HorizontalPanel();
         hp1.setSpacing(7);
-        hp1.add(annualStationNamePanel);
-        hp1.add(annualButtonPanel);
-        annualLockPanel.add(hp1);
+        hp1.add(dkStationNamePanel);
+        hp1.add(dkButtonPanel);
+        dkLockPanel.add(hp1);
 
-        normalLockPanel.setFrame(true);
-        normalLockPanel.setAutoWidth(true);
-        normalLockPanel.setAutoHeight(true);
+        kdkLockPanel.setFrame(true);
+        kdkLockPanel.setAutoWidth(true);
+        kdkLockPanel.setAutoHeight(true);
         HorizontalPanel hp2 = new HorizontalPanel();
         hp2.setSpacing(7);
-        hp2.add(normalStationNamePanel);
-        hp2.add(normalButtonPanel);
-        normalLockPanel.add(hp2);
+        hp2.add(kdkStationNamePanel);
+        hp2.add(kdkButtonPanel);
+        kdkLockPanel.add(hp2);
 
         horizontalPanel.setAutoWidth(true);
         horizontalPanel.setSpacing(5);
-        horizontalPanel.add(annualLockPanel);
-        horizontalPanel.add(normalLockPanel);
+        horizontalPanel.add(dkLockPanel);
+        horizontalPanel.add(kdkLockPanel);
         contentPanel.add(horizontalPanel);
 
         contentPanel.setHeaderVisible(false);
@@ -92,16 +93,16 @@ public class StationLockView extends AbstractView<StationLockConstants> {
     }
 
     public void addStationName(String stationName) {
-        annualStationNamePanel.add(new Label(stationName));
-        normalStationNamePanel.add(new Label(stationName));
+        dkStationNamePanel.add(new Label(stationName));
+        kdkStationNamePanel.add(new Label(stationName));
     }
 
     public void addAnnualButton(CheckBox checkBox, boolean isCompanyCheckBox) {
-        annualButtonPanel.add(checkBox);
+        dkButtonPanel.add(checkBox);
         if (!isCompanyCheckBox) {
-            annualCbs.add(checkBox);
+            dkCbs.add(checkBox);
         } else {
-            annualCompanyCb = checkBox;
+            dkCompanyCb = checkBox;
         }
     }
 
@@ -116,17 +117,17 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         hp.add(cbQ2);
         hp.add(cbQ3);
         hp.add(cbQ4);
-        normalButtonPanel.add(hp);
+        kdkButtonPanel.add(hp);
         if(!isCompany) {
-            q1Cbs.add(cbQ1);
-            q2Cbs.add(cbQ2);
-            q3Cbs.add(cbQ3);
-            q4Cbs.add(cbQ4);
+            kdkQ1Cbs.add(cbQ1);
+            kdkQ2Cbs.add(cbQ2);
+            kdkQ3Cbs.add(cbQ3);
+            kdkQ4Cbs.add(cbQ4);
         } else {
-            q1CompanyCb =cbQ1;
-            q2CompanyCb =cbQ2;
-            q3CompanyCb =cbQ3;
-            q4CompanyCb =cbQ4;
+            kdkQ1CompanyCb =cbQ1;
+            kdkQ2CompanyCb =cbQ2;
+            kdkQ3CompanyCb =cbQ3;
+            kdkQ4CompanyCb =cbQ4;
         }
     }
 
@@ -159,50 +160,50 @@ public class StationLockView extends AbstractView<StationLockConstants> {
     }
 
     public void layout() {
-        annualStationNamePanel.layout();
-        normalStationNamePanel.layout();
-        annualButtonPanel.layout();
-        normalButtonPanel.layout();
+        dkStationNamePanel.layout();
+        kdkStationNamePanel.layout();
+        dkButtonPanel.layout();
+        kdkButtonPanel.layout();
         horizontalPanel.layout(true);
     }
 
-    public CheckBox getAnnualCompanyCb() {
-        return annualCompanyCb;
+    public CheckBox getDkCompanyCb() {
+        return dkCompanyCb;
     }
 
-    public List<CheckBox> getAnnualCbs() {
-        return annualCbs;
+    public List<CheckBox> getDkCbs() {
+        return dkCbs;
     }
 
-    public List<CheckBox> getQ1Cbs() {
-        return q1Cbs;
+    public List<CheckBox> getKdkQ1Cbs() {
+        return kdkQ1Cbs;
     }
 
-    public List<CheckBox> getQ2Cbs() {
-        return q2Cbs;
+    public List<CheckBox> getKdkQ2Cbs() {
+        return kdkQ2Cbs;
     }
 
-    public List<CheckBox> getQ3Cbs() {
-        return q3Cbs;
+    public List<CheckBox> getKdkQ3Cbs() {
+        return kdkQ3Cbs;
     }
 
-    public List<CheckBox> getQ4Cbs() {
-        return q4Cbs;
+    public List<CheckBox> getKdkQ4Cbs() {
+        return kdkQ4Cbs;
     }
 
-    public CheckBox getQ1CompanyCb() {
-        return q1CompanyCb;
+    public CheckBox getKdkQ1CompanyCb() {
+        return kdkQ1CompanyCb;
     }
 
-    public CheckBox getQ2CompanyCb() {
-        return q2CompanyCb;
+    public CheckBox getKdkQ2CompanyCb() {
+        return kdkQ2CompanyCb;
     }
 
-    public CheckBox getQ3CompanyCb() {
-        return q3CompanyCb;
+    public CheckBox getKdkQ3CompanyCb() {
+        return kdkQ3CompanyCb;
     }
 
-    public CheckBox getQ4CompanyCb() {
-        return q4CompanyCb;
+    public CheckBox getKdkQ4CompanyCb() {
+        return kdkQ4CompanyCb;
     }
 }

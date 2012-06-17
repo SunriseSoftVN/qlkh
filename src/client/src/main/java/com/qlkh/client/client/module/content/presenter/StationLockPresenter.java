@@ -56,11 +56,11 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
                             createNormalLock(station, StationLockTypeEnum.KDK_Q3),
                             createNormalLock(station, StationLockTypeEnum.KDK_Q4), station.isCompany());
                 }
-                view.checkCompanyCb(view.getAnnualCompanyCb(), view.getAnnualCbs());
-                view.checkCompanyCb(view.getQ1CompanyCb(), view.getQ1Cbs());
-                view.checkCompanyCb(view.getQ2CompanyCb(), view.getQ2Cbs());
-                view.checkCompanyCb(view.getQ3CompanyCb(), view.getQ3Cbs());
-                view.checkCompanyCb(view.getQ4CompanyCb(), view.getQ4Cbs());
+                view.checkCompanyCb(view.getDkCompanyCb(), view.getDkCbs());
+                view.checkCompanyCb(view.getKdkQ1CompanyCb(), view.getKdkQ1Cbs());
+                view.checkCompanyCb(view.getKdkQ2CompanyCb(), view.getKdkQ2Cbs());
+                view.checkCompanyCb(view.getKdkQ3CompanyCb(), view.getKdkQ3Cbs());
+                view.checkCompanyCb(view.getKdkQ4CompanyCb(), view.getKdkQ4Cbs());
                 view.layout();
             }
         });
@@ -150,30 +150,30 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
 
     private CheckBox getCheckBox(StationLockTypeEnum typeEnum) {
         if (typeEnum == StationLockTypeEnum.DK) {
-            return view.getAnnualCompanyCb();
+            return view.getDkCompanyCb();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q1) {
-            return view.getQ1CompanyCb();
+            return view.getKdkQ1CompanyCb();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q2) {
-            return view.getQ2CompanyCb();
+            return view.getKdkQ2CompanyCb();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q3) {
-            return view.getQ3CompanyCb();
+            return view.getKdkQ3CompanyCb();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q4) {
-            return view.getQ4CompanyCb();
+            return view.getKdkQ4CompanyCb();
         }
         return null;
     }
 
     private List<CheckBox> getCheckBoxes(StationLockTypeEnum typeEnum) {
         if (typeEnum == StationLockTypeEnum.DK) {
-            return view.getAnnualCbs();
+            return view.getDkCbs();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q1) {
-            return view.getQ1Cbs();
+            return view.getKdkQ1Cbs();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q2) {
-            return view.getQ2Cbs();
+            return view.getKdkQ2Cbs();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q3) {
-            return view.getQ3Cbs();
+            return view.getKdkQ3Cbs();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q4) {
-            return view.getQ4Cbs();
+            return view.getKdkQ4Cbs();
         }
         return null;
     }

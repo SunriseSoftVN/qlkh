@@ -13,8 +13,8 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 6/5/12, 9:41 PM
  */
 public interface StationLockConstants extends Constants {
-    String annualLockPanel();
-    String normalLockPanel();
+    String dkLockPanel();
+    String kdkLockPanel();
     String btnQ1();
     String btnQ2();
     String btnQ3();
