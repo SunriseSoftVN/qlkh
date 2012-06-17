@@ -15,6 +15,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface StationLockConstants extends Constants {
     String dkLockPanel();
     String kdkLockPanel();
+    String namLockPanel();
     String btnQ1();
     String btnQ2();
     String btnQ3();

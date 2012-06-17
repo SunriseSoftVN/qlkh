@@ -65,18 +65,18 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
         dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
             @Override
             public void onSuccess(GetServerTimeResult result) {
-                view.setCurrentYear(result.getYear());
-                view.createSubTaskGrid(createSubTaskListStore());
-                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
-
                 //Check lock status.
                 for (StationLock stationLock : currentStation.getStationLocks()) {
                     if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
                         DiaLogUtils.showMessage(view.getConstant().lockMessage());
-                        view.getContentPanel().setEnabled(false);
+                        view.setLock(true);
                         break;
                     }
                 }
+
+                view.setCurrentYear(result.getYear());
+                view.createSubTaskGrid(createSubTaskListStore());
+                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
             }
         });
     }

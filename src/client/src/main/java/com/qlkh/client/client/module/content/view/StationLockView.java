@@ -40,11 +40,16 @@ public class StationLockView extends AbstractView<StationLockConstants> {
     @I18nField
     FormPanel kdkLockPanel = new FormPanel();
 
+    @I18nField
+    FormPanel namLockPanel = new FormPanel();
+
     private HorizontalPanel horizontalPanel = new HorizontalPanel();
     private VerticalPanel dkStationNamePanel = new VerticalPanel();
     private VerticalPanel dkButtonPanel = new VerticalPanel();
     private VerticalPanel kdkStationNamePanel = new VerticalPanel();
     private VerticalPanel kdkButtonPanel = new VerticalPanel();
+    private VerticalPanel namStationNamePanel = new VerticalPanel();
+    private VerticalPanel namButtonPanel = new VerticalPanel();
     private ContentPanel contentPanel = new ContentPanel();
 
     private List<CheckBox> dkCbs = new ArrayList<CheckBox>();
@@ -52,12 +57,20 @@ public class StationLockView extends AbstractView<StationLockConstants> {
     private List<CheckBox> kdkQ2Cbs = new ArrayList<CheckBox>();
     private List<CheckBox> kdkQ3Cbs = new ArrayList<CheckBox>();
     private List<CheckBox> kdkQ4Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> namQ1Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> namQ2Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> namQ3Cbs = new ArrayList<CheckBox>();
+    private List<CheckBox> namQ4Cbs = new ArrayList<CheckBox>();
 
     public CheckBox dkCompanyCb;
     public CheckBox kdkQ1CompanyCb;
     public CheckBox kdkQ2CompanyCb;
     public CheckBox kdkQ3CompanyCb;
     public CheckBox kdkQ4CompanyCb;
+    public CheckBox namQ1CompanyCb;
+    public CheckBox namQ2CompanyCb;
+    public CheckBox namQ3CompanyCb;
+    public CheckBox namQ4CompanyCb;
 
     @Override
     protected void initializeView() {
@@ -69,6 +82,15 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         hp1.add(dkStationNamePanel);
         hp1.add(dkButtonPanel);
         dkLockPanel.add(hp1);
+
+        namLockPanel.setFrame(true);
+        namLockPanel.setAutoWidth(true);
+        namLockPanel.setAutoHeight(true);
+        HorizontalPanel hp3 = new HorizontalPanel();
+        hp3.setSpacing(7);
+        hp3.add(namStationNamePanel);
+        hp3.add(namButtonPanel);
+        namLockPanel.add(hp3);
 
         kdkLockPanel.setFrame(true);
         kdkLockPanel.setAutoWidth(true);
@@ -82,6 +104,7 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         horizontalPanel.setAutoWidth(true);
         horizontalPanel.setSpacing(5);
         horizontalPanel.add(dkLockPanel);
+        horizontalPanel.add(namLockPanel);
         horizontalPanel.add(kdkLockPanel);
         contentPanel.add(horizontalPanel);
 
@@ -95,9 +118,10 @@ public class StationLockView extends AbstractView<StationLockConstants> {
     public void addStationName(String stationName) {
         dkStationNamePanel.add(new Label(stationName));
         kdkStationNamePanel.add(new Label(stationName));
+        namStationNamePanel.add(new Label(stationName));
     }
 
-    public void addAnnualButton(CheckBox checkBox, boolean isCompanyCheckBox) {
+    public void addDKButton(CheckBox checkBox, boolean isCompanyCheckBox) {
         dkButtonPanel.add(checkBox);
         if (!isCompanyCheckBox) {
             dkCbs.add(checkBox);
@@ -106,8 +130,33 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         }
     }
 
-    public void addNormalButton(CheckBox cbQ1, CheckBox cbQ2, CheckBox cbQ3, CheckBox cbQ4,
-                                boolean isCompany) {
+    public void addNamButton(CheckBox cbQ1, CheckBox cbQ2, CheckBox cbQ3, CheckBox cbQ4,
+                             boolean isCompany) {
+        HorizontalPanel hp = new HorizontalPanel();
+        cbQ1.setBoxLabel(getConstant().btnQ1());
+        cbQ2.setBoxLabel(getConstant().btnQ2());
+        cbQ3.setBoxLabel(getConstant().btnQ3());
+        cbQ4.setBoxLabel(getConstant().btnQ4());
+        hp.add(cbQ1);
+        hp.add(cbQ2);
+        hp.add(cbQ3);
+        hp.add(cbQ4);
+        namButtonPanel.add(hp);
+        if (!isCompany) {
+            namQ1Cbs.add(cbQ1);
+            namQ2Cbs.add(cbQ2);
+            namQ3Cbs.add(cbQ3);
+            namQ4Cbs.add(cbQ4);
+        } else {
+            namQ1CompanyCb = cbQ1;
+            namQ2CompanyCb = cbQ2;
+            namQ3CompanyCb = cbQ3;
+            namQ4CompanyCb = cbQ4;
+        }
+    }
+
+    public void addKDKButton(CheckBox cbQ1, CheckBox cbQ2, CheckBox cbQ3, CheckBox cbQ4,
+                             boolean isCompany) {
         HorizontalPanel hp = new HorizontalPanel();
         cbQ1.setBoxLabel(getConstant().btnQ1());
         cbQ2.setBoxLabel(getConstant().btnQ2());
@@ -118,16 +167,16 @@ public class StationLockView extends AbstractView<StationLockConstants> {
         hp.add(cbQ3);
         hp.add(cbQ4);
         kdkButtonPanel.add(hp);
-        if(!isCompany) {
+        if (!isCompany) {
             kdkQ1Cbs.add(cbQ1);
             kdkQ2Cbs.add(cbQ2);
             kdkQ3Cbs.add(cbQ3);
             kdkQ4Cbs.add(cbQ4);
         } else {
-            kdkQ1CompanyCb =cbQ1;
-            kdkQ2CompanyCb =cbQ2;
-            kdkQ3CompanyCb =cbQ3;
-            kdkQ4CompanyCb =cbQ4;
+            kdkQ1CompanyCb = cbQ1;
+            kdkQ2CompanyCb = cbQ2;
+            kdkQ3CompanyCb = cbQ3;
+            kdkQ4CompanyCb = cbQ4;
         }
     }
 
@@ -205,5 +254,37 @@ public class StationLockView extends AbstractView<StationLockConstants> {
 
     public CheckBox getKdkQ4CompanyCb() {
         return kdkQ4CompanyCb;
+    }
+
+    public List<CheckBox> getNamQ1Cbs() {
+        return namQ1Cbs;
+    }
+
+    public List<CheckBox> getNamQ2Cbs() {
+        return namQ2Cbs;
+    }
+
+    public List<CheckBox> getNamQ3Cbs() {
+        return namQ3Cbs;
+    }
+
+    public List<CheckBox> getNamQ4Cbs() {
+        return namQ4Cbs;
+    }
+
+    public CheckBox getNamQ1CompanyCb() {
+        return namQ1CompanyCb;
+    }
+
+    public CheckBox getNamQ2CompanyCb() {
+        return namQ2CompanyCb;
+    }
+
+    public CheckBox getNamQ3CompanyCb() {
+        return namQ3CompanyCb;
+    }
+
+    public CheckBox getNamQ4CompanyCb() {
+        return namQ4CompanyCb;
     }
 }

@@ -22,6 +22,7 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.gwt.i18n.client.NumberFormat.getDecimalFormat;
 import static com.google.gwt.i18n.client.NumberFormat.getFormat;
 
 /**
@@ -71,29 +72,42 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                 getConstant().lastYearValueColumnTitle() + " " + (currentYear - 1), LAST_YEAR_VALUE_WIDTH);
         MyNumberField lastYearValueNumberField = new MyNumberField();
         lastYearValueNumberField.setSelectOnFocus(true);
-        lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
         lastYearValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        if (!q4Lock) {
+            lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
+        } else {
+            lastYearValueColumnConfig.setStyle("background-color: #F1F2F4;");
+        }
         columnConfigs.add(lastYearValueColumnConfig);
 
         ColumnConfig increaseValueColumnConfig = new ColumnConfig(INCREASE_VALUE_COLUMN,
                 getConstant().increaseValueColumnTitle(), INCREASE_VALUE_WIDTH);
         MyNumberField increaseValueNumberField = new MyNumberField();
         increaseValueNumberField.setSelectOnFocus(true);
-        increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
         increaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        if (!q4Lock) {
+            increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
+        } else {
+            increaseValueColumnConfig.setStyle("background-color: #F1F2F4;");
+        }
         columnConfigs.add(increaseValueColumnConfig);
 
         ColumnConfig decreaseValueColumnConfig = new ColumnConfig(DECREASE_VALUE_COLUMN,
                 getConstant().decreaseValueColumnTitle(), DECREASE_VALUE_WIDTH);
         MyNumberField decreaseValueNumberField = new MyNumberField();
         decreaseValueNumberField.setSelectOnFocus(true);
-        decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
         decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        if (!q4Lock) {
+            decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
+        } else {
+            decreaseValueColumnConfig.setStyle("background-color: #F1F2F4;");
+        }
         columnConfigs.add(decreaseValueColumnConfig);
 
         SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(REAL_VALUE_COLUMN,
                 getConstant().realValueColumnTitle() + " " + currentYear, REAL_VALUE_WIDTH);
         realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        realValueColumnConfig.setStyle("background-color: #F1F2F4;");
         columnConfigs.add(realValueColumnConfig);
 
         ColumnConfig q1ColumnConfig = new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
@@ -101,6 +115,8 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
             MyNumberField q1NumberField = new MyNumberField();
             q1NumberField.setSelectOnFocus(true);
             q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
+        } else {
+            q1ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q1ColumnConfig);
 
@@ -109,6 +125,8 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
             MyNumberField q2NumberField = new MyNumberField();
             q2NumberField.setSelectOnFocus(true);
             q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
+        } else {
+            q2ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q2ColumnConfig);
 
@@ -117,6 +135,8 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
             MyNumberField q3NumberField = new MyNumberField();
             q3NumberField.setSelectOnFocus(true);
             q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
+        } else {
+            q3ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q3ColumnConfig);
 
@@ -142,14 +162,18 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                         } else {
                             taskDetailNam.setQ4(null);
                         }
-                        return q4;
+                        return getDecimalFormat().format(q4);
                     }
                 }
                 return null;
             }
         });
+        q4ColumnConfig.setStyle("background-color: #F1F2F4;");
         columnConfigs.add(q4ColumnConfig);
 
+        for (int i = 1; i < columnConfigs.size(); i++) {
+            columnConfigs.get(i).setNumberFormat(getDecimalFormat());
+        }
         return columnConfigs;
     }
 

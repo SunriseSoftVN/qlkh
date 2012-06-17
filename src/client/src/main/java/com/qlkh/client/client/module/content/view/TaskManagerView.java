@@ -23,6 +23,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskManagerConstant;
@@ -276,6 +277,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         ColumnConfig defaultValueColumnConfig = new ColumnConfig(TASK_DEFAULT_VALUE_COLUMN, getConstant().taskDefaultValueColumnTitle(),
                 TASK_DEFAULT_VALUE_WIDTH);
+        defaultValueColumnConfig.setNumberFormat(NumberFormat.getDecimalFormat());
         columnConfigs.add(defaultValueColumnConfig);
 
         ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),

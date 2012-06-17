@@ -50,23 +50,31 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
             public void onSuccess(LoadStationResult result) {
                 for (final Station station : result.getStations()) {
                     view.addStationName(station.getName());
-                    view.addAnnualButton(createAnnualLock(station), station.isCompany());
-                    view.addNormalButton(createNormalLock(station, StationLockTypeEnum.KDK_Q1),
-                            createNormalLock(station, StationLockTypeEnum.KDK_Q2),
-                            createNormalLock(station, StationLockTypeEnum.KDK_Q3),
-                            createNormalLock(station, StationLockTypeEnum.KDK_Q4), station.isCompany());
+                    view.addDKButton(createDKLock(station), station.isCompany());
+                    view.addKDKButton(createKDKAndNamLock(station, StationLockTypeEnum.KDK_Q1),
+                            createKDKAndNamLock(station, StationLockTypeEnum.KDK_Q2),
+                            createKDKAndNamLock(station, StationLockTypeEnum.KDK_Q3),
+                            createKDKAndNamLock(station, StationLockTypeEnum.KDK_Q4), station.isCompany());
+                    view.addNamButton(createKDKAndNamLock(station, StationLockTypeEnum.NAM_Q1),
+                            createKDKAndNamLock(station, StationLockTypeEnum.NAM_Q2),
+                            createKDKAndNamLock(station, StationLockTypeEnum.NAM_Q3),
+                            createKDKAndNamLock(station, StationLockTypeEnum.NAM_Q4), station.isCompany());
                 }
                 view.checkCompanyCb(view.getDkCompanyCb(), view.getDkCbs());
                 view.checkCompanyCb(view.getKdkQ1CompanyCb(), view.getKdkQ1Cbs());
                 view.checkCompanyCb(view.getKdkQ2CompanyCb(), view.getKdkQ2Cbs());
                 view.checkCompanyCb(view.getKdkQ3CompanyCb(), view.getKdkQ3Cbs());
                 view.checkCompanyCb(view.getKdkQ4CompanyCb(), view.getKdkQ4Cbs());
+                view.checkCompanyCb(view.getNamQ1CompanyCb(), view.getNamQ1Cbs());
+                view.checkCompanyCb(view.getNamQ2CompanyCb(), view.getNamQ2Cbs());
+                view.checkCompanyCb(view.getNamQ3CompanyCb(), view.getNamQ3Cbs());
+                view.checkCompanyCb(view.getNamQ4CompanyCb(), view.getNamQ4Cbs());
                 view.layout();
             }
         });
     }
 
-    private CheckBox createNormalLock(final Station station, StationLockTypeEnum lockType) {
+    private CheckBox createKDKAndNamLock(final Station station, StationLockTypeEnum lockType) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setValue(true);
         if (CollectionsUtils.isNotEmpty(station.getStationLocks())) {
@@ -81,7 +89,7 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
         return checkBox;
     }
 
-    private CheckBox createAnnualLock(final Station station) {
+    private CheckBox createDKLock(final Station station) {
         final CheckBox checkBox = new CheckBox();
         checkBox.setValue(true);
         if (CollectionsUtils.isNotEmpty(station.getStationLocks())) {
@@ -159,6 +167,14 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
             return view.getKdkQ3CompanyCb();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q4) {
             return view.getKdkQ4CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q1) {
+            return view.getNamQ1CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q2) {
+            return view.getNamQ2CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q3) {
+            return view.getNamQ3CompanyCb();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q4) {
+            return view.getNamQ4CompanyCb();
         }
         return null;
     }
@@ -174,6 +190,14 @@ public class StationLockPresenter extends AbstractPresenter<StationLockView> {
             return view.getKdkQ3Cbs();
         } else if (typeEnum == StationLockTypeEnum.KDK_Q4) {
             return view.getKdkQ4Cbs();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q1) {
+            return view.getNamQ1Cbs();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q2) {
+            return view.getNamQ2Cbs();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q3) {
+            return view.getNamQ3Cbs();
+        } else if (typeEnum == StationLockTypeEnum.NAM_Q4) {
+            return view.getNamQ4Cbs();
         }
         return null;
     }

@@ -7,6 +7,7 @@ package com.qlkh.client.client.module.content.view;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailKDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskDetailKDKSecurity;
@@ -63,6 +64,8 @@ public class TaskDetailKDKView extends AbstractTaskDetailView<TaskDetailKDKConst
             MyNumberField q1NumberField = new MyNumberField();
             q1NumberField.setSelectOnFocus(true);
             q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
+        } else {
+            q1ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q1ColumnConfig);
 
@@ -71,6 +74,8 @@ public class TaskDetailKDKView extends AbstractTaskDetailView<TaskDetailKDKConst
             MyNumberField q2NumberField = new MyNumberField();
             q2NumberField.setSelectOnFocus(true);
             q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
+        } else {
+            q2ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q2ColumnConfig);
 
@@ -79,6 +84,8 @@ public class TaskDetailKDKView extends AbstractTaskDetailView<TaskDetailKDKConst
             MyNumberField q3NumberField = new MyNumberField();
             q3NumberField.setSelectOnFocus(true);
             q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
+        } else {
+            q3ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q3ColumnConfig);
 
@@ -87,9 +94,14 @@ public class TaskDetailKDKView extends AbstractTaskDetailView<TaskDetailKDKConst
             MyNumberField q4NumberField = new MyNumberField();
             q4NumberField.setSelectOnFocus(true);
             q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
+        } else {
+            q4ColumnConfig.setStyle("background-color: #F1F2F4;");
         }
         columnConfigs.add(q4ColumnConfig);
 
+        for (int i = 1; i < columnConfigs.size(); i++) {
+            columnConfigs.get(i).setNumberFormat(NumberFormat.getDecimalFormat());
+        }
         return columnConfigs;
     }
 

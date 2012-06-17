@@ -17,9 +17,12 @@ import com.qlkh.core.client.action.taskdetail.LoadTaskDetailNamAction;
 import com.qlkh.core.client.action.taskdetail.LoadTaskDetailNamResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
+import com.qlkh.core.client.model.StationLock;
 import com.qlkh.core.client.model.TaskDetailNam;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 
+import static com.qlkh.core.client.constant.StationLockTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.NAM;
 
 /**
@@ -30,6 +33,11 @@ import static com.qlkh.core.client.constant.TaskTypeEnum.NAM;
  */
 @Presenter(view = TaskDetailNamView.class, place = TaskDetailNamPlace.class)
 public class TaskDetailNamPresenter extends AbstractTaskDetailPresenter<TaskDetailNamView> {
+
+    private boolean q1Lock;
+    private boolean q2Lock;
+    private boolean q3Lock;
+    private boolean q4Lock;
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {
@@ -60,6 +68,31 @@ public class TaskDetailNamPresenter extends AbstractTaskDetailPresenter<TaskDeta
 
     @Override
     protected void checkLockAndCreateSubTaskGrid() {
+        // Check this station was locked or not.
+        String message = StringUtils.EMPTY;
+        for (StationLock stationLock : currentStation.getStationLocks()) {
+            if (NAM_Q1.getCode() == stationLock.getCode()) {
+                q1Lock = true;
+                message += "Q1 ";
+            } else if (NAM_Q2.getCode() == stationLock.getCode()) {
+                q2Lock = true;
+                message += ",Q2 ";
+            } else if (NAM_Q3.getCode() == stationLock.getCode()) {
+                q3Lock = true;
+                message += ",Q3 ";
+            } else if (NAM_Q4.getCode() == stationLock.getCode()) {
+                q4Lock = true;
+                message += ",Q4";
+            }
+        }
+        if (q1Lock || q2Lock || q3Lock || q4Lock) {
+            DiaLogUtils.showMessage(StringUtils.substitute(view.getConstant().lockMessage(), message));
+        }
+
+        view.setQ1Lock(q1Lock);
+        view.setQ2Lock(q2Lock);
+        view.setQ3Lock(q3Lock);
+        view.setQ4Lock(q4Lock);
         dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
             @Override
             public void onSuccess(GetServerTimeResult result) {

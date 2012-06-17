@@ -7,6 +7,7 @@ package com.qlkh.client.client.module.content.view;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.client.client.module.content.view.security.TaskAnnualDetailDK;
@@ -41,6 +42,7 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
     public static final int REAL_VALUE_WIDTH = 80;
 
     private int currentYear;
+    private boolean isLock;
 
     @Override
     protected List<ColumnConfig> createSubTaskColumnConfigs() {
@@ -54,30 +56,47 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
                 getConstant().lastYearValueColumnTitle() + " " + (currentYear - 1), LAST_YEAR_VALUE_WIDTH);
         MyNumberField lastYearValueNumberField = new MyNumberField();
         lastYearValueNumberField.setSelectOnFocus(true);
-        lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
         lastYearValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        if (!isLock()) {
+            lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
+        } else {
+            lastYearValueColumnConfig.setStyle("background-color: #F1F2F4;");
+        }
         columnConfigs.add(lastYearValueColumnConfig);
 
         ColumnConfig increaseValueColumnConfig = new ColumnConfig(INCREASE_VALUE_COLUMN,
                 getConstant().increaseValueColumnTitle(), INCREASE_VALUE_WIDTH);
         MyNumberField increaseValueNumberField = new MyNumberField();
         increaseValueNumberField.setSelectOnFocus(true);
-        increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
         increaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        if (!isLock()) {
+            increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
+        } else {
+            increaseValueColumnConfig.setStyle("background-color: #F1F2F4;");
+        }
         columnConfigs.add(increaseValueColumnConfig);
 
         ColumnConfig decreaseValueColumnConfig = new ColumnConfig(DECREASE_VALUE_COLUMN,
                 getConstant().decreaseValueColumnTitle(), DECREASE_VALUE_WIDTH);
         MyNumberField decreaseValueNumberField = new MyNumberField();
         decreaseValueNumberField.setSelectOnFocus(true);
-        decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
         decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        if (!isLock()) {
+            decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
+        } else {
+            decreaseValueColumnConfig.setStyle("background-color: #F1F2F4;");
+        }
         columnConfigs.add(decreaseValueColumnConfig);
 
         SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(REAL_VALUE_COLUMN,
                 getConstant().realValueColumnTitle() + " " + currentYear, REAL_VALUE_WIDTH);
         realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
+        realValueColumnConfig.setStyle("background-color: #F1F2F4;");
         columnConfigs.add(realValueColumnConfig);
+
+        for (int i = 1; i < columnConfigs.size(); i++) {
+            columnConfigs.get(i).setNumberFormat(NumberFormat.getDecimalFormat());
+        }
         return columnConfigs;
     }
 
@@ -94,5 +113,13 @@ public class TaskDetailDKView extends AbstractTaskDetailView<TaskDetailDKConstan
         sumRow.setRenderer(REAL_VALUE_COLUMN, new DefaultAggregationRenderer());
         columnModel.addAggregationRow(sumRow);
         return columnModel;
+    }
+
+    public boolean isLock() {
+        return isLock;
+    }
+
+    public void setLock(boolean lock) {
+        isLock = lock;
     }
 }

@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
 import com.qlkh.core.client.constant.TaskTypeEnum;
@@ -157,6 +158,7 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
         ColumnConfig defaultColumnConfig = new ColumnConfig(TASK_DEFAULT_COLUMN, getConstant().taskDefaultValueColumnTitle(),
                 TASK_DEFAULT_WIDTH);
+        defaultColumnConfig.setNumberFormat(NumberFormat.getDecimalFormat());
         columnConfigs.add(defaultColumnConfig);
 
         ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
