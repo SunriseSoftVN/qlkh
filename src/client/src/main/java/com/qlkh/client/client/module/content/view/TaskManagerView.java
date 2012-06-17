@@ -70,7 +70,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     public static final String TASK_CHILD_COLUMN = "childTasks";
     public static final int TASK_CHILD_WIDTH = 170;
     public static final String TASK_CHILD_OPTION_COLUMN = "childTaskOptions";
-    public static final int TASK_CHILD_OPTION_WIDTH = 100;
+    public static final int TASK_CHILD_OPTION_WIDTH = 70;
 
     public static final int TASK_LIST_SIZE = 200;
 
