@@ -619,7 +619,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 defaultValue = time / defaultQuota / station.getValue();
             }
             task.setDefaultValueForPrinting(defaultValue);
-            task.setQuotaYearForPrinting(defaultQuota);
+            task.setQuotaForPrinting(defaultQuota);
             station.setTime(time);
         }
     }

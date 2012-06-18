@@ -26,7 +26,7 @@ public class TaskReportBean implements Serializable {
     private String childTasks;
     private boolean dynamicQuota;
 
-    private Integer quotaYearForPrinting;
+    private Integer quotaForPrinting;
     private Double defaultValueForPrinting;
 
     public TaskReportBean() {
@@ -42,6 +42,8 @@ public class TaskReportBean implements Serializable {
         taskTypeCode = task.getTaskTypeCode();
         childTasks = task.getChildTasks();
         dynamicQuota = task.isDynamicQuota();
+        quotaForPrinting = task.getQuota();
+        defaultValueForPrinting = task.getDefaultValue();
     }
 
     public long getId() {
@@ -116,12 +118,12 @@ public class TaskReportBean implements Serializable {
         this.dynamicQuota = dynamicQuota;
     }
 
-    public Integer getQuotaYearForPrinting() {
-        return quotaYearForPrinting;
+    public Integer getQuotaForPrinting() {
+        return quotaForPrinting;
     }
 
-    public void setQuotaYearForPrinting(Integer quotaYearForPrinting) {
-        this.quotaYearForPrinting = quotaYearForPrinting;
+    public void setQuotaForPrinting(Integer quotaForPrinting) {
+        this.quotaForPrinting = quotaForPrinting;
     }
 
     public Double getDefaultValueForPrinting() {
