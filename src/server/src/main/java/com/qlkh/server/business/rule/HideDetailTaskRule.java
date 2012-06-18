@@ -24,18 +24,18 @@ public final class HideDetailTaskRule {
     public static void hide(List<SumReportBean> beans) {
         for (SumReportBean bean : beans) {
             //Hide default value and quota when it is 0.
-            if (bean.getTask().getDefaultValue() != null &&
-                    bean.getTask().getDefaultValue() == 0) {
-                bean.getTask().setDefaultValue(null);
+            if (bean.getTask().getDefaultValueForPrinting() != null &&
+                    bean.getTask().getDefaultValueForPrinting() == 0) {
+                bean.getTask().setDefaultValueForPrinting(null);
             }
-            if (bean.getTask().getQuota() !=null
-                    && bean.getTask().getQuota() == 0) {
-                bean.getTask().setQuota(null);
+            if (bean.getTask().getQuotaForPrinting() !=null
+                    && bean.getTask().getQuotaForPrinting() == 0) {
+                bean.getTask().setQuotaForPrinting(null);
             }
             if (isTask(bean.getTask())) {
                 bean.getTask().setUnit(StringUtils.EMPTY);
-                bean.getTask().setQuota(null);
-                bean.getTask().setDefaultValue(null);
+                bean.getTask().setQuotaForPrinting(null);
+                bean.getTask().setDefaultValueForPrinting(null);
                 for (StationReportBean station : bean.getStations().values()) {
                     station.setValue(null);
                 }
