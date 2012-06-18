@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
@@ -111,8 +112,10 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getTxtTaskName().setValue(selectedTask.getName());
                     view.getTxtTaskUnit().setValue(selectedTask.getUnit());
                     view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
+                    view.getTxtTaskQuota().setValue(selectedTask.getQuota());
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
+                    view.getCbDynamicQuota().setValue(selectedTask.isDynamicQuota());
                     currentTask = selectedTask;
                     dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES),
                             new AbstractAsyncCallback<CanEditResult>() {
@@ -121,7 +124,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                                     view.getCbbTaskType().setEnabled(result.isEditable());
                                     view.getWarningMessage().setVisible(!result.isEditable());
                                     taskEditWindow.show();
-                                    taskEditWindow.layout(true);
                                 }
                             });
                 }
@@ -201,6 +203,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     }
                     currentTask.setTaskTypeCode(view.getCbbTaskType().
                             getSimpleValue().getCode());
+                    currentTask.setDynamicQuota(view.getCbDynamicQuota().getValue());
                     currentTask.setCreateBy(1l);
                     currentTask.setUpdateBy(1l);
                     if (currentTask.getTaskTypeCode() == KDK.getCode()
@@ -233,7 +236,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         public void onSuccess(SaveResult result) {
                             taskEditWindow.hide();
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
-                            updateGrid((Task) result.getEntities().get(0));
+                            updateGrid(result.<Task>getEntity());
                         }
                     });
                 }
@@ -343,6 +346,26 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                                     updateGrid(result.getTask());
                                 }
                             });
+                }
+            }
+        });
+        view.getCbDynamicQuota().addListener(Events.Change, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                view.getTxtTaskQuota().setEnabled(!view.getCbDynamicQuota().getValue());
+                if (view.getCbDynamicQuota().getValue()) {
+                    view.getTxtTaskQuota().clearInvalid();
+                }
+            }
+        });
+        view.getCbbTaskType().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<TaskTypeEnum>>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<TaskTypeEnum>> se) {
+                if (view.getCbbTaskType().getSimpleValue() == DK) {
+                    view.getCbDynamicQuota().setEnabled(true);
+                } else {
+                    view.getCbDynamicQuota().setEnabled(false);
+                    view.getCbDynamicQuota().setValue(false);
                 }
             }
         });

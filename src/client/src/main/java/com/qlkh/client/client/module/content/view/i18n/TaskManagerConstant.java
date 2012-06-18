@@ -62,4 +62,5 @@ public interface TaskManagerConstant extends Constants {
     String changeDefaultValueTitle();
     String btnDefaultValueCancel();
     String btnDefaultValueOk();
+    String cbDynamicQuota();
 }

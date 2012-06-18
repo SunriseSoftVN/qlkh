@@ -12,10 +12,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -153,6 +150,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     @I18nField
     MyNumberField txtDefaultValue = new MyNumberField();
 
+    @I18nField
+    CheckBox cbDynamicQuota = new CheckBox();
+
     TextField<String> txtFormCode = new TextField<String>();
 
     TextField<String> txtToCode = new TextField<String>();
@@ -266,6 +266,16 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
                 TASK_QUOTA_WIDTH);
+        quotaColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                Task task = model.getBean();
+                if (task.isDynamicQuota()) {
+                    return "Theo quý";
+                }
+                return task.getQuota();
+            }
+        });
         columnConfigs.add(quotaColumnConfig);
 
         ColumnConfig taskTypeCodeColumnConfig = new ColumnConfig(TASK_TYPE_CODE_COLUMN, getConstant().taskTypeCodeColumnTitle(),
@@ -350,6 +360,12 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(txtTaskUnit);
 
+        if (!txtTaskDefault.isRendered()) {
+            txtTaskDefault.setSelectOnFocus(true);
+            txtTaskDefault.setAllowBlank(false);
+        }
+        taskEditPanel.add(txtTaskDefault);
+
         if (!cbbTaskType.isRendered()) {
             cbbTaskType.setEditable(false);
             cbbTaskType.setAllowBlank(false);
@@ -360,11 +376,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
         taskEditPanel.add(cbbTaskType);
 
-        if (!txtTaskDefault.isRendered()) {
-            txtTaskDefault.setSelectOnFocus(true);
-            txtTaskDefault.setAllowBlank(false);
-        }
-        taskEditPanel.add(txtTaskDefault);
+        taskEditPanel.add(cbDynamicQuota);
 
         if (!txtTaskQuota.isRendered()) {
             txtTaskQuota.setSelectOnFocus(true);
@@ -406,7 +418,7 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
             defaultValuePanel.setLabelWidth(150);
         }
 
-        if(!txtDefaultValue.isRendered()) {
+        if (!txtDefaultValue.isRendered()) {
             txtDefaultValue.setSelectOnFocus(true);
             txtDefaultValue.setAllowBlank(false);
         }
@@ -647,5 +659,9 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public FormPanel getDefaultValuePanel() {
         return defaultValuePanel;
+    }
+
+    public CheckBox getCbDynamicQuota() {
+        return cbDynamicQuota;
     }
 }
