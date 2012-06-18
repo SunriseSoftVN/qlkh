@@ -180,7 +180,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                     .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
                     .addColumn("Định mức", "task.defaultValueForPrinting", Double.class, 15, false, "###,###.###", detailStyle)
-                    .addColumn("Số lần", "task.quotaYearForPrinting", Integer.class, 15, detailStyle);
+                    .addColumn("Số lần", "task.quotaForPrinting", Integer.class, 15, detailStyle);
 
             List<Station> stations = new ArrayList<Station>();
             if (stationId == StationCodeEnum.COMPANY.getId()) {
