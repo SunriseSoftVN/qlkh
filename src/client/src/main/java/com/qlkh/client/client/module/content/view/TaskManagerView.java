@@ -151,21 +151,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     Label lblToCode = new Label();
 
     @I18nField
-    MyNumberField txtYear = new MyNumberField();
-
-    @I18nField
-    MyNumberField txtQuotaQ1 = new MyNumberField();
-
-    @I18nField
-    MyNumberField txtQuotaQ2 = new MyNumberField();
-
-    @I18nField
-    MyNumberField txtQuotaQ3 = new MyNumberField();
-
-    @I18nField
-    MyNumberField txtQuotaQ4 = new MyNumberField();
-
-    @I18nField
     MyNumberField txtDefaultValue = new MyNumberField();
 
     TextField<String> txtFormCode = new TextField<String>();
@@ -176,7 +161,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
     private PagingToolBar pagingToolBar;
     private Grid<BeanModel> taskGird;
     private GridCellRenderer<BeanModel> taskChildRenderer;
-    private GridCellRenderer<BeanModel> quotaRenderer;
 
     private MyFormPanel taskEditPanel = new MyFormPanel();
     private VerticalPanel addChildTaskPanel;
@@ -282,7 +266,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
         ColumnConfig quotaColumnConfig = new ColumnConfig(TASK_QUOTA_COLUMN, getConstant().taskQuotaColumnTitle(),
                 TASK_QUOTA_WIDTH);
-        quotaColumnConfig.setRenderer(quotaRenderer);
         columnConfigs.add(quotaColumnConfig);
 
         ColumnConfig taskTypeCodeColumnConfig = new ColumnConfig(TASK_TYPE_CODE_COLUMN, getConstant().taskTypeCodeColumnTitle(),
@@ -391,30 +374,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         }
 
         taskEditPanel.add(txtTaskQuota);
-
-        if (!txtYear.isRendered()) {
-            txtYear.setEditable(false);
-            txtYear.setEnabled(false);
-        }
-        taskEditPanel.add(txtYear);
-
-        if (!txtQuotaQ1.isRendered()) {
-            txtQuotaQ1.setAllowBlank(false);
-        }
-        if (!txtQuotaQ2.isRendered()) {
-            txtQuotaQ2.setAllowBlank(false);
-        }
-        if (!txtQuotaQ3.isRendered()) {
-            txtQuotaQ3.setAllowBlank(false);
-        }
-        if (!txtQuotaQ4.isRendered()) {
-            txtQuotaQ4.setAllowBlank(false);
-        }
-
-        taskEditPanel.add(txtQuotaQ1);
-        taskEditPanel.add(txtQuotaQ2);
-        taskEditPanel.add(txtQuotaQ3);
-        taskEditPanel.add(txtQuotaQ4);
 
         warningMessage.setHtml(getConstant().warningMessage());
         warningMessage.setVisible(false);
@@ -621,10 +580,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return cbbTaskType;
     }
 
-    public void setQuotaRenderer(GridCellRenderer<BeanModel> quotaRenderer) {
-        this.quotaRenderer = quotaRenderer;
-    }
-
     public void setTaskChildRenderer(GridCellRenderer<BeanModel> taskChildRenderer) {
         this.taskChildRenderer = taskChildRenderer;
     }
@@ -665,17 +620,10 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
         return btnPickTaskChildOk;
     }
 
-    public void setBtnPickTaskChildOk(Button btnPickTaskChildOk) {
-        this.btnPickTaskChildOk = btnPickTaskChildOk;
-    }
-
     public Button getBtnPickTaskChildCancel() {
         return btnPickTaskChildCancel;
     }
 
-    public void setBtnPickTaskChildCancel(Button btnPickTaskChildCancel) {
-        this.btnPickTaskChildCancel = btnPickTaskChildCancel;
-    }
 
     public TextField<String> getTxtFormCode() {
         return txtFormCode;
@@ -683,26 +631,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     public TextField<String> getTxtToCode() {
         return txtToCode;
-    }
-
-    public MyNumberField getTxtQuotaQ4() {
-        return txtQuotaQ4;
-    }
-
-    public MyNumberField getTxtQuotaQ1() {
-        return txtQuotaQ1;
-    }
-
-    public MyNumberField getTxtQuotaQ2() {
-        return txtQuotaQ2;
-    }
-
-    public MyNumberField getTxtQuotaQ3() {
-        return txtQuotaQ3;
-    }
-
-    public MyNumberField getTxtYear() {
-        return txtYear;
     }
 
     public Button getBtnDefaultValueOk() {

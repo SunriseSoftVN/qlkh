@@ -7,9 +7,7 @@ package com.qlkh.client.client.module.content.presenter;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
@@ -33,10 +31,11 @@ import com.qlkh.core.client.action.core.LoadResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.task.*;
-import com.qlkh.core.client.action.time.GetServerTimeAction;
-import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.TaskTypeEnum;
-import com.qlkh.core.client.model.*;
+import com.qlkh.core.client.model.Task;
+import com.qlkh.core.client.model.TaskDetailDK;
+import com.qlkh.core.client.model.TaskDetailKDK;
+import com.qlkh.core.client.model.TaskDetailNam;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -70,7 +69,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
     private Window pickChildTaskWindow;
     private Window defaultValueWindow;
     private Task currentTask;
-    private TaskQuota currentTaskQuota;
 
     @Override
     public void onActivate() {
@@ -81,7 +79,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
 
     @Override
     protected void doBind() {
-        view.setQuotaRenderer(new TaskQuotaGridRender());
         view.setTaskChildRenderer(new TaskChildOptionGridRender());
         view.createGrid(GridUtils.createListStore(Task.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
@@ -93,15 +90,8 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 view.getCbbTaskType().setSimpleValue(DK);
                 view.getCbbTaskType().setEnabled(true);
                 currentTask = new Task();
-                dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
-                    @Override
-                    public void onSuccess(GetServerTimeResult result) {
-                        loadTaskQuota(currentTask, result.getYear());
-                        taskEditWindow.show();
-                        view.getTxtTaskQuota().setVisible(false);
-                        taskEditWindow.layout(true);
-                    }
-                });
+                taskEditWindow.show();
+                taskEditWindow.layout(true);
             }
         });
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -124,12 +114,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
                             valueOf(selectedTask.getTaskTypeCode()));
                     currentTask = selectedTask;
-                    dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
-                        @Override
-                        public void onSuccess(GetServerTimeResult result) {
-                            loadTaskQuota(currentTask, result.getYear());
-                        }
-                    });
                     dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES),
                             new AbstractAsyncCallback<CanEditResult>() {
                                 @Override
@@ -137,16 +121,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                                     view.getCbbTaskType().setEnabled(result.isEditable());
                                     view.getWarningMessage().setVisible(!result.isEditable());
                                     taskEditWindow.show();
-                                    if (currentTask.getTaskTypeCode() == DK.getCode()) {
-                                        view.getTxtTaskQuota().setVisible(false);
-                                    } else {
-                                        view.getTxtTaskQuota().setValue(currentTask.getQuota());
-                                        view.getTxtYear().setVisible(false);
-                                        view.getTxtQuotaQ1().setVisible(false);
-                                        view.getTxtQuotaQ2().setVisible(false);
-                                        view.getTxtQuotaQ3().setVisible(false);
-                                        view.getTxtQuotaQ4().setVisible(false);
-                                    }
                                     taskEditWindow.layout(true);
                                 }
                             });
@@ -242,18 +216,7 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                         }
                     }
 
-                    List entities = new ArrayList();
-                    entities.add(currentTask);
-                    if (currentTask.getTaskTypeCode() == DK.getCode()) {
-                        currentTaskQuota.setYear(view.getTxtYear().getValue().intValue());
-                        currentTaskQuota.setQ1(view.getTxtQuotaQ1().getValue().intValue());
-                        currentTaskQuota.setQ2(view.getTxtQuotaQ2().getValue().intValue());
-                        currentTaskQuota.setQ3(view.getTxtQuotaQ3().getValue().intValue());
-                        currentTaskQuota.setQ4(view.getTxtQuotaQ4().getValue().intValue());
-                        entities.add(currentTaskQuota);
-                    }
-
-                    dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
+                    dispatch.execute(new SaveAction(currentTask), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onFailure(Throwable caught) {
                             if (caught instanceof ServiceException) {
@@ -360,34 +323,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 }
             }
         });
-
-        view.getCbbTaskType().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<TaskTypeEnum>>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<TaskTypeEnum>> se) {
-                if (se.getSelectedItem() != null) {
-                    if (se.getSelectedItem().getValue() != DK) {
-                        view.getTxtQuotaQ1().clear();
-                        view.getTxtQuotaQ2().clear();
-                        view.getTxtQuotaQ3().clear();
-                        view.getTxtQuotaQ4().clear();
-                        view.getTxtTaskQuota().setVisible(true);
-                        view.getTxtYear().setVisible(false);
-                        view.getTxtQuotaQ1().setVisible(false);
-                        view.getTxtQuotaQ2().setVisible(false);
-                        view.getTxtQuotaQ3().setVisible(false);
-                        view.getTxtQuotaQ4().setVisible(false);
-                    } else {
-                        view.getTxtTaskQuota().setVisible(false);
-                        view.getTxtYear().setVisible(true);
-                        view.getTxtQuotaQ1().setVisible(true);
-                        view.getTxtQuotaQ2().setVisible(true);
-                        view.getTxtQuotaQ3().setVisible(true);
-                        view.getTxtQuotaQ4().setVisible(true);
-                    }
-                    taskEditWindow.layout(true);
-                }
-            }
-        });
         view.getBtnDefaultValueCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -402,12 +337,12 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                     dispatch.execute(new SaveTaskDefaultValueAction(selectedTask,
                             view.getTxtDefaultValue().getValue().doubleValue()),
                             new AbstractAsyncCallback<SaveTaskDefaultValueResult>() {
-                        @Override
-                        public void onSuccess(SaveTaskDefaultValueResult result) {
-                            defaultValueWindow.hide();
-                            updateGrid(result.getTask());
-                        }
-                    });
+                                @Override
+                                public void onSuccess(SaveTaskDefaultValueResult result) {
+                                    defaultValueWindow.hide();
+                                    updateGrid(result.getTask());
+                                }
+                            });
                 }
             }
         });
@@ -444,63 +379,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             }
             return createChangeDefaultValueAnchor();
         }
-    }
-
-    private class TaskQuotaGridRender implements GridCellRenderer<BeanModel> {
-        @Override
-        public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
-                             ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
-            Task task = model.getBean();
-            if (task != null) {
-                if (task.getTaskTypeCode() == DK.getCode()) {
-                    return new Label("Theo quý");
-                } else {
-                    return new Label(String.valueOf(task.getQuota()));
-                }
-            }
-            return null;
-        }
-    }
-
-    private void loadTaskQuota(final Task selectedTask, final Integer year) {
-        if (selectedTask.getId() == null) {
-            createTaskQuota(selectedTask, year);
-        } else {
-            dispatch.execute(new LoadTaskQuotaAction(selectedTask.getId()), new AbstractAsyncCallback<LoadTaskQuotaResult>() {
-                @Override
-                public void onSuccess(LoadTaskQuotaResult result) {
-                    if (result.getTaskQuota() == null) {
-                        createTaskQuota(selectedTask, year);
-                    } else {
-                        currentTaskQuota = result.getTaskQuota();
-                        view.getTxtYear().setValue(currentTaskQuota.getYear());
-                        view.getTxtQuotaQ1().setValue(currentTaskQuota.getQ1());
-                        view.getTxtQuotaQ2().setValue(currentTaskQuota.getQ2());
-                        view.getTxtQuotaQ3().setValue(currentTaskQuota.getQ3());
-                        view.getTxtQuotaQ4().setValue(currentTaskQuota.getQ4());
-                        if (currentTaskQuota.getYear() != year) {
-                            currentTaskQuota = new TaskQuota();
-                            currentTaskQuota.setCreateBy(1l);
-                            currentTaskQuota.setUpdateBy(1l);
-                            currentTaskQuota.setTask(selectedTask);
-                            view.getTxtYear().setValue(year);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    private void createTaskQuota(final Task selectedTask, final Integer year) {
-        currentTaskQuota = new TaskQuota();
-        currentTaskQuota.setCreateBy(1l);
-        currentTaskQuota.setUpdateBy(1l);
-        currentTaskQuota.setTask(selectedTask);
-        view.getTxtYear().setValue(year);
-        view.getTxtQuotaQ1().clear();
-        view.getTxtQuotaQ2().clear();
-        view.getTxtQuotaQ3().clear();
-        view.getTxtQuotaQ4().clear();
     }
 
     private Anchor createChangeDefaultValueAnchor() {

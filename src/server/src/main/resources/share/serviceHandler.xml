@@ -25,7 +25,6 @@
                 <bean class="com.qlkh.server.handler.task.CanEditHandler"/>
                 <bean class="com.qlkh.server.handler.task.DeleteTaskHandler"/>
                 <bean class="com.qlkh.server.handler.task.LoadTaskDefaultHandler"/>
-                <bean class="com.qlkh.server.handler.task.LoadTaskQuotaHandler"/>
                 <bean class="com.qlkh.server.handler.task.SaveTaskDefaultValueHandler"/>
                 <bean class="com.qlkh.server.handler.system.UpgradeDatabaseHandler"/>
             </list>
