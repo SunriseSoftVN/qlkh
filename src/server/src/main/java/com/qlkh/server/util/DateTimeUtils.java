@@ -4,6 +4,8 @@
 
 package com.qlkh.server.util;
 
+import org.jfree.data.time.Quarter;
+
 import java.util.Calendar;
 
 /**
@@ -27,6 +29,31 @@ public final class DateTimeUtils {
     public static int getCurrentQuarter() {
         int month = cal.get(Calendar.MONTH);
         return month / 3 + 1;
+    }
+
+    public static long getDateForQuarter(int quarter, int year) {
+        Quarter quarter1 = new Quarter(quarter, year);
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTime(quarter1.getStart());
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.setTime(quarter1.getEnd());
+
+        return daysBetween(startDate, endDate);
+    }
+
+    /**
+     * author: http://tripoverit.blogspot.sg/2007/07/java-calculate-difference-between-two.html
+     */
+    //assert: startDate must be before endDate
+    public static long daysBetween(Calendar startDate, Calendar endDate) {
+        Calendar date = (Calendar) startDate.clone();
+        long daysBetween = 0;
+        while (date.before(endDate)) {
+            date.add(Calendar.DAY_OF_MONTH, 1);
+            daysBetween++;
+        }
+        return daysBetween;
     }
 
 }
