@@ -300,9 +300,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>net.sf.beanlib</groupId>-->
-            <!--<artifactId>beanlib-joda</artifactId>-->
-            <!--<version>${beanlibVerion}</version>-->
+        <!--<groupId>net.sf.beanlib</groupId>-->
+        <!--<artifactId>beanlib-joda</artifactId>-->
+        <!--<version>${beanlibVerion}</version>-->
         <!--</dependency>-->
         <!--end-->
 
@@ -313,6 +313,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!--JFreeChart-->
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>${jfreechartVersion}</version>
+        </dependency>
+        <!--End-->
     </dependencies>
 
 </project>

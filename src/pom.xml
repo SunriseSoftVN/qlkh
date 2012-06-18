@@ -38,6 +38,7 @@
         <guavaVerion>12.0</guavaVerion>
         <beanlibVerion>5.0.5</beanlibVerion>
         <scalaVersion>2.9.2</scalaVersion>
+        <jfreechartVersion>1.0.13</jfreechartVersion>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>
