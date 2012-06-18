@@ -25,7 +25,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.module.content.view.i18n.TaskDetailDKConstant;
-import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.widget.TextField;
@@ -167,7 +166,7 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
             @Override
             public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
                 Task task = model.getBean();
-                if (TaskTypeEnum.DK.getCode() == task.getTaskTypeCode()) {
+                if (task.isDynamicQuota()) {
                     return "Theo quý";
                 }
                 return task.getQuota();

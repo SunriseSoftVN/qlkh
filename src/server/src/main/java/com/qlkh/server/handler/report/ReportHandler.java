@@ -56,6 +56,7 @@ import static com.qlkh.client.client.utils.NumberUtils.convertNullToDouble;
 import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
+import static com.qlkh.server.util.DateTimeUtils.getDateForQuarter;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -178,8 +179,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)
                     .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
-                    .addColumn("Định mức", "task.defaultValue", Double.class, 15, false, "###,###.###", detailStyle)
-                    .addColumn("Số lần", "task.quota", Integer.class, 15, detailStyle);
+                    .addColumn("Định mức", "task.defaultValueForPrinting", Double.class, 15, false, "###,###.###", detailStyle)
+                    .addColumn("Số lần", "task.quotaYearForPrinting", Integer.class, 15, detailStyle);
 
             List<Station> stations = new ArrayList<Station>();
             if (stationId == StationCodeEnum.COMPANY.getId()) {
@@ -498,7 +499,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         if (reportAction.getReportTypeEnum() != CA_NAM) {
             defaultValue = getDefaultValue(taskDefaultValues, task, reportAction.getYear(),
                     reportAction.getReportTypeEnum().getValue());
-            task.setDefaultValue(defaultValue);
+            task.setDefaultValueForPrinting(defaultValue);
         } else {
             defaultValueQ1 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q1.getValue());
             defaultValueQ2 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q2.getValue());
@@ -519,7 +520,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 double time = (defaultValueQ1 * weightQ1 + defaultValueQ2 * weightQ2
                         + defaultValueQ3 * weightQ3 + defaultValueQ4 * weightQ4) * task.getQuota();
                 double yearDefaultValue = time / (weightQ1 + weightQ2 + weightQ3 + weightQ4) / task.getQuota();
-                task.setDefaultValue(yearDefaultValue);
+                task.setDefaultValueForPrinting(yearDefaultValue);
                 return time;
         }
         return 0d;
@@ -551,68 +552,76 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private void calculateForDKTask(StationReportBean station, TaskReportBean task,
                                     List<TaskDetailDKDataView> subAnnualTaskDetails,
                                     List<TaskDefaultValue> taskDefaultValues, ReportAction reportAction) {
-//        List<TaskQuota> selectTaskQuotas = select(taskQuotas,
-//                having(on(TaskQuota.class).getTask().getId(), equalTo(task.getId())).
-//                        and(having(on(TaskQuota.class).getYear(), lessThanOrEqualTo(reportAction.getYear()))));
-//        TaskQuota taskQuota = selectMax(selectTaskQuotas, on(TaskQuota.class).getYear());
-//        Preconditions.checkNotNull(taskQuota, "No task quota for this task's id "
-//                + task.getId() + " in year " + reportAction.getYear());
-//        int defaultQuota = 0;
-//        if (Q1 == reportAction.getReportTypeEnum()) {
-//            defaultQuota = taskQuota.getQ1();
-//        } else if (Q2 == reportAction.getReportTypeEnum()) {
-//            defaultQuota = taskQuota.getQ2();
-//        } else if (Q3 == reportAction.getReportTypeEnum()) {
-//            defaultQuota = taskQuota.getQ3();
-//        } else if (Q4 == reportAction.getReportTypeEnum()) {
-//            defaultQuota = taskQuota.getQ4();
-//        }
-//
-//        List<TaskDetailDKDataView> select;
-//        if (reportAction.getBranchId() != null) {
-//            select = select(subAnnualTaskDetails, having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(task.getId())).
-//                    and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))).
-//                    and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(reportAction.getBranchId()))));
-//        } else {
-//            select = select(subAnnualTaskDetails, having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(task.getId())).
-//                    and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))));
-//        }
-//
-//        if (CollectionUtils.isNotEmpty(select)) {
-//            Double weight = 0d;
-//            for (TaskDetailDKDataView subTaskAnnualDetail : select) {
-//                if (subTaskAnnualDetail.getRealValue() != null) {
-//                    weight += subTaskAnnualDetail.getRealValue();
-//                }
-//            }
-//            if (weight > 0) {
-//                station.setValue(weight);
-//            }
-//        }
-//
-//        //Calculate time
-//        if (station.getValue() != null) {
-//            Double time = 0d;
-//            double defaultValue = 0d;
-//            if (reportAction.getReportTypeEnum() != CA_NAM) {
-//                defaultValue = getDefaultValue(taskDefaultValues, task, reportAction.getYear(),
-//                        reportAction.getReportTypeEnum().getValue());
-//                time = defaultValue * defaultQuota * station.getValue();
-//            } else {
-//                double defaultValueQ1 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q1.getValue());
-//                double defaultValueQ2 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q2.getValue());
-//                double defaultValueQ3 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q3.getValue());
-//                double defaultValueQ4 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q4.getValue());
-//                time = station.getValue() * (defaultValueQ1 * taskQuota.getQ1() + defaultValueQ2 * taskQuota.getQ2()
-//                        + defaultValueQ3 * taskQuota.getQ3() + defaultValueQ4 * taskQuota.getQ4()
-//                );
-//                defaultQuota = taskQuota.getQ1() + taskQuota.getQ2() + taskQuota.getQ3() + taskQuota.getQ4();
-//                defaultValue = time / defaultQuota / station.getValue();
-//            }
-//            task.setDefaultValue(defaultValue);
-//            task.setQuota(defaultQuota);
-//            station.setTime(time);
-//        }
+
+        int defaultQuota = 0;
+        if (task.isDynamicQuota()) {
+            if (reportAction.getReportTypeEnum() != CA_NAM) {
+                defaultQuota = getDateForQuarter(reportAction.getReportTypeEnum().getValue(),
+                        reportAction.getYear());
+            }
+        } else {
+            defaultQuota = task.getQuota();
+        }
+
+        List<TaskDetailDKDataView> select;
+        if (reportAction.getBranchId() != null) {
+            select = select(subAnnualTaskDetails, having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(task.getId())).
+                    and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))).
+                    and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(reportAction.getBranchId()))));
+        } else {
+            select = select(subAnnualTaskDetails, having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(task.getId())).
+                    and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))));
+        }
+
+        if (CollectionUtils.isNotEmpty(select)) {
+            Double weight = 0d;
+            for (TaskDetailDKDataView subTaskAnnualDetail : select) {
+                if (subTaskAnnualDetail.getRealValue() != null) {
+                    weight += subTaskAnnualDetail.getRealValue();
+                }
+            }
+            if (weight > 0) {
+                station.setValue(weight);
+            }
+        }
+
+        //Calculate time
+        if (station.getValue() != null) {
+            Double time = 0d;
+            double defaultValue = 0d;
+            if (reportAction.getReportTypeEnum() != CA_NAM) {
+                defaultValue = getDefaultValue(taskDefaultValues, task, reportAction.getYear(),
+                        reportAction.getReportTypeEnum().getValue());
+                time = defaultValue * defaultQuota * station.getValue();
+            } else {
+                double defaultValueQ1 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q1.getValue());
+                double defaultValueQ2 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q2.getValue());
+                double defaultValueQ3 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q3.getValue());
+                double defaultValueQ4 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q4.getValue());
+                if (task.isDynamicQuota()) {
+                    int quotaQ1 = getDateForQuarter(Q1.getValue(),
+                            reportAction.getYear());
+                    int quotaQ2 = getDateForQuarter(Q2.getValue(),
+                            reportAction.getYear());
+                    int quotaQ3 = getDateForQuarter(Q3.getValue(),
+                            reportAction.getYear());
+                    int quotaQ4 = getDateForQuarter(Q4.getValue(),
+                            reportAction.getYear());
+                    time = station.getValue() * (defaultValueQ1 * quotaQ1 + defaultValueQ2 * quotaQ2
+                            + defaultValueQ3 * quotaQ3 + defaultValueQ4 * quotaQ4
+                    );
+                    defaultQuota = quotaQ1 + quotaQ2 + quotaQ3 + quotaQ4;
+                } else {
+                    time = station.getValue() * defaultQuota * (defaultValueQ1 + defaultValueQ2
+                            + defaultValueQ3 + defaultValueQ4);
+                    defaultQuota *= 4;
+                }
+                defaultValue = time / defaultQuota / station.getValue();
+            }
+            task.setDefaultValueForPrinting(defaultValue);
+            task.setQuotaYearForPrinting(defaultQuota);
+            station.setTime(time);
+        }
     }
 
     private double getDefaultValue(List<TaskDefaultValue> taskDefaultValues, TaskReportBean task, int year, int quarter) {

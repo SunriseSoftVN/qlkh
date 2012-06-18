@@ -31,7 +31,7 @@ public final class DateTimeUtils {
         return month / 3 + 1;
     }
 
-    public static long getDateForQuarter(int quarter, int year) {
+    public static int getDateForQuarter(int quarter, int year) {
         Quarter quarter1 = new Quarter(quarter, year);
         Calendar startDate = Calendar.getInstance();
         startDate.setTime(quarter1.getStart());
@@ -39,7 +39,7 @@ public final class DateTimeUtils {
         Calendar endDate = Calendar.getInstance();
         endDate.setTime(quarter1.getEnd());
 
-        return daysBetween(startDate, endDate);
+        return (int) daysBetween(startDate, endDate);
     }
 
     /**
