@@ -19,9 +19,7 @@ public class BackupProcessor implements Processor {
     @Autowired
     private Worker backWorker;
 
-
-//    @Scheduled(cron = "0 0 20 * * *")
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "0 0 20 * * *")
     @Override
     public void process() {
         backWorker.workForMe();
