@@ -8,6 +8,7 @@
         <property name="locations">
             <list>
                 <value>classpath:/database.properties</value>
+                <value>classpath:/backup.properties</value>
             </list>
         </property>
     </bean>
@@ -17,6 +18,7 @@
     <import resource="hibernate.xml"/>
     <import resource="dao.xml"/>
     <import resource="serviceHandler.xml"/>
+    <import resource="backup.xml"/>
 
     <!-- Auto scan the components -->
     <context:component-scan base-package="com.qlkh.server"/>

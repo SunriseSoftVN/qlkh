@@ -12,6 +12,7 @@
         <module>core</module>
         <module>client</module>
         <module>server</module>
+        <module>backup</module>
     </modules>
 
     <properties>
@@ -100,6 +101,14 @@
                     <include>**/*</include>
                 </includes>
             </resource>
+
+            <resource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+
         </resources>
 
         <plugins>
