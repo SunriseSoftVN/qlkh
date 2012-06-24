@@ -108,7 +108,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             }
             if (station != null) {
                 view.setEnableReportButton(false);
-                dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(),
+                dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(), view.getCbbReportForm().getSimpleValue(),
                         fileTypeEnum, station.getId(), branchId, view.getCbbYear().getSimpleValue()), new AbstractAsyncCallback<ReportResult>() {
                     @Override
                     public void onSuccess(ReportResult result) {

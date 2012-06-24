@@ -5,6 +5,7 @@
 package com.qlkh.core.client.action.report;
 
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
+import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import net.customware.gwt.dispatch.shared.Action;
 
@@ -18,6 +19,7 @@ public class ReportAction implements Action<ReportResult> {
 
     private ReportTypeEnum reportTypeEnum;
     private ReportFileTypeEnum fileTypeEnum;
+    private ReportFormEnum reportFormEnum;
     private long stationId;
     private Long branchId;
     private int year;
@@ -25,8 +27,9 @@ public class ReportAction implements Action<ReportResult> {
     public ReportAction() {
     }
 
-    public ReportAction(ReportTypeEnum reportTypeEnum,
+    public ReportAction(ReportTypeEnum reportTypeEnum, ReportFormEnum reportFormEnum,
                         ReportFileTypeEnum fileTypeEnum, long stationId, Long branchId, int year) {
+        this.reportFormEnum = reportFormEnum;
         this.reportTypeEnum = reportTypeEnum;
         this.fileTypeEnum = fileTypeEnum;
         this.stationId = stationId;
@@ -52,5 +55,9 @@ public class ReportAction implements Action<ReportResult> {
 
     public int getYear() {
         return year;
+    }
+
+    public ReportFormEnum getReportFormEnum() {
+        return reportFormEnum;
     }
 }

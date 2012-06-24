@@ -4,13 +4,17 @@
 
 package com.qlkh.server.business.rule;
 
+import com.qlkh.client.client.utils.TaskCodeUtils;
+import com.qlkh.core.client.action.report.ReportAction;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.SumReportBean;
 import com.qlkh.core.client.report.TaskReportBean;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.qlkh.core.client.constant.ReportFormEnum.MAU_1;
 import static com.qlkh.core.client.constant.TaskTypeEnum.*;
 
 /**
@@ -21,14 +25,15 @@ import static com.qlkh.core.client.constant.TaskTypeEnum.*;
  */
 public final class HideDetailTaskRule {
 
-    public static void hide(List<SumReportBean> beans) {
+    public static void hide(List<SumReportBean> beans, ReportAction action) {
+        List<SumReportBean> removeBeans = new ArrayList<SumReportBean>();
         for (SumReportBean bean : beans) {
             //Hide default value and quota when it is 0.
             if (bean.getTask().getDefaultValueForPrinting() != null &&
                     bean.getTask().getDefaultValueForPrinting() == 0) {
                 bean.getTask().setDefaultValueForPrinting(null);
             }
-            if (bean.getTask().getQuotaForPrinting() !=null
+            if (bean.getTask().getQuotaForPrinting() != null
                     && bean.getTask().getQuotaForPrinting() == 0) {
                 bean.getTask().setQuotaForPrinting(null);
             }
@@ -40,12 +45,23 @@ public final class HideDetailTaskRule {
                     station.setValue(null);
                 }
             }
+            if (action.getReportFormEnum() == MAU_1 && isRemoveTask(bean.getTask())) {
+                removeBeans.add(bean);
+            }
         }
+        beans.removeAll(removeBeans);
     }
 
     private static boolean isTask(TaskReportBean task) {
         return DK.getCode() != task.getTaskTypeCode()
                 && KDK.getCode() != task.getTaskTypeCode()
                 && NAM.getCode() != task.getTaskTypeCode();
+    }
+
+    private static boolean isRemoveTask(TaskReportBean task) {
+        //Remove for *.10*, *.20*, *.30*
+        Integer subCode = TaskCodeUtils.getTaskPrefix(task.getCode());
+        return subCode != null && subCode > 100 && subCode < 400
+                && subCode != 200 && subCode != 300;
     }
 }

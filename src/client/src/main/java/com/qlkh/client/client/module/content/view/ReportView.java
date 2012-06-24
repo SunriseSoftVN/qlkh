@@ -20,6 +20,7 @@ import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.ReportConstant;
 import com.qlkh.client.client.module.content.view.security.ReportSecurity;
+import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.FieldSecurity;
@@ -52,6 +53,8 @@ public class ReportView extends AbstractView<ReportConstant> {
     ComboBox<BeanModel> cbbReportBranch = new ComboBox<BeanModel>();
 
     SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
+
+    SimpleComboBox<ReportFormEnum> cbbReportForm = new SimpleComboBox<ReportFormEnum>();
 
     @I18nField
     Button btnPlanReportPdf = new Button();
@@ -96,12 +99,19 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbYear.setWidth(60);
         cbbYear.setEditable(false);
 
+        cbbReportForm.add(Arrays.asList(ReportFormEnum.values()));
+        cbbReportForm.setSimpleValue(ReportFormEnum.MAU_1);
+        cbbReportForm.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbReportForm.setEditable(false);
+        cbbReportForm.setWidth(100);
+
         HorizontalPanel hp = new HorizontalPanel();
         hp.setSpacing(4);
         hp.add(cbbReportStation);
         hp.add(cbbReportBranch);
         hp.add(cbbReportType);
         hp.add(cbbYear);
+        hp.add(cbbReportForm);
         hp.add(btnPlanReportPdf);
         hp.add(btnPlanReportXls);
         planReportPanel.add(hp);
@@ -128,6 +138,7 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public void setEnableReportButton(boolean enable) {
         cbbReportStation.setEnabled(enable);
+        cbbReportForm.setEnabled(enable);
         cbbReportBranch.setEnabled(enable);
         cbbYear.setEnabled(enable);
         cbbReportType.setEnabled(enable);
@@ -161,5 +172,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public ComboBox<BeanModel> getCbbReportBranch() {
         return cbbReportBranch;
+    }
+
+    public SimpleComboBox<ReportFormEnum> getCbbReportForm() {
+        return cbbReportForm;
     }
 }

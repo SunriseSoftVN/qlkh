@@ -7,6 +7,7 @@ package com.qlkh.server.handler;
 import com.qlkh.core.client.action.report.ReportAction;
 import com.qlkh.core.client.action.report.ReportResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
+import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import net.customware.gwt.dispatch.server.Dispatch;
 import net.customware.gwt.dispatch.shared.DispatchException;
@@ -39,7 +40,7 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
     @Test(timeout = 20000)
     public void testReport() throws DispatchException {
         ReportResult result = dispatch.
-                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFileTypeEnum.PDF, 27, null, 2012));
+                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2, ReportFileTypeEnum.PDF, 27, null, 2012));
         assertEquals(result.getReportUrl(), "http://127.0.0.1:8080/service/report?reportName=kehoachtacnghiep.pdf");
     }
 }

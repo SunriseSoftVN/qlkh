@@ -32,7 +32,7 @@
         <javassistVersion>3.12.1.GA</javassistVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
         <dozerVersion>5.3.2</dozerVersion>
-        <dynamicJasperVersion>3.2.2</dynamicJasperVersion>
+        <dynamicJasperVersion>4.0.0</dynamicJasperVersion>
         <lambdaj.version>2.3.1</lambdaj.version>
         <collectionsVersion>3.2</collectionsVersion>
         <junitVerion>4.8.1</junitVerion>
@@ -223,6 +223,10 @@
         <repository>
             <id>smvp4g</id>
             <url>http://smvp4g-repository.googlecode.com/svn/trunk</url>
+        </repository>
+        <repository>
+            <id>repo2</id>
+            <url>http://repo2.maven.org/maven2/</url>
         </repository>
     </repositories>
 

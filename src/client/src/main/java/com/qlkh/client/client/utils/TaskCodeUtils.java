@@ -20,6 +20,7 @@ public final class TaskCodeUtils {
 
     public static final String CODE_SEPARATOR = " ; ";
     public static final String CODE_JOIN = " - ";
+    public static final String CODE_SPLIT = ".";
 
     private TaskCodeUtils() {
 
@@ -85,6 +86,24 @@ public final class TaskCodeUtils {
             return first + last;
         }
         return code;
+    }
+
+
+    /**
+     * Get task prefix
+     * Ex: 1.100 -> 100
+     * @param code
+     * @return null if something is wrong.
+     */
+    public static Integer getTaskPrefix(String code) {
+        if(StringUtils.isNotEmpty(code) && code.length() >= 4) {
+            int index = code.indexOf(CODE_SPLIT);
+            if(index >= 1) {
+                String subCode = code.substring(index + 1, code.length());
+                return Integer.valueOf(subCode);
+            }
+        }
+        return null;
     }
 
 }
