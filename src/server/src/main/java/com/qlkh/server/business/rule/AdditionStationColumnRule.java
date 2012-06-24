@@ -5,18 +5,11 @@
 package com.qlkh.server.business.rule;
 
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
-import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.model.Station;
-import com.qlkh.core.client.model.view.TaskDetailDKDataView;
-import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.SumReportBean;
 
 import java.util.List;
-
-import static ch.lambdaj.Lambda.*;
-import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
-import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * The Class AdditionStationColumnRule.
@@ -41,32 +34,32 @@ public final class AdditionStationColumnRule {
         stations.add(dsNDStation);
     }
 
-    public static void addDataForDSTN(List<SumReportBean> beans) {
+    public static void addDataForDSTN(List<SumReportBean> beans, long stationId) {
         for (SumReportBean bean : beans) {
-            Double companyValue = bean.getStations().get(String.
-                    valueOf(StationCodeEnum.COMPANY.getId())).getValue();
-            Double companyTime = bean.getStations().get(String.
-                    valueOf(StationCodeEnum.COMPANY.getId())).getTime();
+            Double totalValue = bean.getStations().get(String.
+                    valueOf(stationId)).getValue();
+            Double totalTime = bean.getStations().get(String.
+                    valueOf(stationId)).getTime();
 
             Double dsNDValue = bean.getStations().get(String.valueOf(dsNDStation.getId())).getValue();
             Double dsNDTime = bean.getStations().get(String.valueOf(dsNDStation.getId())).getTime();
 
-            if (companyValue != null && companyValue > 0d) {
+            if (totalValue != null && totalValue > 0d) {
                 if (dsNDValue == null) {
                     dsNDValue = 0d;
                 }
-                double result = companyValue - dsNDValue;
+                double result = totalValue - dsNDValue;
                 if (result > 0) {
                     bean.getStations().
                             get(String.valueOf(dsTNStation.getId())).setValue(result);
                 }
             }
 
-            if (companyTime != null && companyTime > 0d) {
+            if (totalTime != null && totalTime > 0d) {
                 if (dsNDTime == null) {
                     dsNDTime = 0d;
                 }
-                double result = companyTime - dsNDTime;
+                double result = totalTime - dsNDTime;
                    if (result > 0) {
                        bean.getStations().
                                get(String.valueOf(dsTNStation.getId())).setTime(result);
@@ -75,76 +68,16 @@ public final class AdditionStationColumnRule {
         }
     }
 
-    public static void addDataForDSND(List<SumReportBean> beans, ReportTypeEnum reportTypeEnum,
-                                      List<TaskDetailDKDataView> taskDetailDKs,
-                                      List<TaskDetailKDKDataView> taskDetailKDKs) {
+    public static void addDataForDSND(List<SumReportBean> beans) {
         for (SumReportBean bean : beans) {
-
-            Long taskId = bean.getTask().getId();
-
-            Double value = 0d;
-            if (taskId != null) {
-                if (DK.getCode() == bean.getTask().getTaskTypeCode()) {
-                    TaskDetailDKDataView detailDK = selectUnique(taskDetailDKs,
-                            having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(taskId))
-                                    .and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
-                    if (detailDK != null) {
-                        value = detailDK.getRealValue();
-                    }
-                } else {
-                    TaskDetailKDKDataView taskDetailKDK = selectUnique(taskDetailKDKs,
-                            having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(taskId))
-                                    .and(having(on(TaskDetailKDKDataView.class).getBranchId(), equalTo(BranchCodeEnum.ND.getId()))));
-
-                    if (taskDetailKDK != null) {
-                        switch (reportTypeEnum) {
-                            case Q1:
-                                if (taskDetailKDK.getQ1() != null) {
-                                    value += taskDetailKDK.getQ1();
-                                }
-                                break;
-                            case Q2:
-                                if (taskDetailKDK.getQ2() != null) {
-                                    value += taskDetailKDK.getQ2();
-                                }
-                                break;
-                            case Q3:
-                                if (taskDetailKDK.getQ3() != null) {
-                                    value += taskDetailKDK.getQ3();
-                                }
-                                break;
-                            case Q4:
-                                if (taskDetailKDK.getQ4() != null) {
-                                    value += taskDetailKDK.getQ4();
-                                }
-                                break;
-                            case CA_NAM:
-                                if (taskDetailKDK.getQ1() != null) {
-                                    value += taskDetailKDK.getQ1();
-                                }
-                                if (taskDetailKDK.getQ2() != null) {
-                                    value += taskDetailKDK.getQ2();
-                                }
-                                if (taskDetailKDK.getQ3() != null) {
-                                    value += taskDetailKDK.getQ3();
-                                }
-                                if (taskDetailKDK.getQ4() != null) {
-                                    value += taskDetailKDK.getQ4();
-                                }
-                                break;
-                        }
-                    }
-                }
-            }
-
             StationReportBean dsTNBean = new StationReportBean(dsTNStation.getId(), dsTNStation.getName());
             StationReportBean dsNDBean = new StationReportBean(dsNDStation.getId(), dsNDStation.getName());
 
-            //Calculate time
-            if (value != null && value > 0d) {
-                Double time = bean.getTask().getDefaultValue() * bean.getTask().getQuota() * value;
-                dsNDBean.setValue(value);
-                dsNDBean.setTime(time);
+            for (StationReportBean station : bean.getStations().values()) {
+                if (station.getNdValue() != null) {
+                    dsNDBean.setValue(station.getNdValue());
+                    dsNDBean.setTime(station.getNdTime());
+                }
             }
 
             bean.getStations().put(String.valueOf(dsTNBean.getId()), dsTNBean);

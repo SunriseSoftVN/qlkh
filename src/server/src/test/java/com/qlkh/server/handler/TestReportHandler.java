@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -40,7 +41,8 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
     @Test(timeout = 20000)
     public void testReport() throws DispatchException {
         ReportResult result = dispatch.
-                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2, ReportFileTypeEnum.PDF, 27, null, 2012));
+                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
+                        ReportFileTypeEnum.PDF, CAUGIAT.getId(), null, 2012));
         assertEquals(result.getReportUrl(), "http://127.0.0.1:8080/service/report?reportName=kehoachtacnghiep.pdf");
     }
 }

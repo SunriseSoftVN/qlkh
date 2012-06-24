@@ -56,6 +56,8 @@ import static com.qlkh.client.client.utils.NumberUtils.convertNullToDouble;
 import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
+import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
+import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
 import static com.qlkh.server.util.DateTimeUtils.getDateForQuarter;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -183,7 +185,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                     .addColumn("Số lần", "task.quotaForPrinting", Integer.class, 15, detailStyle);
 
             List<Station> stations = new ArrayList<Station>();
-            if (stationId == StationCodeEnum.COMPANY.getId()) {
+            if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
@@ -198,6 +200,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + branch.getName().toUpperCase() + "\\n");
                 } else {
+                    //Add two more columns. Business rule. TODO remove @dungvn3000
+                    AdditionStationColumnRule.addStation(stations);
                     fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + station.getName().toUpperCase() + "\\n");
@@ -216,12 +220,19 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                     colSpans.put(index, station.getName());
                 }
 
-                if (stationId == StationCodeEnum.COMPANY.getId()) {
+                if (stationId == COMPANY.getId()) {
                     for (Integer colIndex : colSpans.keySet()) {
                         fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
                     }
                     //set style two last columns. Business rule. TODO remove @dungvn3000
                     AdditionStationColumnRule.setStyle(fastReportBuilder.getColumns());
+                }
+
+                //Add two more column for CAU GIAT station report.
+                if (stationId == CAUGIAT.getId() && branchId == null) {
+                    for (Integer colIndex : colSpans.keySet()) {
+                        fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
+                    }
                 }
             }
 
@@ -230,7 +241,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
 
         fastReportBuilder.setHeaderHeight(50);
-        if (stationId == StationCodeEnum.COMPANY.getId()) {
+        if (stationId == COMPANY.getId()) {
             fastReportBuilder.setPageSizeAndOrientation(Page.Page_A4_Landscape());
         } else {
             fastReportBuilder.setPageSizeAndOrientation(Page.Page_A4_Portrait());
@@ -250,9 +261,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     }
 
     private List<SumReportBean> buildReportData(ReportAction reportAction) throws ActionException {
-        ReportTypeEnum reportTypeEnum = reportAction.getReportTypeEnum();
         long stationId = reportAction.getStationId();
-        Long branchId = reportAction.getBranchId();
 
         Station currentStation = generalDao.findById(Station.class, stationId);
         if (currentStation == null) {
@@ -295,8 +304,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
 
         //Add two more columns. Business rule.
-        if (stationId == StationCodeEnum.COMPANY.getId()) {
-            AdditionStationColumnRule.addDataForDSND(beans, reportTypeEnum, subAnnualTaskDetails, subTaskDetails);
+        if (stationId == COMPANY.getId() || stationId == CAUGIAT.getId()) {
+            AdditionStationColumnRule.addDataForDSND(beans);
         }
 
         //Build tree
@@ -320,7 +329,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         beans.removeAll(removeBeans);
 
         //Calculate for company
-        if (stationId == StationCodeEnum.COMPANY.getId()) {
+        if (stationId == COMPANY.getId()) {
             calculateForCompany(beans);
         }
 
@@ -334,8 +343,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         HideDetailTaskRule.hide(beans, reportAction);
 
         //Calculate for DSTN
-        if (stationId == StationCodeEnum.COMPANY.getId()) {
-            AdditionStationColumnRule.addDataForDSTN(beans);
+        if (stationId == COMPANY.getId() || stationId == CAUGIAT.getId()) {
+            AdditionStationColumnRule.addDataForDSTN(beans, stationId);
         }
 
         return beans;
@@ -443,6 +452,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                         taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
                 time += calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
                         taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
+                if (taskDetail.getBranchId() == BranchCodeEnum.ND.getId()) {
+                    double ndWeight = calculateWeightForDKAndNamTask(reportAction.getReportTypeEnum(), taskDetail.getQ1(),
+                            taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
+                    double ndTime = calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
+                            taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
+                    if (ndWeight > 0) {
+                        station.setNdValue(ndWeight);
+                        station.setNdTime(ndTime);
+                    }
+                }
             }
             if (weight > 0) {
                 station.setValue(weight);
@@ -475,6 +494,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                         taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
                 time += calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
                         taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
+                if (taskDetail.getBranchId() == BranchCodeEnum.ND.getId()) {
+                    double ndWeight = calculateWeightForDKAndNamTask(reportAction.getReportTypeEnum(), taskDetail.getQ1(),
+                            taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
+                    double ndTime = calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
+                            taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
+                    if (ndWeight > 0) {
+                        station.setNdValue(ndWeight);
+                        station.setNdTime(ndTime);
+                    }
+                }
             }
             if (weight > 0) {
                 station.setValue(weight);
@@ -579,6 +608,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 if (subTaskAnnualDetail.getRealValue() != null) {
                     weight += subTaskAnnualDetail.getRealValue();
                 }
+                //Only for display, not for any calculation.
+                if (subTaskAnnualDetail.getBranchId() == BranchCodeEnum.ND.getId()) {
+                    Double ndWeight = subTaskAnnualDetail.getRealValue();
+                    if (ndWeight > 0) {
+                        station.setNdValue(ndWeight);
+                    }
+                }
             }
             if (weight > 0) {
                 station.setValue(weight);
@@ -588,11 +624,15 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         //Calculate time
         if (station.getValue() != null) {
             Double time = 0d;
+            Double ndTime = 0d;
             double defaultValue = 0d;
             if (reportAction.getReportTypeEnum() != CA_NAM) {
                 defaultValue = getDefaultValue(taskDefaultValues, task, reportAction.getYear(),
                         reportAction.getReportTypeEnum().getValue());
                 time = defaultValue * defaultQuota * station.getValue();
+                if (station.getNdValue() != null) {
+                    ndTime = defaultValue * defaultQuota * station.getNdValue();
+                }
             } else {
                 double defaultValueQ1 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q1.getValue());
                 double defaultValueQ2 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q2.getValue());
@@ -610,10 +650,19 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                     time = station.getValue() * (defaultValueQ1 * quotaQ1 + defaultValueQ2 * quotaQ2
                             + defaultValueQ3 * quotaQ3 + defaultValueQ4 * quotaQ4
                     );
+                    if (station.getNdValue() != null) {
+                        ndTime = station.getNdValue() * (defaultValueQ1 * quotaQ1 + defaultValueQ2 * quotaQ2
+                                + defaultValueQ3 * quotaQ3 + defaultValueQ4 * quotaQ4
+                        );
+                    }
                     defaultQuota = quotaQ1 + quotaQ2 + quotaQ3 + quotaQ4;
                 } else {
                     time = station.getValue() * defaultQuota * (defaultValueQ1 + defaultValueQ2
                             + defaultValueQ3 + defaultValueQ4);
+                    if (station.getNdValue() != null) {
+                        ndTime = station.getNdValue() * defaultQuota * (defaultValueQ1 + defaultValueQ2
+                                + defaultValueQ3 + defaultValueQ4);
+                    }
                     defaultQuota *= 4;
                 }
                 defaultValue = time / defaultQuota / station.getValue();
@@ -621,6 +670,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             task.setDefaultValueForPrinting(defaultValue);
             task.setQuotaForPrinting(defaultQuota);
             station.setTime(time);
+            station.setNdTime(ndTime);
         }
     }
 
@@ -661,10 +711,10 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 }
             }
             if (sumValue > 0) {
-                bean.getStations().get(String.valueOf(StationCodeEnum.COMPANY.getId())).setValue(sumValue);
+                bean.getStations().get(String.valueOf(COMPANY.getId())).setValue(sumValue);
             }
             if (sumTime > 0) {
-                bean.getStations().get(String.valueOf(StationCodeEnum.COMPANY.getId())).setTime(sumTime);
+                bean.getStations().get(String.valueOf(COMPANY.getId())).setTime(sumTime);
             }
         }
     }

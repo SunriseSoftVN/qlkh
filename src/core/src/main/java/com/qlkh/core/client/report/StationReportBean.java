@@ -19,6 +19,10 @@ public class StationReportBean implements Serializable {
     private Double value;
     private Double time;
 
+    // ND branch value just for the report not really for calculation.
+    private Double ndValue;
+    private Double ndTime;
+
     public StationReportBean() {
     }
 
@@ -57,5 +61,21 @@ public class StationReportBean implements Serializable {
 
     public void setTime(Double time) {
         this.time = time;
+    }
+
+    public Double getNdValue() {
+        return ndValue;
+    }
+
+    public void setNdValue(Double ndValue) {
+        this.ndValue = ndValue;
+    }
+
+    public Double getNdTime() {
+        return ndTime;
+    }
+
+    public void setNdTime(Double ndTime) {
+        this.ndTime = ndTime;
     }
 }
