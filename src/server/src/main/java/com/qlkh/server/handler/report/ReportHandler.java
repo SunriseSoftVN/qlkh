@@ -148,7 +148,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         Style headerStyle = new Style();
         headerStyle.setFont(DEFAULT_FONT);
         headerStyle.getFont().setBold(true);
-        headerStyle.setBorder(Border.THIN());
+        headerStyle.setBorder(Border.THIN);
         headerStyle.setHorizontalAlign(HorizontalAlign.CENTER);
         headerStyle.setVerticalAlign(VerticalAlign.MIDDLE);
 
@@ -156,26 +156,26 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         detailStyle.setFont(DEFAULT_FONT);
         detailStyle.setHorizontalAlign(HorizontalAlign.CENTER);
         detailStyle.setVerticalAlign(VerticalAlign.MIDDLE);
-        detailStyle.setBorderLeft(Border.THIN());
-        detailStyle.setBorderRight(Border.THIN());
-        detailStyle.setBorderBottom(Border.THIN());
+        detailStyle.setBorderLeft(Border.THIN);
+        detailStyle.setBorderRight(Border.THIN);
+        detailStyle.setBorderBottom(Border.THIN);
 
         Style numberStyle = new Style();
         numberStyle.setFont(DEFAULT_FONT);
-        numberStyle.setBorder(Border.THIN());
+        numberStyle.setBorder(Border.THIN);
         numberStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
         numberStyle.setVerticalAlign(VerticalAlign.MIDDLE);
-        numberStyle.setBorderLeft(Border.THIN());
-        numberStyle.setBorderRight(Border.THIN());
-        numberStyle.setBorderBottom(Border.THIN());
+        numberStyle.setBorderLeft(Border.THIN);
+        numberStyle.setBorderRight(Border.THIN);
+        numberStyle.setBorderBottom(Border.THIN);
 
         Style nameStyle = new Style();
         nameStyle.setFont(DEFAULT_FONT);
-        nameStyle.setBorder(Border.THIN());
+        nameStyle.setBorder(Border.THIN);
         nameStyle.setVerticalAlign(VerticalAlign.MIDDLE);
-        nameStyle.setBorderLeft(Border.THIN());
-        nameStyle.setBorderRight(Border.THIN());
-        nameStyle.setBorderBottom(Border.THIN());
+        nameStyle.setBorderLeft(Border.THIN);
+        nameStyle.setBorderRight(Border.THIN);
+        nameStyle.setBorderBottom(Border.THIN);
 
         try {
             fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)

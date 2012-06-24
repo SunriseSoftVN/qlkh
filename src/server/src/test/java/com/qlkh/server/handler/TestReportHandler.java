@@ -44,5 +44,10 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
                 execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
                         ReportFileTypeEnum.PDF, CAUGIAT.getId(), null, 2012));
         assertEquals(result.getReportUrl(), "http://127.0.0.1:8080/service/report?reportName=kehoachtacnghiep.pdf");
+
+        result = dispatch.
+                execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
+                        ReportFileTypeEnum.EXCEL, CAUGIAT.getId(), null, 2012));
+        assertEquals(result.getReportUrl(), "http://127.0.0.1:8080/service/report?reportName=kehoachtacnghiep.xls");
     }
 }
