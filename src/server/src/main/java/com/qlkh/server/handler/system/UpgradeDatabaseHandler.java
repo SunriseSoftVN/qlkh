@@ -6,13 +6,11 @@ package com.qlkh.server.handler.system;
 
 import com.qlkh.core.client.action.system.UpgradeDatabaseAction;
 import com.qlkh.core.client.action.system.UpgradeDatabaseResult;
-import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -35,8 +33,11 @@ public class UpgradeDatabaseHandler extends AbstractHandler<UpgradeDatabaseActio
 
     @Override
     public UpgradeDatabaseResult execute(UpgradeDatabaseAction action, ExecutionContext context) throws DispatchException {
-        List<Task> tasks = generalDao.findCriteria(Task.class, Restrictions.eq("taskTypeCode", TaskTypeEnum.DK.getCode()));
-
+        List<Task> tasks = generalDao.getAll(Task.class);
+        for (Task task : tasks) {
+            task.setCode(task.getCode().trim());
+        }
+        generalDao.saveOrUpdate(tasks);
         return new UpgradeDatabaseResult();
     }
 }
