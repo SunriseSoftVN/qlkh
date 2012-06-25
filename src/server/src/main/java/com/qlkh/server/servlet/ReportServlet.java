@@ -24,7 +24,7 @@ import java.io.InputStream;
  */
 public class ReportServlet extends HttpServlet {
 
-    public static final String REPORT_FILENAME = "reportName";
+    public static final String REPORT_FILENAME_PARAMETER = "reportName";
     public static final String REPORT_DIRECTORY = "report";
 
     public static final String RESPONSE_HEADER = "Content-Disposition";
@@ -32,7 +32,7 @@ public class ReportServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reportFileName = req.getParameter(REPORT_FILENAME);
+        String reportFileName = req.getParameter(REPORT_FILENAME_PARAMETER);
         ReportFileTypeEnum fileTypeEnum = ReportFileTypeEnum.getFileType(reportFileName);
         if (fileTypeEnum != null) {
             String st = ServletUtils.getInstance().getRealPath(REPORT_DIRECTORY, reportFileName);

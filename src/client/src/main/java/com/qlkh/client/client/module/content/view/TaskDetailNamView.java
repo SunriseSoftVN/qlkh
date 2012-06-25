@@ -4,7 +4,6 @@
 
 package com.qlkh.client.client.module.content.view;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -72,7 +71,6 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                 getConstant().lastYearValueColumnTitle() + " " + (currentYear - 1), LAST_YEAR_VALUE_WIDTH);
         MyNumberField lastYearValueNumberField = new MyNumberField();
         lastYearValueNumberField.setSelectOnFocus(true);
-        lastYearValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
         if (!q4Lock) {
             lastYearValueColumnConfig.setEditor(new CellEditor(lastYearValueNumberField));
         } else {
@@ -84,7 +82,6 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                 getConstant().increaseValueColumnTitle(), INCREASE_VALUE_WIDTH);
         MyNumberField increaseValueNumberField = new MyNumberField();
         increaseValueNumberField.setSelectOnFocus(true);
-        increaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
         if (!q4Lock) {
             increaseValueColumnConfig.setEditor(new CellEditor(increaseValueNumberField));
         } else {
@@ -96,7 +93,6 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
                 getConstant().decreaseValueColumnTitle(), DECREASE_VALUE_WIDTH);
         MyNumberField decreaseValueNumberField = new MyNumberField();
         decreaseValueNumberField.setSelectOnFocus(true);
-        decreaseValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
         if (!q4Lock) {
             decreaseValueColumnConfig.setEditor(new CellEditor(decreaseValueNumberField));
         } else {
@@ -106,7 +102,6 @@ public class TaskDetailNamView extends AbstractTaskDetailView<TaskDetailNamConst
 
         SummaryColumnConfig realValueColumnConfig = new SummaryColumnConfig(REAL_VALUE_COLUMN,
                 getConstant().realValueColumnTitle() + " " + currentYear, REAL_VALUE_WIDTH);
-        realValueColumnConfig.setAlignment(Style.HorizontalAlignment.CENTER);
         realValueColumnConfig.setStyle("background-color: #F1F2F4;");
         columnConfigs.add(realValueColumnConfig);
 

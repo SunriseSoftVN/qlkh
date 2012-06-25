@@ -104,9 +104,21 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             JasperPrint jasperPrint = JasperFillManager.
                     fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(action)));
 
-            String filePath = ServletUtils.getInstance().
-                    getRealPath(ReportServlet.REPORT_DIRECTORY, REPORT_FILE_NAME
-                            + fileTypeEnum.getFileExt());
+            String fileName = REPORT_FILE_NAME;
+            if (action.getBranchId() != null) {
+                Branch branch = generalDao.findById(Branch.class, action.getBranchId());
+                fileName += "_" + StringUtils.convertNonAscii(branch.getName()).
+                        replaceAll(" ", "_").toLowerCase();
+            } else {
+                Station station = generalDao.findById(Station.class, action.getStationId());
+                fileName += "_" + StringUtils.convertNonAscii(station.getName()).
+                        replaceAll(" ", "_").toLowerCase();
+            }
+
+            fileName += "_" + action.getReportTypeEnum() + "_"
+                    + action.getYear() + "_" + action.getReportFormEnum() + fileTypeEnum.getFileExt();
+
+            String filePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, fileName);
 
             if (fileTypeEnum == ReportFileTypeEnum.PDF) {
                 ReportExporter.exportReport(jasperPrint, filePath);
@@ -117,10 +129,9 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             return new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
                     .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
                     .append(REPORT_SERVLET_URI)
-                    .append(ReportServlet.REPORT_FILENAME)
+                    .append(ReportServlet.REPORT_FILENAME_PARAMETER)
                     .append("=")
-                    .append(REPORT_FILE_NAME)
-                    .append(fileTypeEnum.getFileExt()).toString();
+                    .append(fileName).toString();
 
         } catch (JRException e) {
             e.printStackTrace();
@@ -200,8 +211,10 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + branch.getName().toUpperCase() + "\\n");
                 } else {
-                    //Add two more columns. Business rule. TODO remove @dungvn3000
-                    AdditionStationColumnRule.addStation(stations);
+                    if (stationId == CAUGIAT.getId()) {
+                        //Add two more columns. Business rule. TODO remove @dungvn3000
+                        AdditionStationColumnRule.addStation(stations);
+                    }
                     fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + station.getName().toUpperCase() + "\\n");
