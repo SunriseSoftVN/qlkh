@@ -7,6 +7,8 @@ package com.qlkh.server.Interceptor;
 import com.qlkh.core.client.model.SystemLog;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.dao.core.GeneralDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,12 +22,18 @@ import java.lang.reflect.Method;
  */
 public class ExceptionsInterceptor implements ThrowsAdvice {
 
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionsInterceptor.class);
+
     @Autowired
     private GeneralDao generalDao;
 
     @SuppressWarnings("UnusedDeclaration")
     public void afterThrowing(Method method, Object[] args, Object target, Exception ex) {
         if (ConfigurationServerUtil.isProductionMode()) {
+
+            //Log to file.
+           logger.error(ex.getMessage(), ex);
+
             SystemLog systemLog = new SystemLog();
             systemLog.setClassName(target.getClass().getName());
             systemLog.setMethodName(method.getName());
