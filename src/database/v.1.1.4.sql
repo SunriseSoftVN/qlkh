@@ -1,0 +1,1 @@
+DELETE FROM `taskdetail_dk` WHERE `taskId` = '392'
