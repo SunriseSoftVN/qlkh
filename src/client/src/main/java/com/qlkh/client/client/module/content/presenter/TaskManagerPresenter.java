@@ -210,16 +210,21 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             || currentTask.getTaskTypeCode() == DK.getCode()
                             || currentTask.getTaskTypeCode() == NAM.getCode()) {
                         currentTask.setChildTasks(StringUtils.EMPTY);
-                        //If Task type is DK or KDK task code must be a number.
-                        if(!NumberUtils.isNumber(currentTask.getCode())) {
-                            DiaLogUtils.showMessage(view.getConstant().codeIsNotNumberOrTooShort());
-                            return;
-                        }
                     }
-                    if (currentTask.getTaskTypeCode() == SUBSUM.getCode()) {
+
+                    //Validation forTaskCode
+                    if (currentTask.getTaskTypeCode() == SUBSUM.getCode()
+                            || currentTask.getTaskTypeCode() == KDK.getCode()
+                            || currentTask.getTaskTypeCode() == DK.getCode()
+                            || currentTask.getTaskTypeCode() == NAM.getCode()) {
                         if (!NumberUtils.isNumber(currentTask.getCode())
                                 || currentTask.getCode().length() < 5) {
                             DiaLogUtils.showMessage(view.getConstant().codeIsNotNumberOrTooShort());
+                            return;
+                        }
+
+                        if (TaskCodeUtils.getTaskPrefix(currentTask.getCode()) == null) {
+                            DiaLogUtils.showMessage(view.getConstant().codeIsNoComma());
                             return;
                         }
                     }
