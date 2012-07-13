@@ -210,6 +210,11 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             || currentTask.getTaskTypeCode() == DK.getCode()
                             || currentTask.getTaskTypeCode() == NAM.getCode()) {
                         currentTask.setChildTasks(StringUtils.EMPTY);
+                        //If Task type is DK or KDK task code must be a number.
+                        if(!NumberUtils.isNumber(currentTask.getCode())) {
+                            DiaLogUtils.showMessage(view.getConstant().codeIsNotNumberOrTooShort());
+                            return;
+                        }
                     }
                     if (currentTask.getTaskTypeCode() == SUBSUM.getCode()) {
                         if (!NumberUtils.isNumber(currentTask.getCode())
