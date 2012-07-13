@@ -54,7 +54,7 @@ import java.util.*;
 import static ch.lambdaj.Lambda.*;
 import static com.qlkh.client.client.utils.NumberUtils.convertNullToDouble;
 import static com.qlkh.core.client.constant.ReportTypeEnum.*;
-import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
+import static com.qlkh.core.client.constant.TaskTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
 import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
 import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
@@ -311,7 +311,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             }
             beans.add(bean);
             if (task.getTaskTypeCode() == SUBSUM.getCode()
-                    || task.getTaskTypeCode() == SUM.getCode()) {
+                    || task.getTaskTypeCode() == SUM.getCode()
+                    || task.getTaskTypeCode() == DOTXUAT.getCode()) {
                 parentBeans.add(bean);
             }
         }
@@ -411,6 +412,9 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                             && childTaskCodes.contains(childBean.getTask().getCode())) {
                         return true;
                     }
+                    break;
+                case DOTXUAT:
+                    return DotXuatRule.isParent(parentBean, childBean);
             }
         }
         return false;
