@@ -19,9 +19,11 @@ public class ClientCriteria implements IsSerializable {
     private String propertyName;
     private String stringValue;
     private Integer intValue;
+    private Integer[] intValues;
     private Long longValue;
     private Boolean boolValue;
     private Date dateValue;
+    private String[] stringValues;
     private Operation operation;
 
     public ClientCriteria() {
@@ -88,7 +90,23 @@ public class ClientCriteria implements IsSerializable {
         this.operation = operation;
     }
 
+    public String[] getStringValues() {
+        return stringValues;
+    }
+
+    public void setStringValues(String[] stringValues) {
+        this.stringValues = stringValues;
+    }
+
+    public Integer[] getIntValues() {
+        return intValues;
+    }
+
+    public void setIntValues(Integer[] intValues) {
+        this.intValues = intValues;
+    }
+
     public enum Operation {
-        EQ, NE
+        EQ, NE, IN
     }
 }

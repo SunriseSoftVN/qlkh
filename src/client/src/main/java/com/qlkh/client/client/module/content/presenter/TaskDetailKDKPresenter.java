@@ -95,7 +95,7 @@ public class TaskDetailKDKPresenter extends AbstractTaskDetailPresenter<TaskDeta
     }
 
     @Override
-    protected Integer getTaskTypeCode() {
-        return KDK.getCode();
+    protected Integer[] getTaskTypeCode() {
+        return new Integer[]{KDK.getCode()};
     }
 }

@@ -98,7 +98,7 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
         taskGird.setSelectionModel(selectionModel);
         taskGird.addPlugin(selectionModel);
         taskGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        taskGird.getStore().getLoader().setSortField(ID_COLUMN);
+        taskGird.getStore().getLoader().setSortField(TASK_CODE_COLUMN);
         taskGird.setWidth(500);
         taskGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override

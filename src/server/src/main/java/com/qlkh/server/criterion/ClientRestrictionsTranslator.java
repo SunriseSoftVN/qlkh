@@ -31,6 +31,8 @@ public final class ClientRestrictionsTranslator {
                     criterion = Restrictions.eq(criteria.getPropertyName(), value);
                 } else if (criteria.getOperation() == ClientCriteria.Operation.NE) {
                     criterion = Restrictions.ne(criteria.getPropertyName(), value);
+                } else if (criteria.getOperation() == ClientCriteria.Operation.IN) {
+                    criterion = Restrictions.in(criteria.getPropertyName(), (Object[]) value);
                 }
                 if (criterion != null) {
                     criterions[count] = criterion;
@@ -52,6 +54,10 @@ public final class ClientRestrictionsTranslator {
             return criteria.getDateValue();
         } else if (criteria.getBoolValue() != null) {
             return criteria.getBoolValue();
+        } else if (criteria.getStringValues() != null) {
+            return criteria.getStringValues();
+        } else if (criteria.getIntValues() != null) {
+            return criteria.getIntValues();
         }
         return null;
     }

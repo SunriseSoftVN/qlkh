@@ -66,7 +66,7 @@ public class AbstractTaskDetailPresenter<V extends
             @Override
             public void onSuccess(LoadStationResult result) {
                 currentStation = result.getStation();
-                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.eq("taskTypeCode", getTaskTypeCode())));
+                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.in("taskTypeCode", getTaskTypeCode())));
                 view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
                 resetView();
                 view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
@@ -183,7 +183,7 @@ public class AbstractTaskDetailPresenter<V extends
 
     }
 
-    protected Integer getTaskTypeCode() {
+    protected Integer[] getTaskTypeCode() {
         return null;
     }
 }

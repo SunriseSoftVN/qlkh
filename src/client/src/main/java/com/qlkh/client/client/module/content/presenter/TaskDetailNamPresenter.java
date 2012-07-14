@@ -105,7 +105,7 @@ public class TaskDetailNamPresenter extends AbstractTaskDetailPresenter<TaskDeta
     }
 
     @Override
-    protected Integer getTaskTypeCode() {
-        return NAM.getCode();
+    protected Integer[] getTaskTypeCode() {
+        return new Integer[]{NAM.getCode()};
     }
 }
