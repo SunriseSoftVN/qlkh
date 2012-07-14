@@ -1,1 +1,1 @@
-DELETE FROM `taskdetail_dk` WHERE `taskId` = '392'
+UPDATE `qlkh`.`task` SET `taskTypeCode` = '5' WHERE `task`.`id` =392 LIMIT 1 ;
