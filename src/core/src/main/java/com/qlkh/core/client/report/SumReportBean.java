@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.qlkh.core.client.constant.TaskTypeEnum.DOTXUAT;
+
 /**
  * The Class SumReportBean.
  *
@@ -50,15 +52,28 @@ public class SumReportBean implements Serializable, Comparable<SumReportBean> {
                         value += childValue;
                     }
                 }
+
                 if (value > 0) {
-                    station.setValue(value);
+                    if (task.getTaskTypeCode() != DOTXUAT.getCode()) {
+                        station.setValue(value);
+                    }
                 }
                 if (time > 0) {
-                    station.setTime(time);
+                    if (task.getTaskTypeCode() != DOTXUAT.getCode()) {
+                        station.setTime(time);
+                    } else {
+                        //DotXuat = (I+II+C1) * 1,5% * KL
+                        if (station.getValue() != null) {
+                            double dxTaskTime = time * 0.015 * station.getValue();
+                            if (dxTaskTime > 0) {
+                                station.setTime(dxTaskTime);
+                            }
+                        }
+                    }
                 }
             }
 
-            //Mark this bean is calculated. Avoid duplicate value.
+            //Mark this bean is calculated. Avoid duplicate calculation.
             setCalculated(true);
         }
     }
