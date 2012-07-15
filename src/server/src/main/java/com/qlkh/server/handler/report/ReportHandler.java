@@ -15,6 +15,7 @@ import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.report.ReportAction;
 import com.qlkh.core.client.action.report.ReportResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
+import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Branch;
@@ -46,6 +47,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
@@ -56,8 +58,7 @@ import static com.qlkh.client.client.utils.NumberUtils.convertNullToDouble;
 import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
-import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
-import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
+import static com.qlkh.server.business.rule.StationCodeEnum.*;
 import static com.qlkh.server.util.DateTimeUtils.getDateForQuarter;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -94,6 +95,49 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return new ReportResult(reportForCompany(action));
     }
 
+    private void stupidMethod(ReportAction action, List<SumReportBean> originalData) throws ActionException {
+        //That mean is for station.
+        double dxTime = 0d;
+        List<Branch> branches = generalDao.findCriteria(Branch.class,
+                Restrictions.eq("station.id", action.getStationId()));
+        if (CollectionUtils.isNotEmpty(branches)) {
+            for (Branch branch : branches) {
+                ReportAction reportAction = new ReportAction(action.getReportTypeEnum(), ReportFormEnum.MAU_2,
+                        ReportFileTypeEnum.PDF, action.getStationId(), branch.getId(), action.getYear());
+                List<SumReportBean> sumReportBeans = buildReportData(reportAction);
+
+                for (SumReportBean sumReportBean : sumReportBeans) {
+                    if (sumReportBean.getTask().getTaskTypeCode() == DOTXUAT.getCode()) {
+                        Double time = sumReportBean.getStations().
+                                get(String.valueOf(action.getStationId())).getTime();
+                        if (time != null) {
+                            dxTime += time;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        if (dxTime > 0) {
+            //Change original value.
+            for (SumReportBean sumReportBean : originalData) {
+                if (sumReportBean.getTask().getTaskTypeCode() == DOTXUAT.getCode()) {
+                    sumReportBean.getStations().
+                            get(String.valueOf(action.getStationId())).setTime(dxTime);
+                    if (action.getStationId() == CAUGIAT.getId()) {
+                        Double dxNDTime = sumReportBean.getStations()
+                                .get(String.valueOf(StationCodeEnum.ND_FOR_REPORT.getId())).getTime();
+                        dxNDTime = convertNullToDouble(dxNDTime);
+                        double dxTNTime = Math.round(dxTime) - dxNDTime;
+                        sumReportBean.getStations()
+                                .get(String.valueOf(StationCodeEnum.TN_FOR_REPORT.getId())).setTime(dxTNTime);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     private String reportForCompany(ReportAction action) throws ActionException {
         ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
         try {
@@ -101,8 +145,52 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
+
+            List<SumReportBean> originalData = buildReportData(action);
+
+            //This is stupid but i have to do it,
+            // because this class can't use any more, if want change any things, we have to rewrite it.
+            if (action.getBranchId() == null) {
+                //That mean make a report for a station or a company.
+                if (action.getStationId() != COMPANY.getId()) {
+                    ReportAction stupidAction = new ReportAction(action.getReportTypeEnum(), action.getReportFormEnum(),
+                            action.getFileTypeEnum(), action.getStationId(), action.getBranchId(), action.getYear());
+                    stupidMethod(stupidAction, originalData);
+                } else {
+                    List<Station> stations = generalDao.getAll(Station.class);
+                    for (Station station : stations) {
+                        ReportAction stupidAction = new ReportAction(action.getReportTypeEnum(), action.getReportFormEnum(),
+                                action.getFileTypeEnum(), station.getId(), null, action.getYear());
+                        stupidMethod(stupidAction, originalData);
+                    }
+
+                    for (SumReportBean sumReportBean : originalData) {
+                        if (sumReportBean.getTask().getTaskTypeCode() == DOTXUAT.getCode()) {
+                            double dxTime = 0d;
+                            for (StationReportBean stationReportBean : sumReportBean.getStations().values()) {
+                                if (stationReportBean.getId() != COMPANY.getId()
+                                        && stationReportBean.getId() != ND_FOR_REPORT.getId()
+                                        && stationReportBean.getId() != TN_FOR_REPORT.getId()
+                                        && stationReportBean.getTime() != null) {
+                                    dxTime += stationReportBean.getTime();
+                                }
+                            }
+                            if (dxTime > 0) {
+                                sumReportBean.getStations().get(String.valueOf(COMPANY.getId())).setTime(dxTime);
+                                Double dxNDTime = sumReportBean.getStations().get(String.valueOf(ND_FOR_REPORT.getId())).getTime();
+                                dxNDTime = convertNullToDouble(dxNDTime);
+                                double dxTNTime = Math.round(dxTime) - dxNDTime;
+                                sumReportBean.getStations().get(String.valueOf(TN_FOR_REPORT.getId())).setTime(dxTNTime);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(action)));
+                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(originalData));
 
             String fileName = REPORT_FILE_NAME;
             if (action.getBranchId() != null) {
