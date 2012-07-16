@@ -469,9 +469,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             Double weight = 0d;
             for (TaskDetailDKDataView taskDetailDKDataView : select) {
                 weight += taskDetailDKDataView.getRealValue();
-                if (taskDetailDKDataView.getBranchId() == BranchCodeEnum.ND.getId()) {
-                    station.setNdValue(taskDetailDKDataView.getRealValue());
-                }
             }
             if (weight > 0) {
                 station.setValue(weight);
