@@ -410,8 +410,6 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                 return createAddTaskChildAnchor();
             } else if (task != null && task.getTaskTypeCode() == TaskTypeEnum.SUBSUM.getCode()) {
                 return createPickTaskRangeAnchor();
-            } else if (task != null && task.getTaskTypeCode() == TaskTypeEnum.DOTXUAT.getCode()) {
-                return null;
             }
             return createChangeDefaultValueAnchor();
         }
