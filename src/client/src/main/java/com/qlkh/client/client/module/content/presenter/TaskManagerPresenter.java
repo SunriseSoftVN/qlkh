@@ -217,13 +217,14 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
                             || currentTask.getTaskTypeCode() == KDK.getCode()
                             || currentTask.getTaskTypeCode() == DK.getCode()
                             || currentTask.getTaskTypeCode() == NAM.getCode()) {
-                        if (!NumberUtils.isNumber(currentTask.getCode())
-                                || currentTask.getCode().length() < 5) {
+                        if ((!NumberUtils.isNumber(currentTask.getCode())
+                                || currentTask.getCode().length() < 5)
+                                && !currentTask.getCode().equals("III")) {
                             DiaLogUtils.showMessage(view.getConstant().codeIsNotNumberOrTooShort());
                             return;
                         }
-
-                        if (TaskCodeUtils.getTaskPrefix(currentTask.getCode()) == null) {
+                        //Exception for DOTXUAT task.
+                        if (TaskCodeUtils.getTaskPrefix(currentTask.getCode()) == null && !currentTask.getCode().equals("III")) {
                             DiaLogUtils.showMessage(view.getConstant().codeIsNoComma());
                             return;
                         }

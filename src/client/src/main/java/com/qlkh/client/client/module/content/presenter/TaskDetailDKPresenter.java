@@ -23,7 +23,6 @@ import com.qlkh.core.client.model.TaskDetailDK;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
 import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
-import static com.qlkh.core.client.constant.TaskTypeEnum.DOTXUAT;
 
 /**
  * The Class TaskAnnualDetailPresenter.
@@ -84,6 +83,6 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
 
     @Override
     protected Integer[] getTaskTypeCode() {
-        return new Integer[]{DK.getCode(), DOTXUAT.getCode()};
+        return new Integer[]{DK.getCode()};
     }
 }

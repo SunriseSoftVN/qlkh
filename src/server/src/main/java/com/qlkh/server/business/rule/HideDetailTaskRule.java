@@ -37,6 +37,7 @@ public final class HideDetailTaskRule {
                     && bean.getTask().getQuotaForPrinting() == 0) {
                 bean.getTask().setQuotaForPrinting(null);
             }
+
             if (isTask(bean.getTask())) {
                 bean.getTask().setUnit(StringUtils.EMPTY);
                 bean.getTask().setQuotaForPrinting(null);
@@ -48,12 +49,24 @@ public final class HideDetailTaskRule {
             if (action.getReportFormEnum() == MAU_1 && isRemoveTask(bean.getTask())) {
                 removeBeans.add(bean);
             }
+
+            //Hide 0 value
+            for (StationReportBean station : bean.getStations().values()) {
+                if (station.getTime() != null && station.getTime() == 0) {
+                    station.setTime(null);
+                }
+
+                if (station.getValue() != null && station.getValue() == 0) {
+                    station.setValue(null);
+                }
+            }
         }
         beans.removeAll(removeBeans);
     }
 
     private static boolean isTask(TaskReportBean task) {
-        return DK.getCode() != task.getTaskTypeCode()
+        return task.getCode().equals(TaskCodeEnum.III.getCode())
+                || DK.getCode() != task.getTaskTypeCode()
                 && KDK.getCode() != task.getTaskTypeCode()
                 && NAM.getCode() != task.getTaskTypeCode();
     }
