@@ -96,7 +96,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     }
 
     private void stupidMethod(ReportAction action, List<SumReportBean> originalData) throws ActionException {
-
+        //That mean is for station.
         double dxTime = 0d;
         List<Branch> branches = generalDao.findCriteria(Branch.class,
                 Restrictions.eq("station.id", action.getStationId()));
@@ -111,7 +111,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                         Double time = sumReportBean.getStations().
                                 get(String.valueOf(action.getStationId())).getTime();
                         if (time != null) {
-                            dxTime += Math.round(time);
+                            dxTime += time;
                         }
                         break;
                     }
@@ -172,7 +172,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                                         && stationReportBean.getId() != ND_FOR_REPORT.getId()
                                         && stationReportBean.getId() != TN_FOR_REPORT.getId()
                                         && stationReportBean.getTime() != null) {
-                                    dxTime += Math.round(stationReportBean.getTime());
+                                    dxTime += stationReportBean.getTime();
                                 }
                             }
                             if (dxTime > 0) {
