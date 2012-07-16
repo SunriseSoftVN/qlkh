@@ -431,49 +431,20 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         stationReport.setId(station.getId());
         stationReport.setName(station.getName());
         //We don't calculate for company because it is sum of another station.
-        if (!station.isCompany() && (task.getTaskTypeCode() == KDK.getCode()
-                || task.getTaskTypeCode() == DK.getCode())
-                || task.getTaskTypeCode() == NAM.getCode()
-                || task.getTaskTypeCode() == DOTXUAT.getCode()) {
+        if (!station.isCompany() && (task.getTaskTypeCode() == TaskTypeEnum.KDK.getCode()
+                || task.getTaskTypeCode() == TaskTypeEnum.DK.getCode())
+                || task.getTaskTypeCode() == TaskTypeEnum.NAM.getCode()) {
             //Calculate Weight
-            if (DK.getCode() == task.getTaskTypeCode()) {
+            if (TaskTypeEnum.DK.getCode() == task.getTaskTypeCode()) {
                 calculateForDKTask(stationReport, task,
                         taskDetailDKs, taskDefaultValues, reportAction);
-            } else if (KDK.getCode() == task.getTaskTypeCode()) {
+            } else if (TaskTypeEnum.KDK.getCode() == task.getTaskTypeCode()) {
                 calculateForKDKTask(stationReport, task, taskDetailKDKs, taskDefaultValues, reportAction);
-            } else if (NAM.getCode() == task.getTaskTypeCode()) {
+            } else if (TaskTypeEnum.NAM.getCode() == task.getTaskTypeCode()) {
                 calculateForNamTask(stationReport, task, taskDetailNams, taskDefaultValues, reportAction);
-            } else if (DOTXUAT.getCode() == task.getTaskTypeCode()) {
-                calculateForDXTask(stationReport, task, taskDetailDKs, reportAction);
             }
         }
         return stationReport;
-    }
-
-    private void calculateForDXTask(StationReportBean station, TaskReportBean task,
-                                    List<TaskDetailDKDataView> taskDetailDKDataViews, ReportAction reportAction) {
-
-        List<TaskDetailDKDataView> select;
-        if (reportAction.getBranchId() != null) {
-            select = select(taskDetailDKDataViews,
-                    having(on(TaskDetailDKDataView.class).getTaskTypeCode(), equalTo(DOTXUAT.getCode()))
-                            .and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId())))
-                            .and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(reportAction.getBranchId()))));
-        } else {
-            select = select(taskDetailDKDataViews,
-                    having(on(TaskDetailDKDataView.class).getTaskTypeCode(), equalTo(DOTXUAT.getCode()))
-                            .and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))));
-        }
-
-        if (CollectionUtils.isNotEmpty(select)) {
-            Double weight = 0d;
-            for (TaskDetailDKDataView taskDetailDKDataView : select) {
-                weight += taskDetailDKDataView.getRealValue();
-            }
-            if (weight > 0) {
-                station.setValue(weight);
-            }
-        }
     }
 
     private void calculateForKDKTask(StationReportBean station, TaskReportBean task,
