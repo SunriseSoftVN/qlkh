@@ -16,8 +16,7 @@ public enum TaskTypeEnum {
     KDK(0),
     NAM(4),
     SUM(1),
-    SUBSUM(2),
-    DOTXUAT(5);
+    SUBSUM(2);
 
     private int code;
 
