@@ -326,6 +326,12 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         //Calculate for Sum or SubSum Task.
         forEach(beans).calculate();
 
+        //Sort by Alphabetical.
+        Collections.sort(beans);
+
+        //Business Order.
+        ReportOrderRule.sort(beans);
+
         //Remove empty task, exclude sum task
         List<SumReportBean> removeBeans = new ArrayList<SumReportBean>();
         for (SumReportBean bean : beans) {
@@ -345,12 +351,6 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         if (stationId == COMPANY.getId()) {
             calculateForCompany(beans);
         }
-
-        //Sort by Alphabetical.
-        Collections.sort(beans);
-
-        //Business Order.
-        ReportOrderRule.sort(beans);
 
         //Hide unnecessary detail
         HideDetailTaskRule.hide(beans, reportAction);
