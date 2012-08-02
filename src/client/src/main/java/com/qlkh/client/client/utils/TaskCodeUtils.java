@@ -30,7 +30,7 @@ public final class TaskCodeUtils {
         Preconditions.checkArgument(StringUtils.isNotBlank(code));
         Preconditions.checkArgument(code.length() >= 5);
         Preconditions.checkArgument(NumberUtils.isNumber(code));
-        return Integer.valueOf(code.replace(".",""));
+        return Integer.valueOf(code.replace(".", ""));
     }
 
     public static List<String> getChildTaskCodes(String childTasks) {
@@ -92,15 +92,18 @@ public final class TaskCodeUtils {
     /**
      * Get task prefix
      * Ex: 1.100 -> 100
+     *
      * @param code
      * @return null if something is wrong.
      */
     public static Integer getTaskPrefix(String code) {
-        if(StringUtils.isNotEmpty(code) && code.length() >= 4) {
+        if (StringUtils.isNotEmpty(code) && code.length() >= 4) {
             int index = code.indexOf(CODE_SPLIT);
-            if(index >= 1) {
+            if (index >= 1) {
                 String subCode = code.substring(index + 1, code.length());
-                return Integer.valueOf(subCode);
+                if (NumberUtils.isNumber(subCode)) {
+                    return Integer.valueOf(subCode);
+                }
             }
         }
         return null;
