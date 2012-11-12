@@ -9,7 +9,6 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
@@ -141,8 +140,8 @@ public class AbstractTaskDetailPresenter<V extends
             @Override
             public void componentSelected(ButtonEvent ce) {
                 List entities = new ArrayList();
-                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
-                    entities.add(((BeanModel) record.getModel()).getBean());
+                for (BeanModel model : view.getSubTaskDetailGird().getStore().getModels()) {
+                    entities.add(model.getBean());
                 }
                 dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
                     @Override
