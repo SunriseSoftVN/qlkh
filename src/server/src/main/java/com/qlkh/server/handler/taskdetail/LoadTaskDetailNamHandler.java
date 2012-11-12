@@ -15,13 +15,13 @@ import com.qlkh.server.dao.BranchDao;
 import com.qlkh.server.dao.TaskDetailNamDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
+import com.qlkh.server.util.DateTimeUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,7 +63,7 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
                             findByTaskIdAndBranchId(taskId, branch.getId());
                     if (taskDetailNam == null) {
                         taskDetailNam = new TaskDetailNam();
-                        taskDetailNam.setYear(1900 + new Date().getYear());
+                        taskDetailNam.setYear(DateTimeUtils.getCurrentYear());
                         taskDetailNam.setTask(task);
                         taskDetailNam.setBranch(branch);
                         taskDetailNam.setCreateBy(1l);

@@ -15,13 +15,13 @@ import com.qlkh.server.dao.BranchDao;
 import com.qlkh.server.dao.TaskDetailKDKDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
+import com.qlkh.server.util.DateTimeUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,7 +65,7 @@ public class LoadTaskDetailKDKHandler extends AbstractHandler<LoadTaskDetailKDKA
                     if (taskDetailKDK == null) {
                         taskDetailKDK = new TaskDetailKDK();
                         taskDetailKDK.setTask(task);
-                        taskDetailKDK.setYear(1900 + new Date().getYear());
+                        taskDetailKDK.setYear(DateTimeUtils.getCurrentYear());
                         taskDetailKDK.setBranch(branch);
                         taskDetailKDK.setCreateBy(1l);
                         taskDetailKDK.setUpdateBy(1l);
