@@ -86,7 +86,7 @@ public class TaskDetailNamPresenter extends AbstractTaskDetailPresenter<TaskDeta
             }
         }
         if (q1Lock || q2Lock || q3Lock || q4Lock) {
-            DiaLogUtils.showMessage(StringUtils.substitute(view.getConstant().lockMessage(), message));
+            DiaLogUtils.notify(StringUtils.substitute(view.getConstant().lockMessage(), message));
         }
 
         view.setQ1Lock(q1Lock);

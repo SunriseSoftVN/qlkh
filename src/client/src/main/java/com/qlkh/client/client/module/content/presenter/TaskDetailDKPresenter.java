@@ -68,7 +68,7 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
                 //Check lock status.
                 for (StationLock stationLock : currentStation.getStationLocks()) {
                     if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
-                        DiaLogUtils.showMessage(view.getConstant().lockMessage());
+                        DiaLogUtils.notify(view.getConstant().lockMessage());
                         view.setLock(true);
                         break;
                     }
