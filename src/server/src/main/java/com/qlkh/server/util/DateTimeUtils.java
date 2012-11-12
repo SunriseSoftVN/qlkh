@@ -23,6 +23,8 @@ public final class DateTimeUtils {
     }
 
     public static int getCurrentYear() {
+        //cal.get(Calendar.YEAR);
+        //TODO: Hotfix for change time to new year, when the time come to new year we will remove it. @dungvn3000
         return 2013;
     }
 
@@ -31,8 +33,10 @@ public final class DateTimeUtils {
     }
 
     public static int getCurrentQuarter() {
-        int month = cal.get(Calendar.MONTH);
-        return month / 3 + 1;
+//        int month = cal.get(Calendar.MONTH);
+//        return month / 3 + 1;
+        //TODO: Hotfix for change time to new year, when the time come to new year we will remove it. @dungvn3000
+        return 1;
     }
 
     public static int getDateForQuarter(int quarter, int year) {
