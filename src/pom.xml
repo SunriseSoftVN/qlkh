@@ -30,7 +30,6 @@
         <hibernateValidatorVersion>4.0.2.GA</hibernateValidatorVersion>
         <javassistVersion>3.12.1.GA</javassistVersion>
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
-        <dozerVersion>5.3.2</dozerVersion>
         <dynamicJasperVersion>3.2.2</dynamicJasperVersion>
         <jasperreportsVersion>3.7.1</jasperreportsVersion>
         <poiVersion>3.8</poiVersion>
@@ -39,7 +38,6 @@
         <junitVerion>4.8.1</junitVerion>
         <guavaVerion>12.0</guavaVerion>
         <beanlibVerion>5.0.5</beanlibVerion>
-        <scalaVersion>2.9.2</scalaVersion>
         <jfreechartVersion>1.0.13</jfreechartVersion>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -170,40 +168,8 @@
                 </configuration>
             </plugin>
 
-            <!--Scala Compile plugin-->
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <sourceDir>src/main/java</sourceDir>
-                    <sourceDir>src/main/scala</sourceDir>
-                    <jvmArgs>
-                        <jvmArg>-Xms64m</jvmArg>
-                        <jvmArg>-Xmx1024m</jvmArg>
-                    </jvmArgs>
-                </configuration>
-            </plugin>
-            <!--End-->
-
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-compiler</artifactId>
-            <version>${scalaVersion}</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
 
     <repositories>
         <repository>
