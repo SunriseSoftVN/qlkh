@@ -16,8 +16,5 @@ import java.util.List;
  * @since 1/4/12, 9:08 PM
  */
 public interface TaskDetailDKDao extends Dao<TaskDetailDK> {
-    TaskDetailDK findByTaskIdAndBranchId(long taskId, long branchId);
-    void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds);
-    List<TaskDetailDK> findByBrandId(long brandId);
-    List<TaskDetailDK> findByTaskDetailId(long taskDetailId);
+    TaskDetailDK findByTaskIdAndBranchId(long taskId, long branchId, int year);
 }

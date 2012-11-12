@@ -14,5 +14,5 @@ import com.qlkh.server.dao.core.Dao;
  * @since 6/11/12, 10:07 PM
  */
 public interface TaskDetailNamDao extends Dao<TaskDetailNam> {
-    TaskDetailNam findByTaskIdAndBranchId(long taskId, long branchId);
+    TaskDetailNam findByTaskIdAndBranchId(long taskId, long branchId, int year);
 }

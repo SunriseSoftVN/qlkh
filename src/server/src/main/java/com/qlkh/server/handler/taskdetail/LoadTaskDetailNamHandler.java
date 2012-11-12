@@ -60,7 +60,7 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
                     TaskDetailNam taskDetailNam = taskDetailNamDao.
-                            findByTaskIdAndBranchId(taskId, branch.getId());
+                            findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getCurrentYear());
                     if (taskDetailNam == null) {
                         taskDetailNam = new TaskDetailNam();
                         taskDetailNam.setYear(DateTimeUtils.getCurrentYear());
@@ -68,6 +68,13 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
                         taskDetailNam.setBranch(branch);
                         taskDetailNam.setCreateBy(1l);
                         taskDetailNam.setUpdateBy(1l);
+
+                        //Copy value from last year
+                        TaskDetailNam taskDetailNamLastYear = taskDetailNamDao.
+                                findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear());
+                        if (taskDetailNamLastYear != null) {
+                            taskDetailNam.setLastYearValue(taskDetailNamLastYear.getRealValue());
+                        }
                     }
                     taskDetailNams.add(taskDetailNam);
                 }

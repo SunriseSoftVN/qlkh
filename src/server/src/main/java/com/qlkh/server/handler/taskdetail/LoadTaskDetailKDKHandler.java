@@ -61,7 +61,7 @@ public class LoadTaskDetailKDKHandler extends AbstractHandler<LoadTaskDetailKDKA
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
                     TaskDetailKDK taskDetailKDK = taskDetailKDKDao.
-                            findByTaskIdAndBranchId(task.getId(), branch.getId());
+                            findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear());
                     if (taskDetailKDK == null) {
                         taskDetailKDK = new TaskDetailKDK();
                         taskDetailKDK.setTask(task);

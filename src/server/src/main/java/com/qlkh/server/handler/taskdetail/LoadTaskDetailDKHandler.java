@@ -60,7 +60,7 @@ public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAct
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
                     TaskDetailDK taskDetailDK = taskDetailDKDao.
-                            findByTaskIdAndBranchId(taskId, branch.getId());
+                            findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getCurrentYear());
                     if (taskDetailDK == null) {
                         taskDetailDK = new TaskDetailDK();
                         taskDetailDK.setYear(DateTimeUtils.getCurrentYear());
@@ -68,6 +68,14 @@ public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAct
                         taskDetailDK.setBranch(branch);
                         taskDetailDK.setCreateBy(1l);
                         taskDetailDK.setUpdateBy(1l);
+
+                        //Copy value from last year
+                        TaskDetailDK taskDetailDKLastYear = taskDetailDKDao.
+                                findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear());
+
+                        if (taskDetailDKLastYear != null) {
+                            taskDetailDK.setLastYearValue(taskDetailDKLastYear.getRealValue());
+                        }
                     }
                     taskDetailDKs.add(taskDetailDK);
                 }

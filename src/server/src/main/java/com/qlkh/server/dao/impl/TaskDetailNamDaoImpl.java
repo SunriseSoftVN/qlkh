@@ -21,9 +21,11 @@ import java.util.List;
  */
 public class TaskDetailNamDaoImpl extends AbstractDao<TaskDetailNam> implements TaskDetailNamDao {
     @Override
-    public TaskDetailNam findByTaskIdAndBranchId(long taskId, long branchId) {
+    public TaskDetailNam findByTaskIdAndBranchId(long taskId, long branchId, int year) {
         DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailNam.class).
-                add(Restrictions.eq("task.id", taskId)).add(Restrictions.eq("branch.id", branchId));
+                add(Restrictions.eq("task.id", taskId)).
+                add(Restrictions.eq("branch.id", branchId))
+                .add(Restrictions.eq("year", year));
         List<TaskDetailNam> taskDetailNams = getHibernateTemplate().findByCriteria(criteria);
         if (CollectionUtils.isNotEmpty(taskDetailNams)) {
             return taskDetailNams.get(0);

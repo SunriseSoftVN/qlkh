@@ -22,37 +22,15 @@ import java.util.List;
 public class TaskDetailKDKDaoImpl extends AbstractDao<TaskDetailKDK> implements TaskDetailKDKDao {
 
     @Override
-    public TaskDetailKDK findByTaskIdAndBranchId(long taskId, long branchId) {
+    public TaskDetailKDK findByTaskIdAndBranchId(long taskId, long branchId, int year) {
         DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailKDK.class).
-                add(Restrictions.eq("task.id", taskId)).add(Restrictions.eq("branch.id", branchId));
+                add(Restrictions.eq("task.id", taskId)).
+                add(Restrictions.eq("branch.id", branchId)).
+                add(Restrictions.eq("year", year));
         List<TaskDetailKDK> taskDetailKDKs = getHibernateTemplate().findByCriteria(criteria);
         if (CollectionUtils.isNotEmpty(taskDetailKDKs)) {
             return taskDetailKDKs.get(0);
         }
         return null;
-    }
-
-    @Override
-    public void deleteSubTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailKDK.class).
-                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
-        List<TaskDetailKDK> taskDetailKDKs = getHibernateTemplate().findByCriteria(criteria);
-        for (TaskDetailKDK taskDetailKDK : taskDetailKDKs) {
-            getHibernateTemplate().delete(taskDetailKDK);
-        }
-    }
-
-    @Override
-    public List<TaskDetailKDK> findBrandId(long brandId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailKDK.class).
-                add(Restrictions.eq("branch.id", brandId));
-        return getHibernateTemplate().findByCriteria(criteria);
-    }
-
-    @Override
-    public List<TaskDetailKDK> findByTaskDetailId(long taskDetailId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailKDK.class)
-                .add(Restrictions.eq("taskDetail.id", taskDetailId));
-        return getHibernateTemplate().findByCriteria(criteria);
     }
 }

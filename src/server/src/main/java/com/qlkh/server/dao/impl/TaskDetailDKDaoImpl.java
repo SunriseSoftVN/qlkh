@@ -22,37 +22,15 @@ import java.util.List;
 public class TaskDetailDKDaoImpl extends AbstractDao<TaskDetailDK> implements TaskDetailDKDao {
 
     @Override
-    public TaskDetailDK findByTaskIdAndBranchId(long taskId, long branchId) {
+    public TaskDetailDK findByTaskIdAndBranchId(long taskId, long branchId, int year) {
         DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailDK.class).
-                add(Restrictions.eq("task.id", taskId)).add(Restrictions.eq("branch.id", branchId));
+                add(Restrictions.eq("task.id", taskId)).
+                add(Restrictions.eq("branch.id", branchId)).
+                add(Restrictions.eq("year", year));
         List<TaskDetailDK> taskDetailDKs = getHibernateTemplate().findByCriteria(criteria);
         if (CollectionUtils.isNotEmpty(taskDetailDKs)) {
             return taskDetailDKs.get(0);
         }
         return null;
-    }
-
-    @Override
-    public void deleteSubAnnualTaskByTaskDetaiIdAndBrandIds(long taskDetailId, List<Long> branchIds) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailDK.class).
-                add(Restrictions.eq("taskDetail.id", taskDetailId)).add(Restrictions.in("branch.id", branchIds));
-        List<TaskDetailDK> taskDetailDKs = getHibernateTemplate().findByCriteria(criteria);
-        for (TaskDetailDK taskDetailDK : taskDetailDKs) {
-            getHibernateTemplate().delete(taskDetailDK);
-        }
-    }
-
-    @Override
-    public List<TaskDetailDK> findByBrandId(long brandId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailDK.class).
-                add(Restrictions.eq("branch.id", brandId));
-        return getHibernateTemplate().findByCriteria(criteria);
-    }
-
-    @Override
-    public List<TaskDetailDK> findByTaskDetailId(long taskDetailId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(TaskDetailDK.class).
-                add(Restrictions.eq("taskDetail.id", taskDetailId));
-        return getHibernateTemplate().findByCriteria(criteria);
     }
 }

@@ -23,7 +23,11 @@ public final class DateTimeUtils {
     }
 
     public static int getCurrentYear() {
-        return cal.get(Calendar.YEAR);
+        return 2013;
+    }
+
+    public static int getLastYear() {
+        return getCurrentYear() - 1;
     }
 
     public static int getCurrentQuarter() {
