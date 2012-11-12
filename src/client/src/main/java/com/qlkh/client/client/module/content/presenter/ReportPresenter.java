@@ -19,6 +19,8 @@ import com.qlkh.core.client.action.report.ReportAction;
 import com.qlkh.core.client.action.report.ReportResult;
 import com.qlkh.core.client.action.station.LoadStationAction;
 import com.qlkh.core.client.action.station.LoadStationResult;
+import com.qlkh.core.client.action.time.GetServerTimeAction;
+import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.UserRoleEnum;
 import com.qlkh.core.client.criterion.ClientRestrictions;
@@ -71,6 +73,12 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             stationListStore = GridUtils.createListStoreForCb(Station.class);
             view.getCbbReportStation().setStore(stationListStore);
         }
+        dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
+            @Override
+            public void onSuccess(GetServerTimeResult result) {
+                view.getCbbYear().setSimpleValue(result.getYear());
+            }
+        });
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
