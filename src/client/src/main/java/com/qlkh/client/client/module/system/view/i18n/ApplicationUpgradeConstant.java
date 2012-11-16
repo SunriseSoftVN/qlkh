@@ -15,4 +15,5 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface ApplicationUpgradeConstant extends Constants {
     String upgradePanel();
     String upgradeV11();
+    String upgradeV116();
 }

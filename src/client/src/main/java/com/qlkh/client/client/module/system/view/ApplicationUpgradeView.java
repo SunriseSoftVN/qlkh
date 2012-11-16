@@ -34,6 +34,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
     @I18nField
     Button upgradeV11 = new Button();
 
+    @I18nField
+    Button upgradeV116 = new Button();
+
     private ContentPanel contentPanel = new ContentPanel();
 
     @Override
@@ -42,7 +45,11 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
         upgradePanel.setAutoWidth(true);
         upgradePanel.setAutoHeight(true);
 
+        //Only enable for v1.1
+        upgradeV11.setEnabled(false);
+
         upgradePanel.add(upgradeV11);
+        upgradePanel.add(upgradeV116);
 
         contentPanel.add(upgradePanel);
         contentPanel.setHeaderVisible(false);
@@ -54,5 +61,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
 
     public Button getUpgradeV11() {
         return upgradeV11;
+    }
+
+    public Button getUpgradeV116() {
+        return upgradeV116;
     }
 }
