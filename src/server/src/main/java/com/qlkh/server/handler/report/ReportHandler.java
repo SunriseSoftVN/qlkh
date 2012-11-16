@@ -625,7 +625,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
                 //Only for display, not for any calculation.
                 if (subTaskAnnualDetail.getBranchId() == BranchCodeEnum.ND.getId()) {
                     Double ndWeight = subTaskAnnualDetail.getRealValue();
-                    if (ndWeight > 0) {
+                    if (ndWeight != null && ndWeight > 0) {
                         station.setNdValue(ndWeight);
                     }
                 }
