@@ -85,7 +85,7 @@ public class AbstractTaskDetailPresenter<V extends
                 });
                 view.getTaskGird().focus();
 
-                checkLockAndCreateSubTaskGrid();
+                createSubTaskGrid();
             }
         });
 
@@ -178,7 +178,7 @@ public class AbstractTaskDetailPresenter<V extends
         return null;
     }
 
-    protected void checkLockAndCreateSubTaskGrid() {
+    protected void createSubTaskGrid() {
 
     }
 

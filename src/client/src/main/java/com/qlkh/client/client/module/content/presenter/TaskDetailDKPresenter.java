@@ -61,7 +61,7 @@ public class TaskDetailDKPresenter extends AbstractTaskDetailPresenter<TaskDetai
     }
 
     @Override
-    protected void checkLockAndCreateSubTaskGrid() {
+    protected void createSubTaskGrid() {
         dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
             @Override
             public void onSuccess(GetServerTimeResult result) {

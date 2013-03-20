@@ -67,7 +67,7 @@ public class TaskDetailNamPresenter extends AbstractTaskDetailPresenter<TaskDeta
     }
 
     @Override
-    protected void checkLockAndCreateSubTaskGrid() {
+    protected void createSubTaskGrid() {
         // Check this station was locked or not.
         String message = StringUtils.EMPTY;
         for (StationLock stationLock : currentStation.getStationLocks()) {

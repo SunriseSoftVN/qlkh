@@ -58,24 +58,9 @@ public class LimitJobPresenter extends AbstractTaskDetailPresenter<LimitJobView>
     }
 
     @Override
-    protected void checkLockAndCreateSubTaskGrid() {
-        dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
-            @Override
-            public void onSuccess(GetServerTimeResult result) {
-                //Check lock status.
-                for (StationLock stationLock : currentStation.getStationLocks()) {
-                    if (StationLockTypeEnum.DK.getCode() == stationLock.getCode()) {
-                        DiaLogUtils.notify(view.getConstant().lockMessage());
-                        view.setLock(true);
-                        break;
-                    }
-                }
-
-                view.setCurrentYear(result.getYear());
-                view.createSubTaskGrid(createSubTaskListStore());
-                view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
-            }
-        });
+    protected void createSubTaskGrid() {
+        view.createSubTaskGrid(createSubTaskListStore());
+        view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
     }
 
     @Override

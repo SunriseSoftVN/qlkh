@@ -1,7 +1,5 @@
 package com.qlkh.client.client.module.content.view.i18n;
 
-import com.smvp4g.mvp.client.core.i18n.Constants;
-
 /**
  * The Class LimitJobConstant.
  *
@@ -9,5 +7,8 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 3/20/13 10:10 AM
  */
 public interface LimitJobConstant extends TaskDetailDKConstant {
-
+    String materialNameColumnTitle();
+    String materialCodeColumnTitle();
+    String materialUnitColumnTitle();
+    String materialQuantityColumnTitle();
 }
