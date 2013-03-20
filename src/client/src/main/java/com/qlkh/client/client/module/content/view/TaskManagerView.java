@@ -169,7 +169,6 @@ public class TaskManagerView extends AbstractView<TaskManagerConstant> {
 
     private FormPanel defaultValuePanel = new FormPanel();
 
-
     private Html warningMessage = new Html();
 
     /**
