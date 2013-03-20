@@ -28,6 +28,7 @@
                 <bean class="com.qlkh.server.handler.task.SaveTaskDefaultValueHandler"/>
                 <bean class="com.qlkh.server.handler.system.UpgradeDatabaseHandler"/>
                 <bean class="com.qlkh.server.handler.system.Upgrade116Handler"/>
+                <bean class="com.qlkh.server.handler.limitjob.LoadLimitHandler"/>
             </list>
         </property>
     </bean>

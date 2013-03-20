@@ -9,6 +9,8 @@ import com.qlkh.client.client.module.content.place.LimitJobPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
 import com.qlkh.client.client.module.content.view.LimitJobView;
 import com.qlkh.client.client.utils.DiaLogUtils;
+import com.qlkh.core.client.action.limitjob.LoadLimitJobAction;
+import com.qlkh.core.client.action.limitjob.LoadLimitJobResult;
 import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKAction;
 import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
@@ -32,15 +34,14 @@ public class LimitJobPresenter extends AbstractTaskDetailPresenter<LimitJobView>
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<LoadTaskDetailDKResult> rpcProxy = new RpcProxy<LoadTaskDetailDKResult>() {
+        RpcProxy<LoadLimitJobResult> rpcProxy = new RpcProxy<LoadLimitJobResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadTaskDetailDKResult> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadLimitJobResult> callback) {
                 long currentTaskId = -1;
                 if (currentTask != null) {
                     currentTaskId = currentTask.getId();
                 }
-                dispatch.execute(new LoadTaskDetailDKAction((BasePagingLoadConfig) loadConfig,
-                        currentTaskId, currentStation.getId()), callback);
+                dispatch.execute(new LoadLimitJobAction((BasePagingLoadConfig) loadConfig), callback);
             }
         };
 
@@ -61,11 +62,6 @@ public class LimitJobPresenter extends AbstractTaskDetailPresenter<LimitJobView>
     protected void createSubTaskGrid() {
         view.createSubTaskGrid(createSubTaskListStore());
         view.getSubTaskPagingToolBar().bind((PagingLoader<?>) view.getSubTaskDetailGird().getStore().getLoader());
-    }
-
-    @Override
-    protected Integer[] getTaskTypeCode() {
-        return new Integer[]{DK.getCode()};
     }
 
 }
