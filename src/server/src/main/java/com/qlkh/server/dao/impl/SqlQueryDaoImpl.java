@@ -20,6 +20,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Class SqlQueryDaoImpl.
@@ -97,9 +98,20 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 if (hasLimit && !hasNoLimit) {
                     sql += "INNER JOIN  `material` " +
                             "WHERE  `task`.`id` =  `material`.`taskid` ";
-                } else if(hasNoLimit && !hasLimit) {
+                } else if (hasNoLimit && !hasLimit) {
                     sql += "INNER JOIN  `material` " +
                             "WHERE  `task`.`id` !=  `material`.`taskid` ";
+                }
+
+                if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+                    Map<String, Object> filters = config.get("filters");
+                    if (filters != null) {
+                        sql += "WHERE ";
+                        for (String filter : filters.keySet()) {
+                            sql += "`" + filter + "` LIKE '%"  + filters.get(filter)  + "%' OR ";
+                        }
+                        sql = sql.substring(0, sql.length() - 3);
+                    }
                 }
 
                 SQLQuery selectQuery = session.createSQLQuery(select += sql);
