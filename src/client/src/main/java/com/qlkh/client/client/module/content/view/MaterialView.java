@@ -3,12 +3,14 @@ package com.qlkh.client.client.module.content.view;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
+import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -59,18 +61,31 @@ public class MaterialView extends AbstractTaskDetailView<MaterialConstant> {
 
         ColumnConfig materialCodeColumn = new ColumnConfig(MATERIAL_CODE_COLUMN,
                 getConstant().materialCodeColumnTitle(), MATERIAL_CODE_WIDTH);
+
+        TextField codeTextField = new TextField();
+        codeTextField.setSelectOnFocus(true);
+        materialCodeColumn.setEditor(new CellEditor(codeTextField));
         columnConfigs.add(materialCodeColumn);
 
         ColumnConfig materialNameColumn = new ColumnConfig(MATERIAL_NAME_COLUMN, getConstant().materialNameColumnTitle(),
                 MATERIAL_NAME_WIDTH);
+        TextField nameTextField = new TextField();
+        nameTextField.setSelectOnFocus(true);
+        materialNameColumn.setEditor(new CellEditor(nameTextField));
         columnConfigs.add(materialNameColumn);
 
-        ColumnConfig increaseValueColumnConfig = new ColumnConfig(MATERIAL_UNIT_COLUMN,
+        ColumnConfig materialUnitColumn = new ColumnConfig(MATERIAL_UNIT_COLUMN,
                 getConstant().materialUnitColumnTitle(), MATERIAL_UNIT_WIDTH);
-        columnConfigs.add(increaseValueColumnConfig);
+        TextField unitTextField = new TextField();
+        unitTextField.setSelectOnFocus(true);
+        materialUnitColumn.setEditor(new CellEditor(unitTextField));
+        columnConfigs.add(materialUnitColumn);
 
         ColumnConfig decreaseValueColumnConfig = new ColumnConfig(MATERIAL_QUANTITY_COLUMN,
                 getConstant().materialQuantityColumnTitle(), MATERIAL_QUANTITY_WIDTH);
+        MyNumberField quantityNumberField = new MyNumberField();
+        quantityNumberField.setSelectOnFocus(true);
+        decreaseValueColumnConfig.setEditor(new CellEditor(quantityNumberField));
         columnConfigs.add(decreaseValueColumnConfig);
 
         for (int i = 1; i < columnConfigs.size(); i++) {

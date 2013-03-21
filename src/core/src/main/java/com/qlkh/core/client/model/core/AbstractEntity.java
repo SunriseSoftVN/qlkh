@@ -67,6 +67,7 @@ public abstract class AbstractEntity implements Serializable, BeanModelTag {
     }
 
     //This is a trick for using AliasToBeanResultTransformer of hibernate. @see SqlQueryDaoImpl line 93
+    @Deprecated
     public void setBigId(BigInteger id) {
         setId(id.longValue());
     }
