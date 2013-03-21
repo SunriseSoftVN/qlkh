@@ -10,5 +10,4 @@ import net.customware.gwt.dispatch.shared.Action;
  */
 public class LoadTaskHasLimitAction implements Action<LoadTaskHasLimitResult> {
 
-
 }

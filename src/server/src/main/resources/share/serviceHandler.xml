@@ -29,6 +29,7 @@
                 <bean class="com.qlkh.server.handler.system.UpgradeDatabaseHandler"/>
                 <bean class="com.qlkh.server.handler.system.Upgrade116Handler"/>
                 <bean class="com.qlkh.server.handler.material.LoadMaterialHandler"/>
+                <bean class="com.qlkh.server.handler.task.LoadTaskHasLimitHandler"/>
             </list>
         </property>
     </bean>

@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.data.BeanModelTag;
 import com.smvp4g.reflection.client.marker.Reflection;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -63,5 +64,10 @@ public abstract class AbstractEntity implements Serializable, BeanModelTag {
 
     public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
+    }
+
+    //This is a trick for using AliasToBeanResultTransformer of hibernate. @see SqlQueryDaoImpl line 93
+    public void setBigId(BigInteger id) {
+        setId(id.longValue());
     }
 }

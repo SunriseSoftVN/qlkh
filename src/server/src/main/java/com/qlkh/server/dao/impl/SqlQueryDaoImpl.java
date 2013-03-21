@@ -77,7 +77,19 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<Task>>() {
             @Override
             public List<Task> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM `task` INNER JOIN `material` where `task`.`id` = `material`.`taskid`");
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT  `task`.`id` as `bigId` ,  \n" +
+                        "`task`.`name` , \n" +
+                        "`task`.`code`, \n" +
+                        "`task`.`defaultValue`,\n" +
+                        "`task`.`unit`,\n" +
+                        "`task`.`quota`,\n" +
+                        "`task`.`dynamicQuota`,\n" +
+                        "`task`.`taskTypeCode`,\n" +
+                        "`task`.`childTasks`\n" +
+                        "FROM  `task` \n" +
+                        "INNER JOIN  `material` \n" +
+                        "WHERE  `task`.`id` =  `material`.`taskid` \n" +
+                        "LIMIT 0 , 30");
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(Task.class));
                 return sqlQuery.list();
             }

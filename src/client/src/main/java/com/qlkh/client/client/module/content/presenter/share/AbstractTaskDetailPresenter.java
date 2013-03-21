@@ -128,7 +128,7 @@ public class AbstractTaskDetailPresenter<V extends
         });
     }
 
-    private void resetFilter() {
+    protected void resetFilter() {
         BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
                 getStore().getLoadConfig();
         loadConfig.set("hasFilter", false);
@@ -137,7 +137,7 @@ public class AbstractTaskDetailPresenter<V extends
     }
 
 
-    private void resetView() {
+    protected void resetView() {
         view.getTaskPagingToolBar().refresh();
         emptySubGird();
     }

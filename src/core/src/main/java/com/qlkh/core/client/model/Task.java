@@ -6,6 +6,8 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
+import java.math.BigInteger;
+
 /**
  * The Class Task.
  *
