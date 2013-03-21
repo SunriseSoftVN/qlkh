@@ -31,7 +31,7 @@ public class LoadTaskHasLimitHandler extends AbstractHandler<LoadTaskHasLimitAct
 
     @Override
     public LoadTaskHasLimitResult execute(LoadTaskHasLimitAction loadTaskHasLimitAction, ExecutionContext executionContext) throws DispatchException {
-        List<Task> tasks = sqlQueryDao.getTasksHasLimit();
-        return new LoadTaskHasLimitResult(new BasePagingLoadResult<Task>(tasks));
+        BasePagingLoadResult<Task> result = sqlQueryDao.getTasks(true, true, loadTaskHasLimitAction.getConfig());
+        return new LoadTaskHasLimitResult(result);
     }
 }

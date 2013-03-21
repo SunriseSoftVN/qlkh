@@ -56,7 +56,8 @@ public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView>
         RpcProxy<LoadTaskHasLimitResult> rpcProxy = new RpcProxy<LoadTaskHasLimitResult>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<LoadTaskHasLimitResult> callback) {
-                dispatch.execute(new LoadTaskHasLimitAction(), callback);
+                dispatch.execute(new LoadTaskHasLimitAction(view.getCbShowTaskHasLimit().getValue(),
+                        view.getCbShowTaskHasNoLimit().getValue(), (BasePagingLoadConfig) loadConfig), callback);
             }
         };
 

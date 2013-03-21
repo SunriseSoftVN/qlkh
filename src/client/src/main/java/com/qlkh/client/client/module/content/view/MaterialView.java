@@ -78,4 +78,12 @@ public class MaterialView extends AbstractTaskDetailView<MaterialConstant> {
         }
         return columnConfigs;
     }
+
+    public CheckBox getCbShowTaskHasNoLimit() {
+        return cbShowTaskHasNoLimit;
+    }
+
+    public CheckBox getCbShowTaskHasLimit() {
+        return cbShowTaskHasLimit;
+    }
 }

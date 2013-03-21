@@ -4,6 +4,8 @@
 
 package com.qlkh.server.dao.impl;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
@@ -33,7 +35,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
             @Override
             public List<TaskDetailNamDataView> doInHibernate(Session session) throws HibernateException, SQLException {
                 SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM taskdetail_nam_view " +
-                        "WHERE year = :year AND stationId in (:stationIds)");
+                        "WHERE year = :year AND stationId IN (:stationIds)");
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailNamDataView.class));
@@ -48,7 +50,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
             @Override
             public List<TaskDetailDKDataView> doInHibernate(Session session) throws HibernateException, SQLException {
                 SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM taskdetail_dk_view " +
-                        "WHERE year = :year AND stationId in (:stationIds)");
+                        "WHERE year = :year AND stationId IN (:stationIds)");
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailDKDataView.class));
@@ -63,7 +65,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
             @Override
             public List<TaskDetailKDKDataView> doInHibernate(Session session) throws HibernateException, SQLException {
                 SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM taskdetail_kdk_view " +
-                        "WHERE year = :year AND stationId in (:stationIds)");
+                        "WHERE year = :year AND stationId IN (:stationIds)");
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailKDKDataView.class));
@@ -73,25 +75,43 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
     }
 
     @Override
-    public List<Task> getTasksHasLimit() {
-        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<Task>>() {
+    public BasePagingLoadResult<Task> getTasks(final boolean hasLimit, final boolean hasNoLimit, final BasePagingLoadConfig config) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Task>>() {
             @Override
-            public List<Task> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery sqlQuery = session.createSQLQuery("SELECT  `task`.`id` as `bigId` ,  \n" +
-                        "`task`.`name` , \n" +
-                        "`task`.`code`, \n" +
-                        "`task`.`defaultValue`,\n" +
-                        "`task`.`unit`,\n" +
-                        "`task`.`quota`,\n" +
-                        "`task`.`dynamicQuota`,\n" +
-                        "`task`.`taskTypeCode`,\n" +
-                        "`task`.`childTasks`\n" +
-                        "FROM  `task` \n" +
-                        "INNER JOIN  `material` \n" +
-                        "WHERE  `task`.`id` =  `material`.`taskid` \n" +
-                        "LIMIT 0 , 30");
-                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(Task.class));
-                return sqlQuery.list();
+            public BasePagingLoadResult<Task> doInHibernate(Session session) throws HibernateException, SQLException {
+                String select = "SELECT  `task`.`id` AS `bigId`," +
+                        "`task`.`name` ," +
+                        "`task`.`code`, " +
+                        "`task`.`defaultValue`," +
+                        "`task`.`unit`," +
+                        "`task`.`quota`," +
+                        "`task`.`dynamicQuota`," +
+                        "`task`.`taskTypeCode`," +
+                        "`task`.`childTasks`" +
+                        "FROM  `task` ";
+
+                String count = "SELECT COUNT(*) FROM `task` ";
+
+                String sql = "";
+
+                if (hasLimit && !hasNoLimit) {
+                    sql += "INNER JOIN  `material` " +
+                            "WHERE  `task`.`id` =  `material`.`taskid` ";
+                } else if(hasNoLimit && !hasLimit) {
+                    sql += "INNER JOIN  `material` " +
+                            "WHERE  `task`.`id` !=  `material`.`taskid` ";
+                }
+
+                SQLQuery selectQuery = session.createSQLQuery(select += sql);
+                selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Task.class));
+                selectQuery.setMaxResults(config.getLimit());
+                selectQuery.setFirstResult(config.getOffset());
+
+                SQLQuery countQuery = session.createSQLQuery(count += sql);
+
+                int total = Integer.valueOf(countQuery.list().get(0).toString());
+
+                return new BasePagingLoadResult<Task>(selectQuery.list(), config.getOffset(), total);
             }
         });
     }

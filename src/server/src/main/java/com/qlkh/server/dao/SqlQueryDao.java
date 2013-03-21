@@ -4,6 +4,8 @@
 
 package com.qlkh.server.dao;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
@@ -20,7 +22,10 @@ import java.util.List;
  */
 public interface SqlQueryDao extends Dao {
     List<TaskDetailKDKDataView> getTaskDetailKDK(List<Long> stationIds, int year);
+
     List<TaskDetailDKDataView> getTaskDetailDK(List<Long> stationIds, int year);
+
     List<TaskDetailNamDataView> getTaskDetailNam(List<Long> stationIds, int year);
-    List<Task> getTasksHasLimit();
+
+    BasePagingLoadResult<Task> getTasks(boolean hasLimit, boolean hasNoLimit, BasePagingLoadConfig config);
 }
