@@ -8,7 +8,7 @@ import com.qlkh.core.client.model.core.AbstractEntity;
  * @author Nguyen Duc Dung
  * @since 3/20/13 2:58 PM
  */
-public class MaterialLimit extends AbstractEntity {
+public class Material extends AbstractEntity {
 
     private Task task;
     private String name;

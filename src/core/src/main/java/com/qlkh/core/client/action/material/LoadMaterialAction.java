@@ -1,4 +1,4 @@
-package com.qlkh.core.client.action.limitjob;
+package com.qlkh.core.client.action.material;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import net.customware.gwt.dispatch.shared.Action;
@@ -9,14 +9,14 @@ import net.customware.gwt.dispatch.shared.Action;
  * @author Nguyen Duc Dung
  * @since 3/20/13 2:25 PM
  */
-public class LoadLimitJobAction implements Action<LoadLimitJobResult> {
+public class LoadMaterialAction implements Action<LoadMaterialResult> {
 
     private BasePagingLoadConfig loadConfig;
 
-    public LoadLimitJobAction() {
+    public LoadMaterialAction() {
     }
 
-    public LoadLimitJobAction(BasePagingLoadConfig loadConfig) {
+    public LoadMaterialAction(BasePagingLoadConfig loadConfig) {
         this.loadConfig = loadConfig;
     }
 

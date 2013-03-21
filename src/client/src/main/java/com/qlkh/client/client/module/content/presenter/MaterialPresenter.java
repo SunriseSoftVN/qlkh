@@ -4,24 +4,14 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
-import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.LimitJobPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
-import com.qlkh.client.client.module.content.view.LimitJobView;
+import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.core.client.action.limitjob.LoadLimitJobAction;
-import com.qlkh.core.client.action.limitjob.LoadLimitJobResult;
-import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKAction;
-import com.qlkh.core.client.action.taskdetail.LoadTaskDetailDKResult;
-import com.qlkh.core.client.action.time.GetServerTimeAction;
-import com.qlkh.core.client.action.time.GetServerTimeResult;
-import com.qlkh.core.client.constant.StationLockTypeEnum;
-import com.qlkh.core.client.model.StationLock;
+import com.qlkh.core.client.action.material.LoadMaterialAction;
+import com.qlkh.core.client.action.material.LoadMaterialResult;
 import com.qlkh.core.client.model.TaskDetailDK;
-import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-
-import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
 
 /**
  * The Class LimitJobPresenter.
@@ -29,19 +19,19 @@ import static com.qlkh.core.client.constant.TaskTypeEnum.DK;
  * @author Nguyen Duc Dung
  * @since 3/20/13 10:10 AM
  */
-@Presenter(view = LimitJobView.class, place = LimitJobPlace.class)
-public class LimitJobPresenter extends AbstractTaskDetailPresenter<LimitJobView> {
+@Presenter(view = MaterialView.class, place = LimitJobPlace.class)
+public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView> {
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<LoadLimitJobResult> rpcProxy = new RpcProxy<LoadLimitJobResult>() {
+        RpcProxy<LoadMaterialResult> rpcProxy = new RpcProxy<LoadMaterialResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadLimitJobResult> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialResult> callback) {
                 long currentTaskId = -1;
                 if (currentTask != null) {
                     currentTaskId = currentTask.getId();
                 }
-                dispatch.execute(new LoadLimitJobAction((BasePagingLoadConfig) loadConfig), callback);
+                dispatch.execute(new LoadMaterialAction((BasePagingLoadConfig) loadConfig), callback);
             }
         };
 

@@ -58,11 +58,12 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
     protected ContentPanel contentPanel = new ContentPanel();
 
+    protected ToolBar toolBar = new ToolBar();
+
     private Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
     private TextField<String> txtSearch = new TextField<String>();
     private Button btnSubTaskSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
     private Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
-
 
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
@@ -110,9 +111,8 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
         });
 
         taskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
-        ToolBar toolBar = new ToolBar();
-
         txtSearch.setWidth(170);
+
         toolBar.add(txtSearch);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnRefresh);

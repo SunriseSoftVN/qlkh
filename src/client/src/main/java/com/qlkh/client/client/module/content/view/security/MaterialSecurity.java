@@ -10,7 +10,7 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
  * @author Nguyen Duc Dung
  * @since 3/20/13 10:12 AM
  */
-public class LimitJobSecurity implements ViewSecurityConfigurator {
+public class MaterialSecurity implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
         return new HasRole[]{UserRoleEnum.MANAGER};
