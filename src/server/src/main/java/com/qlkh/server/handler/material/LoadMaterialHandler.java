@@ -4,6 +4,8 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlkh.core.client.action.material.LoadMaterialAction;
 import com.qlkh.core.client.action.material.LoadMaterialResult;
 import com.qlkh.core.client.model.Material;
+import com.qlkh.core.client.model.Task;
+import com.qlkh.server.dao.MaterialDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -23,6 +25,9 @@ public class LoadMaterialHandler extends AbstractHandler<LoadMaterialAction, Loa
     @Autowired
     private GeneralDao generalDao;
 
+    @Autowired
+    private MaterialDao materialDao;
+
     @Override
     public Class<LoadMaterialAction> getActionType() {
         return LoadMaterialAction.class;
@@ -30,8 +35,9 @@ public class LoadMaterialHandler extends AbstractHandler<LoadMaterialAction, Loa
 
     @Override
     public LoadMaterialResult execute(LoadMaterialAction loadMaterialAction, ExecutionContext executionContext) throws DispatchException {
-        List<Material> materials = generalDao.getAll(Material.class);
-        BasePagingLoadResult<Material> result = new BasePagingLoadResult<Material>(materials);
+        List<Material> materials = materialDao.findByTaskId(loadMaterialAction.getTaskId());
+        BasePagingLoadResult<Material> result =
+                new BasePagingLoadResult<Material>(materials, loadMaterialAction.getLoadConfig().getOffset(), 1);
         return new LoadMaterialResult(result);
     }
 }

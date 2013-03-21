@@ -26,13 +26,13 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = MaterialConstant.class)
 public class MaterialView extends AbstractTaskDetailView<MaterialConstant> {
 
-    public static final String MATERIAL_CODE_COLUMN = "material.code";
+    public static final String MATERIAL_CODE_COLUMN = "code";
     public static final int MATERIAL_CODE_WIDTH = 100;
-    public static final String MATERIAL_NAME_COLUMN = "material.name";
+    public static final String MATERIAL_NAME_COLUMN = "name";
     public static final int MATERIAL_NAME_WIDTH = 200;
-    public static final String MATERIAL_UNIT_COLUMN = "material.unit";
+    public static final String MATERIAL_UNIT_COLUMN = "unit";
     public static final int MATERIAL_UNIT_WIDTH = 70;
-    public static final String MATERIAL_QUANTITY_COLUMN = "material.quantity";
+    public static final String MATERIAL_QUANTITY_COLUMN = "quantity";
     public static final int MATERIAL_QUANTITY_WIDTH = 70;
 
     @I18nField

@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="com.qlkh.core.client.model.Material" table="materiallimit" schema="" catalog="qlkh">
+    <class name="com.qlkh.core.client.model.Material" table="material" schema="" catalog="qlkh">
         <id name="id" column="id">
             <generator class="identity"/>
         </id>
@@ -16,5 +16,9 @@
         <property name="code" column="code" not-null="true"/>
         <property name="unit" column="unit" not-null="true"/>
         <property name="quantity" column="quantity" not-null="true"/>
+
+        <many-to-one name="task" class="com.qlkh.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
+            <column name="taskId" not-null="true"/>
+        </many-to-one>
     </class>
 </hibernate-mapping>

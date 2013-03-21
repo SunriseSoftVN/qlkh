@@ -12,15 +12,21 @@ import net.customware.gwt.dispatch.shared.Action;
 public class LoadMaterialAction implements Action<LoadMaterialResult> {
 
     private BasePagingLoadConfig loadConfig;
+    private long taskId;
 
     public LoadMaterialAction() {
     }
 
-    public LoadMaterialAction(BasePagingLoadConfig loadConfig) {
+    public LoadMaterialAction(BasePagingLoadConfig loadConfig, long taskId) {
         this.loadConfig = loadConfig;
+        this.taskId = taskId;
     }
 
     public BasePagingLoadConfig getLoadConfig() {
         return loadConfig;
+    }
+
+    public long getTaskId() {
+        return taskId;
     }
 }

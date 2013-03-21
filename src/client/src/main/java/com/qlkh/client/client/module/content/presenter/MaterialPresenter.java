@@ -31,12 +31,12 @@ public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView>
                 if (currentTask != null) {
                     currentTaskId = currentTask.getId();
                 }
-                dispatch.execute(new LoadMaterialAction((BasePagingLoadConfig) loadConfig), callback);
+                dispatch.execute(new LoadMaterialAction((BasePagingLoadConfig) loadConfig, currentTaskId), callback);
             }
         };
 
-        PagingLoader<PagingLoadResult<TaskDetailDK>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<TaskDetailDK>>(rpcProxy, new LoadGridDataReader()) {
+        PagingLoader<PagingLoadResult<LoadMaterialResult>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<LoadMaterialResult>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
