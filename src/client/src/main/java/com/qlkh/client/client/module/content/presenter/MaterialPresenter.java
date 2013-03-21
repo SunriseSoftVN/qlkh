@@ -10,6 +10,7 @@ import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.material.LoadMaterialAction;
 import com.qlkh.core.client.action.material.LoadMaterialResult;
+import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 
@@ -46,6 +47,15 @@ public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView>
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
+    }
+
+    @Override
+    protected void createTaskGrid() {
+        RpcProxy<Task> rpcProxy = new RpcProxy<Task>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<Task> callback) {
+            }
+        };
     }
 
     @Override

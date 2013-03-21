@@ -61,33 +61,7 @@ public class AbstractTaskDetailPresenter<V extends
 
     @Override
     protected void doBind() {
-        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
-            @Override
-            public void onSuccess(LoadStationResult result) {
-                currentStation = result.getStation();
-                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.in("taskTypeCode", getTaskTypeCode())));
-                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
-                resetView();
-                view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
-                    @Override
-                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
-                        int index = se.getSelection().size() - 1;
-                        if (index >= 0) {
-                            Task task = se.getSelection().get(index).getBean();
-                            if (task.getId() != null) {
-                                currentTask = task;
-                                view.getSubTaskPagingToolBar().refresh();
-                            } else {
-                                emptySubGird();
-                            }
-                        }
-                    }
-                });
-                view.getTaskGird().focus();
-
-                createSubTaskGrid();
-            }
-        });
+        createTaskGrid();
 
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -176,6 +150,37 @@ public class AbstractTaskDetailPresenter<V extends
 
     protected ListStore<BeanModel> createSubTaskListStore() {
         return null;
+    }
+
+    protected void createTaskGrid() {
+        dispatch.execute(new LoadStationAction(LoginUtils.getUserName()), new AbstractAsyncCallback<LoadStationResult>() {
+            @Override
+            public void onSuccess(LoadStationResult result) {
+                currentStation = result.getStation();
+
+                view.createTaskGrid(GridUtils.createListStore(Task.class, ClientRestrictions.in("taskTypeCode", getTaskTypeCode())));
+                view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
+                resetView();
+                view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
+                        int index = se.getSelection().size() - 1;
+                        if (index >= 0) {
+                            Task task = se.getSelection().get(index).getBean();
+                            if (task.getId() != null) {
+                                currentTask = task;
+                                view.getSubTaskPagingToolBar().refresh();
+                            } else {
+                                emptySubGird();
+                            }
+                        }
+                    }
+                });
+                view.getTaskGird().focus();
+
+                createSubTaskGrid();
+            }
+        });
     }
 
     protected void createSubTaskGrid() {

@@ -4,6 +4,7 @@
 
 package com.qlkh.server.dao.impl;
 
+import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
@@ -66,6 +67,18 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailKDKDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
+
+    @Override
+    public List<Task> getTasksHasLimit() {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<Task>>() {
+            @Override
+            public List<Task> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT * FROM `task` INNER JOIN `material` where `task`.`id` = `material`.`taskid`");
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(Task.class));
                 return sqlQuery.list();
             }
         });
