@@ -1,6 +1,8 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
@@ -73,7 +75,27 @@ public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView>
 
         view.createTaskGrid(new ListStore<BeanModel>(pagingLoader));
         view.getTaskPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
+
         resetView();
+
+        view.getTaskGird().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<BeanModel> se) {
+                int index = se.getSelection().size() - 1;
+                if (index >= 0) {
+                    Task task = se.getSelection().get(index).getBean();
+                    if (task.getId() != null) {
+                        currentTask = task;
+                        view.getSubTaskPagingToolBar().refresh();
+                    } else {
+                        emptySubGird();
+                    }
+                }
+            }
+        });
+        view.getTaskGird().focus();
+
+        createSubTaskGrid();
     }
 
     @Override
