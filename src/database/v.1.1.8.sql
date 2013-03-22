@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS `materiallimit` (
   `unit` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `quantity` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE `user` CHANGE `userRole` `userRole` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;

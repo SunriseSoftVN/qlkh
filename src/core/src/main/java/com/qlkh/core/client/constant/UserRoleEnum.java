@@ -29,6 +29,11 @@ public enum UserRoleEnum implements HasRole {
     USER("USER"),
 
     /**
+     * The Manager of material.
+     */
+    MATERIAL_MANAGER("MATERIAL_MANAGER"),
+
+    /**
      * The developer can access the application to get the system log.
      */
     DEVELOPER("DEVELOPER");
