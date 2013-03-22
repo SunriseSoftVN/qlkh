@@ -8,8 +8,8 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.qlkh.client.client.constant.DomIdConstant;
-import com.qlkh.client.client.module.content.view.i18n.MaterialConstant;
-import com.qlkh.client.client.module.content.view.security.MaterialSecurity;
+import com.qlkh.client.client.module.content.view.i18n.MaterialLimitConstant;
+import com.qlkh.client.client.module.content.view.security.MaterialLimitSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -25,9 +25,9 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 3/20/13 10:10 AM
  */
-@ViewSecurity(configuratorClass = MaterialSecurity.class)
-@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = MaterialConstant.class)
-public class MaterialView extends AbstractTaskDetailView<MaterialConstant> {
+@ViewSecurity(configuratorClass = MaterialLimitSecurity.class)
+@View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = MaterialLimitConstant.class)
+public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConstant> {
 
     public static final String MATERIAL_CODE_COLUMN = "code";
     public static final int MATERIAL_CODE_WIDTH = 100;

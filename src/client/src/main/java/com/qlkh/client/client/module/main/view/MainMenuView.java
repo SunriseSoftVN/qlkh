@@ -89,7 +89,12 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mlLimitJob = new MenuLink(LimitJobPlace.class);
+    MenuLink mlLimitJob = new MenuLink(MaterialLimitPlace.class);
+
+    @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mlMaterial = new MenuLink(MaterialPlace.class);
 
     @FieldSecurity
     @HistoryHandler
@@ -145,6 +150,9 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         //Lock
         mlLimitJob.setStyleName("menulink");
         mainPanel.add(mlLimitJob, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        mlMaterial.setStyleName("menulink");
+        mainPanel.add(mlMaterial, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //For developer
         mlUpgrade.setStyleName("menulink");

@@ -6,7 +6,7 @@ package com.qlkh.client.client.module.content.view.i18n;
  * @author Nguyen Duc Dung
  * @since 3/20/13 10:10 AM
  */
-public interface MaterialConstant extends TaskDetailDKConstant {
+public interface MaterialLimitConstant extends TaskDetailDKConstant {
     String materialNameColumnTitle();
     String materialCodeColumnTitle();
     String materialUnitColumnTitle();

@@ -7,9 +7,9 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
-import com.qlkh.client.client.module.content.place.LimitJobPlace;
+import com.qlkh.client.client.module.content.place.MaterialLimitPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
-import com.qlkh.client.client.module.content.view.MaterialView;
+import com.qlkh.client.client.module.content.view.MaterialLimitView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
@@ -31,8 +31,8 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 3/20/13 10:10 AM
  */
-@Presenter(view = MaterialView.class, place = LimitJobPlace.class)
-public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView> {
+@Presenter(view = MaterialLimitView.class, place = MaterialLimitPlace.class)
+public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<MaterialLimitView> {
 
     @Override
     protected void doBind() {

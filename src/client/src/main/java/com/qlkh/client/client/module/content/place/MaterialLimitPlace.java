@@ -10,5 +10,5 @@ import com.smvp4g.mvp.client.core.place.Place;
  * @since 3/20/13 9:57 AM
  */
 @Place
-public class LimitJobPlace extends AbstractPlace {
+public class MaterialLimitPlace extends AbstractPlace {
 }
