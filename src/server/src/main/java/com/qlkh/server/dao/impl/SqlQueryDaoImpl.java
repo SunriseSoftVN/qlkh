@@ -80,7 +80,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Task>>() {
             @Override
             public BasePagingLoadResult<Task> doInHibernate(Session session) throws HibernateException, SQLException {
-                String select = "SELECT  `task`.`id` AS `bigId`," +
+                String select = "SELECT `task`.`id` AS `bigId`," +
                         "`task`.`name` ," +
                         "`task`.`code`, " +
                         "`task`.`defaultValue`," +
@@ -96,11 +96,9 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 String sql = "";
 
                 if (hasLimit && !hasNoLimit) {
-                    sql += "INNER JOIN  `material` " +
-                            "WHERE  `task`.`id` =  `material`.`taskid` ";
+                    sql += "WHERE `task`.`id` IN (SELECT `taskid` FROM `material`) ";
                 } else if (hasNoLimit && !hasLimit) {
-                    sql += "INNER JOIN  `material` " +
-                            "WHERE  `task`.`id` !=  `material`.`taskid` ";
+                    sql += "WHERE `task`.`id` NOT IN (SELECT `taskid` FROM `material`) ";
                 }
 
                 if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {

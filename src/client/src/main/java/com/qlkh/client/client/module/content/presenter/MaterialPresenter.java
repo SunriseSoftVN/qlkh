@@ -1,22 +1,29 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Record;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
+import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.LimitJobPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
 import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
+import com.qlkh.core.client.action.core.SaveAction;
+import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.LoadMaterialAction;
 import com.qlkh.core.client.action.material.LoadMaterialResult;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitAction;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitResult;
+import com.qlkh.core.client.model.Material;
 import com.qlkh.core.client.model.Task;
-import com.qlkh.core.client.model.TaskDetailDK;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class LimitJobPresenter.
@@ -26,6 +33,45 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
  */
 @Presenter(view = MaterialView.class, place = LimitJobPlace.class)
 public class MaterialPresenter extends AbstractTaskDetailPresenter<MaterialView> {
+
+    @Override
+    protected void doBind() {
+        super.doBind();
+        view.getBtnSubTaskSave().removeAllListeners();
+        view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                List<Material> entities = new ArrayList<Material>();
+                boolean isError = false;
+                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
+                    BeanModel model = (BeanModel) record.getModel();
+                    Material material = model.getBean();
+                    //validation
+                    if (StringUtils.isNotBlank(material.getName()) && StringUtils.isNotBlank(material.getCode())
+                            && StringUtils.isNotBlank(material.getUnit()) && material.getQuantity() != null) {
+                        entities.add(material);
+                    } else {
+                        isError = true;
+                        break;
+                    }
+                }
+
+                if(isError) {
+                    DiaLogUtils.showMessage("Có lỗi xãy ra trong việc nhập dữ liệu, các mục mã, tên đơn vị, số luợng vật tư không đuợc bỏ trống");
+                }
+
+                if (!entities.isEmpty()) {
+                    dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
+                        @Override
+                        public void onSuccess(SaveResult result) {
+                            DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            view.getSubTaskPagingToolBar().refresh();
+                        }
+                    });
+                }
+            }
+        });
+    }
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {

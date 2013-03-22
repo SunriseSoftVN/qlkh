@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialConstant;
@@ -53,6 +54,9 @@ public class MaterialView extends AbstractTaskDetailView<MaterialConstant> {
 
         toolBar.add(cbShowTaskHasLimit);
         toolBar.add(cbShowTaskHasNoLimit);
+        toolBar.remove(getBtnRefresh());
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(getBtnRefresh());
     }
 
     @Override
