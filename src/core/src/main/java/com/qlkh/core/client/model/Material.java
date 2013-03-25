@@ -15,6 +15,7 @@ public class Material extends AbstractEntity {
     private String code;
     private String unit;
     private Double quantity;
+    private String note;
 
     public Task getTask() {
         return task;
@@ -54,5 +55,13 @@ public class Material extends AbstractEntity {
 
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }
