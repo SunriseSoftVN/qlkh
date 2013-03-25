@@ -23,6 +23,7 @@ import com.qlkh.client.client.module.content.view.i18n.MaterialConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
 import com.qlkh.client.client.widget.MyFormPanel;
+import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -85,7 +86,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     TextField<String> txtUnit = new TextField<String>();
 
     @I18nField
-    TextField<String> txtPrice = new TextField<String>();
+    MyNumberField txtPrice = new MyNumberField();
 
     @I18nField
     TextArea txtNote = new TextArea();
@@ -209,7 +210,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
             materialEditPanel.setHeaderVisible(false);
             materialEditPanel.setBodyBorder(false);
             materialEditPanel.setBorders(false);
-            materialEditPanel.setLabelWidth(150);
+            materialEditPanel.setLabelWidth(120);
         }
 
         if (!txtCode.isRendered()) {
@@ -286,5 +287,45 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     public PagingToolBar getPagingToolBar() {
         return pagingToolBar;
+    }
+
+    public Button getBtnTaskEditOk() {
+        return btnTaskEditOk;
+    }
+
+    public void setBtnTaskEditOk(Button btnTaskEditOk) {
+        this.btnTaskEditOk = btnTaskEditOk;
+    }
+
+    public Button getBtnTaskEditCancel() {
+        return btnTaskEditCancel;
+    }
+
+    public void setBtnTaskEditCancel(Button btnTaskEditCancel) {
+        this.btnTaskEditCancel = btnTaskEditCancel;
+    }
+
+    public TextField<String> getTxtCode() {
+        return txtCode;
+    }
+
+    public TextField<String> getTxtName() {
+        return txtName;
+    }
+
+    public TextField<String> getTxtUnit() {
+        return txtUnit;
+    }
+
+    public MyNumberField getTxtPrice() {
+        return txtPrice;
+    }
+
+    public TextArea getTxtNote() {
+        return txtNote;
+    }
+
+    public MyFormPanel getMaterialEditPanel() {
+        return materialEditPanel;
     }
 }

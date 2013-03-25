@@ -29,4 +29,5 @@ public interface MaterialConstant extends Constants {
     String txtUnit();
     String txtPrice();
     String txtNote();
+    String saveMessageSuccess();
 }
