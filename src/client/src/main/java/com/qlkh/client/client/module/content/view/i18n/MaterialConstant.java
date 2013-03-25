@@ -25,4 +25,8 @@ public interface MaterialConstant extends Constants {
     String btnTaskEditOk();
     String btnTaskEditCancel();
     String txtCode();
+    String txtName();
+    String txtUnit();
+    String txtPrice();
+    String txtNote();
 }

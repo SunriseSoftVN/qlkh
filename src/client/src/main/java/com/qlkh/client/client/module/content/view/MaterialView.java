@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -76,6 +77,18 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     @I18nField
     TextField<String> txtCode = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtName = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtUnit = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtPrice = new TextField<String>();
+
+    @I18nField
+    TextArea txtNote = new TextArea();
 
     @I18nField
     Button btnTaskEditOk = new Button();
@@ -204,7 +217,25 @@ public class MaterialView extends AbstractView<MaterialConstant> {
             txtCode.setSelectOnFocus(true);
             txtCode.setMaxLength(11);
         }
+
+        if (!txtName.isRendered()) {
+            txtName.setAllowBlank(false);
+        }
+
+        if (!txtPrice.isRendered()) {
+            txtPrice.setAllowBlank(false);
+        }
+
+        if (!txtPrice.isRendered()) {
+            txtUnit.setAllowBlank(false);
+        }
+
         materialEditPanel.add(txtCode);
+        materialEditPanel.add(txtName);
+        materialEditPanel.add(txtPrice);
+        materialEditPanel.add(txtUnit);
+        materialEditPanel.add(txtNote);
+
         window.setFocusWidget(txtCode);
 
         window.add(materialEditPanel);
