@@ -9,6 +9,6 @@ import com.smvp4g.mvp.client.core.place.Place;
  * @author Nguyen Duc Dung
  * @since 3/22/13 1:06 PM
  */
-@Place
+@Place(defaultPlace = true)
 public class MaterialPlace extends AbstractPlace {
 }

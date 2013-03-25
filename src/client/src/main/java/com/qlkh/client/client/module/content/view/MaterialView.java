@@ -2,13 +2,10 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -24,11 +21,9 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
-import com.qlkh.core.client.constant.TaskTypeEnum;
-import com.qlkh.core.client.model.Task;
+import com.qlkh.client.client.widget.MyFormPanel;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
-import com.smvp4g.mvp.client.core.utils.StringUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 import com.smvp4g.mvp.client.widget.TextField;
@@ -78,6 +73,17 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     @I18nField(emptyText = true)
     TextField<String> txtCodeSearch = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtCode = new TextField<String>();
+
+    @I18nField
+    Button btnTaskEditOk = new Button();
+
+    @I18nField
+    Button btnTaskEditCancel = new Button();
+
+    private MyFormPanel materialEditPanel = new MyFormPanel();
 
     private PagingToolBar pagingToolBar;
     private Grid<BeanModel> taskGird;
@@ -182,6 +188,41 @@ public class MaterialView extends AbstractView<MaterialConstant> {
         columnConfigs.add(noteColumnConfig);
 
         return columnConfigs;
+    }
+
+    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!materialEditPanel.isRendered()) {
+            materialEditPanel.setHeaderVisible(false);
+            materialEditPanel.setBodyBorder(false);
+            materialEditPanel.setBorders(false);
+            materialEditPanel.setLabelWidth(150);
+        }
+
+        if (!txtCode.isRendered()) {
+            txtCode.setAllowBlank(false);
+            txtCode.setSelectOnFocus(true);
+            txtCode.setMaxLength(11);
+        }
+        materialEditPanel.add(txtCode);
+        window.setFocusWidget(txtCode);
+
+        window.add(materialEditPanel);
+        window.addButton(btnTaskEditOk);
+        window.addButton(btnTaskEditCancel);
+        window.setSize(400, 250);
+        window.setAutoHeight(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().materialEditPanel());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                materialEditPanel.clear();
+                taskGird.focus();
+            }
+        });
+        return window;
     }
 
     public Grid<BeanModel> getTaskGird() {

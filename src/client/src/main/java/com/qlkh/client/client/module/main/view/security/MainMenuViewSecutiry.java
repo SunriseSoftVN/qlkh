@@ -55,11 +55,23 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
     }
 
     public HasRole[] ancLogout() {
-        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.DEVELOPER};
+        return new HasRole[]{
+                UserRoleEnum.USER,
+                UserRoleEnum.ADMIN,
+                UserRoleEnum.MANAGER,
+                UserRoleEnum.DEVELOPER,
+                UserRoleEnum.MATERIAL_MANAGER
+        };
     }
 
     public HasRole[] lblWelcome() {
-        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.DEVELOPER};
+        return new HasRole[]{
+                UserRoleEnum.USER,
+                UserRoleEnum.ADMIN,
+                UserRoleEnum.MANAGER,
+                UserRoleEnum.DEVELOPER,
+                UserRoleEnum.MATERIAL_MANAGER
+        };
     }
 
     public HasRole[] mlLock() {
