@@ -233,8 +233,8 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
         materialEditPanel.add(txtCode);
         materialEditPanel.add(txtName);
-        materialEditPanel.add(txtPrice);
         materialEditPanel.add(txtUnit);
+        materialEditPanel.add(txtPrice);
         materialEditPanel.add(txtNote);
 
         window.setFocusWidget(txtCode);

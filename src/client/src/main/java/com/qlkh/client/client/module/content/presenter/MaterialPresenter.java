@@ -5,8 +5,11 @@ import com.extjs.gxt.ui.client.data.BeanModelFactory;
 import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPlace;
@@ -15,10 +18,17 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
+import com.qlkh.core.client.action.task.DeleteTaskAction;
+import com.qlkh.core.client.action.task.DeleteTaskResult;
 import com.qlkh.core.client.model.Material;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class MaterialPresenter.
@@ -87,6 +97,22 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                 materialWindow.hide();
             }
         });
+        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialWindow = view.createMaterialEditWindow();
+                Material selectedMaterial = view.getMaterialGird().getSelectionModel().getSelectedItem().getBean();
+                view.getTxtCode().setValue(selectedMaterial.getCode());
+                view.getTxtName().setValue(selectedMaterial.getName());
+                view.getTxtUnit().setValue(selectedMaterial.getUnit());
+                view.getTxtPrice().setValue(selectedMaterial.getPrice());
+                view.getTxtNote().setValue(selectedMaterial.getNote());
+                currentMaterial = selectedMaterial;
+                materialWindow.show();
+                materialWindow.layout(true);
+            }
+        });
+        view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
     }
 
     private void updateGrid(Material material) {
@@ -107,5 +133,76 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     .getStore().getCount() - 1, 1, false);
         }
         view.getMaterialGird().getSelectionModel().select(updateModel, false);
+    }
+
+    private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
+        @Override
+        public void componentSelected(ButtonEvent ce) {
+            final List<BeanModel> models = view.getMaterialGird().getSelectionModel().getSelectedItems();
+            if (CollectionsUtils.isNotEmpty(models)) {
+                if (models.size() == 1) {
+                    final Material material = (Material) models.get(0).getBean();
+                    showDeleteTagConform(material.getId(), material.getName());
+                } else {
+                    List<Long> materialIds = new ArrayList<Long>(models.size());
+                    for (BeanModel model : models) {
+                        final Material material = (Material) model.getBean();
+                        materialIds.add(material.getId());
+                    }
+                    showDeleteTagConform(materialIds, null);
+                }
+            }
+        }
+    }
+
+    private void showDeleteTagConform(long materialId, String tagName) {
+        List<Long> materialIds = new ArrayList<Long>(1);
+        materialIds.add(materialId);
+        showDeleteTagConform(materialIds, tagName);
+    }
+
+    private void showDeleteTagConform(final List<Long> materialIds, String tagName) {
+        assert materialIds != null;
+        String deleteMessage;
+        final AsyncCallback<DeleteTaskResult> callback = new AbstractAsyncCallback<DeleteTaskResult>() {
+            @Override
+            public void onSuccess(DeleteTaskResult result) {
+                if (result.isDeleted()) {
+                    //Reload grid.
+                    view.getPagingToolBar().refresh();
+                    DiaLogUtils.notify(view.getConstant().deleteMessage());
+                } else {
+                    DiaLogUtils.conform(view.getConstant().deleteMessage(), new Listener<MessageBoxEvent>() {
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (be.getButtonClicked().getText().equals("Yes")) {
+                                dispatch.execute(new DeleteTaskAction(materialIds, true), new AbstractAsyncCallback<DeleteTaskResult>() {
+                                    @Override
+                                    public void onSuccess(DeleteTaskResult result) {
+                                        view.getPagingToolBar().refresh();
+                                        DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        final boolean hasManyTag = materialIds.size() > 1;
+        if (hasManyTag) {
+            deleteMessage = view.getConstant().deleteAllMessage();
+        } else {
+            deleteMessage = StringUtils.substitute(view.getConstant().deleteMessage(), tagName);
+        }
+
+        DiaLogUtils.conform(deleteMessage, new Listener<MessageBoxEvent>() {
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    dispatch.execute(new DeleteTaskAction(materialIds), callback);
+                }
+            }
+        });
     }
 }
