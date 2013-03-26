@@ -4,6 +4,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
@@ -33,6 +34,8 @@ import java.util.List;
  */
 @Presenter(view = MaterialLimitView.class, place = MaterialLimitPlace.class)
 public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<MaterialLimitView> {
+
+    private Window materialEditWindow;
 
     @Override
     protected void doBind() {
@@ -69,6 +72,14 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                         }
                     });
                 }
+            }
+        });
+
+        view.getBtnSubTaskAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialEditWindow = view.createMaterialEditWindow();
+                materialEditWindow.show();
             }
         });
     }

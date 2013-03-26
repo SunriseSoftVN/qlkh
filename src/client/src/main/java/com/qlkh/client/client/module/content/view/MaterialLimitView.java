@@ -1,5 +1,7 @@
 package com.qlkh.client.client.module.content.view;
 
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -13,6 +15,7 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialLimitConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialLimitSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
+import com.qlkh.client.client.widget.MyFormPanel;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
@@ -113,11 +116,50 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         return columnConfigs;
     }
 
+    private MyFormPanel materialEditPanel = new MyFormPanel();
+
+    @I18nField
+    Button btnMaterialEditOk = new Button();
+
+    @I18nField
+    Button btnMaterialEditCancel = new Button();
+
+    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow() {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!materialEditPanel.isRendered()) {
+            materialEditPanel.setHeaderVisible(false);
+            materialEditPanel.setBodyBorder(false);
+            materialEditPanel.setBorders(false);
+            materialEditPanel.setLabelWidth(150);
+        }
+
+        window.add(materialEditPanel);
+        window.addButton(btnMaterialEditOk);
+        window.addButton(btnMaterialEditCancel);
+        window.setSize(400, 250);
+        window.setAutoHeight(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading("dung ne");
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                materialEditPanel.clear();
+                getSubTaskDetailGird().focus();
+            }
+        });
+        return window;
+    }
+
     public CheckBox getCbShowTaskHasNoLimit() {
         return cbShowTaskHasNoLimit;
     }
 
     public CheckBox getCbShowTaskHasLimit() {
         return cbShowTaskHasLimit;
+    }
+
+    public Button getBtnSubTaskAdd() {
+        return btnSubTaskAdd;
     }
 }
