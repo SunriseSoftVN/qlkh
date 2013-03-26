@@ -1,14 +1,10 @@
 package com.qlkh.client.client.module.content.presenter;
 
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.BeanModelFactory;
-import com.extjs.gxt.ui.client.data.BeanModelLookup;
-import com.extjs.gxt.ui.client.data.PagingLoader;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
@@ -30,7 +26,9 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Class MaterialPresenter.
@@ -115,6 +113,66 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
+
+        view.getTxtNameSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                String st = view.getTxtNameSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        view.getTxtCodeSearch().clear();
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGird().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("name", view.getTxtNameSearch().getValue());
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
+
+        view.getTxtCodeSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    String st = view.getTxtCodeSearch().getValue();
+                    view.getTxtNameSearch().clear();
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGird().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("code", view.getTxtCodeSearch().getValue());
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
     }
 
     private void updateGrid(Material material) {
@@ -135,6 +193,15 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     .getStore().getCount() - 1, 1, false);
         }
         view.getMaterialGird().getSelectionModel().select(updateModel, false);
+    }
+
+    private void resetFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGird().
+                getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtNameSearch().clear();
+        view.getTxtCodeSearch().clear();
     }
 
     private class DeleteButtonEventListener extends SelectionListener<ButtonEvent> {
