@@ -96,9 +96,9 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 String sql = "";
 
                 if (hasLimit && !hasNoLimit) {
-                    sql += "WHERE `task`.`id` IN (SELECT `taskid` FROM `material`) ";
+                    sql += "WHERE `task`.`id` IN (SELECT `taskid` FROM `material_limit`) ";
                 } else if (hasNoLimit && !hasLimit) {
-                    sql += "WHERE `task`.`id` NOT IN (SELECT `taskid` FROM `material`) ";
+                    sql += "WHERE `task`.`id` NOT IN (SELECT `taskid` FROM `material_limit`) ";
                 }
 
                 if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {

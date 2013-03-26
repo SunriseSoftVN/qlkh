@@ -10,13 +10,13 @@ import net.customware.gwt.dispatch.shared.Result;
  * @author Nguyen Duc Dung
  * @since 3/20/13 2:26 PM
  */
-public class LoadMaterialResult extends LoadGridDataResult implements Result {
+public class LoadMaterialLimitResult extends LoadGridDataResult implements Result {
 
-    public LoadMaterialResult() {
+    public LoadMaterialLimitResult() {
 
     }
 
-    public LoadMaterialResult(BasePagingLoadResult result) {
+    public LoadMaterialLimitResult(BasePagingLoadResult result) {
         super(result);
     }
 }

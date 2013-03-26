@@ -13,8 +13,8 @@ import com.qlkh.client.client.module.content.view.MaterialLimitView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.material.LoadMaterialAction;
-import com.qlkh.core.client.action.material.LoadMaterialResult;
+import com.qlkh.core.client.action.material.LoadMaterialLimitAction;
+import com.qlkh.core.client.action.material.LoadMaterialLimitResult;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitAction;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitResult;
 import com.qlkh.core.client.model.Material;
@@ -75,19 +75,19 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {
-        RpcProxy<LoadMaterialResult> rpcProxy = new RpcProxy<LoadMaterialResult>() {
+        RpcProxy<LoadMaterialLimitResult> rpcProxy = new RpcProxy<LoadMaterialLimitResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadMaterialResult> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialLimitResult> callback) {
                 long currentTaskId = -1;
                 if (currentTask != null) {
                     currentTaskId = currentTask.getId();
                 }
-                dispatch.execute(new LoadMaterialAction((BasePagingLoadConfig) loadConfig, currentTaskId), callback);
+                dispatch.execute(new LoadMaterialLimitAction((BasePagingLoadConfig) loadConfig, currentTaskId), callback);
             }
         };
 
-        PagingLoader<PagingLoadResult<LoadMaterialResult>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<LoadMaterialResult>>(rpcProxy, new LoadGridDataReader()) {
+        PagingLoader<PagingLoadResult<LoadMaterialLimitResult>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<LoadMaterialLimitResult>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);

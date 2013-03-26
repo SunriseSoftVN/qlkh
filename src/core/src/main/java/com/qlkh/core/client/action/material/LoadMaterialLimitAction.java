@@ -9,15 +9,15 @@ import net.customware.gwt.dispatch.shared.Action;
  * @author Nguyen Duc Dung
  * @since 3/20/13 2:25 PM
  */
-public class LoadMaterialAction implements Action<LoadMaterialResult> {
+public class LoadMaterialLimitAction implements Action<LoadMaterialLimitResult> {
 
     private BasePagingLoadConfig loadConfig;
     private long taskId;
 
-    public LoadMaterialAction() {
+    public LoadMaterialLimitAction() {
     }
 
-    public LoadMaterialAction(BasePagingLoadConfig loadConfig, long taskId) {
+    public LoadMaterialLimitAction(BasePagingLoadConfig loadConfig, long taskId) {
         this.loadConfig = loadConfig;
         this.taskId = taskId;
     }

@@ -17,12 +17,5 @@ import java.util.List;
  */
 public class MaterialDaoImpl extends AbstractDao<Material> implements MaterialDao {
 
-    @Override
-    public List<Material> findByTaskId(long taskId) {
-        DetachedCriteria criteria = DetachedCriteria.forClass(Material.class)
-                .add(Restrictions.eq("task.id", taskId));
-        return getHibernateTemplate().findByCriteria(criteria);
-    }
-
 
 }
