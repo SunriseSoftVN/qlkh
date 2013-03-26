@@ -13,11 +13,9 @@ import com.qlkh.client.client.module.content.place.MaterialPlace;
 import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
-import com.qlkh.client.client.utils.NumberUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.model.Material;
-import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -45,7 +43,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
     @Override
     protected void doBind() {
         view.createGrid(GridUtils.createListStore(Material.class));
-        view.getPagingToolBar().bind((PagingLoader<?>) view.getTaskGird().getStore().getLoader());
+        view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -74,7 +72,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                         @Override
                         public void onSuccess(SaveResult result) {
                             if (result.getEntity() != null) {
-                                updateGrid(currentMaterial);
+                                updateGrid(result.<Material>getEntity());
                                 materialWindow.hide();
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             }
@@ -83,25 +81,31 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                 }
             }
         });
+        view.getBtnTaskEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialWindow.hide();
+            }
+        });
     }
 
     private void updateGrid(Material material) {
         boolean isNotFound = true;
         BeanModelFactory factory = BeanModelLookup.get().getFactory(Material.class);
         BeanModel updateModel = factory.createModel(material);
-        for (BeanModel model : view.getTaskGird().getStore().getModels()) {
+        for (BeanModel model : view.getMaterialGird().getStore().getModels()) {
             if (material.getId().equals(model.<Material>getBean().getId())) {
-                int index = view.getTaskGird().getStore().indexOf(model);
-                view.getTaskGird().getStore().remove(model);
-                view.getTaskGird().getStore().insert(updateModel, index);
+                int index = view.getMaterialGird().getStore().indexOf(model);
+                view.getMaterialGird().getStore().remove(model);
+                view.getMaterialGird().getStore().insert(updateModel, index);
                 isNotFound = false;
             }
         }
         if (isNotFound) {
-            view.getTaskGird().getStore().add(updateModel);
-            view.getTaskGird().getView().ensureVisible(view.getTaskGird()
+            view.getMaterialGird().getStore().add(updateModel);
+            view.getMaterialGird().getView().ensureVisible(view.getMaterialGird()
                     .getStore().getCount() - 1, 1, false);
         }
-        view.getTaskGird().getSelectionModel().select(updateModel, false);
+        view.getMaterialGird().getSelectionModel().select(updateModel, false);
     }
 }

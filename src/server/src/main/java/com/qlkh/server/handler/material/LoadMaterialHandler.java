@@ -42,7 +42,7 @@ public class LoadMaterialHandler extends AbstractHandler<LoadMaterialAction, Loa
             materials.addAll(materialDao.findByTaskId(loadMaterialAction.getTaskId()));
             for (int i = 0; i < 50; i++) {
                 Material material = new Material();
-                material.setTask(task);
+//                material.setTask(task);
                 material.setCreateBy(1l);
                 material.setUpdateBy(1l);
                 materials.add(material);

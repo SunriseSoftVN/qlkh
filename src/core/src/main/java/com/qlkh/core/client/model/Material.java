@@ -10,20 +10,11 @@ import com.qlkh.core.client.model.core.AbstractEntity;
  */
 public class Material extends AbstractEntity {
 
-    private Task task;
     private String name;
     private String code;
     private String unit;
     private Double price;
     private String note;
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
 
     public String getName() {
         return name;

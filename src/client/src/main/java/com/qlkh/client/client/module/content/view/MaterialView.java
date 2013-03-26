@@ -100,7 +100,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     private MyFormPanel materialEditPanel = new MyFormPanel();
 
     private PagingToolBar pagingToolBar;
-    private Grid<BeanModel> taskGird;
+    private Grid<BeanModel> materialGird;
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -110,15 +110,15 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        taskGird = new Grid<BeanModel>(listStore, cm);
-        taskGird.setBorders(true);
-        taskGird.setLoadMask(true);
-        taskGird.setStripeRows(true);
-        taskGird.setSelectionModel(selectionModel);
-        taskGird.addPlugin(selectionModel);
-        taskGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        taskGird.getStore().getLoader().setSortField(CODE_COLUMN);
-        taskGird.addListener(Events.OnKeyDown, new KeyListener() {
+        materialGird = new Grid<BeanModel>(listStore, cm);
+        materialGird.setBorders(true);
+        materialGird.setLoadMask(true);
+        materialGird.setStripeRows(true);
+        materialGird.setSelectionModel(selectionModel);
+        materialGird.addPlugin(selectionModel);
+        materialGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        materialGird.getStore().getLoader().setSortField(CODE_COLUMN);
+        materialGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
@@ -151,7 +151,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
         toolBar.add(btnRefresh);
 
         contentPanel.setLayout(new MyFitLayout());
-        contentPanel.add(taskGird);
+        contentPanel.add(materialGird);
         contentPanel.setTopComponent(toolBar);
         contentPanel.setBottomComponent(pagingToolBar);
         contentPanel.setHeaderVisible(false);
@@ -251,14 +251,14 @@ public class MaterialView extends AbstractView<MaterialConstant> {
             @Override
             public void windowHide(WindowEvent we) {
                 materialEditPanel.clear();
-                taskGird.focus();
+                materialGird.focus();
             }
         });
         return window;
     }
 
-    public Grid<BeanModel> getTaskGird() {
-        return taskGird;
+    public Grid<BeanModel> getMaterialGird() {
+        return materialGird;
     }
 
     public Button getBtnAdd() {

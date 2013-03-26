@@ -17,9 +17,5 @@
         <property name="unit" column="unit" not-null="true"/>
         <property name="note" column="note" not-null="true"/>
         <property name="price" column="price" not-null="true"/>
-
-        <many-to-one name="task" class="com.qlkh.core.client.model.Task" lazy="false" fetch="join" outer-join="auto">
-            <column name="taskId" not-null="true"/>
-        </many-to-one>
     </class>
 </hibernate-mapping>

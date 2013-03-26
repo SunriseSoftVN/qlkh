@@ -48,7 +48,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                     Material material = model.getBean();
                     //validation
                     if (StringUtils.isNotBlank(material.getName()) && StringUtils.isNotBlank(material.getCode())
-                            && StringUtils.isNotBlank(material.getUnit()) && material.getQuantity() != null) {
+                            && StringUtils.isNotBlank(material.getUnit()) && material.getPrice() != null) {
                         entities.add(material);
                     } else {
                         isError = true;
