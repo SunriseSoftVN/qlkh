@@ -12,6 +12,7 @@ import com.qlkh.client.client.module.content.place.MaterialLimitPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
 import com.qlkh.client.client.module.content.view.MaterialLimitView;
 import com.qlkh.client.client.utils.DiaLogUtils;
+import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.LoadMaterialLimitAction;
@@ -24,6 +25,7 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,11 +80,12 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         view.getBtnSubTaskAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                materialEditWindow = view.createMaterialEditWindow();
+                materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
                 materialEditWindow.show();
             }
         });
     }
+
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {

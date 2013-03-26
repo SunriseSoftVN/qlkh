@@ -1,13 +1,15 @@
 package com.qlkh.client.client.module.content.view;
 
+import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.CellEditor;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -34,14 +36,23 @@ import java.util.List;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = MaterialLimitConstant.class)
 public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConstant> {
 
+    public static final String MATERIAL_LIMIT_CODE_COLUMN = "material.code";
+    public static final int MATERIAL_LIMIT_CODE_WIDTH = 100;
+    public static final String MATERIAL_LIMIT_NAME_COLUMN = "material.name";
+    public static final int MATERIAL_LIMIT_NAME_WIDTH = 200;
+    public static final String MATERIAL_LIMIT_UNIT_COLUMN = "material.unit";
+    public static final int MATERIAL_LIMIT_UNIT_WIDTH = 70;
+    public static final String MATERIAL_LIMIT_QUANTITY_COLUMN = "quantity";
+    public static final int MATERIAL_LIMIT_QUANTITY_WIDTH = 70;
+
     public static final String MATERIAL_CODE_COLUMN = "code";
     public static final int MATERIAL_CODE_WIDTH = 100;
     public static final String MATERIAL_NAME_COLUMN = "name";
     public static final int MATERIAL_NAME_WIDTH = 200;
     public static final String MATERIAL_UNIT_COLUMN = "unit";
-    public static final int MATERIAL_UNIT_WIDTH = 70;
-    public static final String MATERIAL_QUANTITY_COLUMN = "quantity";
-    public static final int MATERIAL_QUANTITY_WIDTH = 70;
+    public static final int MATERIAL_UNIT_WIDTH = 100;
+    public static final String MATERIAL_PRICE_COLUMN = "price";
+    public static final int MATERIAL_PRICE_WIDTH = 100;
 
     @I18nField
     CheckBox cbShowTaskHasLimit = new CheckBox();
@@ -51,6 +62,16 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     @I18nField
     Button btnSubTaskAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
+
+    @I18nField
+    Button btnMaterialEditOk = new Button();
+
+    @I18nField
+    Button btnMaterialEditCancel = new Button();
+
+    private MyFormPanel materialEditPanel = new MyFormPanel();
+
+    private Grid<BeanModel> childGrid;
 
     @Override
     protected ToolBar createToolBar() {
@@ -81,30 +102,30 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     protected List<ColumnConfig> createSubTaskColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig materialCodeColumn = new ColumnConfig(MATERIAL_CODE_COLUMN,
-                getConstant().materialCodeColumnTitle(), MATERIAL_CODE_WIDTH);
+        ColumnConfig materialCodeColumn = new ColumnConfig(MATERIAL_LIMIT_CODE_COLUMN,
+                getConstant().materialCodeColumnTitle(), MATERIAL_LIMIT_CODE_WIDTH);
 
         TextField codeTextField = new TextField();
         codeTextField.setSelectOnFocus(true);
         materialCodeColumn.setEditor(new CellEditor(codeTextField));
         columnConfigs.add(materialCodeColumn);
 
-        ColumnConfig materialNameColumn = new ColumnConfig(MATERIAL_NAME_COLUMN, getConstant().materialNameColumnTitle(),
-                MATERIAL_NAME_WIDTH);
+        ColumnConfig materialNameColumn = new ColumnConfig(MATERIAL_LIMIT_NAME_COLUMN, getConstant().materialNameColumnTitle(),
+                MATERIAL_LIMIT_NAME_WIDTH);
         TextField nameTextField = new TextField();
         nameTextField.setSelectOnFocus(true);
         materialNameColumn.setEditor(new CellEditor(nameTextField));
         columnConfigs.add(materialNameColumn);
 
-        ColumnConfig materialUnitColumn = new ColumnConfig(MATERIAL_UNIT_COLUMN,
-                getConstant().materialUnitColumnTitle(), MATERIAL_UNIT_WIDTH);
+        ColumnConfig materialUnitColumn = new ColumnConfig(MATERIAL_LIMIT_UNIT_COLUMN,
+                getConstant().materialUnitColumnTitle(), MATERIAL_LIMIT_UNIT_WIDTH);
         TextField unitTextField = new TextField();
         unitTextField.setSelectOnFocus(true);
         materialUnitColumn.setEditor(new CellEditor(unitTextField));
         columnConfigs.add(materialUnitColumn);
 
-        ColumnConfig decreaseValueColumnConfig = new ColumnConfig(MATERIAL_QUANTITY_COLUMN,
-                getConstant().materialQuantityColumnTitle(), MATERIAL_QUANTITY_WIDTH);
+        ColumnConfig decreaseValueColumnConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
+                getConstant().materialQuantityColumnTitle(), MATERIAL_LIMIT_QUANTITY_WIDTH);
         MyNumberField quantityNumberField = new MyNumberField();
         quantityNumberField.setSelectOnFocus(true);
         decreaseValueColumnConfig.setEditor(new CellEditor(quantityNumberField));
@@ -116,15 +137,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         return columnConfigs;
     }
 
-    private MyFormPanel materialEditPanel = new MyFormPanel();
-
-    @I18nField
-    Button btnMaterialEditOk = new Button();
-
-    @I18nField
-    Button btnMaterialEditCancel = new Button();
-
-    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow() {
+    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         if (!materialEditPanel.isRendered()) {
             materialEditPanel.setHeaderVisible(false);
@@ -133,14 +146,19 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             materialEditPanel.setLabelWidth(150);
         }
 
+        ColumnModel childColumnModel = new ColumnModel(createChildColumnConfigs());
+        childGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
+        childGrid.setBorders(true);
+        childGrid.setHeight(400);
+        materialEditPanel.add(childGrid);
         window.add(materialEditPanel);
         window.addButton(btnMaterialEditOk);
         window.addButton(btnMaterialEditCancel);
-        window.setSize(400, 250);
+        window.setSize(600, 400);
         window.setAutoHeight(true);
         window.setResizable(false);
         window.setModal(true);
-        window.setHeading("dung ne");
+        window.setHeading(getConstant().materialEditPanel());
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
@@ -149,6 +167,41 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             }
         });
         return window;
+    }
+
+
+    private List<ColumnConfig> createChildColumnConfigs() {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
+
+        ColumnConfig codeColumnConfig = new ColumnConfig(MATERIAL_CODE_COLUMN, getConstant().materialCodeColumnTitle(), MATERIAL_CODE_WIDTH);
+        columnConfigs.add(codeColumnConfig);
+
+        ColumnConfig nameColumnConfig = new ColumnConfig(MATERIAL_NAME_COLUMN, getConstant().materialNameColumnTitle(),
+                MATERIAL_NAME_WIDTH);
+        columnConfigs.add(nameColumnConfig);
+
+        ColumnConfig unitColumnConfig = new ColumnConfig(MATERIAL_UNIT_COLUMN, getConstant().materialUnitColumnTitle(),
+                MATERIAL_UNIT_WIDTH);
+        columnConfigs.add(unitColumnConfig);
+
+        ColumnConfig priceColumnConfig = new ColumnConfig(MATERIAL_PRICE_COLUMN, getConstant().materialPriceColumnTitle(),
+                MATERIAL_PRICE_WIDTH);
+        columnConfigs.add(priceColumnConfig);
+
+        return columnConfigs;
     }
 
     public CheckBox getCbShowTaskHasNoLimit() {
