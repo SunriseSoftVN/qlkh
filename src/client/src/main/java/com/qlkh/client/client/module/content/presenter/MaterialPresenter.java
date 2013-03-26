@@ -173,6 +173,14 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                 }
             }
         });
+
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                resetFilter();
+                view.getPagingToolBar().refresh();
+            }
+        });
     }
 
     private void updateGrid(Material material) {
@@ -241,7 +249,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     view.getPagingToolBar().refresh();
                     DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
                 } else {
-                    DiaLogUtils.conform(view.getConstant().deleteMessage(), new Listener<MessageBoxEvent>() {
+                    DiaLogUtils.conform(view.getConstant().deleteMessageError(), new Listener<MessageBoxEvent>() {
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equals("Yes")) {

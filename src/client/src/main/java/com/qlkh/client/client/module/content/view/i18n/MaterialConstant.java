@@ -33,4 +33,5 @@ public interface MaterialConstant extends Constants {
     String deleteMessageSuccess();
     String deleteAllMessage();
     String deleteMessage();
+    String deleteMessageError();
 }
