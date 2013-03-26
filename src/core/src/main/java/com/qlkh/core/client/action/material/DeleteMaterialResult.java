@@ -10,4 +10,16 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class DeleteMaterialResult implements Result {
 
+    private boolean deleted;
+
+    public DeleteMaterialResult() {
+    }
+
+    public DeleteMaterialResult(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
 }
