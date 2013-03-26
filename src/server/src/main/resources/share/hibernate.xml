@@ -27,6 +27,7 @@
                 <value>com/qlkh/core/client/model/TaskDetailNam.hbm.xml</value>
                 <value>com/qlkh/core/client/model/TaskDefaultValue.hbm.xml</value>
                 <value>com/qlkh/core/client/model/Material.hbm.xml</value>
+                <value>com/qlkh/core/client/model/MaterialLimit.hbm.xml</value>
             </list>
         </property>
     </bean>
