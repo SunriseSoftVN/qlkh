@@ -1,11 +1,13 @@
 package com.qlkh.client.client.module.content.view;
 
-import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.IconHelper;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.CellEditor;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialLimitConstant;
@@ -44,19 +46,32 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     @I18nField
     CheckBox cbShowTaskHasNoLimit = new CheckBox();
 
-    @Override
-    public void createTaskGrid(ListStore<BeanModel> listStore) {
-        super.createTaskGrid(listStore);
+    @I18nField
+    Button btnSubTaskAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
-        //TODO: Remove
+    @Override
+    protected ToolBar createToolBar() {
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(getTxtSearch());
+        toolBar.add(new SeparatorToolItem());
         cbShowTaskHasLimit.setBoxLabel(getConstant().cbShowTaskHasLimit());
         cbShowTaskHasNoLimit.setBoxLabel(getConstant().cbShowTaskHasNoLimit());
-
         toolBar.add(cbShowTaskHasLimit);
         toolBar.add(cbShowTaskHasNoLimit);
-        toolBar.remove(getBtnRefresh());
         toolBar.add(new SeparatorToolItem());
         toolBar.add(getBtnRefresh());
+        return toolBar;
+    }
+
+    @Override
+    protected ToolBar createSubToolBar() {
+        ToolBar subToolBar = new ToolBar();
+        subToolBar.add(btnSubTaskAdd);
+        subToolBar.add(new SeparatorToolItem());
+        subToolBar.add(getBtnSubTaskSave());
+        subToolBar.add(new SeparatorToolItem());
+        subToolBar.add(getBtnSubTaskRefresh());
+        return subToolBar;
     }
 
     @Override

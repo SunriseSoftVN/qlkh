@@ -58,18 +58,16 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
     protected ContentPanel contentPanel = new ContentPanel();
 
-    protected ToolBar toolBar = new ToolBar();
-
     private Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
     private TextField<String> txtSearch = new TextField<String>();
     private Button btnSubTaskSave = new Button(null, IconHelper.createPath("assets/images/icons/fam/disk.png"));
-    private Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
+    private Button btnSubTaskRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
     private ContentPanel taskPanel = new ContentPanel();
     private PagingToolBar taskPagingToolBar;
     private Grid<BeanModel> taskGird;
-    private ColumnModel taskColumnModel;
 
+    private ColumnModel taskColumnModel;
     private ContentPanel subTaskPanel = new ContentPanel();
     private PagingToolBar subTaskPagingToolBar;
     private EditorGrid<BeanModel> subTaskDetailGird;
@@ -112,20 +110,24 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
 
         taskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         txtSearch.setWidth(170);
-
-        toolBar.add(txtSearch);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnRefresh);
         taskPanel.setHeaderVisible(false);
         taskPanel.setHeight(Window.getClientHeight() - 90);
         taskPanel.setLayout(new FitLayout());
         taskPanel.setWidth("50%");
         taskPanel.add(taskGird);
-        taskPanel.setTopComponent(toolBar);
+        taskPanel.setTopComponent(createToolBar());
         taskPanel.setBottomComponent(taskPagingToolBar);
         taskPanel.setBodyBorder(false);
         contentPanel.add(taskPanel, new RowData(-1, 1, new Margins(0, 2, 0, 0)));
         contentPanel.layout();
+    }
+
+    protected ToolBar createToolBar() {
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(txtSearch);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnRefresh);
+        return toolBar;
     }
 
     private List<ColumnConfig> createTaskDetailColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
@@ -220,12 +222,7 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
         });
 
         subTaskPagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
-        ToolBar toolBar = new ToolBar();
-        toolBar.add(btnSubTaskSave);
-        toolBar.add(new SeparatorToolItem());
-        toolBar.add(btnSubTaskRefresh);
-        subTaskPanel.setTopComponent(toolBar);
-
+        subTaskPanel.setTopComponent(createSubToolBar());
         subTaskPanel.setBodyBorder(false);
         subTaskPanel.setHeaderVisible(false);
         subTaskPanel.setHeight(Window.getClientHeight() - 90);
@@ -235,6 +232,14 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
         subTaskPanel.setBottomComponent(subTaskPagingToolBar);
         contentPanel.add(subTaskPanel, new RowData(-1, 1));
         contentPanel.layout();
+    }
+
+    protected ToolBar createSubToolBar() {
+        ToolBar subToolBar = new ToolBar();
+        subToolBar.add(btnSubTaskSave);
+        subToolBar.add(new SeparatorToolItem());
+        subToolBar.add(btnSubTaskRefresh);
+        return subToolBar;
     }
 
     public EditorGrid<BeanModel> getSubTaskDetailGird() {
