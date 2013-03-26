@@ -18,6 +18,8 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
+import com.qlkh.core.client.action.material.DeleteMaterialAction;
+import com.qlkh.core.client.action.material.DeleteMaterialResult;
 import com.qlkh.core.client.action.task.DeleteTaskAction;
 import com.qlkh.core.client.action.task.DeleteTaskResult;
 import com.qlkh.core.client.model.Material;
@@ -164,21 +166,21 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
     private void showDeleteTagConform(final List<Long> materialIds, String tagName) {
         assert materialIds != null;
         String deleteMessage;
-        final AsyncCallback<DeleteTaskResult> callback = new AbstractAsyncCallback<DeleteTaskResult>() {
+        final AsyncCallback<DeleteMaterialResult> callback = new AbstractAsyncCallback<DeleteMaterialResult>() {
             @Override
-            public void onSuccess(DeleteTaskResult result) {
+            public void onSuccess(DeleteMaterialResult result) {
                 if (result.isDeleted()) {
                     //Reload grid.
                     view.getPagingToolBar().refresh();
-                    DiaLogUtils.notify(view.getConstant().deleteMessage());
+                    DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
                 } else {
                     DiaLogUtils.conform(view.getConstant().deleteMessage(), new Listener<MessageBoxEvent>() {
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equals("Yes")) {
-                                dispatch.execute(new DeleteTaskAction(materialIds, true), new AbstractAsyncCallback<DeleteTaskResult>() {
+                                dispatch.execute(new DeleteMaterialAction(materialIds, true), new AbstractAsyncCallback<DeleteMaterialResult>() {
                                     @Override
-                                    public void onSuccess(DeleteTaskResult result) {
+                                    public void onSuccess(DeleteMaterialResult result) {
                                         view.getPagingToolBar().refresh();
                                         DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
                                     }
@@ -200,7 +202,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
             @Override
             public void handleEvent(MessageBoxEvent be) {
                 if (be.getButtonClicked().getText().equals("Yes")) {
-                    dispatch.execute(new DeleteTaskAction(materialIds), callback);
+                    dispatch.execute(new DeleteMaterialAction(materialIds), callback);
                 }
             }
         });
