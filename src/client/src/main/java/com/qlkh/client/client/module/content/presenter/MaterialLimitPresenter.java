@@ -118,6 +118,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                     BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialLimit.class);
                     BeanModel insertModel = factory.createModel(materialLimit);
                     view.getSubTaskDetailGird().getStore().add(insertModel);
+                    view.getSubTaskDetailGird().getSelectionModel().select(insertModel, false);
                     DiaLogUtils.notify(view.getConstant().addSuccess());
                 } else {
                     DiaLogUtils.notify(view.getConstant().addAlready());
@@ -129,24 +130,26 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 final BeanModel model = view.getSubTaskDetailGird().getSelectionModel().getSelectedItem();
-                final MaterialLimit materialLimit = model.getBean();
-                if (materialLimit.getId() == null) {
-                    view.getSubTaskDetailGird().getStore().remove(model);
-                } else {
-                    DiaLogUtils.conform(StringUtils.substitute(view.getConstant().deleteMaterial(), materialLimit.getMaterial().getName()), new Listener<MessageBoxEvent>() {
-                        @Override
-                        public void handleEvent(MessageBoxEvent event) {
-                            if (event.getButtonClicked().getText().equals("Yes")) {
-                                dispatch.execute(new DeleteAction(materialLimit), new AbstractAsyncCallback<DeleteResult>() {
-                                    @Override
-                                    public void onSuccess(DeleteResult deleteResult) {
-                                        DiaLogUtils.notify(view.getConstant().deleteSuccess());
-                                        view.getSubTaskDetailGird().getStore().remove(model);
-                                    }
-                                });
+                if (model != null) {
+                    final MaterialLimit materialLimit = model.getBean();
+                    if (materialLimit.getId() == null) {
+                        view.getSubTaskDetailGird().getStore().remove(model);
+                    } else {
+                        DiaLogUtils.conform(StringUtils.substitute(view.getConstant().deleteMaterial(), materialLimit.getMaterial().getName()), new Listener<MessageBoxEvent>() {
+                            @Override
+                            public void handleEvent(MessageBoxEvent event) {
+                                if (event.getButtonClicked().getText().equals("Yes")) {
+                                    dispatch.execute(new DeleteAction(materialLimit), new AbstractAsyncCallback<DeleteResult>() {
+                                        @Override
+                                        public void onSuccess(DeleteResult deleteResult) {
+                                            DiaLogUtils.notify(view.getConstant().deleteSuccess());
+                                            view.getSubTaskDetailGird().getStore().remove(model);
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });
