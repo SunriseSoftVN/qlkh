@@ -5,11 +5,13 @@ import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -17,7 +19,6 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialLimitConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialLimitSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
-import com.qlkh.client.client.widget.MyFormPanel;
 import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
@@ -61,7 +62,10 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     CheckBox cbShowTaskHasNoLimit = new CheckBox();
 
     @I18nField
-    Button btnSubTaskAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
+    Button btnMaterialTaskAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
+
+    @I18nField
+    Button btnMaterialAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
     Button btnMaterialEditOk = new Button();
@@ -69,9 +73,11 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     @I18nField
     Button btnMaterialEditCancel = new Button();
 
-    private MyFormPanel materialEditPanel = new MyFormPanel();
+    private ContentPanel materialPanel = new ContentPanel();
+    private PagingToolBar materialPagingToolBar = new PagingToolBar(100);
 
-    private Grid<BeanModel> childGrid;
+
+    private Grid<BeanModel> materialGrid;
 
     @Override
     protected ToolBar createToolBar() {
@@ -90,7 +96,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     @Override
     protected ToolBar createSubToolBar() {
         ToolBar subToolBar = new ToolBar();
-        subToolBar.add(btnSubTaskAdd);
+        subToolBar.add(btnMaterialTaskAdd);
         subToolBar.add(new SeparatorToolItem());
         subToolBar.add(getBtnSubTaskSave());
         subToolBar.add(new SeparatorToolItem());
@@ -139,19 +145,27 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
-        if (!materialEditPanel.isRendered()) {
-            materialEditPanel.setHeaderVisible(false);
-            materialEditPanel.setBodyBorder(false);
-            materialEditPanel.setBorders(false);
-            materialEditPanel.setLabelWidth(150);
+        if (!materialPanel.isRendered()) {
+            materialPanel.setHeaderVisible(false);
+            materialPanel.setBodyBorder(false);
+            materialPanel.setBorders(false);
+
+            ColumnModel childColumnModel = new ColumnModel(createChildColumnConfigs());
+            materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
+            materialGrid.setBorders(true);
+            materialGrid.setHeight(400);
+
+            ToolBar toolBar = new ToolBar();
+            toolBar.add(new TextField<String>());
+            toolBar.add(new SeparatorToolItem());
+            toolBar.add(btnMaterialTaskAdd);
+
+            materialPanel.setTopComponent(toolBar);
+            materialPanel.setBottomComponent(materialPagingToolBar);
+            materialPanel.add(materialGrid);
         }
 
-        ColumnModel childColumnModel = new ColumnModel(createChildColumnConfigs());
-        childGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
-        childGrid.setBorders(true);
-        childGrid.setHeight(400);
-        materialEditPanel.add(childGrid);
-        window.add(materialEditPanel);
+        window.add(materialPanel);
         window.addButton(btnMaterialEditOk);
         window.addButton(btnMaterialEditCancel);
         window.setSize(600, 400);
@@ -162,7 +176,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         window.addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                materialEditPanel.clear();
                 getSubTaskDetailGird().focus();
             }
         });
@@ -212,7 +225,19 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         return cbShowTaskHasLimit;
     }
 
-    public Button getBtnSubTaskAdd() {
-        return btnSubTaskAdd;
+    public Button getBtnMaterialAdd() {
+        return btnMaterialAdd;
+    }
+
+    public Button getBtnMaterialTaskAdd() {
+        return btnMaterialTaskAdd;
+    }
+
+    public PagingToolBar getMaterialPagingToolBar() {
+        return materialPagingToolBar;
+    }
+
+    public Grid<BeanModel> getMaterialGrid() {
+        return materialGrid;
     }
 }

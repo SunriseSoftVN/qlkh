@@ -25,7 +25,6 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -77,10 +76,12 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             }
         });
 
-        view.getBtnSubTaskAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnMaterialTaskAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
+                view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
+                view.getMaterialPagingToolBar().refresh();
                 materialEditWindow.show();
             }
         });
