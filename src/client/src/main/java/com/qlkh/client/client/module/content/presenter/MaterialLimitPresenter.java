@@ -86,6 +86,9 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             public void componentSelected(ButtonEvent buttonEvent) {
                 materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
+                if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
+                    resetMaterialFilter();
+                }
                 view.getMaterialPagingToolBar().refresh();
                 materialEditWindow.show();
             }
@@ -176,11 +179,11 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                         filters.put("code", view.getTxtMaterialSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {
-                        resetFilter();
+                        resetMaterialFilter();
                     }
                     view.getMaterialPagingToolBar().refresh();
                 } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
-                    resetFilter();
+                    resetMaterialFilter();
                     com.google.gwt.user.client.Timer timer = new Timer() {
                         @Override
                         public void run() {
@@ -194,6 +197,13 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
 
     }
 
+    private void resetMaterialFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGrid().
+                getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtMaterialSearch().clear();
+    }
 
     @Override
     protected ListStore<BeanModel> createSubTaskListStore() {
