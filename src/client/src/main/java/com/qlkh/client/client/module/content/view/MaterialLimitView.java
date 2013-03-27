@@ -1,5 +1,6 @@
 package com.qlkh.client.client.module.content.view;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -158,6 +159,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
             materialGrid.setBorders(true);
             materialGrid.setHeight(400);
+            materialGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
 
             ToolBar toolBar = new ToolBar();
             toolBar.add(txtMaterialSearch);
