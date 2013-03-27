@@ -121,6 +121,13 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             }
         });
 
+        view.getBtnDeleteTaskMaterial().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                BeanModel model = view.getSubTaskDetailGird().getSelectionModel().getSelectedItem();
+                view.getSubTaskDetailGird().getStore().remove(model);
+            }
+        });
 
     }
 

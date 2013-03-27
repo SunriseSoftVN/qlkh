@@ -236,4 +236,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         return materialGrid;
     }
 
+    public Button getBtnDeleteTaskMaterial() {
+        return btnDeleteTaskMaterial;
+    }
 }
