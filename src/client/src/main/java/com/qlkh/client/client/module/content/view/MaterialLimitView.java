@@ -65,6 +65,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     Button btnMaterialTaskAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
+    Button btnDeleteTaskMaterial = new Button(null, IconHelper.createPath("assets/images/icons/fam/delete.png"));
+
+    @I18nField
     Button btnMaterialAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
@@ -100,6 +103,8 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         subToolBar.add(new SeparatorToolItem());
         subToolBar.add(getBtnSubTaskSave());
         subToolBar.add(new SeparatorToolItem());
+        subToolBar.add(btnDeleteTaskMaterial);
+        subToolBar.add(new SeparatorToolItem());
         subToolBar.add(getBtnSubTaskRefresh());
         return subToolBar;
     }
@@ -110,32 +115,22 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
         ColumnConfig materialCodeColumn = new ColumnConfig(MATERIAL_LIMIT_CODE_COLUMN,
                 getConstant().materialCodeColumnTitle(), MATERIAL_LIMIT_CODE_WIDTH);
-
-        TextField codeTextField = new TextField();
-        codeTextField.setSelectOnFocus(true);
-        materialCodeColumn.setEditor(new CellEditor(codeTextField));
         columnConfigs.add(materialCodeColumn);
 
         ColumnConfig materialNameColumn = new ColumnConfig(MATERIAL_LIMIT_NAME_COLUMN, getConstant().materialNameColumnTitle(),
                 MATERIAL_LIMIT_NAME_WIDTH);
-        TextField nameTextField = new TextField();
-        nameTextField.setSelectOnFocus(true);
-        materialNameColumn.setEditor(new CellEditor(nameTextField));
         columnConfigs.add(materialNameColumn);
 
         ColumnConfig materialUnitColumn = new ColumnConfig(MATERIAL_LIMIT_UNIT_COLUMN,
                 getConstant().materialUnitColumnTitle(), MATERIAL_LIMIT_UNIT_WIDTH);
-        TextField unitTextField = new TextField();
-        unitTextField.setSelectOnFocus(true);
-        materialUnitColumn.setEditor(new CellEditor(unitTextField));
         columnConfigs.add(materialUnitColumn);
 
-        ColumnConfig decreaseValueColumnConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
+        ColumnConfig quantityColumConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
                 getConstant().materialQuantityColumnTitle(), MATERIAL_LIMIT_QUANTITY_WIDTH);
         MyNumberField quantityNumberField = new MyNumberField();
         quantityNumberField.setSelectOnFocus(true);
-        decreaseValueColumnConfig.setEditor(new CellEditor(quantityNumberField));
-        columnConfigs.add(decreaseValueColumnConfig);
+        quantityColumConfig.setEditor(new CellEditor(quantityNumberField));
+        columnConfigs.add(quantityColumConfig);
 
         for (int i = 1; i < columnConfigs.size(); i++) {
             columnConfigs.get(i).setNumberFormat(NumberFormat.getDecimalFormat());
@@ -150,7 +145,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             materialPanel.setBodyBorder(false);
             materialPanel.setBorders(false);
 
-            ColumnModel childColumnModel = new ColumnModel(createChildColumnConfigs());
+            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs());
             materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
             materialGrid.setBorders(true);
             materialGrid.setHeight(400);
@@ -183,7 +178,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     }
 
 
-    private List<ColumnConfig> createChildColumnConfigs() {
+    private List<ColumnConfig> createMaterialColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -240,4 +235,5 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     public Grid<BeanModel> getMaterialGrid() {
         return materialGrid;
     }
+
 }

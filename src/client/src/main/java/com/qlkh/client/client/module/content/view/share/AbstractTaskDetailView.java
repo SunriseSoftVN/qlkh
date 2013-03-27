@@ -88,14 +88,11 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
      * Create Grid on View.
      */
     public void createTaskGrid(ListStore<BeanModel> listStore) {
-        CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        taskColumnModel = new ColumnModel(createTaskDetailColumnConfig(selectionModel));
+        taskColumnModel = new ColumnModel(createTaskDetailColumnConfig());
         taskGird = new Grid<BeanModel>(listStore, taskColumnModel);
         taskGird.setBorders(true);
         taskGird.setLoadMask(true);
         taskGird.setStripeRows(true);
-        taskGird.setSelectionModel(selectionModel);
-        taskGird.addPlugin(selectionModel);
         taskGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         taskGird.getStore().getLoader().setSortField(TASK_CODE_COLUMN);
         taskGird.setWidth(500);
@@ -130,9 +127,8 @@ public class AbstractTaskDetailView<C extends TaskDetailDKConstant> extends Abst
         return toolBar;
     }
 
-    private List<ColumnConfig> createTaskDetailColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
+    private List<ColumnConfig> createTaskDetailColumnConfig() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-        columnConfigs.add(selectionModel.getColumn());
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
         sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
             @Override

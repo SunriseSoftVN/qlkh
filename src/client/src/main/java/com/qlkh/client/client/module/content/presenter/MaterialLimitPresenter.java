@@ -1,7 +1,10 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -20,6 +23,7 @@ import com.qlkh.core.client.action.material.LoadMaterialLimitResult;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitAction;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitResult;
 import com.qlkh.core.client.model.Material;
+import com.qlkh.core.client.model.MaterialLimit;
 import com.qlkh.core.client.model.Task;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
@@ -60,7 +64,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                     }
                 }
 
-                if(isError) {
+                if (isError) {
                     DiaLogUtils.showMessage("Có lỗi xãy ra trong việc nhập dữ liệu, các mục mã, tên đơn vị, số luợng vật tư không đuợc bỏ trống");
                 }
 
@@ -89,9 +93,35 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         view.getBtnMaterialAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
+                Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
 
+                boolean isFound = false;
+                for (BeanModel model : view.getSubTaskDetailGird().getStore().getModels()) {
+                    MaterialLimit materialLimit = model.getBean();
+                    if (materialLimit.getMaterial().getId().equals(material.getId())) {
+                        isFound = true;
+                        break;
+                    }
+                }
+
+                if (!isFound) {
+                    MaterialLimit materialLimit = new MaterialLimit();
+                    materialLimit.setMaterial(material);
+                    materialLimit.setTask(currentTask);
+                    materialLimit.setUpdateBy(1l);
+                    materialLimit.setCreateBy(1l);
+
+                    BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialLimit.class);
+                    BeanModel insertModel = factory.createModel(materialLimit);
+                    view.getSubTaskDetailGird().getStore().add(insertModel);
+                    DiaLogUtils.notify(view.getConstant().addSuccess());
+                } else {
+                    DiaLogUtils.notify(view.getConstant().addAlready());
+                }
             }
         });
+
+
     }
 
 
