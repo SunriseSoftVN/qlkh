@@ -85,6 +85,13 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                 materialEditWindow.show();
             }
         });
+
+        view.getBtnMaterialAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+
+            }
+        });
     }
 
 

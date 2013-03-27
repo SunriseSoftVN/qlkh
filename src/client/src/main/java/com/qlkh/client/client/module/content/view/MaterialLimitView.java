@@ -158,7 +158,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             ToolBar toolBar = new ToolBar();
             toolBar.add(new TextField<String>());
             toolBar.add(new SeparatorToolItem());
-            toolBar.add(btnMaterialTaskAdd);
+            toolBar.add(btnMaterialAdd);
 
             materialPanel.setTopComponent(toolBar);
             materialPanel.setBottomComponent(materialPagingToolBar);
