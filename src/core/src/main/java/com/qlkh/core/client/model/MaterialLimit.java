@@ -12,7 +12,7 @@ public class MaterialLimit extends AbstractEntity {
 
     private Task task;
     private Material material;
-    private double quantity;
+    private Double quantity;
 
     public Task getTask() {
         return task;
@@ -30,11 +30,11 @@ public class MaterialLimit extends AbstractEntity {
         this.material = material;
     }
 
-    public double getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 }

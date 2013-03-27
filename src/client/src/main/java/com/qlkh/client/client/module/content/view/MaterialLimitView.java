@@ -239,4 +239,12 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     public Button getBtnDeleteTaskMaterial() {
         return btnDeleteTaskMaterial;
     }
+
+    public Button getBtnMaterialEditCancel() {
+        return btnMaterialEditCancel;
+    }
+
+    public Button getBtnMaterialEditOk() {
+        return btnMaterialEditOk;
+    }
 }

@@ -20,6 +20,8 @@ public interface MaterialLimitConstant extends TaskDetailDKConstant {
     String btnMaterialEditCancel();
     String materialEditPanel();
     String addSuccess();
+    String deleteSuccess();
     String btnDeleteTaskMaterial();
     String addAlready();
+    String deleteMaterial();
 }

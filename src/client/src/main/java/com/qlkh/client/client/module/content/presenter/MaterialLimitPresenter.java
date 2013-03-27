@@ -1,10 +1,7 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -16,6 +13,8 @@ import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailP
 import com.qlkh.client.client.module.content.view.MaterialLimitView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.action.core.DeleteAction;
+import com.qlkh.core.client.action.core.DeleteResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.LoadMaterialLimitAction;
@@ -49,15 +48,13 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         view.getBtnSubTaskSave().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                List<Material> entities = new ArrayList<Material>();
+                List<MaterialLimit> entities = new ArrayList<MaterialLimit>();
                 boolean isError = false;
-                for (Record record : view.getSubTaskDetailGird().getStore().getModifiedRecords()) {
-                    BeanModel model = (BeanModel) record.getModel();
-                    Material material = model.getBean();
+                for (BeanModel model : view.getSubTaskDetailGird().getStore().getModels()) {
+                    MaterialLimit materialLimit = model.getBean();
                     //validation
-                    if (StringUtils.isNotBlank(material.getName()) && StringUtils.isNotBlank(material.getCode())
-                            && StringUtils.isNotBlank(material.getUnit()) && material.getPrice() != null) {
-                        entities.add(material);
+                    if (materialLimit.getQuantity() != null) {
+                        entities.add(materialLimit);
                     } else {
                         isError = true;
                         break;
@@ -65,7 +62,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                 }
 
                 if (isError) {
-                    DiaLogUtils.showMessage("Có lỗi xãy ra trong việc nhập dữ liệu, các mục mã, tên đơn vị, số luợng vật tư không đuợc bỏ trống");
+                    DiaLogUtils.showMessage("Có lỗi xãy ra trong việc nhập dữ liệu, số luợng vật tư không đuợc bỏ trống");
                 }
 
                 if (!entities.isEmpty()) {
@@ -124,11 +121,42 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         view.getBtnDeleteTaskMaterial().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                BeanModel model = view.getSubTaskDetailGird().getSelectionModel().getSelectedItem();
-                view.getSubTaskDetailGird().getStore().remove(model);
+                final BeanModel model = view.getSubTaskDetailGird().getSelectionModel().getSelectedItem();
+                final MaterialLimit materialLimit = model.getBean();
+                if (materialLimit.getId() == null) {
+                    view.getSubTaskDetailGird().getStore().remove(model);
+                } else {
+                    DiaLogUtils.conform(StringUtils.substitute(view.getConstant().deleteMaterial(), materialLimit.getMaterial().getName()), new Listener<MessageBoxEvent>() {
+                        @Override
+                        public void handleEvent(MessageBoxEvent event) {
+                            if (event.getButtonClicked().getText().equals("Yes")) {
+                                dispatch.execute(new DeleteAction(materialLimit), new AbstractAsyncCallback<DeleteResult>() {
+                                    @Override
+                                    public void onSuccess(DeleteResult deleteResult) {
+                                        DiaLogUtils.notify(view.getConstant().deleteSuccess());
+                                        view.getSubTaskDetailGird().getStore().remove(model);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
             }
         });
 
+        view.getBtnMaterialEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialEditWindow.hide();
+            }
+        });
+
+        view.getBtnMaterialEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialEditWindow.hide();
+            }
+        });
     }
 
 
