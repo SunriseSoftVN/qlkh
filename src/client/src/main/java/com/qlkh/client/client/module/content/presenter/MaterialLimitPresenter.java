@@ -109,17 +109,19 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                 }
 
                 if (!isFound) {
-                    MaterialLimit materialLimit = new MaterialLimit();
-                    materialLimit.setMaterial(material);
-                    materialLimit.setTask(currentTask);
-                    materialLimit.setUpdateBy(1l);
-                    materialLimit.setCreateBy(1l);
+                    if (currentTask != null) {
+                        MaterialLimit materialLimit = new MaterialLimit();
+                        materialLimit.setMaterial(material);
+                        materialLimit.setTask(currentTask);
+                        materialLimit.setUpdateBy(1l);
+                        materialLimit.setCreateBy(1l);
 
-                    BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialLimit.class);
-                    BeanModel insertModel = factory.createModel(materialLimit);
-                    view.getSubTaskDetailGird().getStore().add(insertModel);
-                    view.getSubTaskDetailGird().getSelectionModel().select(insertModel, false);
-                    DiaLogUtils.notify(view.getConstant().addSuccess());
+                        BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialLimit.class);
+                        BeanModel insertModel = factory.createModel(materialLimit);
+                        view.getSubTaskDetailGird().getStore().add(insertModel);
+                        view.getSubTaskDetailGird().getSelectionModel().select(insertModel, false);
+                        DiaLogUtils.notify(view.getConstant().addSuccess());
+                    }
                 } else {
                     DiaLogUtils.notify(view.getConstant().addAlready());
                 }
