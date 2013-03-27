@@ -9,7 +9,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -23,6 +22,7 @@ import com.qlkh.client.client.widget.MyNumberField;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.annotation.View;
+import com.smvp4g.mvp.client.widget.TextField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,13 @@ import java.util.List;
 public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConstant> {
 
     public static final String MATERIAL_LIMIT_CODE_COLUMN = "material.code";
-    public static final int MATERIAL_LIMIT_CODE_WIDTH = 100;
+    public static final int MATERIAL_LIMIT_CODE_WIDTH = 70;
     public static final String MATERIAL_LIMIT_NAME_COLUMN = "material.name";
     public static final int MATERIAL_LIMIT_NAME_WIDTH = 200;
     public static final String MATERIAL_LIMIT_UNIT_COLUMN = "material.unit";
-    public static final int MATERIAL_LIMIT_UNIT_WIDTH = 70;
+    public static final int MATERIAL_LIMIT_UNIT_WIDTH = 50;
+    public static final String MATERIAL_LIMIT_PRICE_COLUMN = "material.price";
+    public static final int MATERIAL_LIMIT_PRICE_WIDTH = 50;
     public static final String MATERIAL_LIMIT_QUANTITY_COLUMN = "quantity";
     public static final int MATERIAL_LIMIT_QUANTITY_WIDTH = 70;
 
@@ -75,6 +77,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     @I18nField
     Button btnMaterialEditCancel = new Button();
+
+    @I18nField(emptyText = true)
+    TextField<String> txtMaterialSearch = new TextField<String>();
 
     private ContentPanel materialPanel = new ContentPanel();
     private PagingToolBar materialPagingToolBar = new PagingToolBar(100);
@@ -125,12 +130,16 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
                 getConstant().materialUnitColumnTitle(), MATERIAL_LIMIT_UNIT_WIDTH);
         columnConfigs.add(materialUnitColumn);
 
-        ColumnConfig quantityColumConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
+        ColumnConfig materialPriceColumn = new ColumnConfig(MATERIAL_LIMIT_PRICE_COLUMN,
+                getConstant().materialPriceColumnTitle(), MATERIAL_LIMIT_PRICE_WIDTH);
+        columnConfigs.add(materialPriceColumn);
+
+        ColumnConfig quantityColumnConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
                 getConstant().materialQuantityColumnTitle(), MATERIAL_LIMIT_QUANTITY_WIDTH);
         MyNumberField quantityNumberField = new MyNumberField();
         quantityNumberField.setSelectOnFocus(true);
-        quantityColumConfig.setEditor(new CellEditor(quantityNumberField));
-        columnConfigs.add(quantityColumConfig);
+        quantityColumnConfig.setEditor(new CellEditor(quantityNumberField));
+        columnConfigs.add(quantityColumnConfig);
 
         for (int i = 1; i < columnConfigs.size(); i++) {
             columnConfigs.get(i).setNumberFormat(NumberFormat.getDecimalFormat());
@@ -151,7 +160,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             materialGrid.setHeight(400);
 
             ToolBar toolBar = new ToolBar();
-            toolBar.add(new TextField<String>());
+            toolBar.add(txtMaterialSearch);
             toolBar.add(new SeparatorToolItem());
             toolBar.add(btnMaterialAdd);
 
@@ -246,5 +255,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     public Button getBtnMaterialEditOk() {
         return btnMaterialEditOk;
+    }
+
+    public TextField<String> getTxtMaterialSearch() {
+        return txtMaterialSearch;
     }
 }

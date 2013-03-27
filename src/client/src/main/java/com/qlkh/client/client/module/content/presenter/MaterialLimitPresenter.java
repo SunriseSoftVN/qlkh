@@ -5,6 +5,8 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
@@ -28,7 +30,9 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Class LimitJobPresenter.
@@ -157,6 +161,37 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                 materialEditWindow.hide();
             }
         });
+
+        view.getTxtMaterialSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                String st = view.getTxtMaterialSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGrid().
+                                getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("name", view.getTxtMaterialSearch().getValue());
+                        filters.put("code", view.getTxtMaterialSearch().getValue());
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getMaterialPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getMaterialPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
+
     }
 
 
