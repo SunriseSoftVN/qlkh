@@ -6,6 +6,7 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlkh.client.client.constant.ExceptionConstant;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPlace;
@@ -24,6 +25,7 @@ import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.shared.ServiceException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +81,18 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     currentMaterial.setPrice(view.getTxtPrice().getValue().doubleValue());
 
                     dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            if (caught instanceof ServiceException) {
+                                String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                    DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                                }
+                            } else {
+                                super.onFailure(caught);
+                            }
+                        }
+
                         @Override
                         public void onSuccess(SaveResult result) {
                             if (result.getEntity() != null) {

@@ -67,9 +67,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
 
                 if (isError) {
                     DiaLogUtils.showMessage("Có lỗi xãy ra trong việc nhập dữ liệu, số luợng vật tư không đuợc bỏ trống");
-                }
-
-                if (!entities.isEmpty()) {
+                } else if (!entities.isEmpty()) {
                     dispatch.execute(new SaveAction(entities), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onSuccess(SaveResult result) {
