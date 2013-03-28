@@ -10,7 +10,6 @@ public interface MaterialLimitConstant extends TaskDetailDKConstant {
     String materialNameColumnTitle();
     String materialCodeColumnTitle();
     String materialUnitColumnTitle();
-    String materialPriceColumnTitle();
     String materialQuantityColumnTitle();
     String cbShowTaskHasLimit();
     String cbShowTaskHasNoLimit();

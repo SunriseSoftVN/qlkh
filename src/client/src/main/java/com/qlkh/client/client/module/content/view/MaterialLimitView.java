@@ -44,8 +44,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     public static final int MATERIAL_LIMIT_NAME_WIDTH = 200;
     public static final String MATERIAL_LIMIT_UNIT_COLUMN = "material.unit";
     public static final int MATERIAL_LIMIT_UNIT_WIDTH = 50;
-    public static final String MATERIAL_LIMIT_PRICE_COLUMN = "material.price";
-    public static final int MATERIAL_LIMIT_PRICE_WIDTH = 50;
     public static final String MATERIAL_LIMIT_QUANTITY_COLUMN = "quantity";
     public static final int MATERIAL_LIMIT_QUANTITY_WIDTH = 70;
 
@@ -55,8 +53,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     public static final int MATERIAL_NAME_WIDTH = 200;
     public static final String MATERIAL_UNIT_COLUMN = "unit";
     public static final int MATERIAL_UNIT_WIDTH = 100;
-    public static final String MATERIAL_PRICE_COLUMN = "price";
-    public static final int MATERIAL_PRICE_WIDTH = 100;
 
     @I18nField
     CheckBox cbShowTaskHasLimit = new CheckBox();
@@ -130,10 +126,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         ColumnConfig materialUnitColumn = new ColumnConfig(MATERIAL_LIMIT_UNIT_COLUMN,
                 getConstant().materialUnitColumnTitle(), MATERIAL_LIMIT_UNIT_WIDTH);
         columnConfigs.add(materialUnitColumn);
-
-        ColumnConfig materialPriceColumn = new ColumnConfig(MATERIAL_LIMIT_PRICE_COLUMN,
-                getConstant().materialPriceColumnTitle(), MATERIAL_LIMIT_PRICE_WIDTH);
-        columnConfigs.add(materialPriceColumn);
 
         ColumnConfig quantityColumnConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
                 getConstant().materialQuantityColumnTitle(), MATERIAL_LIMIT_QUANTITY_WIDTH);
@@ -215,10 +207,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         ColumnConfig unitColumnConfig = new ColumnConfig(MATERIAL_UNIT_COLUMN, getConstant().materialUnitColumnTitle(),
                 MATERIAL_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
-
-        ColumnConfig priceColumnConfig = new ColumnConfig(MATERIAL_PRICE_COLUMN, getConstant().materialPriceColumnTitle(),
-                MATERIAL_PRICE_WIDTH);
-        columnConfigs.add(priceColumnConfig);
 
         return columnConfigs;
     }

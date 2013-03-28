@@ -13,7 +13,6 @@ public class Material extends AbstractEntity {
     private String name;
     private String code;
     private String unit;
-    private Double price;
     private String note;
 
     public String getName() {
@@ -46,13 +45,5 @@ public class Material extends AbstractEntity {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 }

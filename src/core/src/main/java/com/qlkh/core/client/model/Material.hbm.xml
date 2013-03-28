@@ -16,6 +16,5 @@
         <property name="code" column="code" not-null="true"/>
         <property name="unit" column="unit" not-null="true"/>
         <property name="note" column="note" not-null="true"/>
-        <property name="price" column="price" not-null="true"/>
     </class>
 </hibernate-mapping>

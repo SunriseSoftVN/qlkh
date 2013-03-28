@@ -53,8 +53,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     public static final int NAME_COLUMN_WIDTH = 200;
     public static final String UNIT_COLUMN = "unit";
     public static final int UNIT_COLUMN_WIDTH = 100;
-    public static final String PRICE_COLUMN = "price";
-    public static final int PRICE_COLUMN_WIDTH = 100;
     public static final String NOTE_COLUMN = "note";
     public static final int NOTE_COLUMN_WIDTH = 200;
 
@@ -84,9 +82,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     @I18nField
     TextField<String> txtUnit = new TextField<String>();
-
-    @I18nField
-    MyNumberField txtPrice = new MyNumberField();
 
     @I18nField
     TextArea txtNote = new TextArea();
@@ -192,11 +187,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
                 UNIT_COLUMN_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
-        ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().priceColumnTitle(),
-                PRICE_COLUMN_WIDTH);
-        priceColumnConfig.setNumberFormat(NumberFormat.getDecimalFormat());
-        columnConfigs.add(priceColumnConfig);
-
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
                 NOTE_COLUMN_WIDTH);
         columnConfigs.add(noteColumnConfig);
@@ -223,18 +213,14 @@ public class MaterialView extends AbstractView<MaterialConstant> {
             txtName.setAllowBlank(false);
         }
 
-        if (!txtPrice.isRendered()) {
-            txtPrice.setAllowBlank(false);
-        }
 
-        if (!txtPrice.isRendered()) {
+        if (!txtUnit.isRendered()) {
             txtUnit.setAllowBlank(false);
         }
 
         materialEditPanel.add(txtCode);
         materialEditPanel.add(txtName);
         materialEditPanel.add(txtUnit);
-        materialEditPanel.add(txtPrice);
         materialEditPanel.add(txtNote);
 
         window.setFocusWidget(txtCode);
@@ -315,10 +301,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     public TextField<String> getTxtUnit() {
         return txtUnit;
-    }
-
-    public MyNumberField getTxtPrice() {
-        return txtPrice;
     }
 
     public TextArea getTxtNote() {

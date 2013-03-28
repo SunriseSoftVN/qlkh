@@ -13,7 +13,6 @@ public interface MaterialConstant extends Constants {
     String codeColumnTitle();
     String nameColumnTitle();
     String unitColumnTitle();
-    String priceColumnTitle();
     String noteColumnTitle();
     String btnDelete();
     String btnAdd();
@@ -27,7 +26,6 @@ public interface MaterialConstant extends Constants {
     String txtCode();
     String txtName();
     String txtUnit();
-    String txtPrice();
     String txtNote();
     String saveMessageSuccess();
     String deleteMessageSuccess();

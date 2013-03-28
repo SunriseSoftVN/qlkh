@@ -78,7 +78,6 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     currentMaterial.setName(view.getTxtName().getValue());
                     currentMaterial.setUnit(view.getTxtUnit().getValue());
                     currentMaterial.setNote(view.getTxtNote().getValue());
-                    currentMaterial.setPrice(view.getTxtPrice().getValue().doubleValue());
 
                     dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
                         @Override
@@ -119,7 +118,6 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                 view.getTxtCode().setValue(selectedMaterial.getCode());
                 view.getTxtName().setValue(selectedMaterial.getName());
                 view.getTxtUnit().setValue(selectedMaterial.getUnit());
-                view.getTxtPrice().setValue(selectedMaterial.getPrice());
                 view.getTxtNote().setValue(selectedMaterial.getNote());
                 currentMaterial = selectedMaterial;
                 materialWindow.show();

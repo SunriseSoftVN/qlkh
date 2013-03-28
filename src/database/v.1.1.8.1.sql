@@ -1,0 +1,1 @@
+ALTER TABLE `material` DROP `price`
