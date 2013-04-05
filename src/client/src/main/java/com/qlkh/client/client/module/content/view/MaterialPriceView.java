@@ -23,6 +23,8 @@ import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialPriceConstants;
 import com.qlkh.client.client.module.content.view.security.MaterialPriceSecurity;
+import com.qlkh.client.client.widget.MyNumberField;
+import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
@@ -44,7 +46,6 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstants> {
 
     public static final int MATERIAL_LIST_SIZE = 200;
 
-    public static final String ID_COLUMN = "id";
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 35;
 
@@ -57,8 +58,20 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstants> {
     public static final String MATERIAL_NOTE_COLUMN = "note";
     public static final int MATERIAL_NOTE_COLUMN_WIDTH = 200;
 
-    private Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
-    private TextField<String> txtSearch = new TextField<String>();
+    public static final String Q1_UNIT_COLUMN = "q1";
+    public static final int Q1_UNIT_WIDTH = 70;
+    public static final String Q2_UNIT_COLUMN = "q2";
+    public static final int Q2_UNIT_WIDTH = 70;
+    public static final String Q3_UNIT_COLUMN = "q3";
+    public static final int Q3_UNIT_WIDTH = 70;
+    public static final String Q4_UNIT_COLUMN = "q4";
+    public static final int Q4_UNIT_WIDTH = 70;
+
+    @I18nField
+    Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
+
+    @I18nField(emptyText = true)
+    TextField<String> txtSearch = new TextField<String>();
 
     protected ContentPanel contentPanel = new ContentPanel();
 
@@ -67,6 +80,7 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstants> {
     private PagingToolBar materialPagingToolBar;
     private Grid<BeanModel> materialGird;
 
+    private ColumnModel priceColumnModel;
     private ContentPanel pricePanel = new ContentPanel();
     private PagingToolBar pricePagingToolBar;
     private EditorGrid<BeanModel> priceGird;
@@ -153,11 +167,95 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstants> {
         return columnConfigs;
     }
 
+    public void createPriceGrid(ListStore<BeanModel> listStore) {
+        priceColumnModel = new ColumnModel(createPriceColumnConfig());
+        priceGird = new EditorGrid<BeanModel>(listStore, priceColumnModel);
+        priceGird.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        priceGird.setBorders(true);
+        priceGird.setLoadMask(true);
+        priceGird.setStripeRows(true);
+        priceGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        priceGird.getStore().getLoader().setSortField(MATERIAL_CODE_COLUMN);
+        priceGird.setWidth(500);
+        priceGird.addListener(Events.OnKeyDown, new KeyListener() {
+            @Override
+            public void handleEvent(ComponentEvent e) {
+                if (e.getKeyCode() == 115) {
+                    btnRefresh.fireEvent(Events.Select);
+                }
+            }
+        });
+
+        pricePagingToolBar = new PagingToolBar(MATERIAL_LIST_SIZE);
+        txtSearch.setWidth(170);
+        pricePanel.setHeaderVisible(false);
+        pricePanel.setHeight(Window.getClientHeight() - 90);
+        pricePanel.setLayout(new FitLayout());
+        pricePanel.setWidth("50%");
+        pricePanel.add(priceGird);
+        pricePanel.setTopComponent(createToolBar());
+        pricePanel.setBottomComponent(pricePagingToolBar);
+        pricePanel.setBodyBorder(false);
+        contentPanel.add(pricePanel, new RowData(-1, 1));
+        contentPanel.layout();
+    }
+
+    private List<ColumnConfig> createPriceColumnConfig() {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
+
+
+        ColumnConfig q1ColumnConfig = new ColumnConfig(Q1_UNIT_COLUMN, getConstant().q1ColumnTitle(), Q1_UNIT_WIDTH);
+        MyNumberField q1NumberField = new MyNumberField();
+        q1NumberField.setSelectOnFocus(true);
+        q1ColumnConfig.setEditor(new CellEditor(q1NumberField));
+        columnConfigs.add(q1ColumnConfig);
+
+        ColumnConfig q2ColumnConfig = new ColumnConfig(Q2_UNIT_COLUMN, getConstant().q2ColumnTitle(), Q2_UNIT_WIDTH);
+        MyNumberField q2NumberField = new MyNumberField();
+        q2NumberField.setSelectOnFocus(true);
+        q2ColumnConfig.setEditor(new CellEditor(q2NumberField));
+        columnConfigs.add(q2ColumnConfig);
+
+        ColumnConfig q3ColumnConfig = new ColumnConfig(Q3_UNIT_COLUMN, getConstant().q3ColumnTitle(), Q3_UNIT_WIDTH);
+        MyNumberField q3NumberField = new MyNumberField();
+        q3NumberField.setSelectOnFocus(true);
+        q3ColumnConfig.setEditor(new CellEditor(q3NumberField));
+        columnConfigs.add(q3ColumnConfig);
+
+        ColumnConfig q4ColumnConfig = new ColumnConfig(Q4_UNIT_COLUMN, getConstant().q4ColumnTitle(), Q4_UNIT_WIDTH);
+        MyNumberField q4NumberField = new MyNumberField();
+        q4NumberField.setSelectOnFocus(true);
+        q4ColumnConfig.setEditor(new CellEditor(q4NumberField));
+        columnConfigs.add(q4ColumnConfig);
+
+        return columnConfigs;
+    }
+
     public PagingToolBar getMaterialPagingToolBar() {
         return materialPagingToolBar;
     }
 
     public Grid<BeanModel> getMaterialGird() {
         return materialGird;
+    }
+
+    public EditorGrid<BeanModel> getPriceGird() {
+        return priceGird;
+    }
+
+    public PagingToolBar getPricePagingToolBar() {
+        return pricePagingToolBar;
     }
 }

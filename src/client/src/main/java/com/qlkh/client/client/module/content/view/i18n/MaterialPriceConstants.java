@@ -14,4 +14,10 @@ public interface MaterialPriceConstants extends Constants {
     String nameColumnTitle();
     String unitColumnTitle();
     String noteColumnTitle();
+    String btnRefresh();
+    String txtSearch();
+    String q1ColumnTitle();
+    String q2ColumnTitle();
+    String q3ColumnTitle();
+    String q4ColumnTitle();
 }

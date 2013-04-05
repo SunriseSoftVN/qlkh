@@ -51,4 +51,8 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean class="com.qlkh.server.dao.impl.MaterialPriceDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
 </beans>
