@@ -13,6 +13,7 @@ public interface MaterialConstant extends Constants {
     String codeColumnTitle();
     String nameColumnTitle();
     String unitColumnTitle();
+    String priceColumnTitle();
     String noteColumnTitle();
     String btnDelete();
     String btnAdd();

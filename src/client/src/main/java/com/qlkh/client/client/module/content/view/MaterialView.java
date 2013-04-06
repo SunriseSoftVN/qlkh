@@ -97,7 +97,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     private MyFormPanel materialEditPanel = new MyFormPanel();
 
     private PagingToolBar pagingToolBar;
-    private Grid<BeanModel> materialGird;
+    private EditorGrid<BeanModel> materialGird;
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -107,7 +107,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        materialGird = new Grid<BeanModel>(listStore, cm);
+        materialGird = new EditorGrid<BeanModel>(listStore, cm);
         materialGird.setBorders(true);
         materialGird.setLoadMask(true);
         materialGird.setStripeRows(true);
@@ -189,8 +189,11 @@ public class MaterialView extends AbstractView<MaterialConstant> {
                 UNIT_COLUMN_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
-        ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().unitColumnTitle(),
+        ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().priceColumnTitle(),
                 PRICE_COLUMN_WIDTH);
+        MyNumberField priceNumberField = new MyNumberField();
+        priceNumberField.setSelectOnFocus(true);
+        priceColumnConfig.setEditor(new CellEditor(priceNumberField));
         columnConfigs.add(priceColumnConfig);
 
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
