@@ -16,6 +16,7 @@
         <property name="q2" column="q2" not-null="true"/>
         <property name="q3" column="q3" not-null="true"/>
         <property name="q4" column="q4" not-null="true"/>
+        <property name="year" column="year" not-null="true"/>
 
         <many-to-one name="material" class="com.qlkh.core.client.model.Material" lazy="false" fetch="join" outer-join="auto">
             <column name="materialId" not-null="false"/>

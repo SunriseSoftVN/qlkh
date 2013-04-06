@@ -15,6 +15,7 @@ public class MaterialPrice extends AbstractEntity {
     private double q2;
     private double q3;
     private double q4;
+    private int year;
 
     public double getQ1() {
         return q1;
@@ -50,5 +51,17 @@ public class MaterialPrice extends AbstractEntity {
 
     public Material getMaterial() {
         return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

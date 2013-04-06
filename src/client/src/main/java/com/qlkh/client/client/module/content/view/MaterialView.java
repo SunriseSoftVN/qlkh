@@ -53,6 +53,8 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     public static final int NAME_COLUMN_WIDTH = 200;
     public static final String UNIT_COLUMN = "unit";
     public static final int UNIT_COLUMN_WIDTH = 100;
+    public static final String PRICE_COLUMN = "price";
+    public static final int PRICE_COLUMN_WIDTH = 100;
     public static final String NOTE_COLUMN = "note";
     public static final int NOTE_COLUMN_WIDTH = 200;
 
@@ -186,6 +188,10 @@ public class MaterialView extends AbstractView<MaterialConstant> {
         ColumnConfig unitColumnConfig = new ColumnConfig(UNIT_COLUMN, getConstant().unitColumnTitle(),
                 UNIT_COLUMN_WIDTH);
         columnConfigs.add(unitColumnConfig);
+
+        ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().unitColumnTitle(),
+                PRICE_COLUMN_WIDTH);
+        columnConfigs.add(priceColumnConfig);
 
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
                 NOTE_COLUMN_WIDTH);
