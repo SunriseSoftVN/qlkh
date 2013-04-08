@@ -73,10 +73,12 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     public Object render(BeanModel beanModel, String s, ColumnData columnData, int i, int i2, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
                         Material material = beanModel.getBean();
                         if (material.getCurrentPrice() != null) {
-                            return material.getCurrentPrice().getPriceByQuarter(currentQuarter);
-                        } else {
-                            return null;
+                            double price = material.getCurrentPrice().getPriceByQuarter(currentQuarter);
+                            if (price > 0) {
+                                return price;
+                            }
                         }
+                        return null;
                     }
                 });
 
@@ -105,7 +107,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                         currentMaterial.setUpdateBy(1l);
                     }
 
-                    if (currentMaterial.getCurrentPrice() == null) {
+                    if (currentMaterial.getCurrentPrice() == null && view.getTxtPrice().getValue() != null) {
                         MaterialPrice price = new MaterialPrice();
                         price.setMaterial(currentMaterial);
                         price.setYear(currentYear);
@@ -114,7 +116,9 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                         currentMaterial.setCurrentPrice(price);
                     }
 
-                    currentMaterial.getCurrentPrice().setPrice(view.getTxtPrice().getValue().doubleValue(), currentQuarter);
+                    if (view.getTxtPrice().getValue() != null) {
+                        currentMaterial.getCurrentPrice().setPrice(view.getTxtPrice().getValue().doubleValue(), currentQuarter);
+                    }
 
                     currentMaterial.setCode(view.getTxtCode().getValue());
                     currentMaterial.setName(view.getTxtName().getValue());
