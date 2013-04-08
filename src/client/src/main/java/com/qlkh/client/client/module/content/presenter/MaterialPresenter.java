@@ -159,15 +159,23 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
         view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                materialWindow = view.createMaterialEditWindow();
-                Material selectedMaterial = view.getMaterialGird().getSelectionModel().getSelectedItem().getBean();
-                view.getTxtCode().setValue(selectedMaterial.getCode());
-                view.getTxtName().setValue(selectedMaterial.getName());
-                view.getTxtUnit().setValue(selectedMaterial.getUnit());
-                view.getTxtNote().setValue(selectedMaterial.getNote());
-                currentMaterial = selectedMaterial;
-                materialWindow.show();
-                materialWindow.layout(true);
+                if (currentQuarter > 0) {
+                    materialWindow = view.createMaterialEditWindow();
+                    Material selectedMaterial = view.getMaterialGird().getSelectionModel().getSelectedItem().getBean();
+                    view.getTxtCode().setValue(selectedMaterial.getCode());
+                    view.getTxtName().setValue(selectedMaterial.getName());
+                    view.getTxtUnit().setValue(selectedMaterial.getUnit());
+                    view.getTxtNote().setValue(selectedMaterial.getNote());
+                    if (selectedMaterial.getCurrentPrice() != null) {
+                        double price = selectedMaterial.getCurrentPrice().getPriceByQuarter(currentQuarter);
+                        if (price > 0) {
+                            view.getTxtPrice().setValue(price);
+                        }
+                    }
+                    currentMaterial = selectedMaterial;
+                    materialWindow.show();
+                    materialWindow.layout(true);
+                }
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
