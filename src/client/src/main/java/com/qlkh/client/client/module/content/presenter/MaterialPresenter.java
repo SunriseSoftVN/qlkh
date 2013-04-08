@@ -2,12 +2,14 @@ package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.constant.ExceptionConstant;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
+import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPlace;
 import com.qlkh.client.client.module.content.view.MaterialView;
@@ -17,6 +19,8 @@ import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.DeleteMaterialAction;
 import com.qlkh.core.client.action.material.DeleteMaterialResult;
+import com.qlkh.core.client.action.material.LoadMaterialAction;
+import com.qlkh.core.client.action.material.LoadMaterialResult;
 import com.qlkh.core.client.action.task.DeleteTaskAction;
 import com.qlkh.core.client.action.task.DeleteTaskResult;
 import com.qlkh.core.client.model.Material;
@@ -54,7 +58,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
 
     @Override
     protected void doBind() {
-        view.createGrid(GridUtils.createListStore(Material.class));
+        view.createGrid(createListStore());
         view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -193,6 +197,27 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                 view.getPagingToolBar().refresh();
             }
         });
+    }
+
+    private ListStore<BeanModel> createListStore() {
+        RpcProxy<LoadMaterialResult> rpcProxy = new RpcProxy<LoadMaterialResult>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialResult> callback) {
+                LoadMaterialAction loadAction = new LoadMaterialAction((BasePagingLoadConfig) loadConfig);
+                StandardDispatchAsync.INSTANCE
+                        .execute(loadAction, callback);
+            }
+        };
+        PagingLoader<PagingLoadResult<Material>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Material>>(rpcProxy, new LoadGridDataReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private void updateGrid(Material material) {

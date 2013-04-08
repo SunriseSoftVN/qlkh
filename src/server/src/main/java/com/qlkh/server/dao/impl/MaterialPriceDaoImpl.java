@@ -28,4 +28,17 @@ public class MaterialPriceDaoImpl extends AbstractDao<MaterialPrice> implements 
         return getHibernateTemplate().findByCriteria(criteria);
     }
 
+    @Override
+    public MaterialPrice findByMaterialIdAndYear(long materialId, int year) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(MaterialPrice.class)
+                .add(Restrictions.eq("material.id", materialId))
+                .add(Restrictions.eq("year", year));
+        List result = getHibernateTemplate().findByCriteria(criteria);
+
+        if (!result.isEmpty()) {
+            return (MaterialPrice) result.get(0);
+        } else {
+            return null;
+        }
+    }
 }

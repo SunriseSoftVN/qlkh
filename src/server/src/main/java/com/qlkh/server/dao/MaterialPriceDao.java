@@ -16,4 +16,6 @@ public interface MaterialPriceDao extends Dao<MaterialPrice> {
 
     public List<MaterialPrice> findByMaterialId(long materialId);
 
+    public MaterialPrice findByMaterialIdAndYear(long materialId, int year);
+
 }
