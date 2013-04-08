@@ -2,6 +2,8 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
+import javax.persistence.Transient;
+
 /**
  * The Class MaterialLimit.
  *
@@ -14,6 +16,9 @@ public class Material extends AbstractEntity {
     private String code;
     private String unit;
     private String note;
+
+    @Transient
+    private MaterialPrice currentPrice;
 
     public String getName() {
         return name;
@@ -45,5 +50,13 @@ public class Material extends AbstractEntity {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public MaterialPrice getCurrentPrice() {
+        return currentPrice;
+    }
+
+    public void setCurrentPrice(MaterialPrice currentPrice) {
+        this.currentPrice = currentPrice;
     }
 }

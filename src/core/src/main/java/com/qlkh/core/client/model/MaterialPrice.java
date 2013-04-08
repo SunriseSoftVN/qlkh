@@ -64,4 +64,33 @@ public class MaterialPrice extends AbstractEntity {
     public void setYear(int year) {
         this.year = year;
     }
+
+    /**
+     * This method will return current price of this material.
+     *
+     * @return
+     */
+    public double getPriceByQuarter(int quarter) {
+        double price = 0d;
+        for (int i = quarter; i > 0; i--) {
+            price = getPrice(i);
+            if (price > 0) {
+                return price;
+            }
+        }
+        return price;
+    }
+
+    public double getPrice(int quarter) {
+        if (quarter == 1) {
+            return q1;
+        } else if (quarter == 2) {
+            return q2;
+        } else if (quarter == 3) {
+            return q3;
+        } else if (quarter == 4) {
+            return q4;
+        }
+        return 0d;
+    }
 }
