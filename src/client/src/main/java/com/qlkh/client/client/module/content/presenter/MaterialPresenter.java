@@ -95,6 +95,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                 materialWindow = view.createMaterialEditWindow();
                 materialWindow.show();
                 materialWindow.layout(true);
+                currentMaterial = null;
             }
         });
         view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
