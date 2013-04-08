@@ -19,10 +19,7 @@ import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.material.DeleteMaterialAction;
-import com.qlkh.core.client.action.material.DeleteMaterialResult;
-import com.qlkh.core.client.action.material.LoadMaterialAction;
-import com.qlkh.core.client.action.material.LoadMaterialResult;
+import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.model.Material;
@@ -112,6 +109,8 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                         MaterialPrice price = new MaterialPrice();
                         price.setMaterial(currentMaterial);
                         price.setYear(currentYear);
+                        price.setCreateBy(1l);
+                        price.setUpdateBy(1l);
                         currentMaterial.setCurrentPrice(price);
                     }
 
@@ -122,7 +121,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     currentMaterial.setUnit(view.getTxtUnit().getValue());
                     currentMaterial.setNote(view.getTxtNote().getValue());
 
-                    dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
+                    dispatch.execute(new SaveMaterialAction(currentMaterial), new AbstractAsyncCallback<SaveMaterialResult>() {
                         @Override
                         public void onFailure(Throwable caught) {
                             if (caught instanceof ServiceException) {
@@ -136,9 +135,9 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                         }
 
                         @Override
-                        public void onSuccess(SaveResult result) {
-                            if (result.getEntity() != null) {
-                                updateGrid(result.<Material>getEntity());
+                        public void onSuccess(SaveMaterialResult result) {
+                            if (result.getMaterial() != null) {
+                                updateGrid(result.getMaterial());
                                 materialWindow.hide();
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             }
