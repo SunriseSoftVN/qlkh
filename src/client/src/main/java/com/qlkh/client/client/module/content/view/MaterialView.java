@@ -83,6 +83,9 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     TextField<String> txtName = new TextField<String>();
 
     @I18nField
+    MyNumberField txtPrice = new MyNumberField();
+
+    @I18nField
     TextField<String> txtUnit = new TextField<String>();
 
     @I18nField
@@ -97,7 +100,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     private MyFormPanel materialEditPanel = new MyFormPanel();
 
     private PagingToolBar pagingToolBar;
-    private EditorGrid<BeanModel> materialGird;
+    private Grid<BeanModel> materialGird;
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -107,7 +110,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        materialGird = new EditorGrid<BeanModel>(listStore, cm);
+        materialGird = new Grid<BeanModel>(listStore, cm);
         materialGird.setBorders(true);
         materialGird.setLoadMask(true);
         materialGird.setStripeRows(true);
@@ -191,9 +194,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
         ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().priceColumnTitle(),
                 PRICE_COLUMN_WIDTH);
-        MyNumberField priceNumberField = new MyNumberField();
-        priceNumberField.setSelectOnFocus(true);
-        priceColumnConfig.setEditor(new CellEditor(priceNumberField));
         columnConfigs.add(priceColumnConfig);
 
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
@@ -222,7 +222,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
             txtName.setAllowBlank(false);
         }
 
-
         if (!txtUnit.isRendered()) {
             txtUnit.setAllowBlank(false);
         }
@@ -230,6 +229,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
         materialEditPanel.add(txtCode);
         materialEditPanel.add(txtName);
         materialEditPanel.add(txtUnit);
+        materialEditPanel.add(txtPrice);
         materialEditPanel.add(txtNote);
 
         window.setFocusWidget(txtCode);
