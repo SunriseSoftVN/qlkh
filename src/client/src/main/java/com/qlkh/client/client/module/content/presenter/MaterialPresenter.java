@@ -4,6 +4,9 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -14,16 +17,16 @@ import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPlace;
 import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.DeleteMaterialAction;
 import com.qlkh.core.client.action.material.DeleteMaterialResult;
 import com.qlkh.core.client.action.material.LoadMaterialAction;
 import com.qlkh.core.client.action.material.LoadMaterialResult;
-import com.qlkh.core.client.action.task.DeleteTaskAction;
-import com.qlkh.core.client.action.task.DeleteTaskResult;
+import com.qlkh.core.client.action.time.GetServerTimeAction;
+import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.model.Material;
+import com.qlkh.core.client.model.MaterialPrice;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
@@ -49,17 +52,44 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
 
     private Window materialWindow;
     private Material currentMaterial;
+    private int currentQuarter;
+    private int currentYear;
 
     @Override
     public void onActivate() {
         view.show();
-        view.getPagingToolBar().refresh();
+        if (currentYear > 0 && currentQuarter > 0) {
+            view.getPagingToolBar().refresh();
+        }
     }
 
     @Override
     protected void doBind() {
-        view.createGrid(createListStore());
-        view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
+        dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
+            @Override
+            public void onSuccess(GetServerTimeResult result) {
+                currentQuarter = result.getQuarter();
+                currentYear = result.getYear();
+
+                view.setPriceRender(new GridCellRenderer<BeanModel>() {
+                    @Override
+                    public Object render(BeanModel beanModel, String s, ColumnData columnData, int i, int i2, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                        Material material = beanModel.getBean();
+                        if (material.getCurrentPrice() != null) {
+                            return material.getCurrentPrice().getPriceByQuarter(currentQuarter);
+                        } else {
+                            return null;
+                        }
+                    }
+                });
+
+                view.createGrid(createListStore());
+                view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
+                view.getPagingToolBar().refresh();
+            }
+        });
+
+
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -71,12 +101,21 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
         view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (view.getMaterialEditPanel().isValid()) {
+                if (view.getMaterialEditPanel().isValid() && currentQuarter > 0 && currentYear > 0) {
                     if (currentMaterial == null) {
                         currentMaterial = new Material();
                         currentMaterial.setCreateBy(1l);
                         currentMaterial.setUpdateBy(1l);
                     }
+
+                    if (currentMaterial.getCurrentPrice() == null) {
+                        MaterialPrice price = new MaterialPrice();
+                        price.setMaterial(currentMaterial);
+                        price.setYear(currentYear);
+                        currentMaterial.setCurrentPrice(price);
+                    }
+
+                    currentMaterial.getCurrentPrice().setPrice(view.getTxtPrice().getValue().doubleValue(), currentQuarter);
 
                     currentMaterial.setCode(view.getTxtCode().getValue());
                     currentMaterial.setName(view.getTxtName().getValue());

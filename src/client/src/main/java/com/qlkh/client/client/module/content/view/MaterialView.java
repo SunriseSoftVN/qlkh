@@ -2,6 +2,7 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
@@ -24,6 +25,7 @@ import com.qlkh.client.client.module.content.view.security.MaterialSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
 import com.qlkh.client.client.widget.MyFormPanel;
 import com.qlkh.client.client.widget.MyNumberField;
+import com.qlkh.core.client.model.Material;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -101,6 +103,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     private PagingToolBar pagingToolBar;
     private Grid<BeanModel> materialGird;
+    private GridCellRenderer<BeanModel> priceRender;
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -194,6 +197,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
         ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().priceColumnTitle(),
                 PRICE_COLUMN_WIDTH);
+        priceColumnConfig.setRenderer(priceRender);
         columnConfigs.add(priceColumnConfig);
 
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
@@ -318,5 +322,13 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     public MyFormPanel getMaterialEditPanel() {
         return materialEditPanel;
+    }
+
+    public MyNumberField getTxtPrice() {
+        return txtPrice;
+    }
+
+    public void setPriceRender(GridCellRenderer<BeanModel> priceRender) {
+        this.priceRender = priceRender;
     }
 }

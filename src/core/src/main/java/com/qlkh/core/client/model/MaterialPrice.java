@@ -93,4 +93,16 @@ public class MaterialPrice extends AbstractEntity {
         }
         return 0d;
     }
+
+    public void setPrice(double price, int quarter) {
+        if (quarter == 1) {
+            setQ1(price);
+        } else if (quarter == 2) {
+            setQ2(price);
+        } else if (quarter == 3) {
+            setQ3(price);
+        } else if (quarter == 4) {
+            setQ4(price);
+        }
+    }
 }
