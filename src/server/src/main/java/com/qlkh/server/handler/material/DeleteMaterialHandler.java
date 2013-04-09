@@ -28,7 +28,7 @@ public class DeleteMaterialHandler extends AbstractHandler<DeleteMaterialAction,
 
     private static final String[] RELATE_ENTITY_NAMES = {MaterialLimit.class.getName()};
 
-    private static final String[] RELATE_DELETE_ENTITY_NAMES = {MaterialLimit.class.getName()};
+    private static final String[] RELATE_DELETE_ENTITY_NAMES = {MaterialLimit.class.getName(), MaterialPrice.class.getName()};
 
     @Autowired
     private GeneralDao generalDao;
