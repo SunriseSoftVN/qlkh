@@ -17,6 +17,8 @@ import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPlace;
 import com.qlkh.client.client.module.content.view.MaterialView;
 import com.qlkh.client.client.utils.DiaLogUtils;
+import com.qlkh.core.client.action.core.SaveAction;
+import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
@@ -47,44 +49,17 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
 
     private Window materialWindow;
     private Material currentMaterial;
-    private int currentQuarter;
-    private int currentYear;
 
     @Override
     public void onActivate() {
         view.show();
-        if (currentYear > 0 && currentQuarter > 0) {
-            view.getPagingToolBar().refresh();
-        }
+        view.getPagingToolBar().refresh();
     }
 
     @Override
     protected void doBind() {
-        dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
-            @Override
-            public void onSuccess(GetServerTimeResult result) {
-                currentQuarter = result.getQuarter();
-                currentYear = result.getYear();
-
-                view.setPriceRender(new GridCellRenderer<BeanModel>() {
-                    @Override
-                    public Object render(BeanModel beanModel, String s, ColumnData columnData, int i, int i2, ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
-                        Material material = beanModel.getBean();
-                        if (material.getCurrentPrice() != null) {
-                            double price = material.getCurrentPrice().getPriceByQuarter(currentQuarter);
-                            if (price > 0) {
-                                return price;
-                            }
-                        }
-                        return null;
-                    }
-                });
-
-                view.createGrid(createListStore());
-                view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
-                view.getPagingToolBar().refresh();
-            }
-        });
+        view.createGrid(createListStore());
+        view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
 
 
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -99,24 +74,11 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
         view.getBtnTaskEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (view.getMaterialEditPanel().isValid() && currentQuarter > 0 && currentYear > 0) {
+                if (view.getMaterialEditPanel().isValid()) {
                     if (currentMaterial == null) {
                         currentMaterial = new Material();
                         currentMaterial.setCreateBy(1l);
                         currentMaterial.setUpdateBy(1l);
-                    }
-
-                    if (currentMaterial.getCurrentPrice() == null && view.getTxtPrice().getValue() != null) {
-                        MaterialPrice price = new MaterialPrice();
-                        price.setMaterial(currentMaterial);
-                        price.setYear(currentYear);
-                        price.setCreateBy(1l);
-                        price.setUpdateBy(1l);
-                        currentMaterial.setCurrentPrice(price);
-                    }
-
-                    if (view.getTxtPrice().getValue() != null) {
-                        currentMaterial.getCurrentPrice().setPrice(view.getTxtPrice().getValue().doubleValue(), currentQuarter);
                     }
 
                     currentMaterial.setCode(view.getTxtCode().getValue());
@@ -124,7 +86,7 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                     currentMaterial.setUnit(view.getTxtUnit().getValue());
                     currentMaterial.setNote(view.getTxtNote().getValue());
 
-                    dispatch.execute(new SaveMaterialAction(currentMaterial), new AbstractAsyncCallback<SaveMaterialResult>() {
+                    dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onFailure(Throwable caught) {
                             if (caught instanceof ServiceException) {
@@ -138,9 +100,9 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
                         }
 
                         @Override
-                        public void onSuccess(SaveMaterialResult result) {
-                            if (result.getMaterial() != null) {
-                                updateGrid(result.getMaterial());
+                        public void onSuccess(SaveResult result) {
+                            if (result.getEntity() != null) {
+                                updateGrid(result.<Material>getEntity());
                                 materialWindow.hide();
                                 DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
                             }
@@ -158,23 +120,15 @@ public class MaterialPresenter extends AbstractPresenter<MaterialView> {
         view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (currentQuarter > 0) {
-                    materialWindow = view.createMaterialEditWindow();
-                    Material selectedMaterial = view.getMaterialGird().getSelectionModel().getSelectedItem().getBean();
-                    view.getTxtCode().setValue(selectedMaterial.getCode());
-                    view.getTxtName().setValue(selectedMaterial.getName());
-                    view.getTxtUnit().setValue(selectedMaterial.getUnit());
-                    view.getTxtNote().setValue(selectedMaterial.getNote());
-                    if (selectedMaterial.getCurrentPrice() != null) {
-                        double price = selectedMaterial.getCurrentPrice().getPriceByQuarter(currentQuarter);
-                        if (price > 0) {
-                            view.getTxtPrice().setValue(price);
-                        }
-                    }
-                    currentMaterial = selectedMaterial;
-                    materialWindow.show();
-                    materialWindow.layout(true);
-                }
+                materialWindow = view.createMaterialEditWindow();
+                Material selectedMaterial = view.getMaterialGird().getSelectionModel().getSelectedItem().getBean();
+                view.getTxtCode().setValue(selectedMaterial.getCode());
+                view.getTxtName().setValue(selectedMaterial.getName());
+                view.getTxtUnit().setValue(selectedMaterial.getUnit());
+                view.getTxtNote().setValue(selectedMaterial.getNote());
+                currentMaterial = selectedMaterial;
+                materialWindow.show();
+                materialWindow.layout(true);
             }
         });
         view.getBtnDelete().addSelectionListener(new DeleteButtonEventListener());
