@@ -98,8 +98,6 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     private PagingToolBar pagingToolBar;
     private Grid<BeanModel> materialGird;
-    private GridCellRenderer<BeanModel> priceRender;
-
     private ContentPanel contentPanel = new ContentPanel();
 
     /**
@@ -311,9 +309,5 @@ public class MaterialView extends AbstractView<MaterialConstant> {
 
     public MyFormPanel getMaterialEditPanel() {
         return materialEditPanel;
-    }
-
-    public void setPriceRender(GridCellRenderer<BeanModel> priceRender) {
-        this.priceRender = priceRender;
     }
 }
