@@ -32,7 +32,6 @@
                 <bean class="com.qlkh.server.handler.task.LoadTaskHasLimitHandler"/>
                 <bean class="com.qlkh.server.handler.material.DeleteMaterialHandler"/>
                 <bean class="com.qlkh.server.handler.material.LoadMaterialHandler"/>
-                <bean class="com.qlkh.server.handler.material.SaveMaterialHandler"/>
             </list>
         </property>
     </bean>
