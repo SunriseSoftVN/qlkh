@@ -1,14 +1,15 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
+import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPricePlace;
 import com.qlkh.client.client.module.content.view.MaterialPriceView;
@@ -16,6 +17,8 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
+import com.qlkh.core.client.action.grid.LoadGridDataAction;
+import com.qlkh.core.client.action.grid.LoadGridDataResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
@@ -62,7 +65,7 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                 currentQuarter = result.getQuarter();
                 currentYear = result.getYear();
 
-                view.createGrid(GridUtils.createListStore(MaterialPrice.class, ClientRestrictions.eq("year", currentYear), ClientRestrictions.eq("quarter", currentQuarter.getCode())));
+                view.createGrid(createListStore());
                 view.getMaterialPricePagingToolBar().bind((PagingLoader<?>) view.getMaterialPriceGird().getStore().getLoader());
                 view.getMaterialPricePagingToolBar().refresh();
 
@@ -76,7 +79,7 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                 materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                 if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
-                    resetFilter();
+                    resetMaterialFilter();
                 }
                 view.getMaterialPagingToolBar().refresh();
                 materialEditWindow.show();
@@ -97,11 +100,11 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                         filters.put(MaterialPriceView.MATERIAL_CODE_COLUMN, view.getTxtMaterialSearch().getValue());
                         loadConfig.set("filters", filters);
                     } else {
-                        resetFilter();
+                        resetMaterialFilter();
                     }
                     view.getMaterialPagingToolBar().refresh();
                 } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
-                    resetFilter();
+                    resetMaterialFilter();
                     com.google.gwt.user.client.Timer timer = new Timer() {
                         @Override
                         public void run() {
@@ -163,21 +166,22 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                     materialPrices.add(materialPrice);
                 }
 
-                if(!materialPrices.isEmpty()) {
+                if (!materialPrices.isEmpty()) {
                     dispatch.execute(new SaveAction(materialPrices), new AbstractAsyncCallback<SaveResult>() {
                         @Override
                         public void onSuccess(SaveResult saveResult) {
                             DiaLogUtils.notify(view.getConstant().saveMessageSuccess());
+                            view.getMaterialPricePagingToolBar().refresh();
                         }
                     });
                 }
-                view.getMaterialPricePagingToolBar().refresh();
             }
         });
 
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
+                resetFilter();
                 view.getMaterialPricePagingToolBar().refresh();
             }
         });
@@ -211,6 +215,39 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                 }
             }
         });
+
+        view.getCbQuarter().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<QuarterEnum>>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<SimpleComboValue<QuarterEnum>> simpleComboValueSelectionChangedEvent) {
+                currentQuarter = view.getCbQuarter().getSimpleValue();
+                view.getMaterialPricePagingToolBar().refresh();
+            }
+        });
+    }
+
+    private ListStore<BeanModel> createListStore() {
+        RpcProxy<LoadGridDataResult> rpcProxy = new RpcProxy<LoadGridDataResult>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
+                LoadGridDataAction loadAction = new LoadGridDataAction((BasePagingLoadConfig) loadConfig,
+                        MaterialPrice.class.getName(),
+                        ClientRestrictions.eq("year", currentYear),
+                        ClientRestrictions.eq("quarter", currentQuarter.getCode())
+                );
+                StandardDispatchAsync.INSTANCE
+                        .execute(loadAction, callback);
+            }
+        };
+        PagingLoader<PagingLoadResult<MaterialPrice>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<MaterialPrice>>(rpcProxy, new LoadGridDataReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     private void resetFilter() {
@@ -219,5 +256,13 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtSearch().clear();
+    }
+
+    private void resetMaterialFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGrid().
+                getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtMaterialSearch().clear();
     }
 }

@@ -2,7 +2,6 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
@@ -17,15 +16,12 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
 import com.qlkh.client.client.widget.MyFormPanel;
-import com.qlkh.client.client.widget.MyNumberField;
-import com.qlkh.core.client.model.Material;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -113,7 +109,7 @@ public class MaterialView extends AbstractView<MaterialConstant> {
         materialGird.setSelectionModel(selectionModel);
         materialGird.addPlugin(selectionModel);
         materialGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        materialGird.getStore().getLoader().setSortField(CODE_COLUMN);
+        materialGird.getStore().getLoader().setSortField("id");
         materialGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
