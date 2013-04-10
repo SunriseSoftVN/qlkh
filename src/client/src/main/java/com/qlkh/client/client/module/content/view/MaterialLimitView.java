@@ -72,9 +72,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     Button btnMaterialAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
-    Button btnMaterialEditOk = new Button();
-
-    @I18nField
     Button btnMaterialEditCancel = new Button();
 
     @I18nField(emptyText = true)
@@ -149,16 +146,16 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
             materialPanel.setBodyBorder(false);
             materialPanel.setBorders(false);
 
-            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs());
+            CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
+            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs(selectionModel));
             materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
             materialGrid.setBorders(true);
             materialGrid.setHeight(400);
-            materialGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+            materialGrid.setSelectionModel(selectionModel);
+            materialGrid.addPlugin(selectionModel);
 
             ToolBar toolBar = new ToolBar();
             toolBar.add(txtMaterialSearch);
-            toolBar.add(new SeparatorToolItem());
-            toolBar.add(btnMaterialAdd);
 
             materialPanel.setTopComponent(toolBar);
             materialPanel.setBottomComponent(materialPagingToolBar);
@@ -166,7 +163,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         }
 
         window.add(materialPanel);
-        window.addButton(btnMaterialEditOk);
+        window.addButton(btnMaterialAdd);
         window.addButton(btnMaterialEditCancel);
         window.setSize(600, 400);
         window.setAutoHeight(true);
@@ -183,8 +180,10 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     }
 
 
-    private List<ColumnConfig> createMaterialColumnConfigs() {
+    private List<ColumnConfig> createMaterialColumnConfigs(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+
+        columnConfigs.add(selectionModel.getColumn());
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
         sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
@@ -247,10 +246,6 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     public Button getBtnMaterialEditCancel() {
         return btnMaterialEditCancel;
-    }
-
-    public Button getBtnMaterialEditOk() {
-        return btnMaterialEditOk;
     }
 
     public TextField<String> getTxtMaterialSearch() {

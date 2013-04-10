@@ -145,6 +145,7 @@ public class AbstractTaskDetailPresenter<V extends
     protected void emptySubGird() {
         if (view.getSubTaskDetailGird() != null) {
             view.getSubTaskDetailGird().getStore().removeAll();
+            currentTask = null;
         }
     }
 

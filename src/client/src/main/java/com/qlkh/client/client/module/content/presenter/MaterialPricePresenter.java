@@ -32,6 +32,7 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -118,38 +119,32 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
         view.getBtnMaterialAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
+                List<BeanModel> materialModels = view.getMaterialGrid().getSelectionModel().getSelectedItems();
 
-                boolean isFound = false;
-                for (BeanModel model : view.getMaterialPriceGird().getStore().getModels()) {
-                    MaterialPrice materialPrice = model.getBean();
-                    if (materialPrice.getMaterial().getId().equals(material.getId())) {
-                        isFound = true;
-                        break;
+                for (BeanModel materialModel : materialModels) {
+                    boolean isFound = false;
+                    Material material = materialModel.getBean();
+                    for (BeanModel model : view.getMaterialPriceGird().getStore().getModels()) {
+                        MaterialPrice materialPrice = model.getBean();
+                        if (materialPrice.getMaterial().getId().equals(material.getId())) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!isFound) {
+                        MaterialPrice materialPrice = new MaterialPrice();
+                        materialPrice.setMaterial(material);
+                        materialPrice.setUpdateBy(1l);
+                        materialPrice.setCreateBy(1l);
+
+                        BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialPrice.class);
+                        BeanModel insertModel = factory.createModel(materialPrice);
+                        view.getMaterialPriceGird().getStore().add(insertModel);
+                        view.getMaterialPriceGird().getSelectionModel().select(insertModel, false);
                     }
                 }
-
-                if (!isFound) {
-                    MaterialPrice materialPrice = new MaterialPrice();
-                    materialPrice.setMaterial(material);
-                    materialPrice.setUpdateBy(1l);
-                    materialPrice.setCreateBy(1l);
-
-                    BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialPrice.class);
-                    BeanModel insertModel = factory.createModel(materialPrice);
-                    view.getMaterialPriceGird().getStore().add(insertModel);
-                    view.getMaterialPriceGird().getSelectionModel().select(insertModel, false);
-                    DiaLogUtils.notify(view.getConstant().addSuccess());
-                } else {
-                    DiaLogUtils.notify(view.getConstant().addAlready());
-                }
-            }
-        });
-
-        view.getBtnMaterialEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                materialEditWindow.hide();
+                DiaLogUtils.notify(view.getConstant().addSuccess());
             }
         });
 

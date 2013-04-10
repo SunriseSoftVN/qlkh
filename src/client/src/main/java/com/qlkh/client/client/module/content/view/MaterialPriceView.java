@@ -83,9 +83,6 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     Button btnMaterialAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
-    Button btnMaterialEditOk = new Button();
-
-    @I18nField
     Button btnMaterialEditCancel = new Button();
 
     @I18nField
@@ -111,7 +108,7 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
         ColumnModel cm = new ColumnModel(createMaterialPriceColumnConfig(selectionModel));
-        materialPriceGird = new Grid<BeanModel>(listStore, cm);
+        materialPriceGird = new EditorGrid<BeanModel>(listStore, cm);
         materialPriceGird.setBorders(true);
         materialPriceGird.setLoadMask(true);
         materialPriceGird.setStripeRows(true);
@@ -201,6 +198,9 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
 
         ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().priceColumnTitle(),
                 PRICE_COLUMN_WIDTH);
+        MyNumberField priceNumberField = new MyNumberField();
+        priceNumberField.setSelectOnFocus(true);
+        priceColumnConfig.setEditor(new CellEditor(priceNumberField));
         columnConfigs.add(priceColumnConfig);
 
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
@@ -210,8 +210,6 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         return columnConfigs;
     }
 
-
-
     public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         if (!materialPanel.isRendered()) {
@@ -219,16 +217,17 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
             materialPanel.setBodyBorder(false);
             materialPanel.setBorders(false);
 
-            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs());
+            CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
+            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs(selectionModel));
+
             materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
             materialGrid.setBorders(true);
             materialGrid.setHeight(400);
-            materialGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+            materialGrid.setSelectionModel(selectionModel);
+            materialGrid.addPlugin(selectionModel);
 
             ToolBar toolBar = new ToolBar();
             toolBar.add(txtMaterialSearch);
-            toolBar.add(new SeparatorToolItem());
-            toolBar.add(btnMaterialAdd);
 
             materialPanel.setTopComponent(toolBar);
             materialPanel.setBottomComponent(materialPagingToolBar);
@@ -236,7 +235,7 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         }
 
         window.add(materialPanel);
-        window.addButton(btnMaterialEditOk);
+        window.addButton(btnMaterialAdd);
         window.addButton(btnMaterialEditCancel);
         window.setSize(600, 400);
         window.setAutoHeight(true);
@@ -253,8 +252,10 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     }
 
 
-    private List<ColumnConfig> createMaterialColumnConfigs() {
+    private List<ColumnConfig> createMaterialColumnConfigs(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+
+        columnConfigs.add(selectionModel.getColumn());
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
         sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
@@ -321,10 +322,6 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
 
     public Button getBtnMaterialAdd() {
         return btnMaterialAdd;
-    }
-
-    public Button getBtnMaterialEditOk() {
-        return btnMaterialEditOk;
     }
 
     public Button getBtnMaterialEditCancel() {

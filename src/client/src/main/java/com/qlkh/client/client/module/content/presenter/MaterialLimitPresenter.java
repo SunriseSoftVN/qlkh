@@ -82,47 +82,49 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         view.getBtnMaterialTaskAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
-                view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
-                if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
-                    resetMaterialFilter();
+                if (currentTask != null) {
+                    materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
+                    view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
+                    if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
+                        resetMaterialFilter();
+                    }
+                    view.getMaterialPagingToolBar().refresh();
+                    materialEditWindow.show();
                 }
-                view.getMaterialPagingToolBar().refresh();
-                materialEditWindow.show();
             }
         });
 
         view.getBtnMaterialAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
+                List<BeanModel> materialModels = view.getMaterialGrid().getSelectionModel().getSelectedItems();
+                for (BeanModel materialModel : materialModels) {
+                    boolean isFound = false;
+                    Material material = materialModel.getBean();
+                    for (BeanModel model : view.getSubTaskDetailGird().getStore().getModels()) {
+                        MaterialLimit materialLimit = model.getBean();
+                        if (materialLimit.getMaterial().getId().equals(material.getId())) {
+                            isFound = true;
+                            break;
+                        }
+                    }
 
-                boolean isFound = false;
-                for (BeanModel model : view.getSubTaskDetailGird().getStore().getModels()) {
-                    MaterialLimit materialLimit = model.getBean();
-                    if (materialLimit.getMaterial().getId().equals(material.getId())) {
-                        isFound = true;
-                        break;
+                    if (!isFound) {
+                        if (currentTask != null) {
+                            MaterialLimit materialLimit = new MaterialLimit();
+                            materialLimit.setMaterial(material);
+                            materialLimit.setTask(currentTask);
+                            materialLimit.setUpdateBy(1l);
+                            materialLimit.setCreateBy(1l);
+
+                            BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialLimit.class);
+                            BeanModel insertModel = factory.createModel(materialLimit);
+                            view.getSubTaskDetailGird().getStore().add(insertModel);
+                            view.getSubTaskDetailGird().getSelectionModel().select(insertModel, false);
+                        }
                     }
                 }
-
-                if (!isFound) {
-                    if (currentTask != null) {
-                        MaterialLimit materialLimit = new MaterialLimit();
-                        materialLimit.setMaterial(material);
-                        materialLimit.setTask(currentTask);
-                        materialLimit.setUpdateBy(1l);
-                        materialLimit.setCreateBy(1l);
-
-                        BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialLimit.class);
-                        BeanModel insertModel = factory.createModel(materialLimit);
-                        view.getSubTaskDetailGird().getStore().add(insertModel);
-                        view.getSubTaskDetailGird().getSelectionModel().select(insertModel, false);
-                        DiaLogUtils.notify(view.getConstant().addSuccess());
-                    }
-                } else {
-                    DiaLogUtils.notify(view.getConstant().addAlready());
-                }
+                DiaLogUtils.notify(view.getConstant().addSuccess());
             }
         });
 
@@ -151,13 +153,6 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                         });
                     }
                 }
-            }
-        });
-
-        view.getBtnMaterialEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent buttonEvent) {
-                materialEditWindow.hide();
             }
         });
 
