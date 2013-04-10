@@ -11,6 +11,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -23,6 +26,7 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialPriceConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialPriceSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
+import com.qlkh.core.client.constant.QuarterEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
 import com.smvp4g.mvp.client.core.view.AbstractView;
@@ -30,6 +34,7 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 import com.smvp4g.mvp.client.widget.TextField;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -65,6 +70,9 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
 
     @I18nField
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
+
+    @I18nField
+    SimpleComboBox<QuarterEnum> cbQuarter = new SimpleComboBox<QuarterEnum>();
 
     @I18nField(emptyText = true)
     TextField<String> txtSearch = new TextField<String>();
@@ -103,10 +111,19 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
             }
         });
 
+        if(!cbQuarter.isRendered()) {
+            cbQuarter.add(Arrays.asList(QuarterEnum.values()));
+            cbQuarter.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbQuarter.setEditable(false);
+            cbQuarter.setSelectOnFocus(true);
+        }
+
         pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
         txtSearch.setWidth(150);
         toolBar.add(txtSearch);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(cbQuarter);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnAdd);
         toolBar.add(new SeparatorToolItem());
@@ -191,5 +208,9 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
 
     public Grid<BeanModel> getMaterialGird() {
         return materialGird;
+    }
+
+    public SimpleComboBox<QuarterEnum> getCbQuarter() {
+        return cbQuarter;
     }
 }

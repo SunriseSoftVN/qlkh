@@ -51,7 +51,7 @@ public class SaveTaskDefaultValueHandler extends AbstractHandler<SaveTaskDefault
         } else {
             taskDefaultValue = new TaskDefaultValue();
             taskDefaultValue.setTask(action.getTask());
-            taskDefaultValue.setQuarter(getCurrentQuarter());
+            taskDefaultValue.setQuarter(getCurrentQuarter().getCode());
             taskDefaultValue.setYear(getCurrentYear());
             taskDefaultValue.setCreateBy(1l);
             taskDefaultValue.setUpdateBy(1l);

@@ -4,6 +4,7 @@
 
 package com.qlkh.server.util;
 
+import com.qlkh.core.client.constant.QuarterEnum;
 import org.jfree.data.time.Quarter;
 
 import java.util.Calendar;
@@ -30,9 +31,10 @@ public final class DateTimeUtils {
         return getCurrentYear() - 1;
     }
 
-    public static int getCurrentQuarter() {
+    public static QuarterEnum getCurrentQuarter() {
         int month = cal.get(Calendar.MONTH);
-        return month / 3 + 1;
+        int quarter =  month / 3 + 1;
+        return QuarterEnum.valueOf(quarter);
     }
 
     public static int getDateForQuarter(int quarter, int year) {

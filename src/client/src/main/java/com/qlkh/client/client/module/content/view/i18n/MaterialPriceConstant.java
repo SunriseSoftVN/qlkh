@@ -20,4 +20,5 @@ public interface MaterialPriceConstant extends Constants {
     String unitColumnTitle();
     String priceColumnTitle();
     String noteColumnTitle();
+    String cbQuarter();
 }

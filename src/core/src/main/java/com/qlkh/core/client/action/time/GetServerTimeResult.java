@@ -4,6 +4,7 @@
 
 package com.qlkh.core.client.action.time;
 
+import com.qlkh.core.client.constant.QuarterEnum;
 import net.customware.gwt.dispatch.shared.Result;
 
 /**
@@ -14,12 +15,12 @@ import net.customware.gwt.dispatch.shared.Result;
  */
 public class GetServerTimeResult implements Result {
     private int year;
-    private int quarter;
+    private QuarterEnum quarter;
 
     public GetServerTimeResult() {
     }
 
-    public GetServerTimeResult(int year, int quarter) {
+    public GetServerTimeResult(int year, QuarterEnum quarter) {
         this.year = year;
         this.quarter = quarter;
     }
@@ -28,7 +29,7 @@ public class GetServerTimeResult implements Result {
         return year;
     }
 
-    public int getQuarter() {
+    public QuarterEnum getQuarter() {
         return quarter;
     }
 }

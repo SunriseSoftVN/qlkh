@@ -38,4 +38,12 @@ public class MaterialPrice extends AbstractEntity {
     public double getPrice() {
         return price;
     }
+
+    public void setQuarter(int quarter) {
+        this.quarter = quarter;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }
