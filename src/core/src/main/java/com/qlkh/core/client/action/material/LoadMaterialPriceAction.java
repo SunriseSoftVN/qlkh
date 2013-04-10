@@ -1,6 +1,7 @@
 package com.qlkh.core.client.action.material;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
+import com.qlkh.core.client.constant.QuarterEnum;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
@@ -12,14 +13,17 @@ import net.customware.gwt.dispatch.shared.Action;
 public class LoadMaterialPriceAction implements Action<LoadMaterialPriceResult> {
 
     private BasePagingLoadConfig loadConfig;
-    private long materialId;
+    private QuarterEnum quarter;
+    private int year;
 
     public LoadMaterialPriceAction() {
     }
 
-    public LoadMaterialPriceAction(BasePagingLoadConfig loadConfig, long materialId) {
+    public LoadMaterialPriceAction(BasePagingLoadConfig loadConfig, QuarterEnum quarter, int year) {
+        assert quarter != null;
         this.loadConfig = loadConfig;
-        this.materialId = materialId;
+        this.quarter = quarter;
+        this.year = year;
     }
 
     public BasePagingLoadConfig getLoadConfig() {
@@ -30,11 +34,19 @@ public class LoadMaterialPriceAction implements Action<LoadMaterialPriceResult> 
         this.loadConfig = loadConfig;
     }
 
-    public long getMaterialId() {
-        return materialId;
+    public QuarterEnum getQuarter() {
+        return quarter;
     }
 
-    public void setMaterialId(long materialId) {
-        this.materialId = materialId;
+    public void setQuarter(QuarterEnum quarter) {
+        this.quarter = quarter;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

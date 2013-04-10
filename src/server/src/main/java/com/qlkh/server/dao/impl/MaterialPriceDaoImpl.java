@@ -2,6 +2,7 @@ package com.qlkh.server.dao.impl;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlkh.core.client.constant.QuarterEnum;
 import com.qlkh.core.client.model.MaterialLimit;
 import com.qlkh.core.client.model.MaterialPrice;
 import com.qlkh.core.client.model.core.AbstractEntity;
@@ -29,16 +30,11 @@ public class MaterialPriceDaoImpl extends AbstractDao<MaterialPrice> implements 
     }
 
     @Override
-    public MaterialPrice findByMaterialIdAndYear(long materialId, int year) {
+    public List<MaterialPrice> findByTime(QuarterEnum quarter, int year) {
+        assert quarter != null;
         DetachedCriteria criteria = DetachedCriteria.forClass(MaterialPrice.class)
-                .add(Restrictions.eq("material.id", materialId))
-                .add(Restrictions.eq("year", year));
-        List result = getHibernateTemplate().findByCriteria(criteria);
-
-        if (!result.isEmpty()) {
-            return (MaterialPrice) result.get(0);
-        } else {
-            return null;
-        }
+                .add(Restrictions.eq("year", year))
+                .add(Restrictions.eq("quarter", quarter.getCode()));
+        return getHibernateTemplate().findByCriteria(criteria);
     }
 }

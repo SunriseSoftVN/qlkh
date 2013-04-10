@@ -1,12 +1,9 @@
 package com.qlkh.server.handler.material;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.qlkh.core.client.action.material.LoadMaterialLimitResult;
 import com.qlkh.core.client.action.material.LoadMaterialPriceAction;
 import com.qlkh.core.client.action.material.LoadMaterialPriceResult;
-import com.qlkh.core.client.model.MaterialLimit;
 import com.qlkh.core.client.model.MaterialPrice;
-import com.qlkh.server.dao.MaterialLimitDao;
 import com.qlkh.server.dao.MaterialPriceDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -36,10 +33,10 @@ public class LoadMaterialPriceHandler extends AbstractHandler<LoadMaterialPriceA
     }
 
     @Override
-    public LoadMaterialPriceResult execute(LoadMaterialPriceAction loadMaterialAction, ExecutionContext executionContext) throws DispatchException {
-        List<MaterialPrice> materials = materialPriceDao.findByMaterialId(loadMaterialAction.getMaterialId());
+    public LoadMaterialPriceResult execute(LoadMaterialPriceAction action, ExecutionContext executionContext) throws DispatchException {
+        List<MaterialPrice> materials = materialPriceDao.findByTime(action.getQuarter(), action.getYear());
         BasePagingLoadResult<MaterialPrice> result =
-                new BasePagingLoadResult<MaterialPrice>(materials, loadMaterialAction.getLoadConfig().getOffset(), 1);
+                new BasePagingLoadResult<MaterialPrice>(materials, action.getLoadConfig().getOffset(), 1);
         return new LoadMaterialPriceResult(result);
     }
 }

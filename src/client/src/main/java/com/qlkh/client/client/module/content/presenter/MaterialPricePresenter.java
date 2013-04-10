@@ -1,15 +1,20 @@
 package com.qlkh.client.client.module.content.presenter;
 
-import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
+import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPricePlace;
 import com.qlkh.client.client.module.content.view.MaterialPriceView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.action.material.LoadMaterialPriceAction;
+import com.qlkh.core.client.action.material.LoadMaterialPriceResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
-import com.qlkh.core.client.model.Material;
+import com.qlkh.core.client.constant.QuarterEnum;
+import com.qlkh.core.client.model.MaterialPrice;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -24,23 +29,53 @@ import net.customware.gwt.dispatch.client.DispatchAsync;
 public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView> {
 
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
+    private QuarterEnum currentQuarter;
+    private int currentYear;
 
     @Override
     public void onActivate() {
         view.show();
-        view.getPagingToolBar().refresh();
+        if(currentQuarter != null && currentYear > 0) {
+            view.getMaterialPricePagingToolBar().refresh();
+        }
     }
 
     @Override
     protected void doBind() {
-        view.createGrid(GridUtils.createListStore(Material.class));
-        view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialGird().getStore().getLoader());
-
         dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
             @Override
             public void onSuccess(GetServerTimeResult result) {
+                currentQuarter = result.getQuarter();
+                currentYear = result.getYear();
+
+                view.createGrid(createMaterialPriceListStore());
+                view.getMaterialPricePagingToolBar().bind((PagingLoader<?>) view.getMaterialPriceGird().getStore().getLoader());
+                view.getMaterialPricePagingToolBar().refresh();
+
                 view.getCbQuarter().setSimpleValue(result.getQuarter());
             }
         });
+    }
+
+    private ListStore<BeanModel> createMaterialPriceListStore() {
+        RpcProxy<LoadMaterialPriceResult> rpcProxy = new RpcProxy<LoadMaterialPriceResult>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialPriceResult> callback) {
+                dispatch.execute(new LoadMaterialPriceAction((BasePagingLoadConfig) loadConfig,
+                        currentQuarter, currentYear), callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<MaterialPrice>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<MaterialPrice>>(rpcProxy, new LoadGridDataReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 }

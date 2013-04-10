@@ -2,18 +2,14 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
@@ -50,14 +46,23 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     public static final int TASK_LIST_SIZE = 200;
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
-    public static final String CODE_COLUMN = "code";
+    public static final String CODE_COLUMN = "material.code";
     public static final int CODE_COLUMN_WIDTH = 100;
-    public static final String NAME_COLUMN = "name";
+    public static final String NAME_COLUMN = "material.name";
     public static final int NAME_COLUMN_WIDTH = 200;
-    public static final String UNIT_COLUMN = "unit";
+    public static final String UNIT_COLUMN = "material.unit";
     public static final int UNIT_COLUMN_WIDTH = 100;
-    public static final String NOTE_COLUMN = "note";
+    public static final String PRICE_COLUMN = "price";
+    public static final int PRICE_COLUMN_WIDTH = 100;
+    public static final String NOTE_COLUMN = "material.note";
     public static final int NOTE_COLUMN_WIDTH = 200;
+
+    public static final String MATERIAL_CODE_COLUMN = "code";
+    public static final int MATERIAL_CODE_WIDTH = 100;
+    public static final String MATERIAL_NAME_COLUMN = "name";
+    public static final int MATERIAL_NAME_WIDTH = 200;
+    public static final String MATERIAL_UNIT_COLUMN = "unit";
+    public static final int MATERIAL_UNIT_WIDTH = 100;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
@@ -72,30 +77,46 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
+    Button btnMaterialAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
+
+    @I18nField
+    Button btnMaterialEditOk = new Button();
+
+    @I18nField
+    Button btnMaterialEditCancel = new Button();
+
+    @I18nField
     SimpleComboBox<QuarterEnum> cbQuarter = new SimpleComboBox<QuarterEnum>();
 
     @I18nField(emptyText = true)
     TextField<String> txtSearch = new TextField<String>();
 
-    private PagingToolBar pagingToolBar;
-    private Grid<BeanModel> materialGird;
+    @I18nField(emptyText = true)
+    TextField<String> txtMaterialSearch = new TextField<String>();
+
+    private PagingToolBar materialPricePagingToolBar;
+    private Grid<BeanModel> materialPriceGird;
     private ContentPanel contentPanel = new ContentPanel();
+
+    private ContentPanel materialPanel = new ContentPanel();
+    private PagingToolBar materialPagingToolBar = new PagingToolBar(100);
+    private Grid<BeanModel> materialGrid;
 
     /**
      * Create Grid on View.
      */
     public void createGrid(ListStore<BeanModel> listStore) {
         CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-        ColumnModel cm = new ColumnModel(createColumnConfig(selectionModel));
-        materialGird = new Grid<BeanModel>(listStore, cm);
-        materialGird.setBorders(true);
-        materialGird.setLoadMask(true);
-        materialGird.setStripeRows(true);
-        materialGird.setSelectionModel(selectionModel);
-        materialGird.addPlugin(selectionModel);
-        materialGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        materialGird.getStore().getLoader().setSortField(CODE_COLUMN);
-        materialGird.addListener(Events.OnKeyDown, new KeyListener() {
+        ColumnModel cm = new ColumnModel(createMaterialPriceColumnConfig(selectionModel));
+        materialPriceGird = new Grid<BeanModel>(listStore, cm);
+        materialPriceGird.setBorders(true);
+        materialPriceGird.setLoadMask(true);
+        materialPriceGird.setStripeRows(true);
+        materialPriceGird.setSelectionModel(selectionModel);
+        materialPriceGird.addPlugin(selectionModel);
+        materialPriceGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
+        materialPriceGird.getStore().getLoader().setSortField(CODE_COLUMN);
+        materialPriceGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
                 if (e.getKeyCode() == 112) {
@@ -118,7 +139,7 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
             cbQuarter.setSelectOnFocus(true);
         }
 
-        pagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
+        materialPricePagingToolBar = new PagingToolBar(TASK_LIST_SIZE);
         ToolBar toolBar = new ToolBar();
         txtSearch.setWidth(150);
         toolBar.add(txtSearch);
@@ -134,9 +155,9 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         toolBar.add(btnRefresh);
 
         contentPanel.setLayout(new MyFitLayout());
-        contentPanel.add(materialGird);
+        contentPanel.add(materialPriceGird);
         contentPanel.setTopComponent(toolBar);
-        contentPanel.setBottomComponent(pagingToolBar);
+        contentPanel.setBottomComponent(materialPricePagingToolBar);
         contentPanel.setHeaderVisible(false);
         contentPanel.setHeight(Window.getClientHeight() - 90);
         Window.addResizeHandler(new ResizeHandler() {
@@ -148,7 +169,7 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         setWidget(contentPanel);
     }
 
-    private List<ColumnConfig> createColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
+    private List<ColumnConfig> createMaterialPriceColumnConfig(CheckBoxSelectionModel<BeanModel> selectionModel) {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
         columnConfigs.add(selectionModel.getColumn());
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
@@ -175,9 +196,86 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
                 UNIT_COLUMN_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
+        ColumnConfig priceColumnConfig = new ColumnConfig(PRICE_COLUMN, getConstant().priceColumnTitle(),
+                PRICE_COLUMN_WIDTH);
+        columnConfigs.add(priceColumnConfig);
+
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
                 NOTE_COLUMN_WIDTH);
         columnConfigs.add(noteColumnConfig);
+
+        return columnConfigs;
+    }
+
+
+
+    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!materialPanel.isRendered()) {
+            materialPanel.setHeaderVisible(false);
+            materialPanel.setBodyBorder(false);
+            materialPanel.setBorders(false);
+
+            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs());
+            materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
+            materialGrid.setBorders(true);
+            materialGrid.setHeight(400);
+            materialGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+
+            ToolBar toolBar = new ToolBar();
+            toolBar.add(txtMaterialSearch);
+            toolBar.add(new SeparatorToolItem());
+            toolBar.add(btnMaterialAdd);
+
+            materialPanel.setTopComponent(toolBar);
+            materialPanel.setBottomComponent(materialPagingToolBar);
+            materialPanel.add(materialGrid);
+        }
+
+        window.add(materialPanel);
+        window.addButton(btnMaterialEditOk);
+        window.addButton(btnMaterialEditCancel);
+        window.setSize(600, 400);
+        window.setAutoHeight(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().materialEditPanel());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                materialPriceGird.focus();
+            }
+        });
+        return window;
+    }
+
+
+    private List<ColumnConfig> createMaterialColumnConfigs() {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
+
+        ColumnConfig codeColumnConfig = new ColumnConfig(MATERIAL_CODE_COLUMN, getConstant().materialCodeColumnTitle(), MATERIAL_CODE_WIDTH);
+        columnConfigs.add(codeColumnConfig);
+
+        ColumnConfig nameColumnConfig = new ColumnConfig(MATERIAL_NAME_COLUMN, getConstant().materialNameColumnTitle(),
+                MATERIAL_NAME_WIDTH);
+        columnConfigs.add(nameColumnConfig);
+
+        ColumnConfig unitColumnConfig = new ColumnConfig(MATERIAL_UNIT_COLUMN, getConstant().materialUnitColumnTitle(),
+                MATERIAL_UNIT_WIDTH);
+        columnConfigs.add(unitColumnConfig);
 
         return columnConfigs;
     }
@@ -202,12 +300,12 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         return txtSearch;
     }
 
-    public PagingToolBar getPagingToolBar() {
-        return pagingToolBar;
+    public PagingToolBar getMaterialPricePagingToolBar() {
+        return materialPricePagingToolBar;
     }
 
-    public Grid<BeanModel> getMaterialGird() {
-        return materialGird;
+    public Grid<BeanModel> getMaterialPriceGird() {
+        return materialPriceGird;
     }
 
     public SimpleComboBox<QuarterEnum> getCbQuarter() {
