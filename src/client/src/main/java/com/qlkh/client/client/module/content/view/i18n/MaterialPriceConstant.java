@@ -35,4 +35,5 @@ public interface MaterialPriceConstant extends Constants {
     String saveMessageSuccess();
     String deleteMessage();
     String deleteSuccess();
+    String btnCopy();
 }

@@ -81,6 +81,9 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
     @I18nField
+    Button btnCopy = new Button(null, IconHelper.createPath("assets/images/icons/fam/database_save.png"));
+
+    @I18nField
     Button btnMaterialAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
     @I18nField
@@ -154,6 +157,8 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnRefresh);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnCopy);
 
         contentPanel.setLayout(new MyFitLayout());
         contentPanel.add(materialPriceGird);
