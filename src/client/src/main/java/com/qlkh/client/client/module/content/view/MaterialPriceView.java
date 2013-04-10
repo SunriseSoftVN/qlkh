@@ -115,7 +115,7 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         materialPriceGird.setSelectionModel(selectionModel);
         materialPriceGird.addPlugin(selectionModel);
         materialPriceGird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
-        materialPriceGird.getStore().getLoader().setSortField(CODE_COLUMN);
+        materialPriceGird.getStore().getLoader().setSortField("material.id");
         materialPriceGird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {

@@ -32,4 +32,5 @@ public interface MaterialPriceConstant extends Constants {
     String materialNoteColumnTitle();
     String addSuccess();
     String addAlready();
+    String saveMessageSuccess();
 }
