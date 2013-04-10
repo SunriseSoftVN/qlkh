@@ -48,11 +48,13 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     public static final int MATERIAL_LIMIT_QUANTITY_WIDTH = 70;
 
     public static final String MATERIAL_CODE_COLUMN = "code";
-    public static final int MATERIAL_CODE_WIDTH = 100;
+    public static final int MATERIAL_CODE_WIDTH = 70;
     public static final String MATERIAL_NAME_COLUMN = "name";
-    public static final int MATERIAL_NAME_WIDTH = 200;
+    public static final int MATERIAL_NAME_WIDTH = 150;
     public static final String MATERIAL_UNIT_COLUMN = "unit";
-    public static final int MATERIAL_UNIT_WIDTH = 100;
+    public static final int MATERIAL_UNIT_WIDTH = 70;
+    public static final String MATERIAL_NOTE_COLUMN = "note";
+    public static final int MATERIAL_NOTE_WIDTH = 150;
 
     @I18nField
     CheckBox cbShowTaskHasLimit = new CheckBox();
@@ -207,6 +209,10 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         ColumnConfig unitColumnConfig = new ColumnConfig(MATERIAL_UNIT_COLUMN, getConstant().materialUnitColumnTitle(),
                 MATERIAL_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
+
+        ColumnConfig noteColumnConfig = new ColumnConfig(MATERIAL_NOTE_COLUMN, getConstant().materialNoteColumnTitle(),
+                MATERIAL_NOTE_WIDTH);
+        columnConfigs.add(noteColumnConfig);
 
         return columnConfigs;
     }

@@ -58,11 +58,13 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     public static final int NOTE_COLUMN_WIDTH = 200;
 
     public static final String MATERIAL_CODE_COLUMN = "code";
-    public static final int MATERIAL_CODE_WIDTH = 100;
+    public static final int MATERIAL_CODE_WIDTH = 70;
     public static final String MATERIAL_NAME_COLUMN = "name";
-    public static final int MATERIAL_NAME_WIDTH = 200;
+    public static final int MATERIAL_NAME_WIDTH = 150;
     public static final String MATERIAL_UNIT_COLUMN = "unit";
-    public static final int MATERIAL_UNIT_WIDTH = 100;
+    public static final int MATERIAL_UNIT_WIDTH = 70;
+    public static final String MATERIAL_NOTE_COLUMN = "note";
+    public static final int MATERIAL_NOTE_WIDTH = 150;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
@@ -277,6 +279,10 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
                 MATERIAL_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
+        ColumnConfig noteColumnConfig = new ColumnConfig(MATERIAL_NOTE_COLUMN, getConstant().materialNoteColumnTitle(),
+                MATERIAL_NOTE_WIDTH);
+        columnConfigs.add(noteColumnConfig);
+
         return columnConfigs;
     }
 
@@ -310,5 +316,37 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
 
     public SimpleComboBox<QuarterEnum> getCbQuarter() {
         return cbQuarter;
+    }
+
+    public Button getBtnMaterialAdd() {
+        return btnMaterialAdd;
+    }
+
+    public Button getBtnMaterialEditOk() {
+        return btnMaterialEditOk;
+    }
+
+    public Button getBtnMaterialEditCancel() {
+        return btnMaterialEditCancel;
+    }
+
+    public TextField<String> getTxtMaterialSearch() {
+        return txtMaterialSearch;
+    }
+
+    public ContentPanel getContentPanel() {
+        return contentPanel;
+    }
+
+    public ContentPanel getMaterialPanel() {
+        return materialPanel;
+    }
+
+    public PagingToolBar getMaterialPagingToolBar() {
+        return materialPagingToolBar;
+    }
+
+    public Grid<BeanModel> getMaterialGrid() {
+        return materialGrid;
     }
 }
