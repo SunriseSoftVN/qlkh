@@ -7,6 +7,7 @@ package com.qlkh.server.dao.impl;
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlkh.core.client.constant.QuarterEnum;
+import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Material;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
@@ -102,6 +103,16 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 } else if (hasNoLimit && !hasLimit) {
                     sql += "WHERE `task`.`id` NOT IN (SELECT `taskid` FROM `material_limit`) ";
                 }
+
+                if (!sql.contains("WHERE")) {
+                    sql += "WHERE ";
+                } else {
+                    sql += "AND ";
+                }
+
+                sql += "`task`.`taskTypeCode` !=  " + TaskTypeEnum.NAM.getCode() +
+                        " AND `task`.`taskTypeCode` != " + TaskTypeEnum.SUBSUM.getCode() +
+                        " AND `task`.`taskTypeCode` != " + TaskTypeEnum.SUM.getCode();
 
                 sql = createFilter(config, "task", sql);
 
