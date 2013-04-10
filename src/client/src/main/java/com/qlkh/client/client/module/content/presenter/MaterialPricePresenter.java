@@ -148,6 +148,8 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                         view.getMaterialPriceGird().getStore().add(insertModel);
                         view.getMaterialPriceGird().getSelectionModel().select(insertModel, false);
                     }
+                    //Remove
+                    view.getMaterialGrid().getStore().remove(materialModel);
                 }
                 DiaLogUtils.notify(view.getConstant().addSuccess());
             }
