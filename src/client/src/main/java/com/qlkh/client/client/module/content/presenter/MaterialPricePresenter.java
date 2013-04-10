@@ -151,7 +151,10 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                     //Remove
                     view.getMaterialGrid().getStore().remove(materialModel);
                 }
-                DiaLogUtils.notify(view.getConstant().addSuccess());
+
+                if(!materialModels.isEmpty()) {
+                    DiaLogUtils.notify(view.getConstant().addSuccess());
+                }
             }
         });
 

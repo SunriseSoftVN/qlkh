@@ -126,7 +126,10 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                     //Remove
                     view.getMaterialGrid().getStore().remove(materialModel);
                 }
-                DiaLogUtils.notify(view.getConstant().addSuccess());
+
+                if(!materialModels.isEmpty()) {
+                    DiaLogUtils.notify(view.getConstant().addSuccess());
+                }
             }
         });
 
