@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialPriceConstant;
@@ -206,6 +207,10 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
         ColumnConfig noteColumnConfig = new ColumnConfig(NOTE_COLUMN, getConstant().noteColumnTitle(),
                 NOTE_COLUMN_WIDTH);
         columnConfigs.add(noteColumnConfig);
+
+        for (int i = 1; i < columnConfigs.size(); i++) {
+            columnConfigs.get(i).setNumberFormat(NumberFormat.getDecimalFormat());
+        }
 
         return columnConfigs;
     }
