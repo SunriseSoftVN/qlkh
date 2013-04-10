@@ -22,6 +22,7 @@ import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialPriceConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialPriceSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
+import com.qlkh.client.client.widget.MyNumberField;
 import com.qlkh.core.client.constant.QuarterEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
