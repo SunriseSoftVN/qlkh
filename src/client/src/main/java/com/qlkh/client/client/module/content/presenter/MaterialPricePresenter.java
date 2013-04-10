@@ -15,6 +15,8 @@ import com.qlkh.client.client.module.content.place.MaterialPricePlace;
 import com.qlkh.client.client.module.content.view.MaterialPriceView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.action.core.DeleteAction;
+import com.qlkh.core.client.action.core.DeleteResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
@@ -223,6 +225,38 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                 view.getMaterialPricePagingToolBar().refresh();
             }
         });
+
+        view.getBtnDelete().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                final List<BeanModel> models = view.getMaterialPriceGird().getSelectionModel().getSelectedItems();
+                final List<Long> materialPriceIds = new ArrayList<Long>();
+                for (BeanModel model : models) {
+                    MaterialPrice materialPrice = model.getBean();
+                    materialPriceIds.add(materialPrice.getId());
+                }
+
+                if (!materialPriceIds.isEmpty()) {
+                    DiaLogUtils.conform(view.getConstant().deleteMessage(), new Listener<MessageBoxEvent>() {
+                        @Override
+                        public void handleEvent(MessageBoxEvent event) {
+                            if (event.getButtonClicked().getText().equals("Yes")) {
+                                dispatch.execute(new DeleteAction(MaterialPrice.class.getName(), materialPriceIds), new AbstractAsyncCallback<DeleteResult>() {
+                                    @Override
+                                    public void onSuccess(DeleteResult deleteResult) {
+                                        DiaLogUtils.notify(view.getConstant().deleteSuccess());
+                                        for (BeanModel model : models) {
+                                            view.getMaterialPriceGird().getStore().remove(model);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     private ListStore<BeanModel> createListStore() {
