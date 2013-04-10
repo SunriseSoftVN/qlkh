@@ -140,12 +140,12 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "`code` ," +
                         "`unit` ," +
                         "`note` " +
-                        "FROM  `material` " +
-                        "WHERE `id` NOT IN (SELECT `materialId` FROM `material_price` WHERE `year` = " + year + " AND `quarter` = " + quarter.getCode() + ")";
+                        "FROM  `material` ";
 
                 String count = "SELECT COUNT(*) FROM `material` ";
 
-                String sql = createFilter(config, "material", "");
+                String sql = "WHERE `id` NOT IN (SELECT `materialId` FROM `material_price` WHERE `year` = " + year + " AND `quarter` = " + quarter.getCode() + ")";
+                sql = createFilter(config, "material", sql);
 
                 SQLQuery selectQuery = session.createSQLQuery(select += sql);
                 selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
@@ -171,12 +171,12 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "`code` ," +
                         "`unit` ," +
                         "`note` " +
-                        "FROM  `material` " +
-                        "WHERE `id` NOT IN (SELECT `materialId` FROM `material_limit` WHERE `taskId` = " + taskId + ")";
+                        "FROM  `material` ";
 
                 String count = "SELECT COUNT(*) FROM `material` ";
 
-                String sql = createFilter(config, "material", "");
+                String sql = "WHERE `id` NOT IN (SELECT `materialId` FROM `material_limit` WHERE `taskId` = " + taskId + ")";
+                sql = createFilter(config, "material", sql);
 
                 SQLQuery selectQuery = session.createSQLQuery(select += sql);
                 selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
