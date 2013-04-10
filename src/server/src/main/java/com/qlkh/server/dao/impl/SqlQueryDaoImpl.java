@@ -6,6 +6,8 @@ package com.qlkh.server.dao.impl;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlkh.core.client.constant.QuarterEnum;
+import com.qlkh.core.client.model.Material;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
@@ -101,21 +103,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                     sql += "WHERE `task`.`id` NOT IN (SELECT `taskid` FROM `material_limit`) ";
                 }
 
-                if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
-                    Map<String, Object> filters = config.get("filters");
-                    if (filters != null) {
-                        if (!sql.contains("WHERE")) {
-                            sql += "WHERE ";
-                        } else {
-                            sql += "AND ";
-                        }
-                        sql += "(";
-                        for (String filter : filters.keySet()) {
-                            sql += "`task`.`" + filter + "` LIKE '%" + filters.get(filter) + "%' OR ";
-                        }
-                        sql = sql.substring(0, sql.length() - 3) + ")";
-                    }
-                }
+                sql = createFilter(config, "task", sql);
 
                 SQLQuery selectQuery = session.createSQLQuery(select += sql);
                 selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Task.class));
@@ -129,5 +117,55 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 return new BasePagingLoadResult<Task>(selectQuery.list(), config.getOffset(), total);
             }
         });
+    }
+
+    @Override
+    public BasePagingLoadResult<Material> getMaterials(int year, QuarterEnum quarter, final BasePagingLoadConfig config) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Material>>() {
+            @Override
+            public BasePagingLoadResult<Material> doInHibernate(Session session) throws HibernateException, SQLException {
+                String select = "SELECT `id` AS `bigId`," +
+                        "`name` ," +
+                        "`code` ," +
+                        "`unit` ," +
+                        "`note` ," +
+                        "FROM  `material` ";
+
+                String count = "SELECT COUNT(*) FROM `material` ";
+
+                String sql = createFilter(config, "material", "");
+
+                SQLQuery selectQuery = session.createSQLQuery(select += sql);
+                selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
+                selectQuery.setMaxResults(config.getLimit());
+                selectQuery.setFirstResult(config.getOffset());
+
+                SQLQuery countQuery = session.createSQLQuery(count += sql);
+
+                int total = Integer.valueOf(countQuery.list().get(0).toString());
+
+                return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);
+            }
+        });
+    }
+
+    private String createFilter(BasePagingLoadConfig config, String tableName, String query) {
+        String sql = query;
+        if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+            Map<String, Object> filters = config.get("filters");
+            if (filters != null) {
+                if (!sql.contains("WHERE")) {
+                    sql += "WHERE ";
+                } else {
+                    sql += "AND ";
+                }
+                sql += "(";
+                for (String filter : filters.keySet()) {
+                    sql += "`" + tableName + "`.`" + filter + "` LIKE '%" + filters.get(filter) + "%' OR ";
+                }
+                sql = sql.substring(0, sql.length() - 3) + ")";
+            }
+        }
+        return sql;
     }
 }

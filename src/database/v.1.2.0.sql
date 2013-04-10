@@ -9,4 +9,4 @@ ADD  `quarter` INT NOT NULL AFTER  `price`;
 
 ALTER TABLE `material_price` DROP INDEX `price_year`;
 
-ALTER TABLE  `qlkh`.`material_price` ADD UNIQUE  `price_year_quarter` (  `id` ,  `quarter` ,  `year` );
+ALTER TABLE  `qlkh`.`material_price` ADD UNIQUE  `price_year_quarter` (  `materialId` ,  `quarter` ,  `year` );

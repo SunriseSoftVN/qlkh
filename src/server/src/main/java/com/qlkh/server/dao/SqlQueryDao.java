@@ -6,6 +6,8 @@ package com.qlkh.server.dao;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadConfig;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
+import com.qlkh.core.client.constant.QuarterEnum;
+import com.qlkh.core.client.model.Material;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
@@ -28,4 +30,6 @@ public interface SqlQueryDao extends Dao {
     List<TaskDetailNamDataView> getTaskDetailNam(List<Long> stationIds, int year);
 
     BasePagingLoadResult<Task> getTasks(boolean hasLimit, boolean hasNoLimit, BasePagingLoadConfig config);
+
+    BasePagingLoadResult<Material> getMaterials(int year, QuarterEnum quarter, BasePagingLoadConfig config);
 }
