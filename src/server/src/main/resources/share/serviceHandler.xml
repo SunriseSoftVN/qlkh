@@ -31,7 +31,8 @@
                 <bean class="com.qlkh.server.handler.material.LoadMaterialLimitHandler"/>
                 <bean class="com.qlkh.server.handler.task.LoadTaskHasLimitHandler"/>
                 <bean class="com.qlkh.server.handler.material.DeleteMaterialHandler"/>
-                <bean class="com.qlkh.server.handler.material.LoadMaterialPriceHandler"/>
+                <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutPriceHandler"/>
+                <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutLimitHandler"/>
             </list>
         </property>
     </bean>

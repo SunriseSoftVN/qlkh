@@ -5,21 +5,21 @@ import com.qlkh.core.client.constant.QuarterEnum;
 import net.customware.gwt.dispatch.shared.Action;
 
 /**
- * The Class MaterialPriceAction.
+ * The Class LoadMaterialWithoutPriceAction.
  *
  * @author Nguyen Duc Dung
  * @since 4/5/13 11:26 AM
  */
-public class LoadMaterialPriceAction implements Action<LoadMaterialPriceResult> {
+public class LoadMaterialWithoutPriceAction implements Action<LoadMaterialWithoutPriceResult> {
 
     private BasePagingLoadConfig loadConfig;
     private QuarterEnum quarter;
     private int year;
 
-    public LoadMaterialPriceAction() {
+    public LoadMaterialWithoutPriceAction() {
     }
 
-    public LoadMaterialPriceAction(BasePagingLoadConfig loadConfig, QuarterEnum quarter, int year) {
+    public LoadMaterialWithoutPriceAction(BasePagingLoadConfig loadConfig, QuarterEnum quarter, int year) {
         assert quarter != null;
         this.loadConfig = loadConfig;
         this.quarter = quarter;

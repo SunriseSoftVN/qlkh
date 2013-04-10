@@ -3,7 +3,6 @@ package com.qlkh.client.client.module.content.presenter;
 import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
@@ -14,13 +13,14 @@ import com.qlkh.client.client.module.content.place.MaterialLimitPlace;
 import com.qlkh.client.client.module.content.presenter.share.AbstractTaskDetailPresenter;
 import com.qlkh.client.client.module.content.view.MaterialLimitView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.DeleteAction;
 import com.qlkh.core.client.action.core.DeleteResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.material.LoadMaterialLimitAction;
 import com.qlkh.core.client.action.material.LoadMaterialLimitResult;
+import com.qlkh.core.client.action.material.LoadMaterialWithoutLimitAction;
+import com.qlkh.core.client.action.material.LoadMaterialWithoutLimitResult;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitAction;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitResult;
 import com.qlkh.core.client.model.Material;
@@ -83,7 +83,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (currentTask != null) {
-                    materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
+                    materialEditWindow = view.createMaterialEditWindow(createMaterialStore());
                     view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                     if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
                         resetMaterialFilter();
@@ -239,8 +239,8 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             }
         };
 
-        PagingLoader<PagingLoadResult<LoadTaskHasLimitResult>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<LoadTaskHasLimitResult>>(rpcProxy, new LoadGridDataReader()) {
+        PagingLoader<PagingLoadResult<Task>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Task>>(rpcProxy, new LoadGridDataReader()) {
                     @Override
                     protected void onLoadFailure(Object loadConfig, Throwable t) {
                         super.onLoadFailure(loadConfig, t);
@@ -272,6 +272,31 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         view.getTaskGird().focus();
 
         createSubTaskGrid();
+    }
+
+    private ListStore<BeanModel> createMaterialStore() {
+        RpcProxy<LoadMaterialWithoutLimitResult> rpcProxy = new RpcProxy<LoadMaterialWithoutLimitResult>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialWithoutLimitResult> callback) {
+                long currentTaskId = -1;
+                if (currentTask != null) {
+                    currentTaskId = currentTask.getId();
+                }
+                dispatch.execute(new LoadMaterialWithoutLimitAction((BasePagingLoadConfig) loadConfig, currentTaskId), callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<Material>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Material>>(rpcProxy, new LoadGridDataReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
     }
 
     @Override

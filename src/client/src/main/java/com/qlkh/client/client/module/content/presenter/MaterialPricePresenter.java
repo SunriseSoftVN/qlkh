@@ -14,13 +14,14 @@ import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPricePlace;
 import com.qlkh.client.client.module.content.view.MaterialPriceView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.DeleteAction;
 import com.qlkh.core.client.action.core.DeleteResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.grid.LoadGridDataResult;
+import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceAction;
+import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
@@ -78,7 +79,7 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                materialEditWindow = view.createMaterialEditWindow(GridUtils.createListStore(Material.class));
+                materialEditWindow = view.createMaterialEditWindow(createMaterialStore());
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                 if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
                     resetMaterialFilter();
@@ -258,6 +259,29 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
         });
 
     }
+
+
+    private ListStore<BeanModel> createMaterialStore() {
+        RpcProxy<LoadMaterialWithoutPriceResult> rpcProxy = new RpcProxy<LoadMaterialWithoutPriceResult>() {
+            @Override
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialWithoutPriceResult> callback) {
+                dispatch.execute(new LoadMaterialWithoutPriceAction((BasePagingLoadConfig) loadConfig, currentQuarter, currentYear), callback);
+            }
+        };
+
+        PagingLoader<PagingLoadResult<Material>> pagingLoader =
+                new BasePagingLoader<PagingLoadResult<Material>>(rpcProxy, new LoadGridDataReader()) {
+                    @Override
+                    protected void onLoadFailure(Object loadConfig, Throwable t) {
+                        super.onLoadFailure(loadConfig, t);
+                        //Log load exception.
+                        DiaLogUtils.logAndShowRpcErrorMessage(t);
+                    }
+                };
+
+        return new ListStore<BeanModel>(pagingLoader);
+    }
+
 
     private ListStore<BeanModel> createListStore() {
         RpcProxy<LoadGridDataResult> rpcProxy = new RpcProxy<LoadGridDataResult>() {

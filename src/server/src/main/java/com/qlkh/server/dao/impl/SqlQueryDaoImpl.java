@@ -131,7 +131,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
     }
 
     @Override
-    public BasePagingLoadResult<Material> getMaterials(int year, QuarterEnum quarter, final BasePagingLoadConfig config) {
+    public BasePagingLoadResult<Material> getMaterials(final int year, final QuarterEnum quarter, final BasePagingLoadConfig config) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Material>>() {
             @Override
             public BasePagingLoadResult<Material> doInHibernate(Session session) throws HibernateException, SQLException {
@@ -139,8 +139,40 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "`name` ," +
                         "`code` ," +
                         "`unit` ," +
-                        "`note` ," +
-                        "FROM  `material` ";
+                        "`note` " +
+                        "FROM  `material` " +
+                        "WHERE `id` NOT IN (SELECT `materialId` FROM `material_price` WHERE `year` = " + year + " AND `quarter` = " + quarter.getCode() + ")";
+
+                String count = "SELECT COUNT(*) FROM `material` ";
+
+                String sql = createFilter(config, "material", "");
+
+                SQLQuery selectQuery = session.createSQLQuery(select += sql);
+                selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
+                selectQuery.setMaxResults(config.getLimit());
+                selectQuery.setFirstResult(config.getOffset());
+
+                SQLQuery countQuery = session.createSQLQuery(count += sql);
+
+                int total = Integer.valueOf(countQuery.list().get(0).toString());
+
+                return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);
+            }
+        });
+    }
+
+    @Override
+    public BasePagingLoadResult<Material> getMaterials(final long taskId, final BasePagingLoadConfig config) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Material>>() {
+            @Override
+            public BasePagingLoadResult<Material> doInHibernate(Session session) throws HibernateException, SQLException {
+                String select = "SELECT `id` AS `bigId`," +
+                        "`name` ," +
+                        "`code` ," +
+                        "`unit` ," +
+                        "`note` " +
+                        "FROM  `material` " +
+                        "WHERE `id` NOT IN (SELECT `materialId` FROM `material_limit` WHERE `taskId` = " + taskId + ")";
 
                 String count = "SELECT COUNT(*) FROM `material` ";
 
