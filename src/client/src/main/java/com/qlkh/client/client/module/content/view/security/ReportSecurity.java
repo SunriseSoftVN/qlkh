@@ -20,11 +20,19 @@ public class ReportSecurity implements ViewSecurityConfigurator {
         return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.USER};
     }
 
-    public HasRole[] cbbReportStation() {
+    public HasRole[] cbbTaskReportStation() {
         return new HasRole[]{UserRoleEnum.MANAGER};
     }
 
-    public HasRole[] cbbReportBranch() {
+    public HasRole[] cbbPriceReportStation() {
+        return new HasRole[]{UserRoleEnum.MANAGER};
+    }
+
+    public HasRole[] cbbTaskReportBranch() {
+        return new HasRole[]{UserRoleEnum.USER};
+    }
+
+    public HasRole[] cbbPriceReportBranch() {
         return new HasRole[]{UserRoleEnum.USER};
     }
 }

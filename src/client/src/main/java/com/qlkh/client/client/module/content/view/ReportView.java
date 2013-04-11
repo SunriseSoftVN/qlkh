@@ -7,10 +7,7 @@ package com.qlkh.client.client.module.content.view;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -43,18 +40,27 @@ public class ReportView extends AbstractView<ReportConstant> {
     @I18nField
     Label lblDownload = new Label();
 
-    @I18nField
-    SimpleComboBox<ReportTypeEnum> cbbReportType = new SimpleComboBox<ReportTypeEnum>();
+    SimpleComboBox<ReportTypeEnum> cbbTaskReportType = new SimpleComboBox<ReportTypeEnum>();
 
     @FieldSecurity
-    ComboBox<BeanModel> cbbReportStation = new ComboBox<BeanModel>();
+    ComboBox<BeanModel> cbbTaskReportStation = new ComboBox<BeanModel>();
 
     @FieldSecurity
-    ComboBox<BeanModel> cbbReportBranch = new ComboBox<BeanModel>();
+    ComboBox<BeanModel> cbbTaskReportBranch = new ComboBox<BeanModel>();
 
-    SimpleComboBox<Integer> cbbYear = new SimpleComboBox<Integer>();
+    SimpleComboBox<Integer> cbbTaskYear = new SimpleComboBox<Integer>();
 
-    SimpleComboBox<ReportFormEnum> cbbReportForm = new SimpleComboBox<ReportFormEnum>();
+    SimpleComboBox<ReportFormEnum> cbbTaskReportForm = new SimpleComboBox<ReportFormEnum>();
+
+    @FieldSecurity
+    ComboBox<BeanModel> cbbPriceReportStation = new ComboBox<BeanModel>();
+
+    @FieldSecurity
+    ComboBox<BeanModel> cbbPriceReportBranch = new ComboBox<BeanModel>();
+
+    SimpleComboBox<Integer> cbbPriceYear = new SimpleComboBox<Integer>();
+
+    SimpleComboBox<ReportTypeEnum> cbbPriceReportType = new SimpleComboBox<ReportTypeEnum>();
 
     @I18nField
     Button btnPlanReportPdf = new Button();
@@ -63,10 +69,19 @@ public class ReportView extends AbstractView<ReportConstant> {
     Button btnPlanReportXls = new Button();
 
     @I18nField
+    Button btnPriceReportPdf = new Button();
+
+    @I18nField
+    Button btnPriceReportXls = new Button();
+
+    @I18nField
     Button btnReportCancel = new Button();
 
     @I18nField
     FormPanel planReportPanel = new FormPanel();
+
+    @I18nField
+    FormPanel priceReportPanel = new FormPanel();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -74,49 +89,86 @@ public class ReportView extends AbstractView<ReportConstant> {
     protected void initializeView() {
         planReportPanel.setFrame(true);
 
-        cbbReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
-        cbbReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
-        cbbReportStation.setEditable(false);
+        cbbTaskReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
+        cbbTaskReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbTaskReportStation.setEditable(false);
 
-        cbbReportBranch.setDisplayField(BranchManagerView.BRANCH_NAME_COLUMN);
-        cbbReportBranch.setTriggerAction(ComboBox.TriggerAction.ALL);
-        cbbReportBranch.setEditable(false);
+        cbbTaskReportBranch.setDisplayField(BranchManagerView.BRANCH_NAME_COLUMN);
+        cbbTaskReportBranch.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbTaskReportBranch.setEditable(false);
         //Set empty store for waiting for loading data for the sever.
-        cbbReportBranch.setStore(new ListStore<BeanModel>());
+        cbbTaskReportBranch.setStore(new ListStore<BeanModel>());
 
-        cbbReportType.add(Arrays.asList(ReportTypeEnum.values()));
-        cbbReportType.setSimpleValue(ReportTypeEnum.CA_NAM);
-        cbbReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
-        cbbReportType.setEditable(false);
-        cbbReportType.setWidth(100);
+        cbbPriceReportBranch.setDisplayField(BranchManagerView.BRANCH_NAME_COLUMN);
+        cbbPriceReportBranch.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbPriceReportBranch.setEditable(false);
+        //Set empty store for waiting for loading data for the sever.
+        cbbPriceReportBranch.setStore(new ListStore<BeanModel>());
+
+        cbbTaskReportType.add(Arrays.asList(ReportTypeEnum.values()));
+        cbbTaskReportType.setSimpleValue(ReportTypeEnum.CA_NAM);
+        cbbTaskReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbTaskReportType.setEditable(false);
+        cbbTaskReportType.setWidth(100);
+
+        cbbPriceReportType.add(Arrays.asList(ReportTypeEnum.values()));
+        cbbPriceReportType.setSimpleValue(ReportTypeEnum.CA_NAM);
+        cbbPriceReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbPriceReportType.setEditable(false);
+        cbbPriceReportType.setWidth(100);
 
         for (int i = 2012; i < 2100; i++) {
-            cbbYear.add(i);
+            cbbTaskYear.add(i);
+            cbbPriceYear.add(i);
         }
-        cbbYear.setTriggerAction(ComboBox.TriggerAction.ALL);
-        //TODO remove @dungvn3000
-        cbbYear.setSimpleValue(2012);
-        cbbYear.setWidth(60);
-        cbbYear.setEditable(false);
+        cbbTaskYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbTaskYear.setWidth(60);
+        cbbTaskYear.setEditable(false);
 
-        cbbReportForm.add(Arrays.asList(ReportFormEnum.values()));
-        cbbReportForm.setSimpleValue(ReportFormEnum.MAU_1);
-        cbbReportForm.setTriggerAction(ComboBox.TriggerAction.ALL);
-        cbbReportForm.setEditable(false);
-        cbbReportForm.setWidth(100);
+        cbbPriceYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbPriceYear.setWidth(60);
+        cbbPriceYear.setEditable(false);
 
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.setSpacing(4);
-        hp.add(cbbReportStation);
-        hp.add(cbbReportBranch);
-        hp.add(cbbReportType);
-        hp.add(cbbYear);
-        hp.add(cbbReportForm);
-        hp.add(btnPlanReportPdf);
-        hp.add(btnPlanReportXls);
-        planReportPanel.add(hp);
+        cbbTaskReportForm.add(Arrays.asList(ReportFormEnum.values()));
+        cbbTaskReportForm.setSimpleValue(ReportFormEnum.MAU_1);
+        cbbTaskReportForm.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbTaskReportForm.setEditable(false);
+        cbbTaskReportForm.setWidth(100);
 
-        contentPanel.add(planReportPanel);
+        HorizontalPanel hp1 = new HorizontalPanel();
+        hp1.setSpacing(4);
+        hp1.add(cbbTaskReportStation);
+        hp1.add(cbbTaskReportBranch);
+        hp1.add(cbbTaskReportType);
+        hp1.add(cbbTaskYear);
+        hp1.add(cbbTaskReportForm);
+        hp1.add(btnPlanReportPdf);
+        hp1.add(btnPlanReportXls);
+        planReportPanel.add(hp1);
+
+        priceReportPanel.setFrame(true);
+
+        cbbPriceReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
+        cbbPriceReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbPriceReportStation.setEditable(false);
+
+        HorizontalPanel hp2 = new HorizontalPanel();
+        hp2.setSpacing(4);
+        hp2.add(cbbPriceReportStation);
+        hp2.add(cbbPriceReportBranch);
+        hp2.add(cbbPriceReportType);
+        hp2.add(cbbPriceYear);
+        hp2.add(btnPriceReportPdf);
+        hp2.add(btnPriceReportXls);
+
+        priceReportPanel.add(hp2);
+
+        VerticalPanel vp = new VerticalPanel();
+        vp.setSpacing(10);
+        vp.add(planReportPanel);
+        vp.add(priceReportPanel);
+        contentPanel.add(vp);
+
         contentPanel.setHeaderVisible(false);
         contentPanel.setFrame(true);
         contentPanel.setHeight(Window.getClientHeight() - 90);
@@ -137,17 +189,17 @@ public class ReportView extends AbstractView<ReportConstant> {
     }
 
     public void setEnableReportButton(boolean enable) {
-        cbbReportStation.setEnabled(enable);
-        cbbReportForm.setEnabled(enable);
-        cbbReportBranch.setEnabled(enable);
-        cbbYear.setEnabled(enable);
-        cbbReportType.setEnabled(enable);
+        cbbTaskReportStation.setEnabled(enable);
+        cbbTaskReportForm.setEnabled(enable);
+        cbbTaskReportBranch.setEnabled(enable);
+        cbbTaskYear.setEnabled(enable);
+        cbbTaskReportType.setEnabled(enable);
         btnPlanReportPdf.setEnabled(enable);
         btnPlanReportXls.setEnabled(enable);
     }
 
-    public SimpleComboBox<ReportTypeEnum> getCbbReportType() {
-        return cbbReportType;
+    public SimpleComboBox<ReportTypeEnum> getCbbTaskReportType() {
+        return cbbTaskReportType;
     }
 
     public Button getBtnPlanReportPdf() {
@@ -162,19 +214,35 @@ public class ReportView extends AbstractView<ReportConstant> {
         return btnReportCancel;
     }
 
-    public ComboBox<BeanModel> getCbbReportStation() {
-        return cbbReportStation;
+    public ComboBox<BeanModel> getCbbTaskReportStation() {
+        return cbbTaskReportStation;
     }
 
-    public SimpleComboBox<Integer> getCbbYear() {
-        return cbbYear;
+    public SimpleComboBox<Integer> getCbbTaskYear() {
+        return cbbTaskYear;
     }
 
-    public ComboBox<BeanModel> getCbbReportBranch() {
-        return cbbReportBranch;
+    public ComboBox<BeanModel> getCbbTaskReportBranch() {
+        return cbbTaskReportBranch;
     }
 
-    public SimpleComboBox<ReportFormEnum> getCbbReportForm() {
-        return cbbReportForm;
+    public SimpleComboBox<ReportFormEnum> getCbbTaskReportForm() {
+        return cbbTaskReportForm;
+    }
+
+    public ComboBox<BeanModel> getCbbPriceReportStation() {
+        return cbbPriceReportStation;
+    }
+
+    public SimpleComboBox<ReportTypeEnum> getCbbPriceReportType() {
+        return cbbPriceReportType;
+    }
+
+    public SimpleComboBox<Integer> getCbbPriceYear() {
+        return cbbPriceYear;
+    }
+
+    public ComboBox<BeanModel> getCbbPriceReportBranch() {
+        return cbbPriceReportBranch;
     }
 }

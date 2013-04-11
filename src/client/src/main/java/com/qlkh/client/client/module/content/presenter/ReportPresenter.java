@@ -65,18 +65,24 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     fakeBranch.setName(view.getConstant().fakeBranchName());
                     BeanModel fakeModel = BeanModelLookup.get().getFactory(Branch.class).createModel(fakeBranch);
                     branchListStore.insert(fakeModel, 0);
-                    view.getCbbReportBranch().setStore(branchListStore);
-                    view.getCbbReportBranch().setValue(fakeModel);
+                    view.getCbbTaskReportBranch().setStore(branchListStore);
+                    view.getCbbTaskReportBranch().setValue(fakeModel);
+
+                    view.getCbbPriceReportBranch().setStore(branchListStore);
+                    view.getCbbPriceReportBranch().setValue(fakeModel);
+
                 }
             });
         } else {
             stationListStore = GridUtils.createListStoreForCb(Station.class);
-            view.getCbbReportStation().setStore(stationListStore);
+            view.getCbbTaskReportStation().setStore(stationListStore);
+            view.getCbbPriceReportStation().setStore(stationListStore);
         }
         dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
             @Override
             public void onSuccess(GetServerTimeResult result) {
-                view.getCbbYear().setSimpleValue(result.getYear());
+                view.getCbbTaskYear().setSimpleValue(result.getYear());
+                view.getCbbPriceYear().setSimpleValue(result.getYear());
             }
         });
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -102,22 +108,22 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     }
 
     private void report(ReportFileTypeEnum fileTypeEnum) {
-        if (view.getCbbYear().getValue() != null && view.getCbbReportType().getValue() != null) {
+        if (view.getCbbTaskYear().getValue() != null && view.getCbbTaskReportType().getValue() != null) {
             Station station = null;
             Long branchId = null;
             if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
                 station = currentStation;
-                Branch branch = view.getCbbReportBranch().getValue().getBean();
+                Branch branch = view.getCbbTaskReportBranch().getValue().getBean();
                 if (branch != null) {
                     branchId = branch.getId();
                 }
-            } else if (view.getCbbReportStation().getValue() != null) {
-                station = view.getCbbReportStation().getValue().getBean();
+            } else if (view.getCbbTaskReportStation().getValue() != null) {
+                station = view.getCbbTaskReportStation().getValue().getBean();
             }
             if (station != null) {
                 view.setEnableReportButton(false);
-                dispatch.execute(new ReportAction(view.getCbbReportType().getSimpleValue(), view.getCbbReportForm().getSimpleValue(),
-                        fileTypeEnum, station.getId(), branchId, view.getCbbYear().getSimpleValue()), new AbstractAsyncCallback<ReportResult>() {
+                dispatch.execute(new ReportAction(view.getCbbTaskReportType().getSimpleValue(), view.getCbbTaskReportForm().getSimpleValue(),
+                        fileTypeEnum, station.getId(), branchId, view.getCbbTaskYear().getSimpleValue()), new AbstractAsyncCallback<ReportResult>() {
                     @Override
                     public void onSuccess(ReportResult result) {
                         view.setEnableReportButton(true);

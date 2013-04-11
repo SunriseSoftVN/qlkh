@@ -22,9 +22,11 @@ public interface ReportConstant extends Constants {
     String planReportPanel();
     String btnPlanReportPdf();
     String btnPlanReportXls();
-    String cbbReportType();
+    String btnPriceReportPdf();
+    String btnPriceReportXls();
     String reportWindow();
     String lblDownload();
     String btnReportCancel();
     String fakeBranchName();
+    String priceReportPanel();
 }
