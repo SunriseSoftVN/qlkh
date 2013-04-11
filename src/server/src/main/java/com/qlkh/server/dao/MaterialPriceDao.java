@@ -1,7 +1,6 @@
 package com.qlkh.server.dao;
 
 import com.qlkh.core.client.constant.QuarterEnum;
-import com.qlkh.core.client.model.MaterialLimit;
 import com.qlkh.core.client.model.MaterialPrice;
 import com.qlkh.server.dao.core.Dao;
 
@@ -19,4 +18,5 @@ public interface MaterialPriceDao extends Dao<MaterialPrice> {
 
     public List<MaterialPrice> findByTime(QuarterEnum quarter, int year);
 
+    public void copyData(QuarterEnum form, QuarterEnum to, int fromYear, int toYear);
 }

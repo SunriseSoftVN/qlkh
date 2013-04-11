@@ -357,4 +357,8 @@ public class MaterialPriceView extends AbstractView<MaterialPriceConstant> {
     public Grid<BeanModel> getMaterialGrid() {
         return materialGrid;
     }
+
+    public Button getBtnCopy() {
+        return btnCopy;
+    }
 }

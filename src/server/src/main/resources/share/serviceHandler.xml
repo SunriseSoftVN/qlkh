@@ -33,6 +33,7 @@
                 <bean class="com.qlkh.server.handler.material.DeleteMaterialHandler"/>
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutPriceHandler"/>
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutLimitHandler"/>
+                <bean class="com.qlkh.server.handler.material.CopyMaterialPriceHandler"/>
             </list>
         </property>
     </bean>

@@ -20,6 +20,8 @@ import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.grid.LoadGridDataResult;
+import com.qlkh.core.client.action.material.CopyMaterialPriceAction;
+import com.qlkh.core.client.action.material.CopyMaterialPriceResult;
 import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceAction;
 import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
@@ -260,6 +262,19 @@ public class MaterialPricePresenter extends AbstractPresenter<MaterialPriceView>
                         }
                     });
                 }
+            }
+        });
+
+        view.getBtnCopy().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                dispatch.execute(new CopyMaterialPriceAction(currentQuarter), new AbstractAsyncCallback<CopyMaterialPriceResult>() {
+                    @Override
+                    public void onSuccess(CopyMaterialPriceResult copyMaterialPriceResult) {
+                        view.getMaterialPricePagingToolBar().refresh();
+                        DiaLogUtils.notify(view.getConstant().copySuccess());
+                    }
+                });
             }
         });
 
