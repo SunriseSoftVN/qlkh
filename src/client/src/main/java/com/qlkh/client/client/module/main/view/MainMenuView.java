@@ -144,10 +144,6 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mnlTaskDetailKDK.setStyleName("menulink");
         mainPanel.add(mnlTaskDetailKDK, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
-        //Report
-        mnlReport.setStyleName("menulink");
-        mainPanel.add(mnlReport, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
-
         //Lock
         mlLock.setStyleName("menulink");
         mainPanel.add(mlLock, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
@@ -161,6 +157,10 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
 
         mlMaterialPrice.setStyleName("menulink");
         mainPanel.add(mlMaterialPrice, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        //Report
+        mnlReport.setStyleName("menulink");
+        mainPanel.add(mnlReport, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //For developer
         mlUpgrade.setStyleName("menulink");
