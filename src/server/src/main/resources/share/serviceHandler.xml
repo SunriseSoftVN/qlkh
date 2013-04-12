@@ -15,7 +15,7 @@
                 <bean class="com.qlkh.server.handler.core.LoadHandler"/>
                 <bean class="com.qlkh.server.handler.core.SaveHandler"/>
                 <bean class="com.qlkh.server.handler.core.DeleteHandler"/>
-                <bean class="com.qlkh.server.handler.report.ReportHandler"/>
+                <bean class="com.qlkh.server.handler.report.ReportTaskHandler"/>
                 <bean class="com.qlkh.server.handler.station.LoadStationHandler"/>
                 <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailDKHandler"/>
                 <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailKDKHandler"/>

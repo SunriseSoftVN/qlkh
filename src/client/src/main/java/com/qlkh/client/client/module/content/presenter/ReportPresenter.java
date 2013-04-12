@@ -15,8 +15,8 @@ import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.ReportPlace;
 import com.qlkh.client.client.module.content.view.ReportView;
 import com.qlkh.client.client.utils.GridUtils;
-import com.qlkh.core.client.action.report.ReportAction;
-import com.qlkh.core.client.action.report.ReportResult;
+import com.qlkh.core.client.action.report.TaskReportAction;
+import com.qlkh.core.client.action.report.TaskReportResult;
 import com.qlkh.core.client.action.station.LoadStationAction;
 import com.qlkh.core.client.action.station.LoadStationResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
@@ -122,10 +122,10 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             }
             if (station != null) {
                 view.setEnableReportButton(false);
-                dispatch.execute(new ReportAction(view.getCbbTaskReportType().getSimpleValue(), view.getCbbTaskReportForm().getSimpleValue(),
-                        fileTypeEnum, station.getId(), branchId, view.getCbbTaskYear().getSimpleValue()), new AbstractAsyncCallback<ReportResult>() {
+                dispatch.execute(new TaskReportAction(view.getCbbTaskReportType().getSimpleValue(), view.getCbbTaskReportForm().getSimpleValue(),
+                        fileTypeEnum, station.getId(), branchId, view.getCbbTaskYear().getSimpleValue()), new AbstractAsyncCallback<TaskReportResult>() {
                     @Override
-                    public void onSuccess(ReportResult result) {
+                    public void onSuccess(TaskReportResult result) {
                         view.setEnableReportButton(true);
                         reportWindow = view.createReportWindow(result.getReportUrl());
                         reportWindow.show();

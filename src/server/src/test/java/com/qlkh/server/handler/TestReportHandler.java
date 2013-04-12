@@ -4,7 +4,7 @@
 
 package com.qlkh.server.handler;
 
-import com.qlkh.core.client.action.report.ReportAction;
+import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
@@ -38,9 +38,9 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
 
     @Test(timeout = 20000)
     public void testReport() throws DispatchException {
-        dispatch.execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
+        dispatch.execute(new TaskReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
                 ReportFileTypeEnum.PDF, 31, null, 2012));
-        dispatch.execute(new ReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
+        dispatch.execute(new TaskReportAction(ReportTypeEnum.CA_NAM, ReportFormEnum.MAU_2,
                 ReportFileTypeEnum.EXCEL, CAUGIAT.getId(), null, 2012));
     }
 }

@@ -12,14 +12,14 @@ import net.customware.gwt.dispatch.shared.Result;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 6:50 PM
  */
-public class ReportResult implements Result {
+public class TaskReportResult implements Result {
 
     private String reportUrl;
 
-    public ReportResult() {
+    public TaskReportResult() {
     }
 
-    public ReportResult(String reportUrl) {
+    public TaskReportResult(String reportUrl) {
         this.reportUrl = reportUrl;
     }
 

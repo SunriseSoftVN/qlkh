@@ -15,7 +15,7 @@ import net.customware.gwt.dispatch.shared.Action;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 6:50 PM
  */
-public class ReportAction implements Action<ReportResult> {
+public class TaskReportAction implements Action<TaskReportResult> {
 
     private ReportTypeEnum reportTypeEnum;
     private ReportFileTypeEnum fileTypeEnum;
@@ -24,11 +24,11 @@ public class ReportAction implements Action<ReportResult> {
     private Long branchId;
     private int year;
 
-    public ReportAction() {
+    public TaskReportAction() {
     }
 
-    public ReportAction(ReportTypeEnum reportTypeEnum, ReportFormEnum reportFormEnum,
-                        ReportFileTypeEnum fileTypeEnum, long stationId, Long branchId, int year) {
+    public TaskReportAction(ReportTypeEnum reportTypeEnum, ReportFormEnum reportFormEnum,
+                            ReportFileTypeEnum fileTypeEnum, long stationId, Long branchId, int year) {
         this.reportFormEnum = reportFormEnum;
         this.reportTypeEnum = reportTypeEnum;
         this.fileTypeEnum = fileTypeEnum;

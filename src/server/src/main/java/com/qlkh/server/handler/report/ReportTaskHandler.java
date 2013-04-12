@@ -12,8 +12,8 @@ import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 import ar.com.fdvs.dj.domain.constants.*;
 import com.qlkh.client.client.utils.NumberUtils;
 import com.qlkh.client.client.utils.TaskCodeUtils;
-import com.qlkh.core.client.action.report.ReportAction;
-import com.qlkh.core.client.action.report.ReportResult;
+import com.qlkh.core.client.action.report.TaskReportAction;
+import com.qlkh.core.client.action.report.TaskReportResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.constant.TaskTypeEnum;
@@ -69,7 +69,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 6:52 PM
  */
-public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
+public class ReportTaskHandler extends AbstractHandler<TaskReportAction, TaskReportResult> {
 
     private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "kehoachtacnghiep";
@@ -85,16 +85,16 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
     private SqlQueryDao sqlQueryDao;
 
     @Override
-    public Class<ReportAction> getActionType() {
-        return ReportAction.class;
+    public Class<TaskReportAction> getActionType() {
+        return TaskReportAction.class;
     }
 
     @Override
-    public ReportResult execute(ReportAction action, ExecutionContext context) throws DispatchException {
-        return new ReportResult(reportForCompany(action));
+    public TaskReportResult execute(TaskReportAction action, ExecutionContext context) throws DispatchException {
+        return new TaskReportResult(reportForCompany(action));
     }
 
-    private String reportForCompany(ReportAction action) throws ActionException {
+    private String reportForCompany(TaskReportAction action) throws ActionException {
         ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
         try {
             DynamicReport dynamicReport = buildReportLayout(action);
@@ -141,7 +141,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return null;
     }
 
-    private DynamicReport buildReportLayout(ReportAction action) {
+    private DynamicReport buildReportLayout(TaskReportAction action) {
 
         ReportTypeEnum reportTypeEnum = action.getReportTypeEnum();
         ReportFileTypeEnum reportFileTypeEnum = action.getFileTypeEnum();
@@ -273,8 +273,8 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         return fastReportBuilder.build();
     }
 
-    private List<SumReportBean> buildReportData(ReportAction reportAction) throws ActionException {
-        long stationId = reportAction.getStationId();
+    private List<SumReportBean> buildReportData(TaskReportAction taskReportAction) throws ActionException {
+        long stationId = taskReportAction.getStationId();
 
         Station currentStation = generalDao.findById(Station.class, stationId);
         if (currentStation == null) {
@@ -291,10 +291,10 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         //Load all view from database for calculation
         List<Long> stationIds = extract(stations, on(Station.class).getId());
         List<TaskDetailKDKDataView> subTaskDetails = sqlQueryDao.
-                getTaskDetailKDK(stationIds, reportAction.getYear());
+                getTaskDetailKDK(stationIds, taskReportAction.getYear());
         List<TaskDetailDKDataView> subAnnualTaskDetails = sqlQueryDao
-                .getTaskDetailDK(stationIds, reportAction.getYear());
-        List<TaskDetailNamDataView> taskDetailNams = sqlQueryDao.getTaskDetailNam(stationIds, reportAction.getYear());
+                .getTaskDetailDK(stationIds, taskReportAction.getYear());
+        List<TaskDetailNamDataView> taskDetailNams = sqlQueryDao.getTaskDetailNam(stationIds, taskReportAction.getYear());
         List<TaskDefaultValue> taskDefaultValues = generalDao.getAll(TaskDefaultValue.class);
 
         List<SumReportBean> beans = new ArrayList<SumReportBean>();
@@ -305,7 +305,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             bean.setTask(task);
             for (Station station : stations) {
                 StationReportBean stationReport = calculateForStation(bean.getTask(), station,
-                        reportAction, subTaskDetails, subAnnualTaskDetails, taskDetailNams,
+                        taskReportAction, subTaskDetails, subAnnualTaskDetails, taskDetailNams,
                         taskDefaultValues);
                 bean.getStations().put(String.valueOf(stationReport.getId()), stationReport);
             }
@@ -353,7 +353,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
 
         //Hide unnecessary detail
-        HideDetailTaskRule.hide(beans, reportAction);
+        HideDetailTaskRule.hide(beans, taskReportAction);
 
         //Calculate for DSTN
         if (stationId == COMPANY.getId() || stationId == CAUGIAT.getId()) {
@@ -419,7 +419,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
 
     private StationReportBean calculateForStation(TaskReportBean task, Station station,
-                                                  ReportAction reportAction,
+                                                  TaskReportAction taskReportAction,
                                                   List<TaskDetailKDKDataView> taskDetailKDKs,
                                                   List<TaskDetailDKDataView> taskDetailDKs,
                                                   List<TaskDetailNamDataView> taskDetailNams,
@@ -434,11 +434,11 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             //Calculate Weight
             if (TaskTypeEnum.DK.getCode() == task.getTaskTypeCode()) {
                 calculateForDKTask(stationReport, task,
-                        taskDetailDKs, taskDefaultValues, reportAction);
+                        taskDetailDKs, taskDefaultValues, taskReportAction);
             } else if (TaskTypeEnum.KDK.getCode() == task.getTaskTypeCode()) {
-                calculateForKDKTask(stationReport, task, taskDetailKDKs, taskDefaultValues, reportAction);
+                calculateForKDKTask(stationReport, task, taskDetailKDKs, taskDefaultValues, taskReportAction);
             } else if (TaskTypeEnum.NAM.getCode() == task.getTaskTypeCode()) {
-                calculateForNamTask(stationReport, task, taskDetailNams, taskDefaultValues, reportAction);
+                calculateForNamTask(stationReport, task, taskDetailNams, taskDefaultValues, taskReportAction);
             }
         }
         return stationReport;
@@ -446,13 +446,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     private void calculateForKDKTask(StationReportBean station, TaskReportBean task,
                                      List<TaskDetailKDKDataView> subTaskDetails,
-                                     List<TaskDefaultValue> taskDefaultValues, ReportAction reportAction) {
+                                     List<TaskDefaultValue> taskDefaultValues, TaskReportAction taskReportAction) {
         List<TaskDetailKDKDataView> select;
 
-        if (reportAction.getBranchId() != null) {
+        if (taskReportAction.getBranchId() != null) {
             select = select(subTaskDetails, having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(task.getId())).
                     and(having(on(TaskDetailKDKDataView.class).getStationId(), equalTo(station.getId()))).
-                    and(having(on(TaskDetailKDKDataView.class).getBranchId(), equalTo(reportAction.getBranchId()))));
+                    and(having(on(TaskDetailKDKDataView.class).getBranchId(), equalTo(taskReportAction.getBranchId()))));
         } else {
             select = select(subTaskDetails, having(on(TaskDetailKDKDataView.class).getTaskId(), equalTo(task.getId())).
                     and(having(on(TaskDetailKDKDataView.class).getStationId(), equalTo(station.getId()))));
@@ -462,14 +462,14 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             Double weight = 0d;
             double time = 0d;
             for (TaskDetailKDKDataView taskDetail : select) {
-                weight += calculateWeightForDKAndNamTask(reportAction.getReportTypeEnum(), taskDetail.getQ1(),
+                weight += calculateWeightForDKAndNamTask(taskReportAction.getReportTypeEnum(), taskDetail.getQ1(),
                         taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
-                time += calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
+                time += calculateTimeForDKAndNamTask(taskReportAction, task, taskDefaultValues,
                         taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
                 if (taskDetail.getBranchId() == BranchCodeEnum.ND.getId()) {
-                    double ndWeight = calculateWeightForDKAndNamTask(reportAction.getReportTypeEnum(), taskDetail.getQ1(),
+                    double ndWeight = calculateWeightForDKAndNamTask(taskReportAction.getReportTypeEnum(), taskDetail.getQ1(),
                             taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
-                    double ndTime = calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
+                    double ndTime = calculateTimeForDKAndNamTask(taskReportAction, task, taskDefaultValues,
                             taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
                     if (ndWeight > 0) {
                         station.setNdValue(ndWeight);
@@ -488,13 +488,13 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     private void calculateForNamTask(StationReportBean station, TaskReportBean task,
                                      List<TaskDetailNamDataView> subTaskDetails,
-                                     List<TaskDefaultValue> taskDefaultValues, ReportAction reportAction) {
+                                     List<TaskDefaultValue> taskDefaultValues, TaskReportAction taskReportAction) {
         List<TaskDetailNamDataView> select;
 
-        if (reportAction.getBranchId() != null) {
+        if (taskReportAction.getBranchId() != null) {
             select = select(subTaskDetails, having(on(TaskDetailNamDataView.class).getTaskId(), equalTo(task.getId())).
                     and(having(on(TaskDetailNamDataView.class).getStationId(), equalTo(station.getId()))).
-                    and(having(on(TaskDetailNamDataView.class).getBranchId(), equalTo(reportAction.getBranchId()))));
+                    and(having(on(TaskDetailNamDataView.class).getBranchId(), equalTo(taskReportAction.getBranchId()))));
         } else {
             select = select(subTaskDetails, having(on(TaskDetailNamDataView.class).getTaskId(), equalTo(task.getId())).
                     and(having(on(TaskDetailNamDataView.class).getStationId(), equalTo(station.getId()))));
@@ -504,14 +504,14 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             double weight = 0d;
             double time = 0d;
             for (TaskDetailNamDataView taskDetail : select) {
-                weight += calculateWeightForDKAndNamTask(reportAction.getReportTypeEnum(), taskDetail.getQ1(),
+                weight += calculateWeightForDKAndNamTask(taskReportAction.getReportTypeEnum(), taskDetail.getQ1(),
                         taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
-                time += calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
+                time += calculateTimeForDKAndNamTask(taskReportAction, task, taskDefaultValues,
                         taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
                 if (taskDetail.getBranchId() == BranchCodeEnum.ND.getId()) {
-                    double ndWeight = calculateWeightForDKAndNamTask(reportAction.getReportTypeEnum(), taskDetail.getQ1(),
+                    double ndWeight = calculateWeightForDKAndNamTask(taskReportAction.getReportTypeEnum(), taskDetail.getQ1(),
                             taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
-                    double ndTime = calculateTimeForDKAndNamTask(reportAction, task, taskDefaultValues,
+                    double ndTime = calculateTimeForDKAndNamTask(taskReportAction, task, taskDefaultValues,
                             taskDetail.getQ1(), taskDetail.getQ2(), taskDetail.getQ3(), taskDetail.getQ4());
                     if (ndWeight > 0) {
                         station.setNdValue(ndWeight);
@@ -528,7 +528,7 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         }
     }
 
-    private double calculateTimeForDKAndNamTask(ReportAction reportAction, TaskReportBean task, List<TaskDefaultValue> taskDefaultValues,
+    private double calculateTimeForDKAndNamTask(TaskReportAction taskReportAction, TaskReportBean task, List<TaskDefaultValue> taskDefaultValues,
                                                 Double weightQ1, Double weightQ2, Double weightQ3, Double weightQ4) {
         double defaultValue = 0d;
         double defaultValueQ1 = 0d;
@@ -539,18 +539,18 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
         weightQ2 = convertNullToDouble(weightQ2);
         weightQ3 = convertNullToDouble(weightQ3);
         weightQ4 = convertNullToDouble(weightQ4);
-        if (reportAction.getReportTypeEnum() != CA_NAM) {
-            defaultValue = getDefaultValue(taskDefaultValues, task, reportAction.getYear(),
-                    reportAction.getReportTypeEnum().getValue());
+        if (taskReportAction.getReportTypeEnum() != CA_NAM) {
+            defaultValue = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(),
+                    taskReportAction.getReportTypeEnum().getValue());
             task.setDefaultValueForPrinting(defaultValue);
         } else {
-            defaultValueQ1 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q1.getValue());
-            defaultValueQ2 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q2.getValue());
-            defaultValueQ3 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q3.getValue());
-            defaultValueQ4 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q4.getValue());
+            defaultValueQ1 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q1.getValue());
+            defaultValueQ2 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q2.getValue());
+            defaultValueQ3 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q3.getValue());
+            defaultValueQ4 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q4.getValue());
         }
 
-        switch (reportAction.getReportTypeEnum()) {
+        switch (taskReportAction.getReportTypeEnum()) {
             case Q1:
                 return defaultValue * weightQ1 * task.getQuota();
             case Q2:
@@ -594,23 +594,23 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
 
     private void calculateForDKTask(StationReportBean station, TaskReportBean task,
                                     List<TaskDetailDKDataView> subAnnualTaskDetails,
-                                    List<TaskDefaultValue> taskDefaultValues, ReportAction reportAction) {
+                                    List<TaskDefaultValue> taskDefaultValues, TaskReportAction taskReportAction) {
 
         int defaultQuota = 0;
         if (task.isDynamicQuota()) {
-            if (reportAction.getReportTypeEnum() != CA_NAM) {
-                defaultQuota = getDateForQuarter(reportAction.getReportTypeEnum().getValue(),
-                        reportAction.getYear());
+            if (taskReportAction.getReportTypeEnum() != CA_NAM) {
+                defaultQuota = getDateForQuarter(taskReportAction.getReportTypeEnum().getValue(),
+                        taskReportAction.getYear());
             }
         } else {
             defaultQuota = task.getQuota();
         }
 
         List<TaskDetailDKDataView> select;
-        if (reportAction.getBranchId() != null) {
+        if (taskReportAction.getBranchId() != null) {
             select = select(subAnnualTaskDetails, having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(task.getId())).
                     and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))).
-                    and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(reportAction.getBranchId()))));
+                    and(having(on(TaskDetailDKDataView.class).getBranchId(), equalTo(taskReportAction.getBranchId()))));
         } else {
             select = select(subAnnualTaskDetails, having(on(TaskDetailDKDataView.class).getTaskId(), equalTo(task.getId())).
                     and(having(on(TaskDetailDKDataView.class).getStationId(), equalTo(station.getId()))));
@@ -640,27 +640,27 @@ public class ReportHandler extends AbstractHandler<ReportAction, ReportResult> {
             Double time = 0d;
             Double ndTime = 0d;
             double defaultValue = 0d;
-            if (reportAction.getReportTypeEnum() != CA_NAM) {
-                defaultValue = getDefaultValue(taskDefaultValues, task, reportAction.getYear(),
-                        reportAction.getReportTypeEnum().getValue());
+            if (taskReportAction.getReportTypeEnum() != CA_NAM) {
+                defaultValue = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(),
+                        taskReportAction.getReportTypeEnum().getValue());
                 time = defaultValue * defaultQuota * station.getValue();
                 if (station.getNdValue() != null) {
                     ndTime = defaultValue * defaultQuota * station.getNdValue();
                 }
             } else {
-                double defaultValueQ1 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q1.getValue());
-                double defaultValueQ2 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q2.getValue());
-                double defaultValueQ3 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q3.getValue());
-                double defaultValueQ4 = getDefaultValue(taskDefaultValues, task, reportAction.getYear(), Q4.getValue());
+                double defaultValueQ1 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q1.getValue());
+                double defaultValueQ2 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q2.getValue());
+                double defaultValueQ3 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q3.getValue());
+                double defaultValueQ4 = getDefaultValue(taskDefaultValues, task, taskReportAction.getYear(), Q4.getValue());
                 if (task.isDynamicQuota()) {
                     int quotaQ1 = getDateForQuarter(Q1.getValue(),
-                            reportAction.getYear());
+                            taskReportAction.getYear());
                     int quotaQ2 = getDateForQuarter(Q2.getValue(),
-                            reportAction.getYear());
+                            taskReportAction.getYear());
                     int quotaQ3 = getDateForQuarter(Q3.getValue(),
-                            reportAction.getYear());
+                            taskReportAction.getYear());
                     int quotaQ4 = getDateForQuarter(Q4.getValue(),
-                            reportAction.getYear());
+                            taskReportAction.getYear());
                     time = station.getValue() * (defaultValueQ1 * quotaQ1 + defaultValueQ2 * quotaQ2
                             + defaultValueQ3 * quotaQ3 + defaultValueQ4 * quotaQ4
                     );
