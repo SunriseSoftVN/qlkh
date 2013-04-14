@@ -194,7 +194,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
 
     private String createFilter(BasePagingLoadConfig config, String tableName, String query) {
         String sql = query;
-        if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+        if (config.get("hasFilter") != null && config.<Boolean>get("hasFilter")) {
             Map<String, Object> filters = config.get("filters");
             if (filters != null) {
                 if (!sql.contains("WHERE")) {
