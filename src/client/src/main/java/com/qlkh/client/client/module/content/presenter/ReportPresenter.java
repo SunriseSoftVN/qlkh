@@ -14,7 +14,6 @@ import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.ReportPlace;
 import com.qlkh.client.client.module.content.view.ReportView;
-import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.report.PriceReportAction;
 import com.qlkh.core.client.action.report.PriceReportResult;
@@ -91,13 +90,13 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                report(ReportFileTypeEnum.PDF);
+                taskReport(ReportFileTypeEnum.PDF);
             }
         });
         view.getBtnPlanReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                report(ReportFileTypeEnum.EXCEL);
+                taskReport(ReportFileTypeEnum.EXCEL);
             }
         });
         view.getBtnReportCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -111,17 +110,44 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnPriceReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                dispatch.execute(new PriceReportAction(), new AbstractAsyncCallback<PriceReportResult>() {
-                    @Override
-                    public void onSuccess(PriceReportResult priceReportResult) {
-                        DiaLogUtils.notify("thanh cong");
-                    }
-                });
+                priceReport(ReportFileTypeEnum.PDF);
+            }
+        });
+        view.getBtnPriceReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                priceReport(ReportFileTypeEnum.EXCEL);
             }
         });
     }
 
-    private void report(ReportFileTypeEnum fileTypeEnum) {
+    private void priceReport(ReportFileTypeEnum fileTypeEnum) {
+        Station station = null;
+        Long branchId = null;
+        if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
+            station = currentStation;
+            Branch branch = view.getCbbPriceReportBranch().getValue().getBean();
+            if (branch != null) {
+                branchId = branch.getId();
+            }
+        } else if (view.getCbbPriceReportStation().getValue() != null) {
+            station = view.getCbbPriceReportStation().getValue().getBean();
+        }
+        if (station != null) {
+            view.setEnablePriceReportButton(false);
+            dispatch.execute(new PriceReportAction(view.getCbbPriceReportType().getSimpleValue(), fileTypeEnum,
+                    station.getId(), branchId, view.getCbbPriceYear().getSimpleValue()), new AbstractAsyncCallback<PriceReportResult>() {
+                @Override
+                public void onSuccess(PriceReportResult result) {
+                    view.setEnablePriceReportButton(true);
+                    reportWindow = view.createReportWindow(result.getReportUrl());
+                    reportWindow.show();
+                }
+            });
+        }
+    }
+
+    private void taskReport(ReportFileTypeEnum fileTypeEnum) {
         if (view.getCbbTaskYear().getValue() != null && view.getCbbTaskReportType().getValue() != null) {
             Station station = null;
             Long branchId = null;
@@ -135,12 +161,12 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 station = view.getCbbTaskReportStation().getValue().getBean();
             }
             if (station != null) {
-                view.setEnableReportButton(false);
+                view.setEnableTaskReportButton(false);
                 dispatch.execute(new TaskReportAction(view.getCbbTaskReportType().getSimpleValue(), view.getCbbTaskReportForm().getSimpleValue(),
                         fileTypeEnum, station.getId(), branchId, view.getCbbTaskYear().getSimpleValue()), new AbstractAsyncCallback<TaskReportResult>() {
                     @Override
                     public void onSuccess(TaskReportResult result) {
-                        view.setEnableReportButton(true);
+                        view.setEnableTaskReportButton(true);
                         reportWindow = view.createReportWindow(result.getReportUrl());
                         reportWindow.show();
                     }

@@ -27,6 +27,15 @@ public class TaskReportAction implements Action<TaskReportResult> {
     public TaskReportAction() {
     }
 
+    public TaskReportAction(PriceReportAction priceReportAction) {
+        this.reportTypeEnum = priceReportAction.getReportTypeEnum();
+        this.fileTypeEnum = priceReportAction.getFileTypeEnum();
+        this.reportFormEnum = ReportFormEnum.MAU_1;
+        this.branchId = priceReportAction.getBranchId();
+        this.stationId = priceReportAction.getStationId();
+        this.year = priceReportAction.getYear();
+    }
+
     public TaskReportAction(ReportTypeEnum reportTypeEnum, ReportFormEnum reportFormEnum,
                             ReportFileTypeEnum fileTypeEnum, long stationId, Long branchId, int year) {
         this.reportFormEnum = reportFormEnum;

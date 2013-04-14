@@ -273,7 +273,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         return fastReportBuilder.build();
     }
 
-    private List<SumReportBean> buildReportData(TaskReportAction taskReportAction) throws ActionException {
+    public List<SumReportBean> buildReportData(TaskReportAction taskReportAction) throws ActionException {
         long stationId = taskReportAction.getStationId();
 
         Station currentStation = generalDao.findById(Station.class, stationId);

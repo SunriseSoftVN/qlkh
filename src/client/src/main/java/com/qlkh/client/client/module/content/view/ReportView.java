@@ -188,7 +188,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         return window;
     }
 
-    public void setEnableReportButton(boolean enable) {
+    public void setEnableTaskReportButton(boolean enable) {
         cbbTaskReportStation.setEnabled(enable);
         cbbTaskReportForm.setEnabled(enable);
         cbbTaskReportBranch.setEnabled(enable);
@@ -196,6 +196,15 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbTaskReportType.setEnabled(enable);
         btnPlanReportPdf.setEnabled(enable);
         btnPlanReportXls.setEnabled(enable);
+    }
+
+    public void setEnablePriceReportButton(boolean enable) {
+        cbbPriceReportStation.setEnabled(enable);
+        cbbPriceReportBranch.setEnabled(enable);
+        cbbPriceYear.setEnabled(enable);
+        cbbPriceReportType.setEnabled(enable);
+        btnPriceReportPdf.setEnabled(enable);
+        btnPriceReportXls.setEnabled(enable);
     }
 
     public SimpleComboBox<ReportTypeEnum> getCbbTaskReportType() {
