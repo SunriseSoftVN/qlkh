@@ -198,9 +198,9 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
             Map<String, Object> filters = config.get("filters");
             if (filters != null) {
                 if (!sql.contains("WHERE")) {
-                    sql += "WHERE ";
+                    sql += " WHERE ";
                 } else {
-                    sql += "AND ";
+                    sql += " AND ";
                 }
                 sql += "(";
                 for (String filter : filters.keySet()) {
