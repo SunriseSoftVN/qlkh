@@ -12,6 +12,7 @@ import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
+import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.server.dao.core.Dao;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface SqlQueryDao extends Dao {
     BasePagingLoadResult<Material> getMaterials(int year, QuarterEnum quarter, BasePagingLoadConfig config);
 
     BasePagingLoadResult<Material> getMaterials(long taskId, BasePagingLoadConfig config);
+
+    List<TaskMaterialDataView> getTaskMaterial(int year, int quarter);
 }

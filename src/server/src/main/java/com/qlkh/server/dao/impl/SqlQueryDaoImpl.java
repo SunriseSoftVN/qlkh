@@ -13,6 +13,7 @@ import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
+import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.AbstractDao;
 import org.hibernate.HibernateException;
@@ -73,6 +74,21 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameterList("stationIds", stationIds);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskDetailKDKDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
+
+    @Override
+    public List<TaskMaterialDataView> getTaskMaterial(final int year, final int quarter) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskMaterialDataView>>() {
+            @Override
+            public List<TaskMaterialDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT  * FROM `task_material` " +
+                        "WHERE year = :year AND quarter = :quarter");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setParameter("quarter", quarter);
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskMaterialDataView.class));
                 return sqlQuery.list();
             }
         });
