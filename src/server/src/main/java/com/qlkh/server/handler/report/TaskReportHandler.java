@@ -69,7 +69,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
  * @author Nguyen Duc Dung
  * @since 6/1/12, 6:52 PM
  */
-public class ReportTaskHandler extends AbstractHandler<TaskReportAction, TaskReportResult> {
+public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskReportResult> {
 
     private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "kehoachtacnghiep";

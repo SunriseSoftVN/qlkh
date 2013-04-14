@@ -15,7 +15,7 @@
                 <bean class="com.qlkh.server.handler.core.LoadHandler"/>
                 <bean class="com.qlkh.server.handler.core.SaveHandler"/>
                 <bean class="com.qlkh.server.handler.core.DeleteHandler"/>
-                <bean class="com.qlkh.server.handler.report.ReportTaskHandler"/>
+                <bean class="com.qlkh.server.handler.report.TaskReportHandler"/>
                 <bean class="com.qlkh.server.handler.station.LoadStationHandler"/>
                 <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailDKHandler"/>
                 <bean class="com.qlkh.server.handler.taskdetail.LoadTaskDetailKDKHandler"/>
@@ -34,6 +34,7 @@
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutPriceHandler"/>
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutLimitHandler"/>
                 <bean class="com.qlkh.server.handler.material.CopyMaterialPriceHandler"/>
+                <bean class="com.qlkh.server.handler.report.PriceReportHandler"/>
             </list>
         </property>
     </bean>
