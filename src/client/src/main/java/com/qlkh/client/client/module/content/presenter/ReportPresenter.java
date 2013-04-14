@@ -14,7 +14,10 @@ import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.ReportPlace;
 import com.qlkh.client.client.module.content.view.ReportView;
+import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.action.report.PriceReportAction;
+import com.qlkh.core.client.action.report.PriceReportResult;
 import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.action.report.TaskReportResult;
 import com.qlkh.core.client.action.station.LoadStationAction;
@@ -103,6 +106,17 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 if (reportWindow != null) {
                     reportWindow.hide();
                 }
+            }
+        });
+        view.getBtnPriceReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                dispatch.execute(new PriceReportAction(), new AbstractAsyncCallback<PriceReportResult>() {
+                    @Override
+                    public void onSuccess(PriceReportResult priceReportResult) {
+                        DiaLogUtils.notify("thanh cong");
+                    }
+                });
             }
         });
     }

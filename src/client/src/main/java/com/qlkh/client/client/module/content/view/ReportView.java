@@ -245,4 +245,28 @@ public class ReportView extends AbstractView<ReportConstant> {
     public ComboBox<BeanModel> getCbbPriceReportBranch() {
         return cbbPriceReportBranch;
     }
+
+    public Label getLblDownload() {
+        return lblDownload;
+    }
+
+    public Button getBtnPriceReportPdf() {
+        return btnPriceReportPdf;
+    }
+
+    public Button getBtnPriceReportXls() {
+        return btnPriceReportXls;
+    }
+
+    public FormPanel getPlanReportPanel() {
+        return planReportPanel;
+    }
+
+    public FormPanel getPriceReportPanel() {
+        return priceReportPanel;
+    }
+
+    public ContentPanel getContentPanel() {
+        return contentPanel;
+    }
 }

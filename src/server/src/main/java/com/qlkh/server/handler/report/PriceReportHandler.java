@@ -14,6 +14,7 @@ import net.customware.gwt.dispatch.shared.DispatchException;
  */
 public class PriceReportHandler extends AbstractHandler<PriceReportAction, PriceReportResult> {
 
+
     @Override
     public Class<PriceReportAction> getActionType() {
         return PriceReportAction.class;
