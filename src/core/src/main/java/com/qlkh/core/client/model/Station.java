@@ -30,6 +30,14 @@ public class Station extends AbstractEntity {
         return name;
     }
 
+    public String getShortName() {
+        String[] words = name.split(" ");
+        if(words.length > 2) {
+            return words[words.length - 2] + " " + words[words.length - 1];
+        }
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

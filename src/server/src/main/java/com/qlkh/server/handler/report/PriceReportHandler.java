@@ -43,8 +43,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static ch.lambdaj.Lambda.*;
 import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
 import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * The Class PriceReportHandler.
@@ -176,18 +178,23 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         nameStyle.setBorderBottom(Border.THIN);
 
         try {
-            fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)
-                    .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
+            fastReportBuilder.addColumn("Mã VT", "task.code", String.class, 15, detailStyle)
+                    .addColumn("Tên và quy cách vật tư", "task.name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
-                    .addColumn("Định mức", "task.defaultValueForPrinting", Double.class, 15, false, "###,###.###", detailStyle)
-                    .addColumn("Số lần", "task.quotaForPrinting", Integer.class, 15, detailStyle);
-
+                    .addColumn("Đơn giá", "task.defaultValueForPrinting", Double.class, 15, false, "###,###.###", detailStyle);
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
+
+                Station company = selectUnique(stations, having(on(Station.class).isCompany(), equalTo(true)));
+                //move company to the last
+                stations.remove(company);
+                stations.add(company);
+
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
-                fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS " + reportTypeEnum.getName()
+
+                fastReportBuilder.setTitle("KẾ HOẠCH CUNG VẬT TƯ SCTX – KCHT TTTH ĐS " + reportTypeEnum.getName()
                         + " NĂM " + action.getYear() + " \\n CÔNG TY TTTH ĐS VINH \\n");
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
@@ -210,22 +217,29 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
             if (CollectionUtils.isNotEmpty(stations)) {
                 Map<Integer, String> colSpans = new HashMap<Integer, String>();
-                for (Station station : stations) {
+
+                for (int i = 0; i < stations.size(); i++) {
+                    Station station = stations.get(i);
                     int index = fastReportBuilder.getColumns().size();
                     //Format number style, remove omit unnecessary '.0'
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".value", Double.class, 19, false, "###,###.#", numberStyle);
-                    fastReportBuilder.addColumn("Giờ",
-                            "stations." + station.getId() + ".time", Double.class, 24, false, "###,###", numberStyle);
-                    colSpans.put(index, station.getName());
+                            "stations." + station.getId() + ".value", Double.class, 30, true, "###,###.#", numberStyle);
+                    //Last 3 columns is different.
+                    if (i >= stations.size() - 3) {
+                        fastReportBuilder.addColumn("Tiền",
+                                "stations." + station.getId() + ".value", Double.class, 30, false, "###,###.#", numberStyle);
+                    }
+                    colSpans.put(index, station.getShortName());
                 }
 
                 if (stationId == COMPANY.getId()) {
                     for (Integer colIndex : colSpans.keySet()) {
-                        fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
+                        if (colIndex < fastReportBuilder.getColumns().size() - 6) {
+                            fastReportBuilder.setColspan(colIndex, 1, colSpans.get(colIndex));
+                        } else {
+                            fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
+                        }
                     }
-                    //set style two last columns. Business rule. TODO remove @dungvn3000
-                    AdditionStationColumnRule.setStyle(fastReportBuilder.getColumns());
                 }
 
                 //Add two more column for CAU GIAT station report.
