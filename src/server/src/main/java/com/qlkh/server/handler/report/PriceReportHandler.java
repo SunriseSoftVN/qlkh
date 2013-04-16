@@ -14,6 +14,7 @@ import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
+import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.core.client.report.PriceSumReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
@@ -85,6 +86,23 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         List<TaskSumReportBean> taskSumReportBeans = getTaskReportHandler().buildReportData(new TaskReportAction(action));
         List<PriceSumReportBean> priceSumReportBeans = new ArrayList<PriceSumReportBean>();
         PriceReportRule.addDefault(priceSumReportBeans);
+
+        for (PriceSumReportBean priceSumReportBean : priceSumReportBeans) {
+            for (TaskSumReportBean taskSumReportBean : taskSumReportBeans) {
+                for (String regex : priceSumReportBean.getMaterial().getRange()) {
+                    if (taskSumReportBean.getTask().getCode().matches(regex)) {
+                        List<TaskMaterialDataView> taskMaterialDataViews = select(dataViews,
+                                having(on(TaskMaterialDataView.class).getTaskId(), equalTo(taskSumReportBean.getTask().getId())));
+                        for (TaskMaterialDataView taskMaterialDataView: taskMaterialDataViews) {
+                            MaterialReportBean materialReportBean = new MaterialReportBean(taskMaterialDataView);
+                            priceSumReportBean.setMaterial(materialReportBean);
+                        }
+                    }
+                }
+            }
+        }
+
+
         return new PriceReportResult(reportForCompany(action, priceSumReportBeans));
     }
 

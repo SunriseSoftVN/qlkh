@@ -2,6 +2,8 @@ package com.qlkh.core.client.model.view;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.math.BigInteger;
+
 /**
  * The Class TaskMaterial.
  *
@@ -11,6 +13,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class TaskMaterialDataView implements IsSerializable {
     private long taskId;
     private long materialId;
+    private String name;
+    private String unit;
     private double quantity;
     private double price;
     private int year;
@@ -20,16 +24,16 @@ public class TaskMaterialDataView implements IsSerializable {
         return taskId;
     }
 
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
+    public void setTaskId(BigInteger taskId) {
+        this.taskId = taskId.longValue();
     }
 
     public long getMaterialId() {
         return materialId;
     }
 
-    public void setMaterialId(long materialId) {
-        this.materialId = materialId;
+    public void setMaterialId(BigInteger materialId) {
+        this.materialId = materialId.longValue();
     }
 
     public double getQuantity() {
@@ -62,6 +66,22 @@ public class TaskMaterialDataView implements IsSerializable {
 
     public void setQuarter(int quarter) {
         this.quarter = quarter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }
 

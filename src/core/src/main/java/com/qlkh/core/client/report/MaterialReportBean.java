@@ -1,5 +1,7 @@
 package com.qlkh.core.client.report;
 
+import com.qlkh.core.client.model.view.TaskMaterialDataView;
+
 import java.io.Serializable;
 
 /**
@@ -13,9 +15,18 @@ public class MaterialReportBean implements Serializable {
     private String name;
     private String stt;
     private String unit;
-    private String price;
-    private String start;
-    private String end;
+    private Double price;
+    private String[] range = new String[0];
+
+    public MaterialReportBean() {
+    }
+
+    public MaterialReportBean(TaskMaterialDataView taskMaterialDataView) {
+        this.name = taskMaterialDataView.getName();
+        this.unit = taskMaterialDataView.getUnit();
+        this.price = taskMaterialDataView.getPrice();
+    }
+
 
     public String getName() {
         return name;
@@ -41,27 +52,19 @@ public class MaterialReportBean implements Serializable {
         this.unit = unit;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public String getStart() {
-        return start;
+    public String[] getRange() {
+        return range;
     }
 
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    public void setEnd(String end) {
-        this.end = end;
+    public void setRange(String[] range) {
+        this.range = range;
     }
 }

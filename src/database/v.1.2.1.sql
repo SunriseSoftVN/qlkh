@@ -2,6 +2,8 @@ CREATE VIEW `task_material` AS
   SELECT
     `task`.`id`                 AS `taskId`,
     `material`.`id`             AS `materialId`,
+    `material`.`name`           AS `name`,
+    `material`.`unit`           AS `unit`,
     `material_limit`.`quantity` AS `quantity`,
     `material_price`.`price`    AS `price`,
     `material_price`.`year`     AS `year`,
