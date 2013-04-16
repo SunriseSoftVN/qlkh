@@ -7,7 +7,7 @@ package com.qlkh.server.business.rule;
 import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.report.StationReportBean;
-import com.qlkh.core.client.report.SumReportBean;
+import com.qlkh.core.client.report.TaskSumReportBean;
 
 import java.util.List;
 
@@ -34,8 +34,8 @@ public final class AdditionStationColumnRule {
         stations.add(dsNDStation);
     }
 
-    public static void addDataForDSTN(List<SumReportBean> beans, long stationId) {
-        for (SumReportBean bean : beans) {
+    public static void addDataForDSTN(List<TaskSumReportBean> beans, long stationId) {
+        for (TaskSumReportBean bean : beans) {
             Double totalValue = bean.getStations().get(String.
                     valueOf(stationId)).getValue();
             Double totalTime = bean.getStations().get(String.
@@ -68,8 +68,8 @@ public final class AdditionStationColumnRule {
         }
     }
 
-    public static void addDataForDSND(List<SumReportBean> beans) {
-        for (SumReportBean bean : beans) {
+    public static void addDataForDSND(List<TaskSumReportBean> beans) {
+        for (TaskSumReportBean bean : beans) {
             StationReportBean dsTNBean = new StationReportBean(dsTNStation.getId(), dsTNStation.getName());
             StationReportBean dsNDBean = new StationReportBean(dsNDStation.getId(), dsNDStation.getName());
 

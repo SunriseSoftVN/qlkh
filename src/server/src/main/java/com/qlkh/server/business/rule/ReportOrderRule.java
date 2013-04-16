@@ -4,7 +4,7 @@
 
 package com.qlkh.server.business.rule;
 
-import com.qlkh.core.client.report.SumReportBean;
+import com.qlkh.core.client.report.TaskSumReportBean;
 import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 
 import java.util.ArrayList;
@@ -56,18 +56,18 @@ public final class ReportOrderRule {
         return rules;
     }
 
-    public static void sort(List<SumReportBean> beans) {
+    public static void sort(List<TaskSumReportBean> beans) {
         if (CollectionsUtils.isEmpty(beans)) {
             return;
         }
-        List<SumReportBean> sortBeans = new ArrayList<SumReportBean>(beans.size());
+        List<TaskSumReportBean> sortBeans = new ArrayList<TaskSumReportBean>(beans.size());
         sortBeans.addAll(beans);
 
         for (Rule rule : rule()) {
-            for (SumReportBean bean1 : sortBeans) {
+            for (TaskSumReportBean bean1 : sortBeans) {
                 if (bean1.getTask().getCode().trim().toLowerCase()
                         .equals(rule.getCode1().trim().toLowerCase())) {
-                    for (SumReportBean bean2 : sortBeans) {
+                    for (TaskSumReportBean bean2 : sortBeans) {
                         if (bean2.getTask().getCode().trim().toLowerCase()
                                 .equals(rule.getCode2().trim().toLowerCase())) {
                             //Move bean1 to correct position

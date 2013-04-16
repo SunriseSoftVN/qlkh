@@ -25,8 +25,8 @@ import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
 import com.qlkh.core.client.report.StationReportBean;
-import com.qlkh.core.client.report.SumReportBean;
 import com.qlkh.core.client.report.TaskReportBean;
+import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.business.rule.*;
 import com.qlkh.server.dao.SqlQueryDao;
@@ -273,7 +273,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         return fastReportBuilder.build();
     }
 
-    public List<SumReportBean> buildReportData(TaskReportAction taskReportAction) throws ActionException {
+    public List<TaskSumReportBean> buildReportData(TaskReportAction taskReportAction) throws ActionException {
         long stationId = taskReportAction.getStationId();
 
         Station currentStation = generalDao.findById(Station.class, stationId);
@@ -297,11 +297,11 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         List<TaskDetailNamDataView> taskDetailNams = sqlQueryDao.getTaskDetailNam(stationIds, taskReportAction.getYear());
         List<TaskDefaultValue> taskDefaultValues = generalDao.getAll(TaskDefaultValue.class);
 
-        List<SumReportBean> beans = new ArrayList<SumReportBean>();
-        List<SumReportBean> parentBeans = new ArrayList<SumReportBean>();
+        List<TaskSumReportBean> beans = new ArrayList<TaskSumReportBean>();
+        List<TaskSumReportBean> parentBeans = new ArrayList<TaskSumReportBean>();
         List<Task> tasks = generalDao.getAll(Task.class, Order.asc("code"));
         for (Task task : tasks) {
-            SumReportBean bean = new SumReportBean();
+            TaskSumReportBean bean = new TaskSumReportBean();
             bean.setTask(task);
             for (Station station : stations) {
                 StationReportBean stationReport = calculateForStation(bean.getTask(), station,
@@ -333,8 +333,8 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         ReportOrderRule.sort(beans);
 
         //Remove empty task, exclude sum task
-        List<SumReportBean> removeBeans = new ArrayList<SumReportBean>();
-        for (SumReportBean bean : beans) {
+        List<TaskSumReportBean> removeBeans = new ArrayList<TaskSumReportBean>();
+        for (TaskSumReportBean bean : beans) {
             boolean found = true;
             for (StationReportBean station : bean.getStations().values()) {
                 if (station.getValue() != null) {
@@ -364,10 +364,10 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
     }
 
 
-    private void buildTree(List<SumReportBean> beans,
-                           List<SumReportBean> parentBeans) {
-        for (SumReportBean childBean : beans) {
-            for (SumReportBean parentBean : parentBeans) {
+    private void buildTree(List<TaskSumReportBean> beans,
+                           List<TaskSumReportBean> parentBeans) {
+        for (TaskSumReportBean childBean : beans) {
+            for (TaskSumReportBean parentBean : parentBeans) {
                 if (isParent(parentBean, childBean)) {
                     parentBean.getChildBeans().add(childBean);
                 }
@@ -375,7 +375,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         }
     }
 
-    private boolean isParent(SumReportBean parentBean, SumReportBean childBean) {
+    private boolean isParent(TaskSumReportBean parentBean, TaskSumReportBean childBean) {
         if (!childBean.getTask().getCode().equals(parentBean.getTask().getCode())) {
             switch (TaskTypeEnum.valueOf(parentBean.getTask().getTaskTypeCode())) {
                 case SUBSUM:
@@ -705,8 +705,8 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         return defaultValue;
     }
 
-    private void calculateForCompany(List<SumReportBean> beans) {
-        for (SumReportBean bean : beans) {
+    private void calculateForCompany(List<TaskSumReportBean> beans) {
+        for (TaskSumReportBean bean : beans) {
             double sumTime = 0d;
             double sumValue = 0d;
             for (StationReportBean station : bean.getStations().values()) {

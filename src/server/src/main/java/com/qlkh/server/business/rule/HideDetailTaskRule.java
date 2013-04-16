@@ -7,8 +7,8 @@ package com.qlkh.server.business.rule;
 import com.qlkh.client.client.utils.TaskCodeUtils;
 import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.report.StationReportBean;
-import com.qlkh.core.client.report.SumReportBean;
 import com.qlkh.core.client.report.TaskReportBean;
+import com.qlkh.core.client.report.TaskSumReportBean;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ import static com.qlkh.core.client.constant.TaskTypeEnum.*;
  */
 public final class HideDetailTaskRule {
 
-    public static void hide(List<SumReportBean> beans, TaskReportAction action) {
-        List<SumReportBean> removeBeans = new ArrayList<SumReportBean>();
-        for (SumReportBean bean : beans) {
+    public static void hide(List<TaskSumReportBean> beans, TaskReportAction action) {
+        List<TaskSumReportBean> removeBeans = new ArrayList<TaskSumReportBean>();
+        for (TaskSumReportBean bean : beans) {
             //Hide default value and quota when it is 0.
             if (bean.getTask().getDefaultValueForPrinting() != null &&
                     bean.getTask().getDefaultValueForPrinting() == 0) {

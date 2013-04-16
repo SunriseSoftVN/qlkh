@@ -18,16 +18,16 @@ import java.util.Map;
  * @author Nguyen Duc Dung
  * @since 3/7/12, 2:09 PM
  */
-public class SumReportBean implements Serializable, Comparable<SumReportBean> {
+public class TaskSumReportBean implements Serializable, Comparable<TaskSumReportBean> {
 
     private TaskReportBean task;
     private boolean calculated;
     private Map<String, StationReportBean> stations = new HashMap<String, StationReportBean>();
-    private List<SumReportBean> childBeans = new ArrayList<SumReportBean>();
+    private List<TaskSumReportBean> childBeans = new ArrayList<TaskSumReportBean>();
 
     public void calculate() {
         if (!isCalculated()) {
-            for (SumReportBean bean : childBeans) {
+            for (TaskSumReportBean bean : childBeans) {
                 bean.calculate();
             }
 
@@ -40,7 +40,7 @@ public class SumReportBean implements Serializable, Comparable<SumReportBean> {
                 if (value == null) {
                     value = 0D;
                 }
-                for (SumReportBean bean : childBeans) {
+                for (TaskSumReportBean bean : childBeans) {
                     Double childTime = bean.getStations().get(String.valueOf(station.getId())).getTime();
                     Double childValue = bean.getStations().get(String.valueOf(station.getId())).getValue();
                     if (childTime != null) {
@@ -64,7 +64,7 @@ public class SumReportBean implements Serializable, Comparable<SumReportBean> {
     }
 
     @Override
-    public int compareTo(SumReportBean bean) {
+    public int compareTo(TaskSumReportBean bean) {
         if (task.getCode().length() > bean.getTask().getCode().length()) {
             return 1;
         } else {
@@ -84,7 +84,7 @@ public class SumReportBean implements Serializable, Comparable<SumReportBean> {
         return stations;
     }
 
-    public List<SumReportBean> getChildBeans() {
+    public List<TaskSumReportBean> getChildBeans() {
         return childBeans;
     }
 
