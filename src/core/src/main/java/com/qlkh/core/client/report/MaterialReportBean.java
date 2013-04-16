@@ -14,6 +14,8 @@ public class MaterialReportBean implements Serializable {
     private String stt;
     private String unit;
     private String price;
+    private String start;
+    private String end;
 
     public String getName() {
         return name;
@@ -45,5 +47,21 @@ public class MaterialReportBean implements Serializable {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
     }
 }
