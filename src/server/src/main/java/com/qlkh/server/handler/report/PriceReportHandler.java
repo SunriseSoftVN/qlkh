@@ -14,9 +14,11 @@ import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
+import com.qlkh.core.client.report.PriceSumReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.business.rule.AdditionStationColumnRule;
+import com.qlkh.server.business.rule.PriceReportRule;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -81,11 +83,12 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
     public PriceReportResult execute(PriceReportAction action, ExecutionContext executionContext) throws DispatchException {
         List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
         List<TaskSumReportBean> taskSumReportBeans = getTaskReportHandler().buildReportData(new TaskReportAction(action));
-        return new PriceReportResult(reportForCompany(action, taskSumReportBeans));
+        List<PriceSumReportBean> priceSumReportBeans = new ArrayList<PriceSumReportBean>();
+        PriceReportRule.addDefault(priceSumReportBeans);
+        return new PriceReportResult(reportForCompany(action, priceSumReportBeans));
     }
 
-
-    private String reportForCompany(PriceReportAction action, List<TaskSumReportBean> taskSumReportBeans) throws ActionException {
+    private String reportForCompany(PriceReportAction action, List<PriceSumReportBean> priceSumReportBeans) throws ActionException {
         ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
         try {
             DynamicReport dynamicReport = buildReportLayout(action);
@@ -93,7 +96,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(taskSumReportBeans));
+                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(priceSumReportBeans));
 
             String fileName = REPORT_FILE_NAME;
             if (action.getBranchId() != null) {
@@ -180,10 +183,10 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         nameStyle.setBorderBottom(Border.THIN);
 
         try {
-            fastReportBuilder.addColumn("Mã VT", "task.code", String.class, 15, detailStyle)
-                    .addColumn("Tên và quy cách vật tư", "task.name", String.class, 80, nameStyle)
-                    .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
-                    .addColumn("Đơn giá", "task.defaultValueForPrinting", Double.class, 30, false, "###,###.###", detailStyle);
+            fastReportBuilder.addColumn("TT", "material.stt", String.class, 15, detailStyle)
+                    .addColumn("Tên và quy cách vật tư", "material.name", String.class, 80, nameStyle)
+                    .addColumn("Đơn vị", "material.unit", String.class, 15, detailStyle)
+                    .addColumn("Đơn giá", "material.price", Double.class, 30, false, "###,###.###", detailStyle);
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
