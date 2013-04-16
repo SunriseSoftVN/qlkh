@@ -43,9 +43,7 @@ public class PriceSumReportBean implements Serializable {
                     }
                 }
             }
-
         }
-
     }
 
     public Map<String, StationReportBean> getStations() {
