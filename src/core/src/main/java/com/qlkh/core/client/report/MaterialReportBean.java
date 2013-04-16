@@ -16,6 +16,8 @@ public class MaterialReportBean implements Serializable {
     private String stt;
     private String unit;
     private Double price;
+    private Double quantity;
+
     private String[] range = new String[0];
 
     public MaterialReportBean() {
@@ -25,8 +27,8 @@ public class MaterialReportBean implements Serializable {
         this.name = taskMaterialDataView.getName();
         this.unit = taskMaterialDataView.getUnit();
         this.price = taskMaterialDataView.getPrice();
+        this.quantity = taskMaterialDataView.getQuantity();
     }
-
 
     public String getName() {
         return name;
@@ -66,5 +68,9 @@ public class MaterialReportBean implements Serializable {
 
     public void setRange(String[] range) {
         this.range = range;
+    }
+
+    public Double getQuantity() {
+        return quantity;
     }
 }

@@ -13,6 +13,7 @@ import java.math.BigInteger;
 public class TaskMaterialDataView implements IsSerializable {
     private long taskId;
     private long materialId;
+    private String code;
     private String name;
     private String unit;
     private double quantity;
@@ -82,6 +83,14 @@ public class TaskMaterialDataView implements IsSerializable {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
 

@@ -3,6 +3,7 @@ CREATE VIEW `task_material` AS
     `task`.`id`                 AS `taskId`,
     `material`.`id`             AS `materialId`,
     `material`.`name`           AS `name`,
+    `material`.`code`           AS `code`,
     `material`.`unit`           AS `unit`,
     `material_limit`.`quantity` AS `quantity`,
     `material_price`.`price`    AS `price`,

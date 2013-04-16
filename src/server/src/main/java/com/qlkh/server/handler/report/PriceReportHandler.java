@@ -93,15 +93,19 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     if (taskSumReportBean.getTask().getCode().matches(regex)) {
                         List<TaskMaterialDataView> taskMaterialDataViews = select(dataViews,
                                 having(on(TaskMaterialDataView.class).getTaskId(), equalTo(taskSumReportBean.getTask().getId())));
-                        for (TaskMaterialDataView taskMaterialDataView: taskMaterialDataViews) {
+                        for (TaskMaterialDataView taskMaterialDataView : taskMaterialDataViews) {
                             MaterialReportBean materialReportBean = new MaterialReportBean(taskMaterialDataView);
-                            priceSumReportBean.setMaterial(materialReportBean);
+                            PriceSumReportBean child = new PriceSumReportBean();
+                            child.setMaterial(materialReportBean);
+                            child.setStations(taskSumReportBean.getStations());
+                            priceSumReportBean.getChilds().add(child);
                         }
                     }
                 }
             }
         }
 
+        forEach(priceSumReportBeans).calculate();
 
         return new PriceReportResult(reportForCompany(action, priceSumReportBeans));
     }
