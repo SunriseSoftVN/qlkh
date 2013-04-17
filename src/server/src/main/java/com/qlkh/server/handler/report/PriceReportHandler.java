@@ -111,12 +111,30 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
             }
         }
 
+        List<Station> stations = generalDao.getAll(Station.class);
+
         for (PriceSumReportBean bean1 : priceSumReportBeans) {
             for (PriceSumReportBean bean2 : priceSumReportBeans) {
                 for (String regex : bean1.getMaterial().getRange()) {
                     if (bean2.getMaterial().getCode() != null
                             && bean2.getMaterial().getCode().matches(regex)) {
                         bean1.getChilds().add(bean2);
+
+                        if(bean1.getStations().isEmpty()) {
+                            for(Station station : stations) {
+                                StationReportBean emptyStation = new StationReportBean();
+                                emptyStation.setId(station.getId());
+                                bean1.getStations().put(String.valueOf(station.getId()), emptyStation);
+                            }
+
+                            StationReportBean ndStation = new StationReportBean();
+                            ndStation.setId(StationCodeEnum.ND_FOR_REPORT.getId());
+                            bean1.getStations().put(String.valueOf(ndStation.getId()), ndStation);
+
+                            StationReportBean tnStation = new StationReportBean();
+                            tnStation.setId(StationCodeEnum.TN_FOR_REPORT.getId());
+                            bean1.getStations().put(String.valueOf(tnStation.getId()), tnStation);
+                        }
                     }
                 }
             }

@@ -19,8 +19,8 @@ public final class PriceReportRule {
 
     public static void addDefault(List<PriceSumReportBean> priceSumReportBeans) {
         create("A", "A", "TỔNG KẾ HOẠCH GIAO", priceSumReportBeans, "A.I.*");
-        create("A.I", "I", "ĐỊNH KỲ", priceSumReportBeans, ".*.I.*");
-        create("A.II", "II", "KHÔNG ĐỊNH KỲ", priceSumReportBeans, ".*.II.*");
+        create("A.I", "I", "ĐỊNH KỲ", priceSumReportBeans, "SF.*.I.*");
+        create("A.II", "II", "KHÔNG ĐỊNH KỲ", priceSumReportBeans, "SF.*.II.*");
 
         create("SF1", "SF1", "HT ĐƯỜNG TRUYỀN TẢI", priceSumReportBeans, "SF1.I.*");
         create("SF1.I", "I", "ĐỊNH KỲ (từ 1.3xx - 1.4xx)", priceSumReportBeans, "1.3.*", "1.4.*");

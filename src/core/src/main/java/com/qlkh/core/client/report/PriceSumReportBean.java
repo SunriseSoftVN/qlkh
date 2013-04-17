@@ -18,12 +18,23 @@ public class PriceSumReportBean implements Serializable {
     private MaterialReportBean material;
     private List<PriceSumReportBean> childs = new ArrayList<>();
 
+    private boolean isCalculated = false;
+
     public void calculate() {
+
+        for (PriceSumReportBean child : childs) {
+            if (!child.isCalculated) {
+                child.calculate();
+            }
+        }
+
         for (StationReportBean station : stations.values()) {
             double parentWeight = 0d;
             double parentPrice = 0d;
             for (PriceSumReportBean child : childs) {
-                if (station.getValue() != null && child.getMaterial().getQuantity() != null) {
+                if (child.getMaterial().getId() != null
+                        && station.getValue() != null
+                        && child.getMaterial().getQuantity() != null) {
                     double weight = station.getValue() * child.getMaterial().getQuantity();
                     double price = weight * child.getMaterial().getPrice();
                     StationReportBean childStation = new StationReportBean();
@@ -34,6 +45,12 @@ public class PriceSumReportBean implements Serializable {
                     if (weight > 0) {
                         parentWeight += weight;
                         parentPrice += price;
+                    }
+                } else {
+                    StationReportBean childStation = child.getStations().get(String.valueOf(station.getId()));
+                    if (childStation != null && childStation.getMaterialPrice() != null && childStation.getMaterialWeight() != null) {
+                        parentPrice += childStation.getMaterialPrice();
+                        parentWeight += childStation.getMaterialWeight();
                     }
                 }
             }
@@ -71,6 +88,8 @@ public class PriceSumReportBean implements Serializable {
         }
 
         childs.removeAll(duplicateChilds);
+
+        isCalculated = true;
     }
 
     public Map<String, StationReportBean> getStations() {
