@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public class MaterialReportBean implements Serializable {
 
+    private Long id;
     private String name;
     private String stt;
     private String unit;
@@ -28,6 +29,7 @@ public class MaterialReportBean implements Serializable {
         this.unit = taskMaterialDataView.getUnit();
         this.price = taskMaterialDataView.getPrice();
         this.quantity = taskMaterialDataView.getQuantity();
+        this.id = taskMaterialDataView.getMaterialId();
     }
 
     public String getName() {
@@ -72,5 +74,13 @@ public class MaterialReportBean implements Serializable {
 
     public Double getQuantity() {
         return quantity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

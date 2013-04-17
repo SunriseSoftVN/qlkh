@@ -19,31 +19,52 @@ public class PriceSumReportBean implements Serializable {
     private List<PriceSumReportBean> childs = new ArrayList<>();
 
     public void calculate() {
-        if (childs.isEmpty()) {
-            for (StationReportBean station : stations.values()) {
-                double weight = 0d;
-                if (station.getValue() != null && material.getQuantity() != null) {
-                    weight = station.getValue() * material.getQuantity();
-                }
-                station.setValue(weight);
-            }
-        } else {
+        for (StationReportBean station : stations.values()) {
+            double parentWeight = 0d;
             for (PriceSumReportBean child : childs) {
-                child.calculate();
+                if (station.getValue() != null && child.getMaterial().getQuantity() != null) {
+                    double weight = station.getValue() * child.getMaterial().getQuantity();
+                    StationReportBean childStation = new StationReportBean();
+                    childStation.setId(station.getId());
+                    childStation.setMaterialWeight(weight);
+                    child.getStations().put(String.valueOf(station.getId()), childStation);
+                    if (weight > 0) {
+                        parentWeight += weight;
+                    }
+                }
             }
 
-            for (PriceSumReportBean child : childs) {
-                for (StationReportBean station : child.getStations().values()) {
-                    StationReportBean parentStation = stations.get(station.getId());
-                    if (parentStation == null) {
-                        stations.put(String.valueOf(station.getId()), station);
-                    } else {
-                        double weight = parentStation.getValue() + station.getValue();
-                        parentStation.setValue(weight);
+            if (parentWeight > 0) {
+                station.setMaterialWeight(parentWeight);
+            }
+        }
+
+        //Remove duplicate material
+        List<PriceSumReportBean> duplicateChilds = new ArrayList<>();
+        for (int i = 0; i < childs.size() - 1; i++) {
+            PriceSumReportBean child1 = childs.get(i);
+            for (int j = i + 1; j < childs.size(); j++) {
+                PriceSumReportBean child2 = childs.get(j);
+                if (child1.getMaterial().getId().equals(child2.getMaterial().getId())) {
+                    duplicateChilds.add(child2);
+
+                    // Sum up
+                    for (StationReportBean station1 : child1.getStations().values()) {
+                        StationReportBean station2 = child2.getStations().get(String.valueOf(station1.getId()));
+                        if (station2 != null && station2.getMaterialWeight() != null) {
+                            if (station1.getMaterialWeight() != null) {
+                                double weight = station1.getMaterialWeight() + station2.getMaterialWeight();
+                                station1.setMaterialWeight(weight);
+                            } else {
+                                station1.setMaterialWeight(station2.getMaterialWeight());
+                            }
+                        }
                     }
                 }
             }
         }
+
+        childs.removeAll(duplicateChilds);
     }
 
     public Map<String, StationReportBean> getStations() {

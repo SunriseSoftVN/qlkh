@@ -30,7 +30,7 @@ public class TaskReportAction implements Action<TaskReportResult> {
     public TaskReportAction(PriceReportAction priceReportAction) {
         this.reportTypeEnum = priceReportAction.getReportTypeEnum();
         this.fileTypeEnum = priceReportAction.getFileTypeEnum();
-        this.reportFormEnum = ReportFormEnum.MAU_1;
+        this.reportFormEnum = ReportFormEnum.MAU_2;
         this.branchId = priceReportAction.getBranchId();
         this.stationId = priceReportAction.getStationId();
         this.year = priceReportAction.getYear();

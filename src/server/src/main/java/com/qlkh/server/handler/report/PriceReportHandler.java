@@ -97,8 +97,10 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             MaterialReportBean materialReportBean = new MaterialReportBean(taskMaterialDataView);
                             PriceSumReportBean child = new PriceSumReportBean();
                             child.setMaterial(materialReportBean);
-                            child.setStations(taskSumReportBean.getStations());
                             priceSumReportBean.getChilds().add(child);
+                        }
+                        if(priceSumReportBean.getStations().isEmpty()) {
+                            priceSumReportBean.setStations(taskSumReportBean.getStations());
                         }
                     }
                 }
@@ -107,7 +109,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
         forEach(priceSumReportBeans).calculate();
 
-        return new PriceReportResult(reportForCompany(action, priceSumReportBeans));
+        //only for display
+        List<PriceSumReportBean> displayBeans = new ArrayList<PriceSumReportBean>();
+        for (PriceSumReportBean priceSumReportBean : priceSumReportBeans) {
+            displayBeans.add(priceSumReportBean);
+            int stt = 0;
+            for(PriceSumReportBean child: priceSumReportBean.getChilds()) {
+                child.getMaterial().setStt(String.valueOf(stt += 1));
+                displayBeans.add(child);
+            }
+        }
+
+        return new PriceReportResult(reportForCompany(action, displayBeans));
     }
 
     private String reportForCompany(PriceReportAction action, List<PriceSumReportBean> priceSumReportBeans) throws ActionException {
@@ -250,11 +263,11 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     int index = fastReportBuilder.getColumns().size();
                     //Format number style, remove omit unnecessary '.0'
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".value", Double.class, 30, true, "###,###.#", numberStyle);
+                            "stations." + station.getId() + ".materialWeight", Double.class, 30, true, "###,###.#", numberStyle);
                     //Last 3 columns is different.
                     if (i >= stations.size() - 3) {
                         fastReportBuilder.addColumn("Tiền",
-                                "stations." + station.getId() + ".value", Double.class, 30, false, "###,###.#", numberStyle);
+                                "stations." + station.getId() + ".materialWeight", Double.class, 30, false, "###,###.#", numberStyle);
                     }
                     colSpans.put(index, station.getShortName());
                 }
