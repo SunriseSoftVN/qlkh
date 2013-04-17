@@ -20,6 +20,7 @@ public class StationReportBean implements Serializable {
     private Double time;
 
     private Double materialWeight;
+    private Double materialPrice;
 
     // ND branch value just for the report not really for calculation.
     private Double ndValue;
@@ -87,5 +88,13 @@ public class StationReportBean implements Serializable {
 
     public void setMaterialWeight(Double materialWeight) {
         this.materialWeight = materialWeight;
+    }
+
+    public Double getMaterialPrice() {
+        return materialPrice;
+    }
+
+    public void setMaterialPrice(Double materialPrice) {
+        this.materialPrice = materialPrice;
     }
 }

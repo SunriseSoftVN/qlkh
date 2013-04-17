@@ -13,12 +13,12 @@ import java.io.Serializable;
 public class MaterialReportBean implements Serializable {
 
     private Long id;
+    private String code;
     private String name;
     private String stt;
     private String unit;
     private Double price;
     private Double quantity;
-
     private String[] range = new String[0];
 
     public MaterialReportBean() {
@@ -82,5 +82,13 @@ public class MaterialReportBean implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

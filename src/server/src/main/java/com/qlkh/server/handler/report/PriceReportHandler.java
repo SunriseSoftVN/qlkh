@@ -16,10 +16,12 @@ import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.core.client.report.PriceSumReportBean;
+import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.business.rule.AdditionStationColumnRule;
 import com.qlkh.server.business.rule.PriceReportRule;
+import com.qlkh.server.business.rule.StationCodeEnum;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -85,6 +87,8 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
         List<TaskSumReportBean> taskSumReportBeans = getTaskReportHandler().buildReportData(new TaskReportAction(action));
         List<PriceSumReportBean> priceSumReportBeans = new ArrayList<PriceSumReportBean>();
+
+        //Add default material
         PriceReportRule.addDefault(priceSumReportBeans);
 
         for (PriceSumReportBean priceSumReportBean : priceSumReportBeans) {
@@ -99,9 +103,20 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             child.setMaterial(materialReportBean);
                             priceSumReportBean.getChilds().add(child);
                         }
-                        if(priceSumReportBean.getStations().isEmpty()) {
+                        if (priceSumReportBean.getStations().isEmpty()) {
                             priceSumReportBean.setStations(taskSumReportBean.getStations());
                         }
+                    }
+                }
+            }
+        }
+
+        for (PriceSumReportBean bean1 : priceSumReportBeans) {
+            for (PriceSumReportBean bean2 : priceSumReportBeans) {
+                for (String regex : bean1.getMaterial().getRange()) {
+                    if (bean2.getMaterial().getCode() != null
+                            && bean2.getMaterial().getCode().matches(regex)) {
+                        bean1.getChilds().add(bean2);
                     }
                 }
             }
@@ -114,9 +129,25 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         for (PriceSumReportBean priceSumReportBean : priceSumReportBeans) {
             displayBeans.add(priceSumReportBean);
             int stt = 0;
-            for(PriceSumReportBean child: priceSumReportBean.getChilds()) {
-                child.getMaterial().setStt(String.valueOf(stt += 1));
-                displayBeans.add(child);
+            for (PriceSumReportBean child : priceSumReportBean.getChilds()) {
+                if (child.getMaterial().getRange().length == 0) {
+                    child.getMaterial().setStt(String.valueOf(stt += 1));
+                    displayBeans.add(child);
+                }
+            }
+        }
+
+        //Hide some value
+        for (PriceSumReportBean priceSumReportBean : displayBeans) {
+            if (!priceSumReportBean.getChilds().isEmpty()) {
+                for (StationReportBean station : priceSumReportBean.getStations().values()) {
+                    if (station.getId() != StationCodeEnum.COMPANY.getId()
+                            && station.getId() != StationCodeEnum.ND_FOR_REPORT.getId()
+                            && station.getId() != StationCodeEnum.TN_FOR_REPORT.getId()) {
+                        station.setMaterialWeight(null);
+                        station.setMaterialPrice(null);
+                    }
+                }
             }
         }
 
@@ -267,7 +298,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     //Last 3 columns is different.
                     if (i >= stations.size() - 3) {
                         fastReportBuilder.addColumn("Tiền",
-                                "stations." + station.getId() + ".materialWeight", Double.class, 30, false, "###,###.#", numberStyle);
+                                "stations." + station.getId() + ".materialPrice", Double.class, 30, false, "###,###.#", numberStyle);
                     }
                     colSpans.put(index, station.getShortName());
                 }

@@ -21,21 +21,26 @@ public class PriceSumReportBean implements Serializable {
     public void calculate() {
         for (StationReportBean station : stations.values()) {
             double parentWeight = 0d;
+            double parentPrice = 0d;
             for (PriceSumReportBean child : childs) {
                 if (station.getValue() != null && child.getMaterial().getQuantity() != null) {
                     double weight = station.getValue() * child.getMaterial().getQuantity();
+                    double price = weight * child.getMaterial().getPrice();
                     StationReportBean childStation = new StationReportBean();
                     childStation.setId(station.getId());
                     childStation.setMaterialWeight(weight);
+                    childStation.setMaterialPrice(price);
                     child.getStations().put(String.valueOf(station.getId()), childStation);
                     if (weight > 0) {
                         parentWeight += weight;
+                        parentPrice += price;
                     }
                 }
             }
 
             if (parentWeight > 0) {
                 station.setMaterialWeight(parentWeight);
+                station.setMaterialPrice(parentPrice);
             }
         }
 
@@ -45,7 +50,8 @@ public class PriceSumReportBean implements Serializable {
             PriceSumReportBean child1 = childs.get(i);
             for (int j = i + 1; j < childs.size(); j++) {
                 PriceSumReportBean child2 = childs.get(j);
-                if (child1.getMaterial().getId().equals(child2.getMaterial().getId())) {
+                if (child1.getMaterial().getId() != null
+                        && child1.getMaterial().getId().equals(child2.getMaterial().getId())) {
                     duplicateChilds.add(child2);
 
                     // Sum up
