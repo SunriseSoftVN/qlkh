@@ -14,9 +14,9 @@ import java.util.Map;
  */
 public class PriceSumReportBean implements Serializable {
 
-    private Map<String, StationReportBean> stations = new HashMap<>();
+    private Map<String, StationReportBean> stations = new HashMap<String, StationReportBean>();
     private MaterialReportBean material;
-    private List<PriceSumReportBean> childs = new ArrayList<>();
+    private List<PriceSumReportBean> childs = new ArrayList<PriceSumReportBean>();
 
     private boolean isCalculated = false;
 
@@ -62,7 +62,7 @@ public class PriceSumReportBean implements Serializable {
         }
 
         //Remove duplicate material
-        List<PriceSumReportBean> duplicateChilds = new ArrayList<>();
+        List<PriceSumReportBean> duplicateChilds = new ArrayList<PriceSumReportBean>();
         for (int i = 0; i < childs.size() - 1; i++) {
             PriceSumReportBean child1 = childs.get(i);
             for (int j = i + 1; j < childs.size(); j++) {
