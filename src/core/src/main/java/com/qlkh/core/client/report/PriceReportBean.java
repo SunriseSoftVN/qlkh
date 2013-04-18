@@ -24,8 +24,10 @@ public class PriceReportBean implements Serializable {
     private String unit;
     private Double price;
     private double quantity;
-    private long materialId;
+    private Long materialId;
     private long taskId;
+
+    private boolean isCalculated;
 
     public PriceReportBean() {
     }
@@ -39,7 +41,9 @@ public class PriceReportBean implements Serializable {
 
     public void calculate() {
         for (PriceReportBean child : children) {
-            child.calculate();
+            if (!child.isCalculated) {
+                child.calculate();
+            }
         }
 
         if (children.isEmpty()) {
@@ -52,8 +56,70 @@ public class PriceReportBean implements Serializable {
                 }
             }
         } else {
+            // Sum up same materials.
+            List<PriceReportBean> removeChildren = new ArrayList<PriceReportBean>();
+            for (int i = 0; i < children.size() - 1; i++) {
+                PriceReportBean child1 = children.get(i);
+                for (int j = i + 1; j < children.size(); j++) {
+                    PriceReportBean child2 = children.get(j);
+                    if (child1 != child2
+                            && child1.getMaterialId() != null
+                            && child1.getMaterialId().equals(child2.getMaterialId())) {
+                        for (PriceColumnBean column1 : child1.getColumns().values()) {
+                            PriceColumnBean column2 = child2.getColumns().get(String.valueOf(column1.getId()));
+                            if (column2 != null && column2.getWeight() != null) {
+                                if (column1.getWeight() == null) {
+                                    column1.setWeight(column2.getWeight());
+                                } else {
+                                    double weight = column1.getWeight() + column2.getWeight();
+                                    column1.setWeight(weight);
+                                }
 
+                                if (column1.getPrice() == null) {
+                                    column1.setPrice(column2.getPrice());
+                                } else {
+                                    double price = column1.getPrice() + column2.getPrice();
+                                    column1.setPrice(price);
+                                }
+                            }
+                        }
+
+                        removeChildren.add(child2);
+                    }
+                }
+            }
+
+            children.removeAll(removeChildren);
+
+            //Sum all children.
+            for (PriceColumnBean column : columns.values()) {
+                double weight = 0d;
+                double price = 0d;
+
+                for (PriceReportBean child : children) {
+                    PriceColumnBean childColumn = child.getColumns().get(String.valueOf(column.getId()));
+                    if (childColumn != null) {
+                        if (childColumn.getWeight() != null) {
+                            weight += childColumn.getWeight();
+                        }
+
+                        if (childColumn.getPrice() != null) {
+                            price += childColumn.getPrice();
+                        }
+                    }
+                }
+
+                if (weight > 0) {
+                    column.setWeight(weight);
+                }
+
+                if (price > 0) {
+                    column.setPrice(price);
+                }
+            }
         }
+
+        isCalculated = true;
     }
 
     public Map<String, PriceColumnBean> getColumns() {
@@ -128,11 +194,11 @@ public class PriceReportBean implements Serializable {
         this.quantity = quantity;
     }
 
-    public long getMaterialId() {
+    public Long getMaterialId() {
         return materialId;
     }
 
-    public void setMaterialId(long materialId) {
+    public void setMaterialId(Long materialId) {
         this.materialId = materialId;
     }
 

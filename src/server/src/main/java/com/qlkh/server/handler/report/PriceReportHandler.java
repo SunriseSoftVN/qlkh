@@ -50,8 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ch.lambdaj.Lambda.*;
-import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
-import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
+import static com.qlkh.server.business.rule.StationCodeEnum.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
@@ -112,9 +111,25 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         List<PriceReportBean> displayData = new ArrayList<PriceReportBean>();
         for (PriceReportBean price : prices) {
             displayData.add(price);
+            int index = 0;
             for (PriceReportBean child : price.getChildren()) {
                 if (child.getRegex().length == 0) {
+                    child.setStt(String.valueOf(index += 1));
                     displayData.add(child);
+                }
+            }
+        }
+
+        //hide some data
+        for (PriceReportBean price : displayData) {
+            if (price.getRegex().length > 0) {
+                for (PriceColumnBean column : price.getColumns().values()) {
+                    if (column.getId() != COMPANY.getId()
+                            && column.getId() != ND_FOR_REPORT.getId()
+                            && column.getId() != TN_FOR_REPORT.getId()) {
+                        column.setWeight(null);
+                        column.setPrice(null);
+                    }
                 }
             }
         }
@@ -161,7 +176,6 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
     private void buildTree(List<PriceReportBean> prices, List<TaskSumReportBean> tasks, List<TaskMaterialDataView> dataViews) {
         for (PriceReportBean price : prices) {
-            int index = 0;
             for (TaskSumReportBean task : tasks) {
                 for (String regex : price.getRegex()) {
                     if (task.getTask().getCode().matches(regex)) {
@@ -176,7 +190,6 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             childPrice.setQuantity(material.getQuantity());
                             childPrice.setMaterialId(material.getMaterialId());
                             childPrice.setTaskId(material.getTaskId());
-                            childPrice.setStt(String.valueOf(index += 1));
 
                             price.getChildren().add(childPrice);
                         }
@@ -296,7 +309,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
             fastReportBuilder.addColumn("TT", "stt", String.class, 15, detailStyle)
                     .addColumn("Tên và quy cách vật tư", "name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "unit", String.class, 15, detailStyle)
-                    .addColumn("Đơn giá", "price", Double.class, 30, false, "###,###.###", detailStyle);
+                    .addColumn("Đơn giá", "price", Double.class, 20, false, "###,###.###", detailStyle);
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
@@ -338,7 +351,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     int index = fastReportBuilder.getColumns().size();
                     //Format number style, remove omit unnecessary '.0'
                     fastReportBuilder.addColumn("KL",
-                            "columns." + station.getId() + ".weight", Double.class, 30, true, "###,###.#", numberStyle);
+                            "columns." + station.getId() + ".weight", Double.class, 40, true, "###,###.#", numberStyle);
                     //Last 3 columns is different.
                     if (i >= stations.size() - 3) {
                         fastReportBuilder.addColumn("Tiền",

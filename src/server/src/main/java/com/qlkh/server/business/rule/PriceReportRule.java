@@ -18,8 +18,8 @@ public final class PriceReportRule {
 
     public static void addDefault(List<PriceReportBean> prices) {
         create("A", "A", "TỔNG KẾ HOẠCH GIAO", prices, "A.I.*");
-        create("A.I", "I", "ĐỊNH KỲ", prices, "SF.*.I.*");
-        create("A.II", "II", "KHÔNG ĐỊNH KỲ", prices, "SF.*.II.*");
+        create("A.I", "I", "ĐỊNH KỲ", prices, "SF[0-9].I");
+        create("A.II", "II", "KHÔNG ĐỊNH KỲ", prices, "SF[0-9].II");
 
         create("SF1", "SF1", "HT ĐƯỜNG TRUYỀN TẢI", prices, "SF1.I.*");
         create("SF1.I", "I", "ĐỊNH KỲ (từ 1.3xx - 1.4xx)", prices, "1.3.*", "1.4.*");
