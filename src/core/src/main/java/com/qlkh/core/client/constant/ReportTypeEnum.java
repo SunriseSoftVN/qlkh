@@ -32,4 +32,13 @@ public enum ReportTypeEnum {
     public int getValue() {
         return value;
     }
+
+    public static ReportTypeEnum valueOf(int code) {
+        for (ReportTypeEnum quarter : values()) {
+            if (quarter.getValue() == code) {
+                return quarter;
+            }
+        }
+        return null;
+    }
 }

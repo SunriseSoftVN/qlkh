@@ -24,6 +24,7 @@ import com.qlkh.core.client.action.station.LoadStationResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
+import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.constant.UserRoleEnum;
 import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.model.Branch;
@@ -85,6 +86,11 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             public void onSuccess(GetServerTimeResult result) {
                 view.getCbbTaskYear().setSimpleValue(result.getYear());
                 view.getCbbPriceYear().setSimpleValue(result.getYear());
+                ReportTypeEnum reportTypeEnum = ReportTypeEnum.valueOf(result.getQuarter().getCode());
+                if (reportTypeEnum != null) {
+                    view.getCbbPriceReportType().setSimpleValue(reportTypeEnum);
+                    view.getCbbTaskReportType().setSimpleValue(reportTypeEnum);
+                }
             }
         });
         view.getBtnPlanReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
