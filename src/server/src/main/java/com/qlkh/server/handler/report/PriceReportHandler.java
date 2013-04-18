@@ -92,7 +92,15 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
         buildTree(prices, tasks, dataViews);
 
-        List<Station> stations = generalDao.getAll(Station.class);
+        List<Station> stations = new ArrayList<Station>();
+
+        if (action.getStationId() == COMPANY.getId()) {
+            stations = generalDao.getAll(Station.class);
+        } else {
+            Station station = generalDao.findById(Station.class, action.getStationId());
+            stations.add(station);
+        }
+
         //Build column.
         for (PriceReportBean price : prices) {
             price.setColumns(buildColumns(stations));
@@ -121,14 +129,16 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         }
 
         //hide some data
-        for (PriceReportBean price : displayData) {
-            if (price.getRegex().length > 0) {
-                for (PriceColumnBean column : price.getColumns().values()) {
-                    if (column.getId() != COMPANY.getId()
-                            && column.getId() != ND_FOR_REPORT.getId()
-                            && column.getId() != TN_FOR_REPORT.getId()) {
-                        column.setWeight(null);
-                        column.setPrice(null);
+        if(action.getStationId() == COMPANY.getId()) {
+            for (PriceReportBean price : displayData) {
+                if (price.getRegex().length > 0) {
+                    for (PriceColumnBean column : price.getColumns().values()) {
+                        if (column.getId() != COMPANY.getId()
+                                && column.getId() != ND_FOR_REPORT.getId()
+                                && column.getId() != TN_FOR_REPORT.getId()) {
+                            column.setWeight(null);
+                            column.setPrice(null);
+                        }
                     }
                 }
             }
