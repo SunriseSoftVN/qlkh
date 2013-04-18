@@ -14,8 +14,8 @@ import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
-import com.qlkh.core.client.report.MaterialReportBean;
-import com.qlkh.core.client.report.PriceSumReportBean;
+import com.qlkh.core.client.report.PriceColumnBean;
+import com.qlkh.core.client.report.PriceReportBean;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
@@ -85,94 +85,120 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
     @Override
     public PriceReportResult execute(PriceReportAction action, ExecutionContext executionContext) throws DispatchException {
         List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
-        List<TaskSumReportBean> taskSumReportBeans = getTaskReportHandler().buildReportData(new TaskReportAction(action));
-        List<PriceSumReportBean> priceSumReportBeans = new ArrayList<PriceSumReportBean>();
+        List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
+        List<PriceReportBean> prices = new ArrayList<PriceReportBean>();
 
         //Add default material
-        PriceReportRule.addDefault(priceSumReportBeans);
+        PriceReportRule.addDefault(prices);
 
-        for (PriceSumReportBean priceSumReportBean : priceSumReportBeans) {
-            for (TaskSumReportBean taskSumReportBean : taskSumReportBeans) {
-                for (String regex : priceSumReportBean.getMaterial().getRange()) {
-                    if (taskSumReportBean.getTask().getCode().matches(regex)) {
-                        List<TaskMaterialDataView> taskMaterialDataViews = select(dataViews,
-                                having(on(TaskMaterialDataView.class).getTaskId(), equalTo(taskSumReportBean.getTask().getId())));
-                        for (TaskMaterialDataView taskMaterialDataView : taskMaterialDataViews) {
-                            MaterialReportBean materialReportBean = new MaterialReportBean(taskMaterialDataView);
-                            PriceSumReportBean child = new PriceSumReportBean();
-                            child.setMaterial(materialReportBean);
-                            priceSumReportBean.getChilds().add(child);
-                        }
-                        if (priceSumReportBean.getStations().isEmpty()) {
-                            priceSumReportBean.setStations(taskSumReportBean.getStations());
-                        }
-                    }
-                }
-            }
-        }
+        buildTree(prices, tasks, dataViews);
 
         List<Station> stations = generalDao.getAll(Station.class);
+        //Build column.
+        for (PriceReportBean price : prices) {
+            price.setColumns(buildColumns(stations));
+            for (PriceReportBean child : price.getChildren()) {
+                if (child.getColumns().isEmpty()) {
+                    child.setColumns(buildColumns(stations));
+                }
+            }
+        }
 
-        for (PriceSumReportBean bean1 : priceSumReportBeans) {
-            for (PriceSumReportBean bean2 : priceSumReportBeans) {
-                for (String regex : bean1.getMaterial().getRange()) {
-                    if (bean2.getMaterial().getCode() != null
-                            && bean2.getMaterial().getCode().matches(regex)) {
-                        bean1.getChilds().add(bean2);
+        //Fill Data
+        fillData(prices, tasks);
 
-                        if(bean1.getStations().isEmpty()) {
-                            for(Station station : stations) {
-                                StationReportBean emptyStation = new StationReportBean();
-                                emptyStation.setId(station.getId());
-                                bean1.getStations().put(String.valueOf(station.getId()), emptyStation);
+        forEach(prices).calculate();
+
+        List<PriceReportBean> displayData = new ArrayList<PriceReportBean>();
+        for (PriceReportBean price : prices) {
+            displayData.add(price);
+            for (PriceReportBean child : price.getChildren()) {
+                if (child.getRegex().length == 0) {
+                    displayData.add(child);
+                }
+            }
+        }
+
+        return new PriceReportResult(reportForCompany(action, displayData));
+    }
+
+    private void fillData(List<PriceReportBean> prices, List<TaskSumReportBean> tasks) {
+        for (PriceReportBean price : prices) {
+            for (PriceReportBean child : price.getChildren()) {
+                for (TaskSumReportBean task : tasks) {
+                    if (child.getTaskId() == task.getTask().getId()) {
+                        for (StationReportBean station : task.getStations().values()) {
+                            PriceColumnBean columnBean = child.getColumns().get(String.valueOf(station.getId()));
+                            if (columnBean != null) {
+                                columnBean.setTaskWeight(station.getValue());
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-                            StationReportBean ndStation = new StationReportBean();
-                            ndStation.setId(StationCodeEnum.ND_FOR_REPORT.getId());
-                            bean1.getStations().put(String.valueOf(ndStation.getId()), ndStation);
+    private Map<String, PriceColumnBean> buildColumns(List<Station> stations) {
+        Map<String, PriceColumnBean> columns = new HashMap<String, PriceColumnBean>();
+        for (Station station : stations) {
+            PriceColumnBean column = new PriceColumnBean();
+            column.setId(station.getId());
+            columns.put(String.valueOf(column.getId()), column);
+        }
 
-                            StationReportBean tnStation = new StationReportBean();
-                            tnStation.setId(StationCodeEnum.TN_FOR_REPORT.getId());
-                            bean1.getStations().put(String.valueOf(tnStation.getId()), tnStation);
+        //To more columns
+        PriceColumnBean ndColumn = new PriceColumnBean();
+        ndColumn.setId(StationCodeEnum.ND_FOR_REPORT.getId());
+        columns.put(String.valueOf(ndColumn.getId()), ndColumn);
+
+        PriceColumnBean tnColumn = new PriceColumnBean();
+        tnColumn.setId(StationCodeEnum.TN_FOR_REPORT.getId());
+        columns.put(String.valueOf(tnColumn.getId()), tnColumn);
+
+        return columns;
+    }
+
+    private void buildTree(List<PriceReportBean> prices, List<TaskSumReportBean> tasks, List<TaskMaterialDataView> dataViews) {
+        for (PriceReportBean price : prices) {
+            int index = 0;
+            for (TaskSumReportBean task : tasks) {
+                for (String regex : price.getRegex()) {
+                    if (task.getTask().getCode().matches(regex)) {
+                        List<TaskMaterialDataView> materials = select(dataViews,
+                                having(on(TaskMaterialDataView.class).getTaskId(), equalTo(task.getTask().getId())));
+
+                        for (TaskMaterialDataView material : materials) {
+                            PriceReportBean childPrice = new PriceReportBean();
+                            childPrice.setName(material.getName());
+                            childPrice.setUnit(material.getUnit());
+                            childPrice.setPrice(material.getPrice());
+                            childPrice.setQuantity(material.getQuantity());
+                            childPrice.setMaterialId(material.getMaterialId());
+                            childPrice.setTaskId(material.getTaskId());
+                            childPrice.setStt(String.valueOf(index += 1));
+
+                            price.getChildren().add(childPrice);
                         }
                     }
                 }
             }
         }
 
-        forEach(priceSumReportBeans).calculate();
-
-        //only for display
-        List<PriceSumReportBean> displayBeans = new ArrayList<PriceSumReportBean>();
-        for (PriceSumReportBean priceSumReportBean : priceSumReportBeans) {
-            displayBeans.add(priceSumReportBean);
-            int stt = 0;
-            for (PriceSumReportBean child : priceSumReportBean.getChilds()) {
-                if (child.getMaterial().getRange().length == 0) {
-                    child.getMaterial().setStt(String.valueOf(stt += 1));
-                    displayBeans.add(child);
-                }
-            }
-        }
-
-        //Hide some value
-        for (PriceSumReportBean priceSumReportBean : displayBeans) {
-            if (!priceSumReportBean.getChilds().isEmpty()) {
-                for (StationReportBean station : priceSumReportBean.getStations().values()) {
-                    if (station.getId() != StationCodeEnum.COMPANY.getId()
-                            && station.getId() != StationCodeEnum.ND_FOR_REPORT.getId()
-                            && station.getId() != StationCodeEnum.TN_FOR_REPORT.getId()) {
-                        station.setMaterialWeight(null);
-                        station.setMaterialPrice(null);
+        for (PriceReportBean price1 : prices) {
+            for (PriceReportBean price2 : prices) {
+                for (String regex : price1.getRegex()) {
+                    if (price2.getCode() != null
+                            && price2.getCode().matches(regex)
+                            && price2 != price1) {
+                        price1.getChildren().add(price2);
                     }
                 }
             }
         }
-
-        return new PriceReportResult(reportForCompany(action, displayBeans));
     }
 
-    private String reportForCompany(PriceReportAction action, List<PriceSumReportBean> priceSumReportBeans) throws ActionException {
+    private String reportForCompany(PriceReportAction action, List<PriceReportBean> priceReportBeans) throws ActionException {
         ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
         try {
             DynamicReport dynamicReport = buildReportLayout(action);
@@ -180,7 +206,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(priceSumReportBeans));
+                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(priceReportBeans));
 
             String fileName = REPORT_FILE_NAME;
             if (action.getBranchId() != null) {
@@ -267,10 +293,10 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         nameStyle.setBorderBottom(Border.THIN);
 
         try {
-            fastReportBuilder.addColumn("TT", "material.stt", String.class, 15, detailStyle)
-                    .addColumn("Tên và quy cách vật tư", "material.name", String.class, 80, nameStyle)
-                    .addColumn("Đơn vị", "material.unit", String.class, 15, detailStyle)
-                    .addColumn("Đơn giá", "material.price", Double.class, 30, false, "###,###.###", detailStyle);
+            fastReportBuilder.addColumn("TT", "stt", String.class, 15, detailStyle)
+                    .addColumn("Tên và quy cách vật tư", "name", String.class, 80, nameStyle)
+                    .addColumn("Đơn vị", "unit", String.class, 15, detailStyle)
+                    .addColumn("Đơn giá", "price", Double.class, 30, false, "###,###.###", detailStyle);
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
@@ -312,11 +338,11 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     int index = fastReportBuilder.getColumns().size();
                     //Format number style, remove omit unnecessary '.0'
                     fastReportBuilder.addColumn("KL",
-                            "stations." + station.getId() + ".materialWeight", Double.class, 30, true, "###,###.#", numberStyle);
+                            "columns." + station.getId() + ".weight", Double.class, 30, true, "###,###.#", numberStyle);
                     //Last 3 columns is different.
                     if (i >= stations.size() - 3) {
                         fastReportBuilder.addColumn("Tiền",
-                                "stations." + station.getId() + ".materialPrice", Double.class, 30, false, "###,###.#", numberStyle);
+                                "columns." + station.getId() + ".price", Double.class, 30, false, "###,###.#", numberStyle);
                     }
                     colSpans.put(index, station.getShortName());
                 }
