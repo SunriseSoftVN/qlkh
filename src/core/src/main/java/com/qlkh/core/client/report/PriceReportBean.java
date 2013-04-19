@@ -93,24 +93,15 @@ public class PriceReportBean implements Serializable {
 
             //Sum all children.
             for (PriceColumnBean column : columns.values()) {
-                double weight = 0d;
                 double price = 0d;
 
                 for (PriceReportBean child : children) {
                     PriceColumnBean childColumn = child.getColumns().get(String.valueOf(column.getId()));
                     if (childColumn != null) {
-                        if (childColumn.getWeight() != null) {
-                            weight += childColumn.getWeight();
-                        }
-
                         if (childColumn.getPrice() != null) {
                             price += childColumn.getPrice();
                         }
                     }
-                }
-
-                if (weight > 0) {
-                    column.setWeight(weight);
                 }
 
                 if (price > 0) {

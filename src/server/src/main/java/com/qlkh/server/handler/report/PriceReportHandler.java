@@ -332,14 +332,14 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
 
-                fastReportBuilder.setTitle("KẾ HOẠCH CUNG VẬT TƯ SCTX – KCHT TTTH ĐS " + reportTypeEnum.getName()
+                fastReportBuilder.setTitle("KẾ HOẠCH CUNG ỨNG VẬT TƯ SCTX – KCHT TTTH ĐS " + reportTypeEnum.getName()
                         + " NĂM " + action.getYear() + " \\n CÔNG TY TTTH ĐS VINH \\n");
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
                 stations.add(station);
                 if (branchId != null) {
                     Branch branch = generalDao.findById(Branch.class, branchId);
-                    fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
+                    fastReportBuilder.setTitle("KẾ HOẠCH CUNG ỨNG VẬT TƯ SCTX – KCHT TTTH ĐS "
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + branch.getName().toUpperCase() + "\\n");
                 } else {

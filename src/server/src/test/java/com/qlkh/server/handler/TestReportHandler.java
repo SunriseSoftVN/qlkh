@@ -47,6 +47,6 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
 
     @Test(timeout = 20000)
     public void testPriceReport() throws DispatchException {
-        dispatch.execute(new PriceReportAction(ReportTypeEnum.Q2, ReportFileTypeEnum.PDF, 31, null, 2013));
+        dispatch.execute(new PriceReportAction(ReportTypeEnum.Q2, ReportFileTypeEnum.PDF, 27, null, 2013));
     }
 }
