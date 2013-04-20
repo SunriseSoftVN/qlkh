@@ -126,8 +126,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                     sql += "AND ";
                 }
 
-                sql += "`task`.`taskTypeCode` !=  " + TaskTypeEnum.NAM.getCode() +
-                        " AND `task`.`taskTypeCode` != " + TaskTypeEnum.SUBSUM.getCode() +
+                sql += " `task`.`taskTypeCode` != " + TaskTypeEnum.SUBSUM.getCode() +
                         " AND `task`.`taskTypeCode` != " + TaskTypeEnum.SUM.getCode();
 
                 sql = createFilter(config, "task", sql);
