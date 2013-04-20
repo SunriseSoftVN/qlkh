@@ -319,7 +319,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
             fastReportBuilder.addColumn("TT", "stt", String.class, 15, detailStyle)
                     .addColumn("Tên và quy cách vật tư", "name", String.class, 80, nameStyle)
                     .addColumn("Đơn vị", "unit", String.class, 15, detailStyle)
-                    .addColumn("Đơn giá", "price", Double.class, 20, false, "###,###.###", detailStyle);
+                    .addColumn("Đơn giá", "price", Double.class, 20, false, "###,###.###", numberStyle);
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
@@ -339,7 +339,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 stations.add(station);
                 if (branchId != null) {
                     Branch branch = generalDao.findById(Branch.class, branchId);
-                    fastReportBuilder.setTitle("KẾ HOẠCH CUNG ỨNG VẬT TƯ SCTX – KCHT TTTH ĐS "
+                    fastReportBuilder.setTitle("KẾ HOẠCH CHI PHÍ VẬT TƯ SCTX – KCHT TTTH ĐS "
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + branch.getName().toUpperCase() + "\\n");
                 } else {
@@ -347,7 +347,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                         //Add two more columns. Business rule. TODO remove @dungvn3000
                         AdditionStationColumnRule.addStation(stations);
                     }
-                    fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
+                    fastReportBuilder.setTitle("KẾ HOẠCH CHI PHÍ VẬT TƯ SCTX – KCHT TTTH ĐS "
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + station.getName().toUpperCase() + "\\n");
                 }

@@ -31,11 +31,12 @@ public class Station extends AbstractEntity {
     }
 
     public String getShortName() {
-        String[] words = name.split(" ");
-        if(words.length > 2) {
-            return words[words.length - 2] + " " + words[words.length - 1];
+        String prefix = "Xí nghiệp ";
+        String shortName = name.replace(prefix, "");
+        if (shortName.equals("XL và DV TTTH Điện")) {
+            return "XN & XL";
         }
-        return name;
+        return shortName;
     }
 
     public void setName(String name) {
