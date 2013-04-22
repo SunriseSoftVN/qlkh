@@ -29,4 +29,5 @@ public interface MainMenuConstant extends Constants {
     String mlLimitJob();
     String mlMaterial();
     String mlMaterialPrice();
+    String mlMaterialPerson();
 }

@@ -104,6 +104,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
+    MenuLink mlMaterialPerson = new MenuLink(MaterialPersonPlace.class);
+
+    @FieldSecurity
+    @HistoryHandler
+    @I18nField
     MenuLink mlUpgrade = new MenuLink(ApplicationUpgradePlace.class);
 
     @FieldSecurity
@@ -157,6 +162,9 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
 
         mlMaterialPrice.setStyleName("menulink");
         mainPanel.add(mlMaterialPrice, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        mlMaterialPerson.setStyleName("menulink");
+        mainPanel.add(mlMaterialPerson, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //Report
         mnlReport.setStyleName("menulink");
