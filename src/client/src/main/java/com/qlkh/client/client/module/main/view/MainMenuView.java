@@ -109,7 +109,12 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
-    MenuLink mlMaterialGroupPlace = new MenuLink(MaterialGroupPlace.class);
+    MenuLink mlMaterialGroup = new MenuLink(MaterialGroupPlace.class);
+
+    @FieldSecurity
+    @HistoryHandler
+    @I18nField
+    MenuLink mlMaterialIn = new MenuLink(MaterialInPlace.class);
 
     @FieldSecurity
     @HistoryHandler
@@ -171,8 +176,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mlMaterialPerson.setStyleName("menulink");
         mainPanel.add(mlMaterialPerson, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
-        mlMaterialGroupPlace.setStyleName("menulink");
-        mainPanel.add(mlMaterialGroupPlace, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mlMaterialGroup.setStyleName("menulink");
+        mainPanel.add(mlMaterialGroup, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
+        mlMaterialIn.setStyleName("menulink");
+        mainPanel.add(mlMaterialIn, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //Report
         mnlReport.setStyleName("menulink");

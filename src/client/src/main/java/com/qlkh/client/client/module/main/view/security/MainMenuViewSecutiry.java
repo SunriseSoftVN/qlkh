@@ -97,4 +97,12 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
     public HasRole[] mlMaterialPerson() {
         return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
     }
+
+    public HasRole[] mlMaterialGroup() {
+        return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
+    }
+
+    public HasRole[] mlMaterialIn() {
+        return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
+    }
 }
