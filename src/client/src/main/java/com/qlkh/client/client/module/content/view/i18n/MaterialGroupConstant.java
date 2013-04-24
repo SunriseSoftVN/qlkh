@@ -9,4 +9,20 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
  * @since 4/23/13 3:42 AM
  */
 public interface MaterialGroupConstant extends Constants {
+    String btnDelete();
+    String btnAdd();
+    String btnEdit();
+    String btnRefresh();
+    String txtName();
+    String txtCode();
+    String btnEditOk();
+    String sttColumnTitle();
+    String editPanel();
+    String btnEditCancel();
+    String saveMessageSuccess();
+    String deleteMessage();
+    String deleteSuccessMessage();
+    String codeColumnTitle();
+    String nameColumnTitle();
+    String existCodeMessage();
 }
