@@ -29,6 +29,7 @@
                 <value>com/qlkh/core/client/model/Material.hbm.xml</value>
                 <value>com/qlkh/core/client/model/MaterialLimit.hbm.xml</value>
                 <value>com/qlkh/core/client/model/MaterialPrice.hbm.xml</value>
+                <value>com/qlkh/core/client/model/MaterialPerson.hbm.xml</value>
             </list>
         </property>
     </bean>
