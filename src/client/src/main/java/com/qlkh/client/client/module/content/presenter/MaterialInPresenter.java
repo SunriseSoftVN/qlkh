@@ -6,7 +6,9 @@ import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.module.content.place.MaterialInPlace;
 import com.qlkh.client.client.module.content.view.MaterialInView;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.model.MaterialIn;
+import com.qlkh.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -35,5 +37,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
     protected void doBind() {
         view.createGrid(GridUtils.createListStore(MaterialIn.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
+        view.getCbStation().setStore(GridUtils.createListStoreForCb(Station.class, ClientRestrictions.ne("id", 27l)));
     }
 }
