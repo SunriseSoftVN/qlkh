@@ -2,9 +2,7 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -48,6 +46,17 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public static final int LIST_SIZE = 200;
 
+    public static final String STT_COLUMN = "stt";
+    public static final int STT_COLUMN_WIDTH = 40;
+    public static final String MATERIAL_CODE_COLUMN = "code";
+    public static final int MATERIAL_CODE_WIDTH = 70;
+    public static final String MATERIAL_NAME_COLUMN = "name";
+    public static final int MATERIAL_NAME_WIDTH = 150;
+    public static final String MATERIAL_UNIT_COLUMN = "unit";
+    public static final int MATERIAL_UNIT_WIDTH = 70;
+    public static final String MATERIAL_NOTE_COLUMN = "note";
+    public static final int MATERIAL_NOTE_WIDTH = 150;
+
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
 
@@ -60,17 +69,28 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     @I18nField
     Button btnRefresh = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_refresh.png"));
 
+    @I18nField
+    Button btnEditOk = new Button();
+
+    @I18nField
+    Button btnEditCancel = new Button();
+
     @I18nField(emptyText = true)
     TextField<String> txtNameSearch = new TextField<String>();
 
     @I18nField(emptyText = true)
     TextField<String> txtCodeSearch = new TextField<String>();
 
+    @I18nField(emptyText = true)
+    TextField<String> txtMaterialSearch = new TextField<String>();
+
     ComboBox<BeanModel> cbStation = new ComboBox<BeanModel>();
     SimpleComboBox<QuarterEnum> cbQuarter = new SimpleComboBox<QuarterEnum>();
     SimpleComboBox<Integer> cbYear = new SimpleComboBox<Integer>();
 
     private MyFormPanel editPanel = new MyFormPanel();
+    private PagingToolBar materialPagingToolBar = new PagingToolBar(100);
+    private Grid<BeanModel> materialGrid;
 
     private PagingToolBar pagingToolBar;
     private Grid<BeanModel> gird;
@@ -185,10 +205,10 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().codeColumnTitle(), 100);
+        ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().codeColumnTitle(), 70);
         columnConfigs.add(materialCodeColumnConfig);
 
-        ColumnConfig materialNameColumnConfig = new ColumnConfig("material.name", getConstant().nameColumnTitle(), 200);
+        ColumnConfig materialNameColumnConfig = new ColumnConfig("material.name", getConstant().nameColumnTitle(), 170);
         columnConfigs.add(materialNameColumnConfig);
 
         ColumnConfig materialUnitColumnConfig = new ColumnConfig("material.unit", getConstant().unitColumnTitle(), 50);
@@ -217,6 +237,86 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
         return columnConfigs;
     }
+
+    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
+        com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
+        if (!editPanel.isRendered()) {
+            editPanel.setHeaderVisible(false);
+            editPanel.setBodyBorder(false);
+            editPanel.setBorders(false);
+
+            CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
+            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs(selectionModel));
+
+            materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
+            materialGrid.setBorders(true);
+            materialGrid.setHeight(400);
+            materialGrid.setSelectionModel(selectionModel);
+            materialGrid.addPlugin(selectionModel);
+
+            ToolBar toolBar = new ToolBar();
+            toolBar.add(txtMaterialSearch);
+
+            editPanel.setTopComponent(toolBar);
+            editPanel.setBottomComponent(materialPagingToolBar);
+            editPanel.add(materialGrid);
+        }
+
+        window.add(editPanel);
+        window.addButton(btnEditOk);
+        window.addButton(btnEditCancel);
+        window.setSize(600, 400);
+        window.setAutoHeight(true);
+        window.setResizable(false);
+        window.setModal(true);
+        window.setHeading(getConstant().editPanel());
+        window.addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                gird.focus();
+            }
+        });
+        return window;
+    }
+
+
+    private List<ColumnConfig> createMaterialColumnConfigs(CheckBoxSelectionModel<BeanModel> selectionModel) {
+        List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
+
+        columnConfigs.add(selectionModel.getColumn());
+
+        ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
+        sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
+            @Override
+            public Object render(BeanModel model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<BeanModel> beanModelListStore, Grid<BeanModel> beanModelGrid) {
+                if (model.get(STT_COLUMN) == null) {
+                    model.set(STT_COLUMN, rowIndex + 1);
+                }
+                return new Text(String.valueOf(model.get(STT_COLUMN)));
+            }
+        });
+        columnConfigs.add(sttColumnConfig);
+
+        ColumnConfig codeColumnConfig = new ColumnConfig(MATERIAL_CODE_COLUMN, getConstant().codeColumnTitle(), MATERIAL_CODE_WIDTH);
+        columnConfigs.add(codeColumnConfig);
+
+        ColumnConfig nameColumnConfig = new ColumnConfig(MATERIAL_NAME_COLUMN, getConstant().nameColumnTitle(),
+                MATERIAL_NAME_WIDTH);
+        columnConfigs.add(nameColumnConfig);
+
+        ColumnConfig unitColumnConfig = new ColumnConfig(MATERIAL_UNIT_COLUMN, getConstant().unitColumnTitle(),
+                MATERIAL_UNIT_WIDTH);
+        columnConfigs.add(unitColumnConfig);
+
+        ColumnConfig noteColumnConfig = new ColumnConfig(MATERIAL_NOTE_COLUMN, getConstant().nameColumnTitle(),
+                MATERIAL_NOTE_WIDTH);
+        columnConfigs.add(noteColumnConfig);
+
+        return columnConfigs;
+    }
+
+
 
     public Button getBtnAdd() {
         return btnAdd;
@@ -268,5 +368,25 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public SimpleComboBox<Integer> getCbYear() {
         return cbYear;
+    }
+
+    public Button getBtnEditOk() {
+        return btnEditOk;
+    }
+
+    public Button getBtnEditCancel() {
+        return btnEditCancel;
+    }
+
+    public TextField<String> getTxtMaterialSearch() {
+        return txtMaterialSearch;
+    }
+
+    public PagingToolBar getMaterialPagingToolBar() {
+        return materialPagingToolBar;
+    }
+
+    public Grid<BeanModel> getMaterialGrid() {
+        return materialGrid;
     }
 }

@@ -12,6 +12,7 @@ public interface MaterialInViewConstant extends Constants {
     String sttColumnTitle();
     String codeColumnTitle();
     String nameColumnTitle();
+    String noteColumnTitle();
     String unitColumnTitle();
     String btnDelete();
     String btnAdd();
@@ -33,4 +34,5 @@ public interface MaterialInViewConstant extends Constants {
     String personColumnTitle();
     String weightColumnTitle();
     String remainColumnTitle();
+    String txtMaterialSearch();
 }
