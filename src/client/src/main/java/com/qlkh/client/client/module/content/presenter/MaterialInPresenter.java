@@ -13,15 +13,15 @@ import com.qlkh.client.client.module.content.place.MaterialInPlace;
 import com.qlkh.client.client.module.content.view.MaterialInView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
+import com.qlkh.core.client.action.core.LoadAction;
+import com.qlkh.core.client.action.core.LoadResult;
 import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceAction;
 import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
 import com.qlkh.core.client.criterion.ClientRestrictions;
-import com.qlkh.core.client.model.Material;
-import com.qlkh.core.client.model.MaterialIn;
-import com.qlkh.core.client.model.Station;
+import com.qlkh.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -57,14 +57,37 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             public void onSuccess(GetServerTimeResult result) {
                 currentQuarter = result.getQuarter();
                 currentYear = result.getYear();
-                view.createGrid(GridUtils.createListStore(MaterialIn.class));
-                view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
-                view.getPagingToolBar().refresh();
-                view.getCbQuarter().setSimpleValue(result.getQuarter());
+                final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+                final ListStore<BeanModel> store = new ListStore<BeanModel>();
+                view.getCbStation().setStore(store);
+                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName(), ClientRestrictions.ne("id", 27l)),
+                        new AbstractAsyncCallback<LoadResult>() {
+                            @Override
+                            public void onSuccess(LoadResult result) {
+                                for (Station entity : result.<Station>getList()) {
+                                    store.add(factory.createModel(entity));
+                                }
+                                if (!result.getList().isEmpty()) {
+                                    view.getCbStation().setValue(store.getAt(0));
+
+                                    view.createGrid(GridUtils.createListStore(MaterialIn.class,
+                                            ClientRestrictions.eq("year", currentYear),
+                                            ClientRestrictions.eq("quarter", currentQuarter.getCode()),
+                                            ClientRestrictions.eq("materialPerson.id", 1l))
+                                    );
+                                    view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
+                                    view.getPagingToolBar().refresh();
+                                    view.getCbQuarter().setSimpleValue(currentQuarter);
+                                    view.getCbYear().setSimpleValue(currentYear);
+                                }
+                            }
+                        });
             }
         });
 
-        view.getCbStation().setStore(GridUtils.createListStoreForCb(Station.class, ClientRestrictions.ne("id", 27l)));
+        view.getCbGroup().setStore(GridUtils.createListStore(MaterialGroup.class));
+        view.getCbPerson().setStore(GridUtils.createListStore(MaterialPerson.class));
+
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

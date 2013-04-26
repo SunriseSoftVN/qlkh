@@ -23,6 +23,7 @@ import com.qlkh.client.client.module.content.view.i18n.MaterialInViewConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialInSecurity;
 import com.qlkh.client.client.widget.MyFitLayout;
 import com.qlkh.client.client.widget.MyFormPanel;
+import com.qlkh.client.client.widget.MyNumberField;
 import com.qlkh.core.client.constant.QuarterEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
@@ -88,6 +89,16 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     SimpleComboBox<QuarterEnum> cbQuarter = new SimpleComboBox<QuarterEnum>();
     SimpleComboBox<Integer> cbYear = new SimpleComboBox<Integer>();
 
+    @I18nField
+    ComboBox<BeanModel> cbGroup = new ComboBox<BeanModel>();
+
+    @I18nField
+    ComboBox<BeanModel> cbPerson = new ComboBox<BeanModel>();
+
+    @I18nField
+    MyNumberField txtWeight = new MyNumberField();
+
+    private ContentPanel gridPanel = new ContentPanel();
     private MyFormPanel editPanel = new MyFormPanel();
     private PagingToolBar materialPagingToolBar = new PagingToolBar(100);
     private Grid<BeanModel> materialGrid;
@@ -240,29 +251,57 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
-        if (!editPanel.isRendered()) {
-            editPanel.setHeaderVisible(false);
-            editPanel.setBodyBorder(false);
-            editPanel.setBorders(false);
+        if (!gridPanel.isRendered()) {
+            gridPanel.setHeaderVisible(false);
+            gridPanel.setBodyBorder(false);
+            gridPanel.setBorders(false);
 
-            CheckBoxSelectionModel<BeanModel> selectionModel = new CheckBoxSelectionModel<BeanModel>();
-            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs(selectionModel));
+            ColumnModel childColumnModel = new ColumnModel(createMaterialColumnConfigs());
 
             materialGrid = new Grid<BeanModel>(childGridStore, childColumnModel);
             materialGrid.setBorders(true);
-            materialGrid.setHeight(400);
-            materialGrid.setSelectionModel(selectionModel);
-            materialGrid.addPlugin(selectionModel);
+            materialGrid.setHeight(200);
 
             ToolBar toolBar = new ToolBar();
             toolBar.add(txtMaterialSearch);
 
-            editPanel.setTopComponent(toolBar);
-            editPanel.setBottomComponent(materialPagingToolBar);
-            editPanel.add(materialGrid);
+            gridPanel.setTopComponent(toolBar);
+            gridPanel.setBottomComponent(materialPagingToolBar);
+            gridPanel.add(materialGrid);
         }
 
+
+        if(!editPanel.isRendered()) {
+            editPanel.setHeaderVisible(false);
+            editPanel.setBorders(false);
+            editPanel.setHeight(100);
+
+            cbGroup.setDisplayField("code");
+            cbPerson.setDisplayField("personName");
+
+            cbGroup.setAllowBlank(false);
+            cbGroup.setEditable(false);
+            cbGroup.setSelectOnFocus(true);
+            cbGroup.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbGroup.setForceSelection(true);
+
+            cbPerson.setAllowBlank(false);
+            cbPerson.setEditable(false);
+            cbPerson.setSelectOnFocus(true);
+            cbPerson.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbPerson.setForceSelection(true);
+
+            txtWeight.setAllowBlank(false);
+
+            editPanel.add(cbGroup);
+            editPanel.add(cbPerson);
+            editPanel.add(txtWeight);
+        }
+
+        window.add(gridPanel);
         window.add(editPanel);
+
+
         window.addButton(btnEditOk);
         window.addButton(btnEditCancel);
         window.setSize(600, 400);
@@ -280,10 +319,8 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     }
 
 
-    private List<ColumnConfig> createMaterialColumnConfigs(CheckBoxSelectionModel<BeanModel> selectionModel) {
+    private List<ColumnConfig> createMaterialColumnConfigs() {
         List<ColumnConfig> columnConfigs = new ArrayList<ColumnConfig>();
-
-        columnConfigs.add(selectionModel.getColumn());
 
         ColumnConfig sttColumnConfig = new ColumnConfig(STT_COLUMN, getConstant().sttColumnTitle(), STT_COLUMN_WIDTH);
         sttColumnConfig.setRenderer(new GridCellRenderer<BeanModel>() {
@@ -342,8 +379,8 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         return txtCodeSearch;
     }
 
-    public MyFormPanel getEditPanel() {
-        return editPanel;
+    public ContentPanel getGridPanel() {
+        return gridPanel;
     }
 
     public PagingToolBar getPagingToolBar() {
@@ -388,5 +425,17 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public Grid<BeanModel> getMaterialGrid() {
         return materialGrid;
+    }
+
+    public ComboBox<BeanModel> getCbGroup() {
+        return cbGroup;
+    }
+
+    public ComboBox<BeanModel> getCbPerson() {
+        return cbPerson;
+    }
+
+    public MyNumberField getTxtWeight() {
+        return txtWeight;
     }
 }

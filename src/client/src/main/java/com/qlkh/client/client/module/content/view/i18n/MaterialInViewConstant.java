@@ -35,4 +35,7 @@ public interface MaterialInViewConstant extends Constants {
     String weightColumnTitle();
     String remainColumnTitle();
     String txtMaterialSearch();
+    String cbGroup();
+    String cbPerson();
+    String txtWeight();
 }
