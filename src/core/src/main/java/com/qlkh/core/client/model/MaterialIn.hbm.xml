@@ -26,5 +26,13 @@
             <column name="materialPersonId" not-null="false"/>
         </many-to-one>
 
+        <many-to-one name="material" class="com.qlkh.core.client.model.Material" lazy="false" fetch="join" outer-join="auto">
+            <column name="materialId" not-null="false"/>
+        </many-to-one>
+
+        <many-to-one name="station" class="com.qlkh.core.client.model.Station" lazy="false" fetch="join" outer-join="auto">
+            <column name="stationId" not-null="false"/>
+        </many-to-one>
+
     </class>
 </hibernate-mapping>

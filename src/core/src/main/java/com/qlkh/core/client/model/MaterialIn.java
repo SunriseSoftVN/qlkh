@@ -17,6 +17,8 @@ public class MaterialIn extends AbstractEntity {
     private int year;
     private MaterialGroup materialGroup;
     private MaterialPerson materialPerson;
+    private Material material;
+    private Station station;
 
     public String getCode() {
         return code;
@@ -72,5 +74,21 @@ public class MaterialIn extends AbstractEntity {
 
     public void setMaterialPerson(MaterialPerson materialPerson) {
         this.materialPerson = materialPerson;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
+    }
+
+    public Station getStation() {
+        return station;
+    }
+
+    public void setStation(Station station) {
+        this.station = station;
     }
 }
