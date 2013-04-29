@@ -148,6 +148,19 @@ public class MaterialGroupPresenter extends AbstractPresenter<MaterialGroupView>
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equals("Yes")) {
                                 dispatch.execute(new DeleteAction(MaterialGroup.class.getName(), materialIds), new AbstractAsyncCallback<DeleteResult>() {
+
+                                    @Override
+                                    public void onFailure(Throwable caught) {
+                                        if (caught instanceof ServiceException) {
+                                            String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                            if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                                DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
+                                            }
+                                        } else {
+                                            super.onFailure(caught);
+                                        }
+                                    }
+
                                     @Override
                                     public void onSuccess(DeleteResult deleteResult) {
                                         DiaLogUtils.notify(view.getConstant().deleteSuccessMessage());

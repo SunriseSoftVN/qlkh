@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.qlkh.client.client.constant.ExceptionConstant;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.MaterialPersonPlace;
@@ -25,6 +26,7 @@ import com.qlkh.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.shared.ServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +136,18 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equals("Yes")) {
                                 dispatch.execute(new DeleteAction(MaterialPerson.class.getName(), materialIds), new AbstractAsyncCallback<DeleteResult>() {
+                                    @Override
+                                    public void onFailure(Throwable caught) {
+                                        if (caught instanceof ServiceException) {
+                                            String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                            if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                                DiaLogUtils.showMessage(view.getConstant().deleteErrorMessage());
+                                            }
+                                        } else {
+                                            super.onFailure(caught);
+                                        }
+                                    }
+
                                     @Override
                                     public void onSuccess(DeleteResult deleteResult) {
                                         DiaLogUtils.notify(view.getConstant().deleteSuccessMessage());

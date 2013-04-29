@@ -4,6 +4,7 @@
 
 package com.qlkh.core.client.action.report;
 
+import com.qlkh.core.client.action.material.CopyMaterialInAction;
 import com.qlkh.core.client.action.material.LoadMaterialInTotalAction;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportFormEnum;
@@ -54,6 +55,14 @@ public class TaskReportAction implements Action<TaskReportResult> {
         this.stationId = stationId;
         this.branchId = branchId;
         this.year = year;
+    }
+
+    public TaskReportAction(CopyMaterialInAction action) {
+        this.reportTypeEnum = ReportTypeEnum.valueOf(action.getQuarter());
+        this.fileTypeEnum = ReportFileTypeEnum.PDF;
+        this.reportFormEnum = ReportFormEnum.MAU_2;
+        this.stationId = action.getStationId();
+        this.year = action.getYear();
     }
 
     public ReportTypeEnum getReportTypeEnum() {

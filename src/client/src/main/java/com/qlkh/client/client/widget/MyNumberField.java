@@ -5,6 +5,7 @@
 package com.qlkh.client.client.widget;
 
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.google.gwt.i18n.client.NumberFormat;
 
 /**
  * The Class MyNumberField.
@@ -16,5 +17,6 @@ public class MyNumberField extends NumberField {
     public MyNumberField() {
         super();
         decimalSeparator = ".";
+        setFormat(NumberFormat.getFormat("###,###.##"));
     }
 }

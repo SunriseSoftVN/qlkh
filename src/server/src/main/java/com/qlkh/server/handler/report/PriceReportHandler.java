@@ -225,7 +225,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
             for (PriceReportBean price2 : prices) {
                 for (String regex : price1.getRegex()) {
                     if (price2.getCode() != null
-                            && price2.getCode().matches(regex)
+                            && matcher.match(price2.getCode(), regex)
                             && price2 != price1) {
                         price1.getChildren().add(price2);
                     }

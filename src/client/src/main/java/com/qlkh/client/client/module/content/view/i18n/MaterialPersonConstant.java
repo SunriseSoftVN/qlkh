@@ -24,4 +24,5 @@ public interface MaterialPersonConstant extends Constants {
     String saveMessageSuccess();
     String deleteMessage();
     String deleteSuccessMessage();
+    String deleteErrorMessage();
 }

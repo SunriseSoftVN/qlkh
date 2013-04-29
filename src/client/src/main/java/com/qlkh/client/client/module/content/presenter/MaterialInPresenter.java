@@ -19,10 +19,7 @@ import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.*;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.grid.LoadGridDataResult;
-import com.qlkh.core.client.action.material.LoadMaterialInTotalAction;
-import com.qlkh.core.client.action.material.LoadMaterialInTotalResult;
-import com.qlkh.core.client.action.material.LoadMaterialWithTaskAction;
-import com.qlkh.core.client.action.material.LoadMaterialWithTaskResult;
+import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
@@ -177,12 +174,16 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
                     BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
 
-                    BeanModel group = groupFactory.createModel(currentMaterial.getMaterialGroup());
-                    view.getCbGroup().setValue(group);
+                    if (currentMaterial.getMaterialGroup() != null) {
+                        BeanModel group = groupFactory.createModel(currentMaterial.getMaterialGroup());
+                        view.getCbGroup().setValue(group);
+                    }
 
-                    BeanModel person = personFactory.createModel(currentMaterial.getMaterialPerson());
-                    view.getCbPerson().setValue(person);
-                    view.getCbPerson().clearInvalid();
+                    if (currentMaterial.getMaterialPerson() != null) {
+                        BeanModel person = personFactory.createModel(currentMaterial.getMaterialPerson());
+                        view.getCbPerson().setValue(person);
+                        view.getCbPerson().clearInvalid();
+                    }
 
                     editWindow.show();
                     editWindow.layout(true);
@@ -351,6 +352,18 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         }
                     });
                 }
+            }
+        });
+
+        view.getBtnCopy().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                dispatch.execute(new CopyMaterialInAction(currentYear, currentQuarter.getCode(), currentStation.getId()), new AbstractAsyncCallback<CopyMaterialInResult>() {
+                    @Override
+                    public void onSuccess(CopyMaterialInResult copyMaterialInResult) {
+                        view.getPagingToolBar().refresh();
+                    }
+                });
             }
         });
     }

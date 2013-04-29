@@ -7,7 +7,6 @@ import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.server.dao.SqlQueryDao;
-import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.handler.report.TaskReportHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -30,13 +29,8 @@ public class LoadMaterialInTotalHandler extends AbstractHandler<LoadMaterialInTo
     private ApplicationContext applicationContext;
 
     @Autowired
-    private GeneralDao generalDao;
-
-    @Autowired
     private SqlQueryDao sqlQueryDao;
 
-    @Autowired
-    private TaskReportHandler taskReportHandler;
 
     @Override
     public Class<LoadMaterialInTotalAction> getActionType() {

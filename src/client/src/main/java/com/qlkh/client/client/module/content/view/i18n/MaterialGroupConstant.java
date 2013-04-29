@@ -29,4 +29,5 @@ public interface MaterialGroupConstant extends Constants {
     String txtRegex();
     String txtCodeDisplay();
     String codeDisplayColumnTitle();
+    String deleteErrorMessage();
 }

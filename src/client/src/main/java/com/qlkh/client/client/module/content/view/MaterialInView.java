@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialInViewConstant;
@@ -76,6 +77,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     @I18nField
     Button btnEditCancel = new Button();
+
+    @I18nField
+    Button btnCopy = new Button(null, IconHelper.createPath("assets/images/icons/fam/database_save.png"));
 
     @I18nField(emptyText = true)
     TextField<String> txtNameSearch = new TextField<String>();
@@ -162,6 +166,8 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         toolBar.add(btnDelete);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(btnRefresh);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(btnCopy);
 
         if (!cbStation.isRendered()) {
             cbStation.setDisplayField("name");
@@ -223,7 +229,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().materialCodeColumnTitle(), 70);
+        ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().materialCodeColumnTitle(), 50);
         columnConfigs.add(materialCodeColumnConfig);
 
         ColumnConfig materialNameColumnConfig = new ColumnConfig("material.name", getConstant().nameColumnTitle(), 170);
@@ -232,16 +238,17 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig materialUnitColumnConfig = new ColumnConfig("material.unit", getConstant().unitColumnTitle(), 50);
         columnConfigs.add(materialUnitColumnConfig);
 
-        ColumnConfig totalColumnConfig = new ColumnConfig("total", getConstant().totalColumnTitle(), 100);
+        ColumnConfig totalColumnConfig = new ColumnConfig("total", getConstant().totalColumnTitle(), 70);
+        totalColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
         columnConfigs.add(totalColumnConfig);
 
-        ColumnConfig reasonColumnConfig = new ColumnConfig("materialGroup.name", getConstant().reasonColumnTitle(), 100);
+        ColumnConfig reasonColumnConfig = new ColumnConfig("materialGroup.name", getConstant().reasonColumnTitle(), 150);
         columnConfigs.add(reasonColumnConfig);
 
         ColumnConfig groupCodeColumnConfig = new ColumnConfig("materialGroup.code", getConstant().groupCodeColumnTitle(), 70);
         columnConfigs.add(groupCodeColumnConfig);
 
-        ColumnConfig dateColumnConfig = new ColumnConfig("createdDate", getConstant().dateColumnTitle(), 100);
+        ColumnConfig dateColumnConfig = new ColumnConfig("createdDate", getConstant().dateColumnTitle(), 80);
         dateColumnConfig.setDateTimeFormat(DateTimeFormat.getFormat("d-MM-yyyy"));
         columnConfigs.add(dateColumnConfig);
 
@@ -470,6 +477,10 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public void setCbPerson(ComboBox<BeanModel> cbPerson) {
         this.cbPerson = cbPerson;
+    }
+
+    public Button getBtnCopy() {
+        return btnCopy;
     }
 
     public void resetEditPanel() {
