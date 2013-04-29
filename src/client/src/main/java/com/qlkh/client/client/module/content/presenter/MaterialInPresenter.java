@@ -1,14 +1,14 @@
 package com.qlkh.client.client.module.content.presenter;
 
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.qlkh.client.client.constant.ExceptionConstant;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.reader.LoadGridDataReader;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
@@ -16,10 +16,7 @@ import com.qlkh.client.client.module.content.place.MaterialInPlace;
 import com.qlkh.client.client.module.content.view.MaterialInView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
-import com.qlkh.core.client.action.core.LoadAction;
-import com.qlkh.core.client.action.core.LoadResult;
-import com.qlkh.core.client.action.core.SaveAction;
-import com.qlkh.core.client.action.core.SaveResult;
+import com.qlkh.core.client.action.core.*;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.grid.LoadGridDataResult;
 import com.qlkh.core.client.action.material.LoadMaterialInTotalAction;
@@ -33,9 +30,11 @@ import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
+import net.customware.gwt.dispatch.shared.ServiceException;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * The Class MaterialInPresenter.
@@ -104,9 +103,9 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                         }
                                     });
 
-                                    view.getCbQuarter().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<QuarterEnum>>() {
+                                    view.getCbYear().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<Integer>>() {
                                         @Override
-                                        public void selectionChanged(SelectionChangedEvent<SimpleComboValue<QuarterEnum>> simpleComboValueSelectionChangedEvent) {
+                                        public void selectionChanged(SelectionChangedEvent<SimpleComboValue<Integer>> simpleComboValueSelectionChangedEvent) {
                                             currentYear = view.getCbYear().getSimpleValue();
                                             view.getPagingToolBar().refresh();
                                         }
@@ -122,26 +121,17 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (!currentStation.isCompany()) {
-                    if (view.getCbPerson().getStore() != null) {
-                        view.getCbPerson().reset();
-                        view.getCbPerson().getStore().removeAll();
-                    }
-                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
-                            ClientRestrictions.eq("station.id", currentStation.getId())));
-                } else {
-                    if (view.getCbPerson().getStore() != null) {
-                        view.getCbPerson().reset();
-                        view.getCbPerson().getStore().removeAll();
-                    }
-                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class));
-                }
+
+                view.getCbPerson().clearSelections();
+                view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
+                        ClientRestrictions.eq("station.id", currentStation.getId())));
 
                 currentMaterial = new MaterialIn();
                 currentMaterial.setCreateBy(1l);
                 currentMaterial.setUpdateBy(1l);
 
-                editWindow = view.createMaterialEditWindow(createMaterialStore());
+                editWindow = view.createEditWindow(createMaterialStore());
+                view.resetEditPanel();
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                 if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
                     resetMaterialFilter();
@@ -169,6 +159,37 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             }
         });
 
+        view.getBtnEdit().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if (view.getGird().getSelectionModel().getSelectedItem() != null) {
+                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
+                            ClientRestrictions.eq("station.id", currentStation.getId())));
+
+                    MaterialIn selectedMaterial = view.getGird().getSelectionModel().getSelectedItem().getBean();
+                    editWindow = view.createEditWindow(null);
+                    currentMaterial = selectedMaterial;
+
+                    view.getTxtCode().setValue(currentMaterial.getCode());
+                    view.getTxtTotal().setValue(currentMaterial.getTotal());
+                    view.getTxtWeight().setValue(currentMaterial.getWeight());
+
+                    BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
+                    BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
+
+                    BeanModel group = groupFactory.createModel(currentMaterial.getMaterialGroup());
+                    view.getCbGroup().setValue(group);
+
+                    BeanModel person = personFactory.createModel(currentMaterial.getMaterialPerson());
+                    view.getCbPerson().setValue(person);
+                    view.getCbPerson().clearInvalid();
+
+                    editWindow.show();
+                    editWindow.layout(true);
+                }
+            }
+        });
+
         view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -180,7 +201,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         view.getBtnEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                view.getEditPanel().reset();
+                view.resetEditPanel();
                 editWindow.hide();
             }
         });
@@ -189,8 +210,14 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getEditPanel().isValid()) {
-                    if (view.getMaterialGrid().getSelectionModel().getSelectedItem() != null) {
-                        Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
+                    Material material = null;
+                    if (currentMaterial != null && currentMaterial.getMaterial() != null) {
+                        material = currentMaterial.getMaterial();
+                    } else if (view.getMaterialGrid().getSelectionModel().getSelectedItem() != null) {
+                        material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
+                    }
+
+                    if (material != null) {
                         double total = view.getTxtTotal().getValue().doubleValue();
                         double weight = view.getTxtWeight().getValue().doubleValue();
                         double remain = total - weight;
@@ -212,9 +239,20 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
                             dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
                                 @Override
+                                public void onFailure(Throwable caught) {
+                                    if (caught instanceof ServiceException) {
+                                        String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                        if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                            DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                                        }
+                                    } else {
+                                        super.onFailure(caught);
+                                    }
+                                }
+                                @Override
                                 public void onSuccess(SaveResult saveResult) {
                                     editWindow.hide();
-                                    view.getEditPanel().reset();
+                                    view.resetEditPanel();
                                     view.getPagingToolBar().refresh();
                                 }
                             });
@@ -224,6 +262,94 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     } else {
                         DiaLogUtils.showMessage(view.getConstant().materialError());
                     }
+                }
+            }
+        });
+
+        view.getTxtCodeSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    String st = view.getTxtCodeSearch().getValue();
+                    view.getTxtNameSearch().clear();
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getGird().getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("code", st);
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
+
+        view.getTxtNameSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    String st = view.getTxtNameSearch().getValue();
+                    view.getTxtCodeSearch().clear();
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getGird().getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("material.name", st);
+                        filters.put("material.code", st);
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetFilter();
+                    }
+                    view.getPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
+
+        view.getBtnDelete().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                final List<BeanModel> models = view.getGird().getSelectionModel().getSelectedItems();
+                if (!models.isEmpty()) {
+                    final List<Long> materialIds = new ArrayList<Long>(models.size());
+                    for (BeanModel model : models) {
+                        MaterialIn material = model.getBean();
+                        materialIds.add(material.getId());
+                    }
+
+                    DiaLogUtils.conform(view.getConstant().deleteMessage(), new Listener<MessageBoxEvent>() {
+                        @Override
+                        public void handleEvent(MessageBoxEvent be) {
+                            if (be.getButtonClicked().getText().equals("Yes")) {
+                                dispatch.execute(new DeleteAction(MaterialIn.class.getName(), materialIds), new AbstractAsyncCallback<DeleteResult>() {
+                                    @Override
+                                    public void onSuccess(DeleteResult deleteResult) {
+                                        DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
+                                        view.getPagingToolBar().refresh();
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             }
         });

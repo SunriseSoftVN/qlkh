@@ -42,4 +42,6 @@ public interface MaterialInViewConstant extends Constants {
     String txtTotal();
     String totalError();
     String txtCode();
+    String materialCodeColumnTitle();
+    String existCodeMessage();
 }

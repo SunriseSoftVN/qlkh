@@ -223,7 +223,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().codeColumnTitle(), 70);
+        ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().materialCodeColumnTitle(), 70);
         columnConfigs.add(materialCodeColumnConfig);
 
         ColumnConfig materialNameColumnConfig = new ColumnConfig("material.name", getConstant().nameColumnTitle(), 170);
@@ -248,7 +248,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig personColumnConfig = new ColumnConfig("materialPerson.personName", getConstant().personColumnTitle(), 100);
         columnConfigs.add(personColumnConfig);
 
-        ColumnConfig codeColumnConfig = new ColumnConfig("code", getConstant().codeColumnTitle(), 70);
+        ColumnConfig codeColumnConfig = new ColumnConfig("code", getConstant().codeColumnTitle(), 100);
         columnConfigs.add(codeColumnConfig);
 
         ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
@@ -260,9 +260,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         return columnConfigs;
     }
 
-    public com.extjs.gxt.ui.client.widget.Window createMaterialEditWindow(ListStore<BeanModel> childGridStore) {
+    public com.extjs.gxt.ui.client.widget.Window createEditWindow(ListStore<BeanModel> childGridStore) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
-        if (!gridPanel.isRendered()) {
+        if (!gridPanel.isRendered() && childGridStore != null) {
             gridPanel.setHeaderVisible(false);
             gridPanel.setBodyBorder(false);
             gridPanel.setBorders(false);
@@ -282,10 +282,11 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         }
 
 
-        if(!editPanel.isRendered()) {
+        if (!editPanel.isRendered()) {
             editPanel.setHeaderVisible(false);
             editPanel.setBorders(false);
-            editPanel.setHeight(150);
+            editPanel.setHeight(170);
+            editPanel.setLabelWidth(100);
 
             cbGroup.setDisplayField("code");
             cbPerson.setDisplayField("personName");
@@ -314,9 +315,10 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             editPanel.add(txtWeight);
         }
 
-        window.add(gridPanel);
+        if (childGridStore != null) {
+            window.add(gridPanel);
+        }
         window.add(editPanel);
-
 
         window.addButton(btnEditOk);
         window.addButton(btnEditCancel);
@@ -368,7 +370,6 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
         return columnConfigs;
     }
-
 
 
     public Button getBtnAdd() {
@@ -465,5 +466,18 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public TextField<String> getTxtCode() {
         return txtCode;
+    }
+
+    public void setCbPerson(ComboBox<BeanModel> cbPerson) {
+        this.cbPerson = cbPerson;
+    }
+
+    public void resetEditPanel() {
+        editPanel.clear();
+        cbGroup.clear();
+        cbPerson.clear();
+        txtTotal.clear();
+        txtWeight.clear();
+        txtCode.clear();
     }
 }
