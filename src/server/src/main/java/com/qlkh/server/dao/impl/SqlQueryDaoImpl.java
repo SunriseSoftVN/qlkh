@@ -95,6 +95,22 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
     }
 
     @Override
+    public List<TaskMaterialDataView> getTaskMaterialByMaterialId(final long materialId, final int year, final int quarter) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskMaterialDataView>>() {
+            @Override
+            public List<TaskMaterialDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT  * FROM `task_material` " +
+                        "WHERE year = :year AND quarter = :quarter AND materialId = :materialId");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setParameter("quarter", quarter);
+                sqlQuery.setParameter("materialId", materialId);
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskMaterialDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
+
+    @Override
     public BasePagingLoadResult<Task> getTasks(final boolean hasLimit, final boolean hasNoLimit, final BasePagingLoadConfig config) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Task>>() {
             @Override
@@ -173,6 +189,36 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
 
                 return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);
             }
+        });
+    }
+
+    @Override
+    public BasePagingLoadResult<Material> getMaterialTasks(final int year, final int quarter, final BasePagingLoadConfig config) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<BasePagingLoadResult<Material>>() {
+            @Override
+            public BasePagingLoadResult<Material> doInHibernate(Session session) throws HibernateException, SQLException {
+                String select = "SELECT `id` AS `bigId`," +
+                        "`name` ," +
+                        "`code` ," +
+                        "`unit` ," +
+                        "`note` " +
+                        "FROM  `material` ";
+
+                String count = "SELECT COUNT(*) FROM `material` ";
+
+                String sql = "WHERE `id` IN (SELECT `materialId` FROM `task_material` WHERE `year` = " + year + " AND `quarter` = " + quarter + ")";
+                sql = createFilter(config, "material", sql);
+
+                SQLQuery selectQuery = session.createSQLQuery(select += sql);
+                selectQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
+                selectQuery.setMaxResults(config.getLimit());
+                selectQuery.setFirstResult(config.getOffset());
+
+                SQLQuery countQuery = session.createSQLQuery(count += sql);
+
+                int total = Integer.valueOf(countQuery.list().get(0).toString());
+
+                return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);            }
         });
     }
 

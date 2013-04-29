@@ -36,5 +36,9 @@ public interface SqlQueryDao extends Dao {
 
     BasePagingLoadResult<Material> getMaterials(long taskId, BasePagingLoadConfig config);
 
+    BasePagingLoadResult<Material> getMaterialTasks(int year, int quarter, BasePagingLoadConfig config);
+
     List<TaskMaterialDataView> getTaskMaterial(int year, int quarter);
+
+    List<TaskMaterialDataView> getTaskMaterialByMaterialId(long materialId, int year, int quarter);
 }

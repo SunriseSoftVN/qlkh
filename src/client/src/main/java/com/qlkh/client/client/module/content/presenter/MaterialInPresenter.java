@@ -20,8 +20,10 @@ import com.qlkh.core.client.action.core.LoadAction;
 import com.qlkh.core.client.action.core.LoadResult;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.grid.LoadGridDataResult;
-import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceAction;
-import com.qlkh.core.client.action.material.LoadMaterialWithoutPriceResult;
+import com.qlkh.core.client.action.material.LoadMaterialInTotalAction;
+import com.qlkh.core.client.action.material.LoadMaterialInTotalResult;
+import com.qlkh.core.client.action.material.LoadMaterialWithTaskAction;
+import com.qlkh.core.client.action.material.LoadMaterialWithTaskResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
@@ -119,14 +121,14 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (!currentStation.isCompany()) {
-                    if(view.getCbPerson().getStore() != null) {
+                    if (view.getCbPerson().getStore() != null) {
                         view.getCbPerson().reset();
                         view.getCbPerson().getStore().removeAll();
                     }
                     view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
                             ClientRestrictions.eq("station.id", currentStation.getId())));
                 } else {
-                    if(view.getCbPerson().getStore() != null) {
+                    if (view.getCbPerson().getStore() != null) {
                         view.getCbPerson().reset();
                         view.getCbPerson().getStore().removeAll();
                     }
@@ -141,6 +143,24 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     resetMaterialFilter();
                 }
                 view.getMaterialPagingToolBar().refresh();
+                view.getMaterialGrid().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<BeanModel> event) {
+                        if (event.getSelectedItem() != null) {
+                            Material material = event.getSelectedItem().getBean();
+                            LoadMaterialInTotalAction loadAction = new LoadMaterialInTotalAction(material.getId(), currentStation.getId(),
+                                    null, currentQuarter.getCode(), currentYear);
+                            view.getMaterialGrid().mask();
+                            dispatch.execute(loadAction, new AbstractAsyncCallback<LoadMaterialInTotalResult>() {
+                                @Override
+                                public void onSuccess(LoadMaterialInTotalResult result) {
+                                    view.getMaterialGrid().unmask();
+                                    view.getTxtTotal().setValue(result.getTotal());
+                                }
+                            });
+                        }
+                    }
+                });
                 editWindow.show();
             }
         });
@@ -164,7 +184,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         view.getBtnEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if(view.getEditPanel().isValid()) {
+                if (view.getEditPanel().isValid()) {
                     Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
                     if (material != null) {
                         MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
@@ -224,10 +244,10 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
 
     private ListStore<BeanModel> createMaterialStore() {
-        RpcProxy<LoadMaterialWithoutPriceResult> rpcProxy = new RpcProxy<LoadMaterialWithoutPriceResult>() {
+        RpcProxy<LoadMaterialWithTaskResult> rpcProxy = new RpcProxy<LoadMaterialWithTaskResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadMaterialWithoutPriceResult> callback) {
-                dispatch.execute(new LoadMaterialWithoutPriceAction((BasePagingLoadConfig) loadConfig, currentQuarter, currentYear), callback);
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialWithTaskResult> callback) {
+                dispatch.execute(new LoadMaterialWithTaskAction((BasePagingLoadConfig) loadConfig, currentQuarter.getCode(), currentYear), callback);
             }
         };
 

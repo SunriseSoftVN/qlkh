@@ -33,6 +33,8 @@
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutPriceHandler"/>
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithoutLimitHandler"/>
                 <bean class="com.qlkh.server.handler.material.CopyMaterialPriceHandler"/>
+                <bean class="com.qlkh.server.handler.material.LoadMaterialInTotalHandler"/>
+                <bean class="com.qlkh.server.handler.material.LoadMaterialWithTaskHandler"/>
                 <ref bean="taskReportHandler"/>
                 <ref bean="priceReportHandler"/>
             </list>

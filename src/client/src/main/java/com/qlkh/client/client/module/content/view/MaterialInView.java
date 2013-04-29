@@ -277,7 +277,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         if(!editPanel.isRendered()) {
             editPanel.setHeaderVisible(false);
             editPanel.setBorders(false);
-            editPanel.setHeight(100);
+            editPanel.setHeight(150);
 
             cbGroup.setDisplayField("code");
             cbPerson.setDisplayField("personName");
@@ -295,11 +295,13 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             cbPerson.setForceSelection(true);
 
             txtWeight.setAllowBlank(false);
+            txtTotal.setReadOnly(true);
+            txtTotal.setEnabled(false);
 
             editPanel.add(cbGroup);
             editPanel.add(cbPerson);
-            editPanel.add(txtWeight);
             editPanel.add(txtTotal);
+            editPanel.add(txtWeight);
         }
 
         window.add(gridPanel);

@@ -4,6 +4,7 @@
 
 package com.qlkh.core.client.action.report;
 
+import com.qlkh.core.client.action.material.LoadMaterialInTotalAction;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
@@ -25,6 +26,15 @@ public class TaskReportAction implements Action<TaskReportResult> {
     private int year;
 
     public TaskReportAction() {
+    }
+
+    public TaskReportAction(LoadMaterialInTotalAction totalAction) {
+        this.reportTypeEnum = totalAction.getReportTypeEnum();
+        this.fileTypeEnum = ReportFileTypeEnum.PDF;
+        this.reportFormEnum = ReportFormEnum.MAU_2;
+        this.branchId = totalAction.getBranchId();
+        this.stationId = totalAction.getStationId();
+        this.year = totalAction.getYear();
     }
 
     public TaskReportAction(PriceReportAction priceReportAction) {
