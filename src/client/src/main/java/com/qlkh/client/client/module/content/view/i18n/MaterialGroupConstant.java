@@ -25,4 +25,8 @@ public interface MaterialGroupConstant extends Constants {
     String codeColumnTitle();
     String nameColumnTitle();
     String existCodeMessage();
+    String rangeColumnTitle();
+    String txtRegex();
+    String txtCodeDisplay();
+    String codeDisplayColumnTitle();
 }

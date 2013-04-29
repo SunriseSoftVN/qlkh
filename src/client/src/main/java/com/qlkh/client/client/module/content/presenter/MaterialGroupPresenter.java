@@ -70,6 +70,8 @@ public class MaterialGroupPresenter extends AbstractPresenter<MaterialGroupView>
                 MaterialGroup selectedMaterial = view.getMaterialGroupGird().getSelectionModel().getSelectedItem().getBean();
                 view.getTxtName().setValue(selectedMaterial.getName());
                 view.getTxtCode().setValue(selectedMaterial.getCode());
+                view.getTxtRegex().setValue(selectedMaterial.getRegex());
+                view.getTxtCodeDisplay().setValue(selectedMaterial.getCodeDisplay());
                 materialGroup = selectedMaterial;
                 editWindow.show();
                 editWindow.layout(true);
@@ -95,9 +97,10 @@ public class MaterialGroupPresenter extends AbstractPresenter<MaterialGroupView>
 
                     materialGroup.setName(view.getTxtName().getValue());
                     materialGroup.setCode(view.getTxtCode().getValue());
+                    materialGroup.setRegex(view.getTxtRegex().getValue());
+                    materialGroup.setCodeDisplay(view.getTxtCodeDisplay().getValue());
 
                     dispatch.execute(new SaveAction(materialGroup), new AbstractAsyncCallback<SaveResult>() {
-
                         @Override
                         public void onFailure(Throwable caught) {
                             if (caught instanceof ServiceException) {

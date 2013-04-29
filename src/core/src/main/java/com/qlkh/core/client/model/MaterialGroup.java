@@ -12,6 +12,8 @@ public class MaterialGroup extends AbstractEntity {
 
     private String code;
     private String name;
+    private String regex;
+    private String codeDisplay;
 
     public String getCode() {
         return code;
@@ -27,5 +29,21 @@ public class MaterialGroup extends AbstractEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
+    }
+
+    public String getCodeDisplay() {
+        return codeDisplay;
+    }
+
+    public void setCodeDisplay(String codeDisplay) {
+        this.codeDisplay = codeDisplay;
     }
 }

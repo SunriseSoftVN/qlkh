@@ -12,6 +12,7 @@ import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.model.Branch;
+import com.qlkh.core.client.model.MaterialGroup;
 import com.qlkh.core.client.model.Station;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.PriceColumnBean;
@@ -20,7 +21,6 @@ import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.business.rule.AdditionStationColumnRule;
-import com.qlkh.server.business.rule.PriceReportRule;
 import com.qlkh.server.business.rule.StationCodeEnum;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
@@ -38,6 +38,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.digester.SimpleRegexMatcher;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -87,8 +88,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
         List<PriceReportBean> prices = new ArrayList<PriceReportBean>();
 
-        //Add default material
-        PriceReportRule.addDefault(prices);
+        //Add material group.
+        List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class);
+        for (MaterialGroup materialGroup : materialGroups) {
+            String[] regex = materialGroup.getRegex().split(",");
+            PriceReportBean priceReportBean = new PriceReportBean(
+                    materialGroup.getCodeDisplay(),
+                    materialGroup.getCode(),
+                    materialGroup.getName(),
+                    regex
+            );
+            prices.add(priceReportBean);
+        }
 
         buildTree(prices, tasks, dataViews);
 
@@ -129,7 +140,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         }
 
         //hide some data
-        if(action.getStationId() == COMPANY.getId()) {
+        if (action.getStationId() == COMPANY.getId()) {
             for (PriceReportBean price : displayData) {
                 if (price.getRegex().length > 0) {
                     for (PriceColumnBean column : price.getColumns().values()) {
@@ -185,10 +196,12 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
     }
 
     private void buildTree(List<PriceReportBean> prices, List<TaskSumReportBean> tasks, List<TaskMaterialDataView> dataViews) {
+        SimpleRegexMatcher matcher = new SimpleRegexMatcher();
+
         for (PriceReportBean price : prices) {
             for (TaskSumReportBean task : tasks) {
                 for (String regex : price.getRegex()) {
-                    if (task.getTask().getCode().matches(regex)) {
+                    if (matcher.match(task.getTask().getCode(), regex)) {
                         List<TaskMaterialDataView> materials = select(dataViews,
                                 having(on(TaskMaterialDataView.class).getTaskId(), equalTo(task.getTask().getId())));
 

@@ -44,9 +44,13 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
     public static final String STT_COLUMN = "stt";
     public static final int STT_COLUMN_WIDTH = 40;
     public static final String CODE_COLUMN = "code";
-    public static final int CODE_WIDTH = 200;
+    public static final int CODE_WIDTH = 100;
+    public static final String CODE_DISPLAY_COLUMN = "codeDisplay";
+    public static final int CODE_DISPLAY_WIDTH = 100;
     public static final String NAME_COLUMN = "name";
     public static final int NAME_WIDTH = 200;
+    public static final String REGEX_COLUMN = "regex";
+    public static final int RANGE_WIDTH = 200;
 
     @I18nField
     Button btnAdd = new Button(null, IconHelper.createPath("assets/images/icons/fam/add.png"));
@@ -71,6 +75,12 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
 
     @I18nField
     TextField<String> txtCode = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtCodeDisplay = new TextField<String>();
+
+    @I18nField
+    TextField<String> txtRegex = new TextField<String>();
 
     private MyFormPanel editPanel = new MyFormPanel();
 
@@ -149,12 +159,20 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig codeColumnConfig = new ColumnConfig(NAME_COLUMN, getConstant().nameColumnTitle(), NAME_WIDTH);
+
+        ColumnConfig codeColumnConfig = new ColumnConfig(CODE_COLUMN, getConstant().codeColumnTitle(), CODE_WIDTH);
         columnConfigs.add(codeColumnConfig);
 
-        ColumnConfig nameColumnConfig = new ColumnConfig(CODE_COLUMN, getConstant().codeColumnTitle(),
-                CODE_WIDTH);
+        ColumnConfig codeDisplayColumnConfig = new ColumnConfig(CODE_DISPLAY_COLUMN, getConstant().codeDisplayColumnTitle(),
+                CODE_DISPLAY_WIDTH);
+        columnConfigs.add(codeDisplayColumnConfig);
+
+        ColumnConfig nameColumnConfig = new ColumnConfig(NAME_COLUMN, getConstant().nameColumnTitle(), NAME_WIDTH);
         columnConfigs.add(nameColumnConfig);
+
+        ColumnConfig rangeColumnConfig = new ColumnConfig(REGEX_COLUMN, getConstant().rangeColumnTitle(),
+                RANGE_WIDTH);
+        columnConfigs.add(rangeColumnConfig);
 
         return columnConfigs;
     }
@@ -172,13 +190,22 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
             txtName.setAllowBlank(false);
         }
 
-        if (!txtName.isRendered()) {
+        if (!txtCode.isRendered()) {
             txtCode.setAllowBlank(false);
         }
 
+        if (!txtCodeDisplay.isRendered()) {
+            txtCodeDisplay.setAllowBlank(false);
+        }
 
-        editPanel.add(txtName);
+        if (!txtRegex.isRendered()) {
+            txtRegex.setAllowBlank(false);
+        }
+
         editPanel.add(txtCode);
+        editPanel.add(txtCodeDisplay);
+        editPanel.add(txtName);
+        editPanel.add(txtRegex);
 
         window.setFocusWidget(txtName);
 
@@ -246,5 +273,13 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
 
     public ContentPanel getContentPanel() {
         return contentPanel;
+    }
+
+    public TextField<String> getTxtRegex() {
+        return txtRegex;
+    }
+
+    public TextField<String> getTxtCodeDisplay() {
+        return txtCodeDisplay;
     }
 }
