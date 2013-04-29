@@ -20,6 +20,17 @@ public class MaterialIn extends AbstractEntity {
     private Material material;
     private Station station;
 
+    //Only for display on grid.
+    private double remain;
+
+    public double getRemain() {
+        return remain;
+    }
+
+    public void setRemain(double remain) {
+        this.remain = remain;
+    }
+
     public String getCode() {
         return code;
     }

@@ -19,19 +19,19 @@
         <property name="year" column="year" not-null="true"/>
 
         <many-to-one name="materialGroup" class="com.qlkh.core.client.model.MaterialGroup" lazy="false" fetch="join" outer-join="auto">
-            <column name="materialGroupId" not-null="false"/>
+            <column name="materialGroupId"/>
         </many-to-one>
 
         <many-to-one name="materialPerson" class="com.qlkh.core.client.model.MaterialPerson" lazy="false" fetch="join" outer-join="auto">
-            <column name="materialPersonId" not-null="false"/>
+            <column name="materialPersonId"/>
         </many-to-one>
 
         <many-to-one name="material" class="com.qlkh.core.client.model.Material" lazy="false" fetch="join" outer-join="auto">
-            <column name="materialId" not-null="false"/>
+            <column name="materialId" not-null="true"/>
         </many-to-one>
 
         <many-to-one name="station" class="com.qlkh.core.client.model.Station" lazy="false" fetch="join" outer-join="auto">
-            <column name="stationId" not-null="false"/>
+            <column name="stationId" not-null="true"/>
         </many-to-one>
 
     </class>

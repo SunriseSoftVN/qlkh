@@ -70,7 +70,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
                 final ListStore<BeanModel> store = new ListStore<BeanModel>();
                 view.getCbStation().setStore(store);
-                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName()),
+                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName(), ClientRestrictions.eq("company", false)),
                         new AbstractAsyncCallback<LoadResult>() {
                             @Override
                             public void onSuccess(LoadResult result) {
@@ -185,23 +185,35 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getEditPanel().isValid()) {
-                    Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
-                    if (material != null) {
-                        MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
-                        MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
+                    if (view.getMaterialGrid().getSelectionModel().getSelectedItem() != null) {
+                        Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
+                        double total = view.getTxtTotal().getValue().doubleValue();
+                        double weight = view.getTxtWeight().getValue().doubleValue();
+                        double remain = total - weight;
 
-                        currentMaterial.setMaterial(material);
-                        currentMaterial.setMaterialGroup(materialGroup);
-                        currentMaterial.setMaterialPerson(materialPerson);
-                        currentMaterial.setWeight(view.getTxtWeight().getValue().doubleValue());
-                        currentMaterial.setCreatedDate(new Date());
+                        if (remain >= 0) {
+                            MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
+                            MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
 
-                        updateGrid(currentMaterial);
+                            currentMaterial.setMaterial(material);
+                            currentMaterial.setMaterialGroup(materialGroup);
+                            currentMaterial.setMaterialPerson(materialPerson);
+                            currentMaterial.setWeight(view.getTxtWeight().getValue().doubleValue());
 
-                        editWindow.hide();
-                        view.getEditPanel().reset();
+                            currentMaterial.setTotal(total);
+                            currentMaterial.setWeight(weight);
+                            currentMaterial.setRemain(remain);
+                            currentMaterial.setCreatedDate(new Date());
+
+                            updateGrid(currentMaterial);
+
+                            editWindow.hide();
+                            view.getEditPanel().reset();
+                        } else {
+                            DiaLogUtils.showMessage(view.getConstant().totalError());
+                        }
                     } else {
-                        DiaLogUtils.showMessage(view.getConstant().missMaterial());
+                        DiaLogUtils.showMessage(view.getConstant().materialError());
                     }
                 }
             }
