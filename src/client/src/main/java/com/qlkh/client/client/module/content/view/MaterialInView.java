@@ -254,7 +254,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
         columnConfigs.add(weightColumnConfig);
 
-        ColumnConfig remainColumnConfig = new ColumnConfig("remain", getConstant().remainColumnTitle(), 100);
+        ColumnConfig remainColumnConfig = new ColumnConfig("remain", getConstant().remainColumnTitle(), 80);
         columnConfigs.add(remainColumnConfig);
 
         return columnConfigs;

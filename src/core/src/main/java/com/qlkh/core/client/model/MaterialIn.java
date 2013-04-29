@@ -21,14 +21,11 @@ public class MaterialIn extends AbstractEntity {
     private Station station;
 
     //Only for display on grid.
-    private double remain;
-
-    public double getRemain() {
-        return remain;
-    }
-
-    public void setRemain(double remain) {
-        this.remain = remain;
+    public Double getRemain() {
+        if (total != null && weight != null) {
+            return total - weight;
+        }
+        return null;
     }
 
     public String getCode() {

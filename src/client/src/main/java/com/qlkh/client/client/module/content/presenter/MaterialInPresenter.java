@@ -202,11 +202,8 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                             currentMaterial.setMaterial(material);
                             currentMaterial.setMaterialGroup(materialGroup);
                             currentMaterial.setMaterialPerson(materialPerson);
-                            currentMaterial.setWeight(view.getTxtWeight().getValue().doubleValue());
-
                             currentMaterial.setTotal(total);
                             currentMaterial.setWeight(weight);
-                            currentMaterial.setRemain(remain);
                             currentMaterial.setCreatedDate(new Date());
                             currentMaterial.setStation(currentStation);
                             currentMaterial.setYear(currentYear);
