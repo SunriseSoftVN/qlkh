@@ -17,6 +17,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.MaterialInViewConstant;
@@ -100,6 +101,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     @I18nField
     MyNumberField txtWeight = new MyNumberField();
+
+    @I18nField
+    TextField<String> txtCode = new TextField<String>();
 
     private ContentPanel gridPanel = new ContentPanel();
     private MyFormPanel editPanel = new MyFormPanel();
@@ -238,10 +242,14 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         columnConfigs.add(groupCodeColumnConfig);
 
         ColumnConfig dateColumnConfig = new ColumnConfig("createdDate", getConstant().dateColumnTitle(), 100);
+        dateColumnConfig.setDateTimeFormat(DateTimeFormat.getFormat("d-MM-yyyy"));
         columnConfigs.add(dateColumnConfig);
 
         ColumnConfig personColumnConfig = new ColumnConfig("materialPerson.personName", getConstant().personColumnTitle(), 100);
         columnConfigs.add(personColumnConfig);
+
+        ColumnConfig codeColumnConfig = new ColumnConfig("code", getConstant().codeColumnTitle(), 70);
+        columnConfigs.add(codeColumnConfig);
 
         ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
         columnConfigs.add(weightColumnConfig);
@@ -294,10 +302,12 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             cbPerson.setTriggerAction(ComboBox.TriggerAction.ALL);
             cbPerson.setForceSelection(true);
 
+            txtCode.setAllowBlank(false);
             txtWeight.setAllowBlank(false);
             txtTotal.setReadOnly(true);
             txtTotal.setEnabled(false);
 
+            editPanel.add(txtCode);
             editPanel.add(cbGroup);
             editPanel.add(cbPerson);
             editPanel.add(txtTotal);
@@ -451,5 +461,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public MyNumberField getTxtTotal() {
         return txtTotal;
+    }
+
+    public TextField<String> getTxtCode() {
+        return txtCode;
     }
 }

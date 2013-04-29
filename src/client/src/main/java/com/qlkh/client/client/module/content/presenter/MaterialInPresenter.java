@@ -18,6 +18,8 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.LoadAction;
 import com.qlkh.core.client.action.core.LoadResult;
+import com.qlkh.core.client.action.core.SaveAction;
+import com.qlkh.core.client.action.core.SaveResult;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.grid.LoadGridDataResult;
 import com.qlkh.core.client.action.material.LoadMaterialInTotalAction;
@@ -136,6 +138,8 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 }
 
                 currentMaterial = new MaterialIn();
+                currentMaterial.setCreateBy(1l);
+                currentMaterial.setUpdateBy(1l);
 
                 editWindow = view.createMaterialEditWindow(createMaterialStore());
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
@@ -204,11 +208,19 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                             currentMaterial.setWeight(weight);
                             currentMaterial.setRemain(remain);
                             currentMaterial.setCreatedDate(new Date());
+                            currentMaterial.setStation(currentStation);
+                            currentMaterial.setYear(currentYear);
+                            currentMaterial.setQuarter(currentQuarter.getCode());
+                            currentMaterial.setCode(view.getTxtCode().getValue());
 
-                            updateGrid(currentMaterial);
-
-                            editWindow.hide();
-                            view.getEditPanel().reset();
+                            dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
+                                @Override
+                                public void onSuccess(SaveResult saveResult) {
+                                    editWindow.hide();
+                                    view.getEditPanel().reset();
+                                    view.getPagingToolBar().refresh();
+                                }
+                            });
                         } else {
                             DiaLogUtils.showMessage(view.getConstant().totalError());
                         }
