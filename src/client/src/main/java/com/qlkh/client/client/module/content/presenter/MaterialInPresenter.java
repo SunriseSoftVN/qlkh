@@ -31,6 +31,8 @@ import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
+import java.util.Date;
+
 /**
  * The Class MaterialInPresenter.
  *
@@ -85,6 +87,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                     view.getCbStation().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                                         @Override
                                         public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
+                                            currentStation = view.getCbStation().getValue().getBean();
                                             view.getPagingToolBar().refresh();
                                         }
                                     });
@@ -92,6 +95,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                     view.getCbQuarter().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<QuarterEnum>>() {
                                         @Override
                                         public void selectionChanged(SelectionChangedEvent<SimpleComboValue<QuarterEnum>> simpleComboValueSelectionChangedEvent) {
+                                            currentQuarter = view.getCbQuarter().getSimpleValue();
                                             view.getPagingToolBar().refresh();
                                         }
                                     });
@@ -99,6 +103,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                     view.getCbQuarter().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<QuarterEnum>>() {
                                         @Override
                                         public void selectionChanged(SelectionChangedEvent<SimpleComboValue<QuarterEnum>> simpleComboValueSelectionChangedEvent) {
+                                            currentYear = view.getCbYear().getSimpleValue();
                                             view.getPagingToolBar().refresh();
                                         }
                                     });
@@ -108,12 +113,28 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             }
         });
 
-        view.getCbGroup().setStore(GridUtils.createListStore(MaterialGroup.class));
-        view.getCbPerson().setStore(GridUtils.createListStore(MaterialPerson.class));
+        view.getCbGroup().setStore(GridUtils.createListStoreForCb(MaterialGroup.class));
 
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
+                if (!currentStation.isCompany()) {
+                    if(view.getCbPerson().getStore() != null) {
+                        view.getCbPerson().reset();
+                        view.getCbPerson().getStore().removeAll();
+                    }
+                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
+                            ClientRestrictions.eq("station.id", currentStation.getId())));
+                } else {
+                    if(view.getCbPerson().getStore() != null) {
+                        view.getCbPerson().reset();
+                        view.getCbPerson().getStore().removeAll();
+                    }
+                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class));
+                }
+
+                currentMaterial = new MaterialIn();
+
                 editWindow = view.createMaterialEditWindow(createMaterialStore());
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                 if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
@@ -123,16 +144,56 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 editWindow.show();
             }
         });
+
+        view.getBtnRefresh().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                resetFilter();
+                view.getPagingToolBar().refresh();
+            }
+        });
+
+        view.getBtnEditCancel().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                view.getEditPanel().reset();
+                editWindow.hide();
+            }
+        });
+
+        view.getBtnEditOk().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if(view.getEditPanel().isValid()) {
+                    Material material = view.getMaterialGrid().getSelectionModel().getSelectedItem().getBean();
+                    if (material != null) {
+                        MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
+                        MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
+
+                        currentMaterial.setMaterial(material);
+                        currentMaterial.setMaterialGroup(materialGroup);
+                        currentMaterial.setMaterialPerson(materialPerson);
+                        currentMaterial.setWeight(view.getTxtWeight().getValue().doubleValue());
+                        currentMaterial.setCreatedDate(new Date());
+
+                        updateGrid(currentMaterial);
+
+                        editWindow.hide();
+                        view.getEditPanel().reset();
+                    } else {
+                        DiaLogUtils.showMessage(view.getConstant().missMaterial());
+                    }
+                }
+            }
+        });
     }
 
     private ListStore<BeanModel> createGridStore() {
         RpcProxy<LoadGridDataResult> rpcProxy = new RpcProxy<LoadGridDataResult>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
-
-                LoadGridDataAction loadAction = null;
-
-                if (currentStation.getId() != 27l) {
+                LoadGridDataAction loadAction;
+                if (!currentStation.isCompany()) {
                     loadAction = new LoadGridDataAction(MaterialIn.class.getName(),
                             ClientRestrictions.eq("year", currentYear),
                             ClientRestrictions.eq("quarter", currentQuarter.getCode()),
@@ -181,6 +242,33 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
+    }
+
+    private void updateGrid(MaterialIn materialIn) {
+        boolean isNotFound = true;
+        BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialIn.class);
+        BeanModel updateModel = factory.createModel(materialIn);
+        for (BeanModel model : view.getGird().getStore().getModels()) {
+            if (materialIn.getId().equals(model.<MaterialIn>getBean().getId())) {
+                int index = view.getGird().getStore().indexOf(model);
+                view.getGird().getStore().remove(model);
+                view.getGird().getStore().insert(updateModel, index);
+                isNotFound = false;
+            }
+        }
+        if (isNotFound) {
+            view.getGird().getStore().add(updateModel);
+            view.getGird().getView().ensureVisible(view.getGird().getStore().getCount() - 1, 1, false);
+        }
+        view.getGird().getSelectionModel().select(updateModel, false);
+    }
+
+    private void resetFilter() {
+        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getGird().getStore().getLoadConfig();
+        loadConfig.set("hasFilter", false);
+        loadConfig.set("filters", null);
+        view.getTxtCodeSearch().clear();
+        view.getTxtNameSearch().clear();
     }
 
     private void resetMaterialFilter() {

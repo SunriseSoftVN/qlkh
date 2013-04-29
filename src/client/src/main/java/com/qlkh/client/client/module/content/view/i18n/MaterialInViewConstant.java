@@ -38,4 +38,6 @@ public interface MaterialInViewConstant extends Constants {
     String cbGroup();
     String cbPerson();
     String txtWeight();
+    String missMaterial();
+    String txtTotal();
 }

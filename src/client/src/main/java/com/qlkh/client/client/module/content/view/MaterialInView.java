@@ -96,6 +96,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     ComboBox<BeanModel> cbPerson = new ComboBox<BeanModel>();
 
     @I18nField
+    MyNumberField txtTotal = new MyNumberField();
+
+    @I18nField
     MyNumberField txtWeight = new MyNumberField();
 
     private ContentPanel gridPanel = new ContentPanel();
@@ -296,6 +299,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             editPanel.add(cbGroup);
             editPanel.add(cbPerson);
             editPanel.add(txtWeight);
+            editPanel.add(txtTotal);
         }
 
         window.add(gridPanel);
@@ -437,5 +441,13 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     public MyNumberField getTxtWeight() {
         return txtWeight;
+    }
+
+    public MyFormPanel getEditPanel() {
+        return editPanel;
+    }
+
+    public MyNumberField getTxtTotal() {
+        return txtTotal;
     }
 }
