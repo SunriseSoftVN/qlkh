@@ -177,12 +177,16 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     if (currentMaterial.getMaterialGroup() != null) {
                         BeanModel group = groupFactory.createModel(currentMaterial.getMaterialGroup());
                         view.getCbGroup().setValue(group);
+                    } else {
+                        view.getCbGroup().clear();
                     }
 
                     if (currentMaterial.getMaterialPerson() != null) {
                         BeanModel person = personFactory.createModel(currentMaterial.getMaterialPerson());
                         view.getCbPerson().setValue(person);
                         view.getCbPerson().clearInvalid();
+                    } else {
+                        view.getCbPerson().clear();
                     }
 
                     editWindow.show();
@@ -422,25 +426,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 };
 
         return new ListStore<BeanModel>(pagingLoader);
-    }
-
-    private void updateGrid(MaterialIn materialIn) {
-        boolean isNotFound = true;
-        BeanModelFactory factory = BeanModelLookup.get().getFactory(MaterialIn.class);
-        BeanModel updateModel = factory.createModel(materialIn);
-        for (BeanModel model : view.getGird().getStore().getModels()) {
-            if (materialIn.getId().equals(model.<MaterialIn>getBean().getId())) {
-                int index = view.getGird().getStore().indexOf(model);
-                view.getGird().getStore().remove(model);
-                view.getGird().getStore().insert(updateModel, index);
-                isNotFound = false;
-            }
-        }
-        if (isNotFound) {
-            view.getGird().getStore().add(updateModel);
-            view.getGird().getView().ensureVisible(view.getGird().getStore().getCount() - 1, 1, false);
-        }
-        view.getGird().getSelectionModel().select(updateModel, false);
     }
 
     private void resetFilter() {
