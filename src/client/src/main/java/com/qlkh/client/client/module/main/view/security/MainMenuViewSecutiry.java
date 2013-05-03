@@ -60,7 +60,8 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
                 UserRoleEnum.ADMIN,
                 UserRoleEnum.MANAGER,
                 UserRoleEnum.DEVELOPER,
-                UserRoleEnum.MATERIAL_MANAGER
+                UserRoleEnum.MATERIAL_MANAGER,
+                UserRoleEnum.WAREHOUSE_MANAGER
         };
     }
 
@@ -70,7 +71,8 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
                 UserRoleEnum.ADMIN,
                 UserRoleEnum.MANAGER,
                 UserRoleEnum.DEVELOPER,
-                UserRoleEnum.MATERIAL_MANAGER
+                UserRoleEnum.MATERIAL_MANAGER,
+                UserRoleEnum.WAREHOUSE_MANAGER
         };
     }
 
@@ -95,14 +97,14 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
     }
 
     public HasRole[] mlMaterialPerson() {
-        return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
+        return new HasRole[]{UserRoleEnum.WAREHOUSE_MANAGER};
     }
 
     public HasRole[] mlMaterialGroup() {
-        return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
+        return new HasRole[]{UserRoleEnum.WAREHOUSE_MANAGER};
     }
 
     public HasRole[] mlMaterialIn() {
-        return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
+        return new HasRole[]{UserRoleEnum.WAREHOUSE_MANAGER};
     }
 }

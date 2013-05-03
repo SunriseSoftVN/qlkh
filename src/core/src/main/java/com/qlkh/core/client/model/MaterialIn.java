@@ -2,6 +2,8 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
+import java.util.Date;
+
 /**
  * The Class MaterialIn.
  *
@@ -19,6 +21,7 @@ public class MaterialIn extends AbstractEntity {
     private MaterialPerson materialPerson;
     private Material material;
     private Station station;
+    private Date exportDate;
 
     //Only for display on grid.
     public Double getRemain() {
@@ -98,5 +101,13 @@ public class MaterialIn extends AbstractEntity {
 
     public void setStation(Station station) {
         this.station = station;
+    }
+
+    public Date getExportDate() {
+        return exportDate;
+    }
+
+    public void setExportDate(Date exportDate) {
+        this.exportDate = exportDate;
     }
 }

@@ -170,6 +170,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     view.getTxtCode().setValue(currentMaterial.getCode());
                     view.getTxtTotal().setValue(currentMaterial.getTotal());
                     view.getTxtWeight().setValue(currentMaterial.getWeight());
+                    view.getExportDate().setValue(currentMaterial.getExportDate());
 
                     BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
                     BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
@@ -241,6 +242,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                             currentMaterial.setYear(currentYear);
                             currentMaterial.setQuarter(currentQuarter.getCode());
                             currentMaterial.setCode(view.getTxtCode().getValue());
+                            currentMaterial.setExportDate(view.getExportDate().getValue());
 
                             dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
                                 @Override

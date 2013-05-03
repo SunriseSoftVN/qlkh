@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -108,6 +109,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
     @I18nField
     TextField<String> txtCode = new TextField<String>();
+
+    @I18nField
+    DateField exportDate = new DateField();
 
     private ContentPanel gridPanel = new ContentPanel();
     private MyFormPanel editPanel = new MyFormPanel();
@@ -248,8 +252,8 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig groupCodeColumnConfig = new ColumnConfig("materialGroup.code", getConstant().groupCodeColumnTitle(), 70);
         columnConfigs.add(groupCodeColumnConfig);
 
-        ColumnConfig dateColumnConfig = new ColumnConfig("createdDate", getConstant().dateColumnTitle(), 80);
-        dateColumnConfig.setDateTimeFormat(DateTimeFormat.getFormat("d-MM-yyyy"));
+        ColumnConfig dateColumnConfig = new ColumnConfig("exportDate", getConstant().dateColumnTitle(), 80);
+        dateColumnConfig.setDateTimeFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
         columnConfigs.add(dateColumnConfig);
 
         ColumnConfig personColumnConfig = new ColumnConfig("materialPerson.personName", getConstant().personColumnTitle(), 100);
@@ -315,11 +319,16 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             txtTotal.setReadOnly(true);
             txtTotal.setEnabled(false);
 
+            exportDate.setAllowBlank(false);
+            exportDate.setEditable(false);
+            exportDate.getPropertyEditor().setFormat(DateTimeFormat.getFormat("dd-MM-yyyy"));
+
             editPanel.add(txtCode);
             editPanel.add(cbGroup);
             editPanel.add(cbPerson);
             editPanel.add(txtTotal);
             editPanel.add(txtWeight);
+            editPanel.add(exportDate);
         }
 
         if (childGridStore != null) {
@@ -483,6 +492,10 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         return btnCopy;
     }
 
+    public DateField getExportDate() {
+        return exportDate;
+    }
+
     public void resetEditPanel() {
         editPanel.clear();
         cbGroup.clear();
@@ -490,5 +503,6 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         txtTotal.clear();
         txtWeight.clear();
         txtCode.clear();
+        exportDate.clear();
     }
 }

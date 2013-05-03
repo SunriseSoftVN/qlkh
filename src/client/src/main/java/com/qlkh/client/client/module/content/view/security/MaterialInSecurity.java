@@ -13,6 +13,6 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 public class MaterialInSecurity implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
-        return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
+        return new HasRole[]{UserRoleEnum.WAREHOUSE_MANAGER};
     }
 }

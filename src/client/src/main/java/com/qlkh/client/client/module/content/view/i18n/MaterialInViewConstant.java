@@ -45,4 +45,5 @@ public interface MaterialInViewConstant extends Constants {
     String materialCodeColumnTitle();
     String existCodeMessage();
     String btnCopy();
+    String exportDate();
 }

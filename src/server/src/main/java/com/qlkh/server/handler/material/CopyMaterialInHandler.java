@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -123,6 +120,7 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
             materialIn.setStation(station);
             materialIn.setYear(action.getYear());
             materialIn.setQuarter(action.getQuarter());
+            materialIn.setExportDate(new Date());
             copyData.add(materialIn);
         }
 
