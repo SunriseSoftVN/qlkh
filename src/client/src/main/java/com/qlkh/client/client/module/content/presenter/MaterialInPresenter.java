@@ -129,6 +129,8 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
                 editWindow = view.createEditWindow(createMaterialStore());
                 view.resetEditPanel();
+                view.getTxtTotal().setEnabled(true);
+                view.getTxtTotal().setReadOnly(false);
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                 if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
                     resetMaterialFilter();
@@ -171,6 +173,9 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     view.getTxtTotal().setValue(currentMaterial.getTotal());
                     view.getTxtWeight().setValue(currentMaterial.getWeight());
                     view.getExportDate().setValue(currentMaterial.getExportDate());
+
+                    view.getTxtTotal().setEnabled(false);
+                    view.getTxtTotal().setReadOnly(true);
 
                     BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
                     BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
@@ -226,46 +231,43 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     if (material != null) {
                         double total = view.getTxtTotal().getValue().doubleValue();
                         double weight = view.getTxtWeight().getValue().doubleValue();
-                        double remain = total - weight;
 
-                        if (remain >= 0) {
-                            MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
-                            MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
+                        MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
+                        MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
 
-                            currentMaterial.setMaterial(material);
-                            currentMaterial.setMaterialGroup(materialGroup);
-                            currentMaterial.setMaterialPerson(materialPerson);
-                            currentMaterial.setTotal(total);
-                            currentMaterial.setWeight(weight);
-                            currentMaterial.setCreatedDate(new Date());
-                            currentMaterial.setStation(currentStation);
-                            currentMaterial.setYear(currentYear);
-                            currentMaterial.setQuarter(currentQuarter.getCode());
-                            currentMaterial.setCode(view.getTxtCode().getValue());
-                            currentMaterial.setExportDate(view.getExportDate().getValue());
+                        currentMaterial.setMaterial(material);
+                        currentMaterial.setMaterialGroup(materialGroup);
+                        currentMaterial.setMaterialPerson(materialPerson);
+                        currentMaterial.setTotal(total);
+                        currentMaterial.setWeight(weight);
+                        currentMaterial.setCreatedDate(new Date());
+                        currentMaterial.setStation(currentStation);
+                        currentMaterial.setYear(currentYear);
+                        currentMaterial.setQuarter(currentQuarter.getCode());
+                        currentMaterial.setCode(view.getTxtCode().getValue());
+                        currentMaterial.setExportDate(view.getExportDate().getValue());
 
-                            dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
-                                @Override
-                                public void onFailure(Throwable caught) {
-                                    if (caught instanceof ServiceException) {
-                                        String causeClassName = ((ServiceException) caught).getCauseClassname();
-                                        if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
-                                            DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
-                                        }
-                                    } else {
-                                        super.onFailure(caught);
+                        dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                if (caught instanceof ServiceException) {
+                                    String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                    if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                        DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
                                     }
+                                } else {
+                                    super.onFailure(caught);
                                 }
-                                @Override
-                                public void onSuccess(SaveResult saveResult) {
-                                    editWindow.hide();
-                                    view.resetEditPanel();
-                                    view.getPagingToolBar().refresh();
-                                }
-                            });
-                        } else {
-                            DiaLogUtils.showMessage(view.getConstant().totalError());
-                        }
+                            }
+
+                            @Override
+                            public void onSuccess(SaveResult saveResult) {
+                                editWindow.hide();
+                                view.resetEditPanel();
+                                view.getPagingToolBar().refresh();
+                            }
+                        });
+
                     } else {
                         DiaLogUtils.showMessage(view.getConstant().materialError());
                     }

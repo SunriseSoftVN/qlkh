@@ -242,10 +242,6 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig materialUnitColumnConfig = new ColumnConfig("material.unit", getConstant().unitColumnTitle(), 50);
         columnConfigs.add(materialUnitColumnConfig);
 
-        ColumnConfig totalColumnConfig = new ColumnConfig("total", getConstant().totalColumnTitle(), 70);
-        totalColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
-        columnConfigs.add(totalColumnConfig);
-
         ColumnConfig reasonColumnConfig = new ColumnConfig("materialGroup.name", getConstant().reasonColumnTitle(), 150);
         columnConfigs.add(reasonColumnConfig);
 
@@ -261,6 +257,10 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
         ColumnConfig codeColumnConfig = new ColumnConfig("code", getConstant().codeColumnTitle(), 100);
         columnConfigs.add(codeColumnConfig);
+
+        ColumnConfig totalColumnConfig = new ColumnConfig("total", getConstant().totalColumnTitle(), 70);
+        totalColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
+        columnConfigs.add(totalColumnConfig);
 
         ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
         columnConfigs.add(weightColumnConfig);
