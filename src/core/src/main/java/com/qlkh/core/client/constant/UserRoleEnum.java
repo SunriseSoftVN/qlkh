@@ -57,4 +57,8 @@ public enum UserRoleEnum implements HasRole {
     public String getRole() {
         return role;
     }
+
+    public static UserRoleEnum[] getAll() {
+        return new UserRoleEnum[]{MANAGER, USER, MATERIAL_MANAGER, WAREHOUSE_MANAGER};
+    }
 }
