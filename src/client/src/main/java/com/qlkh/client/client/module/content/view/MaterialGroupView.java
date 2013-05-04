@@ -198,10 +198,6 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
             txtCodeDisplay.setAllowBlank(false);
         }
 
-        if (!txtRegex.isRendered()) {
-            txtRegex.setAllowBlank(false);
-        }
-
         editPanel.add(txtCode);
         editPanel.add(txtCodeDisplay);
         editPanel.add(txtName);
