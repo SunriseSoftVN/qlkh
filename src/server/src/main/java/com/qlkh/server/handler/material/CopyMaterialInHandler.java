@@ -65,7 +65,7 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
         Map<Long, Double> data = new HashMap<Long, Double>();
 
         for (TaskMaterialDataView dataView : dataViews) {
-            if(!materialIds.contains(dataView.getMaterialId())) {
+            if (!materialIds.contains(dataView.getMaterialId())) {
                 for (TaskSumReportBean task : tasks) {
                     if (task.getTask().getId() == dataView.getTaskId()) {
                         StationReportBean stationBean = task.getStations().get(String.valueOf(action.getStationId()));
@@ -100,12 +100,14 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
                     TaskSumReportBean task = selectUnique(tasks, having(on(TaskSumReportBean.class).getTask().getId(), equalTo(dataView.getTaskId())));
                     if (task != null) {
                         for (MaterialGroup materialGroup : materialGroups) {
-                            for (String regex : materialGroup.getRegexs()) {
-                                if (matcher.match(task.getTask().getCode(), regex)) {
-                                    String groupCode = materialGroup.getCode().split("\\.")[0];
-                                    MaterialGroup rootGroup = selectUnique(materialGroups, having(on(MaterialGroup.class).getCode(), equalTo(groupCode)));
-                                    if (rootGroup != null) {
-                                        materialIn.setMaterialGroup(rootGroup);
+                            if (materialGroup.getRegexs() != null) {
+                                for (String regex : materialGroup.getRegexs()) {
+                                    if (matcher.match(task.getTask().getCode(), regex)) {
+                                        String groupCode = materialGroup.getCode().split("\\.")[0];
+                                        MaterialGroup rootGroup = selectUnique(materialGroups, having(on(MaterialGroup.class).getCode(), equalTo(groupCode)));
+                                        if (rootGroup != null) {
+                                            materialIn.setMaterialGroup(rootGroup);
+                                        }
                                     }
                                 }
                             }

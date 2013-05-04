@@ -1,0 +1,1 @@
+ALTER TABLE  `material_group` CHANGE  `regex`  `regex` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL;

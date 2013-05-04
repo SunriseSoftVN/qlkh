@@ -91,14 +91,16 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         //Add material group.
         List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class);
         for (MaterialGroup materialGroup : materialGroups) {
-            String[] regex = materialGroup.getRegex().split(",");
-            PriceReportBean priceReportBean = new PriceReportBean(
-                    materialGroup.getCodeDisplay(),
-                    materialGroup.getCode(),
-                    materialGroup.getName(),
-                    regex
-            );
-            prices.add(priceReportBean);
+            String[] regex = materialGroup.getRegexs();
+            if (regex != null) {
+                PriceReportBean priceReportBean = new PriceReportBean(
+                        materialGroup.getCodeDisplay(),
+                        materialGroup.getCode(),
+                        materialGroup.getName(),
+                        regex
+                );
+                prices.add(priceReportBean);
+            }
         }
 
         buildTree(prices, tasks, dataViews);

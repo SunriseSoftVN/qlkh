@@ -36,7 +36,10 @@ public class MaterialGroup extends AbstractEntity {
     }
 
     public String[] getRegexs() {
-        return regex.split(",");
+        if (regex != null) {
+            return regex.split(",");
+        }
+        return null;
     }
 
     public void setRegex(String regex) {
