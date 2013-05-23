@@ -38,11 +38,13 @@
                 <bean class="com.qlkh.server.handler.material.CopyMaterialInHandler"/>
                 <ref bean="taskReportHandler"/>
                 <ref bean="priceReportHandler"/>
+                <ref bean="materialMissingPriceReportHandler"/>
             </list>
         </property>
     </bean>
 
     <bean class="com.qlkh.server.handler.report.TaskReportHandler" id="taskReportHandler"/>
     <bean class="com.qlkh.server.handler.report.PriceReportHandler" id="priceReportHandler"/>
+    <bean class="com.qlkh.server.handler.report.MaterialMissingPriceReportHandler" id="materialMissingPriceReportHandler"/>
 
 </beans>

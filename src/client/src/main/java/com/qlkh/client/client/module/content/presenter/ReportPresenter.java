@@ -15,10 +15,7 @@ import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.ReportPlace;
 import com.qlkh.client.client.module.content.view.ReportView;
 import com.qlkh.client.client.utils.GridUtils;
-import com.qlkh.core.client.action.report.PriceReportAction;
-import com.qlkh.core.client.action.report.PriceReportResult;
-import com.qlkh.core.client.action.report.TaskReportAction;
-import com.qlkh.core.client.action.report.TaskReportResult;
+import com.qlkh.core.client.action.report.*;
 import com.qlkh.core.client.action.station.LoadStationAction;
 import com.qlkh.core.client.action.station.LoadStationResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
@@ -86,10 +83,12 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             public void onSuccess(GetServerTimeResult result) {
                 view.getCbbTaskYear().setSimpleValue(result.getYear());
                 view.getCbbPriceYear().setSimpleValue(result.getYear());
+                view.getCbbMaterialYear().setSimpleValue(result.getYear());
                 ReportTypeEnum reportTypeEnum = ReportTypeEnum.valueOf(result.getQuarter().getCode());
                 if (reportTypeEnum != null) {
                     view.getCbbPriceReportType().setSimpleValue(reportTypeEnum);
                     view.getCbbTaskReportType().setSimpleValue(reportTypeEnum);
+                    view.getCbbMaterialReportType().setSimpleValue(reportTypeEnum);
                 }
             }
         });
@@ -123,6 +122,20 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 priceReport(ReportFileTypeEnum.EXCEL);
+            }
+        });
+
+        view.getBtnMaterialReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialReport(ReportFileTypeEnum.PDF);
+            }
+        });
+
+        view.getBtnMaterialReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialReport(ReportFileTypeEnum.EXCEL);
             }
         });
     }
@@ -178,6 +191,22 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     }
                 });
             }
+        }
+    }
+
+    private void materialReport(ReportFileTypeEnum fileTypeEnum) {
+        if (view.getCbbMaterialYear().getValue() != null && view.getCbbMaterialReportType().getValue() != null) {
+            view.setEnableMaterialReportButton(false);
+            dispatch.execute(new MaterialMissingPriceReportAction(fileTypeEnum,
+                    view.getCbbMaterialReportType().getSimpleValue().getValue(), view.getCbbMaterialYear().getSimpleValue()),
+                    new AbstractAsyncCallback<MaterialMissingPriceReportResult>() {
+                @Override
+                public void onSuccess(MaterialMissingPriceReportResult result) {
+                    view.setEnableMaterialReportButton(true);
+                    reportWindow = view.createReportWindow(result.getReportUrl());
+                    reportWindow.show();
+                }
+            });
         }
     }
 }

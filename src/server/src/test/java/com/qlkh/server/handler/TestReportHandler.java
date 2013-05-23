@@ -4,6 +4,7 @@
 
 package com.qlkh.server.handler;
 
+import com.qlkh.core.client.action.report.MaterialMissingPriceReportAction;
 import com.qlkh.core.client.action.report.PriceReportAction;
 import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
@@ -48,5 +49,10 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
     @Test(timeout = 20000)
     public void testPriceReport() throws DispatchException {
         dispatch.execute(new PriceReportAction(ReportTypeEnum.Q1, ReportFileTypeEnum.PDF, 27, null, 2013));
+    }
+
+    @Test(timeout = 20000)
+    public void testMaterialReport() throws DispatchException {
+        dispatch.execute(new MaterialMissingPriceReportAction(ReportFileTypeEnum.PDF, 2, 2013));
     }
 }

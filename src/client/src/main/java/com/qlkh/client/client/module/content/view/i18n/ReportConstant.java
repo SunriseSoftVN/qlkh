@@ -29,4 +29,7 @@ public interface ReportConstant extends Constants {
     String btnReportCancel();
     String fakeBranchName();
     String priceReportPanel();
+    String materialReportPanel();
+    String btnMaterialReportPdf();
+    String btnMaterialReportXls();
 }

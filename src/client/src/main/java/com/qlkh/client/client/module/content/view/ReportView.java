@@ -62,6 +62,10 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     SimpleComboBox<ReportTypeEnum> cbbPriceReportType = new SimpleComboBox<ReportTypeEnum>();
 
+    SimpleComboBox<Integer> cbbMaterialYear = new SimpleComboBox<Integer>();
+
+    SimpleComboBox<ReportTypeEnum> cbbMaterialReportType = new SimpleComboBox<ReportTypeEnum>();
+
     @I18nField
     Button btnPlanReportPdf = new Button();
 
@@ -82,6 +86,16 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     @I18nField
     FormPanel priceReportPanel = new FormPanel();
+
+    @I18nField
+    @FieldSecurity
+    FormPanel materialReportPanel = new FormPanel();
+
+    @I18nField
+    Button btnMaterialReportPdf = new Button();
+
+    @I18nField
+    Button btnMaterialReportXls = new Button();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -120,9 +134,19 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbPriceReportType.setEditable(false);
         cbbPriceReportType.setWidth(100);
 
+        cbbMaterialReportType.add(ReportTypeEnum.Q1);
+        cbbMaterialReportType.add(ReportTypeEnum.Q2);
+        cbbMaterialReportType.add(ReportTypeEnum.Q3);
+        cbbMaterialReportType.add(ReportTypeEnum.Q4);
+        cbbMaterialReportType.setSimpleValue(ReportTypeEnum.Q1);
+        cbbMaterialReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbMaterialReportType.setEditable(false);
+        cbbMaterialReportType.setWidth(100);
+
         for (int i = 2012; i < 2100; i++) {
             cbbTaskYear.add(i);
             cbbPriceYear.add(i);
+            cbbMaterialYear.add(i);
         }
         cbbTaskYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbTaskYear.setWidth(60);
@@ -131,6 +155,10 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbPriceYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbPriceYear.setWidth(60);
         cbbPriceYear.setEditable(false);
+
+        cbbMaterialYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbMaterialYear.setWidth(60);
+        cbbMaterialYear.setEditable(false);
 
         cbbTaskReportForm.add(Arrays.asList(ReportFormEnum.values()));
         cbbTaskReportForm.setSimpleValue(ReportFormEnum.MAU_1);
@@ -150,6 +178,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         planReportPanel.add(hp1);
 
         priceReportPanel.setFrame(true);
+        materialReportPanel.setFrame(true);
 
         cbbPriceReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
         cbbPriceReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -166,10 +195,20 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         priceReportPanel.add(hp2);
 
+        HorizontalPanel hp3 = new HorizontalPanel();
+        hp3.setSpacing(4);
+        hp3.add(cbbMaterialReportType);
+        hp3.add(cbbMaterialYear);
+        hp3.add(btnMaterialReportPdf);
+        hp3.add(btnMaterialReportXls);
+
+        materialReportPanel.add(hp3);
+
         VerticalPanel vp = new VerticalPanel();
         vp.setSpacing(10);
         vp.add(planReportPanel);
         vp.add(priceReportPanel);
+        vp.add(materialReportPanel);
         contentPanel.add(vp);
 
         contentPanel.setHeaderVisible(false);
@@ -199,6 +238,13 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbTaskReportType.setEnabled(enable);
         btnPlanReportPdf.setEnabled(enable);
         btnPlanReportXls.setEnabled(enable);
+    }
+
+    public void setEnableMaterialReportButton(boolean enable) {
+        cbbMaterialYear.setEnabled(enable);
+        cbbMaterialReportType.setEnabled(enable);
+        btnMaterialReportPdf.setEnabled(enable);
+        btnMaterialReportXls.setEnabled(enable);
     }
 
     public void setEnablePriceReportButton(boolean enable) {
@@ -280,5 +326,21 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public ContentPanel getContentPanel() {
         return contentPanel;
+    }
+
+    public SimpleComboBox<Integer> getCbbMaterialYear() {
+        return cbbMaterialYear;
+    }
+
+    public SimpleComboBox<ReportTypeEnum> getCbbMaterialReportType() {
+        return cbbMaterialReportType;
+    }
+
+    public Button getBtnMaterialReportPdf() {
+        return btnMaterialReportPdf;
+    }
+
+    public Button getBtnMaterialReportXls() {
+        return btnMaterialReportXls;
     }
 }

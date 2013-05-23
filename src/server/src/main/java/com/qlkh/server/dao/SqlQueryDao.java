@@ -41,4 +41,6 @@ public interface SqlQueryDao extends Dao {
     List<TaskMaterialDataView> getTaskMaterial(int year, int quarter);
 
     List<TaskMaterialDataView> getTaskMaterialByMaterialId(long materialId, int year, int quarter);
+
+    List<Material> getMaterialsMissingPrice(int year, int quarter);
 }
