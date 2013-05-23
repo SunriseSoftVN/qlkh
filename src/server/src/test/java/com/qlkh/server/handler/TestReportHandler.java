@@ -53,6 +53,6 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
 
     @Test(timeout = 20000)
     public void testMaterialReport() throws DispatchException {
-        dispatch.execute(new MaterialMissingPriceReportAction(ReportFileTypeEnum.PDF, 2, 2013));
+        dispatch.execute(new MaterialMissingPriceReportAction(ReportFileTypeEnum.EXCEL, 2, 2013));
     }
 }

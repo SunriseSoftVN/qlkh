@@ -117,7 +117,8 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
             public List<Material> doInHibernate(Session session) throws HibernateException, SQLException {
                 SQLQuery sqlQuery = session.createSQLQuery("SELECT  `id` AS `bigId`, `name`, `code` FROM `material` WHERE `material`.`id` NOT IN " +
                         "(SELECT `material_price`.`materialId` FROM `material_price` " +
-                        "WHERE `material_price`.`year` = :year AND `material_price`.`quarter` = :quarter)");
+                        "WHERE `material_price`.`year` = :year AND `material_price`.`quarter` = :quarter) AND `material`.`id` IN " +
+                        "(SELECT `material_limit`.`materialId` FROM `material_limit`)");
                 sqlQuery.setParameter("year", year);
                 sqlQuery.setParameter("quarter", quarter);
                 sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
