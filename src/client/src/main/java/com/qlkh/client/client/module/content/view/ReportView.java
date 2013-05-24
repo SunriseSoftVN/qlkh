@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
@@ -94,10 +95,17 @@ public class ReportView extends AbstractView<ReportConstant> {
     FormPanel materialReportPanel = new FormPanel();
 
     @I18nField
+    @FieldSecurity
+    FormPanel wareHouseReportPanel = new FormPanel();
+
+    @I18nField
     Button btnMaterialReportPdf = new Button();
 
     @I18nField
     Button btnMaterialReportXls = new Button();
+
+    @I18nField
+    Button btnMaterialInReportXls = new Button();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -181,6 +189,7 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         priceReportPanel.setFrame(true);
         materialReportPanel.setFrame(true);
+        wareHouseReportPanel.setFrame(true);
 
         cbbPriceReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
         cbbPriceReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -206,11 +215,22 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         materialReportPanel.add(hp3);
 
+        HorizontalPanel hp4 = new HorizontalPanel();
+        hp4.setSpacing(4);
+        hp4.add(new Label("Tu so"));
+        hp4.add(new TextField<String>());
+        hp4.add(new Label("Den so"));
+        hp4.add(new TextField<String>());
+        hp4.add(btnMaterialInReportXls);
+
+        wareHouseReportPanel.add(hp4);
+
         VerticalPanel vp = new VerticalPanel();
         vp.setSpacing(10);
         vp.add(planReportPanel);
         vp.add(priceReportPanel);
         vp.add(materialReportPanel);
+        vp.add(wareHouseReportPanel);
         contentPanel.add(vp);
 
         contentPanel.setHeaderVisible(false);
@@ -344,5 +364,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public Button getBtnMaterialReportXls() {
         return btnMaterialReportXls;
+    }
+
+    public Button getBtnMaterialInReportXls() {
+        return btnMaterialInReportXls;
     }
 }

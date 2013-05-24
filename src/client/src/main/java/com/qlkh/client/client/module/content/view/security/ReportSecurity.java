@@ -17,7 +17,12 @@ import com.smvp4g.mvp.client.core.security.ViewSecurityConfigurator;
 public class ReportSecurity implements ViewSecurityConfigurator {
     @Override
     public HasRole[] getRoles() {
-        return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.MATERIAL_MANAGER, UserRoleEnum.USER};
+        return new HasRole[]{
+                UserRoleEnum.MANAGER,
+                UserRoleEnum.MATERIAL_MANAGER,
+                UserRoleEnum.WAREHOUSE_MANAGER,
+                UserRoleEnum.USER
+        };
     }
 
     public HasRole[] cbbTaskReportStation() {
@@ -47,4 +52,9 @@ public class ReportSecurity implements ViewSecurityConfigurator {
     public HasRole[] priceReportPanel() {
         return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.USER};
     }
+
+    public HasRole[] wareHouseReportPanel() {
+        return new HasRole[]{UserRoleEnum.WAREHOUSE_MANAGER};
+    }
+
 }

@@ -28,8 +28,11 @@ public final class ServletUtils {
     }
 
     public String getRealPath(String dirName, String fileName) {
-        return new StringBuilder().append(SPE_PATH).append(this.getClass().getResource(SPE_PATH).getPath().replaceFirst(SPE_PATH, StringUtils.EMPTY).
-                replace(CLASS_PATH, dirName + SPE_PATH)).append(fileName).toString();
+        return new StringBuilder().append(SPE_PATH)
+                .append(this.getClass()
+                        .getResource(SPE_PATH).getPath()
+                        .replaceFirst(SPE_PATH, StringUtils.EMPTY).
+                                replace(CLASS_PATH, dirName + SPE_PATH)).append(fileName).toString();
     }
 
     public String getBaseUrl(HttpServletRequest request) {

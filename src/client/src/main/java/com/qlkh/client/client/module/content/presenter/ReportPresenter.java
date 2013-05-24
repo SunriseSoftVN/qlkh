@@ -138,6 +138,23 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 materialReport(ReportFileTypeEnum.EXCEL);
             }
         });
+
+        view.getBtnMaterialInReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialInReport();
+            }
+        });
+    }
+
+    private void materialInReport() {
+        dispatch.execute(new MaterialInReportAction(), new AbstractAsyncCallback<MaterialInReportResult>() {
+            @Override
+            public void onSuccess(MaterialInReportResult result) {
+                reportWindow = view.createReportWindow(result.getReportUrl());
+                reportWindow.show();
+            }
+        });
     }
 
     private void priceReport(ReportFileTypeEnum fileTypeEnum) {
