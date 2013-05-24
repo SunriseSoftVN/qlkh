@@ -82,9 +82,11 @@ public class ReportView extends AbstractView<ReportConstant> {
     Button btnReportCancel = new Button();
 
     @I18nField
+    @FieldSecurity
     FormPanel planReportPanel = new FormPanel();
 
     @I18nField
+    @FieldSecurity
     FormPanel priceReportPanel = new FormPanel();
 
     @I18nField
