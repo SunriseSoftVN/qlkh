@@ -8,14 +8,14 @@ import net.customware.gwt.dispatch.shared.Action;
  * @author Nguyen Duc Dung
  * @since 5/24/13 11:42 AM
  */
-public class MaterialInReportAction implements Action<MaterialInReportResult> {
+public class MaterialOutReportAction implements Action<MaterialOutReportResult> {
 
     private String regex;
 
-    public MaterialInReportAction() {
+    public MaterialOutReportAction() {
     }
 
-    public MaterialInReportAction(String regex) {
+    public MaterialOutReportAction(String regex) {
         this.regex = regex;
     }
 

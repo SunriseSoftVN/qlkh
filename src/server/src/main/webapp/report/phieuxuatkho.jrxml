@@ -11,7 +11,7 @@
 	<field name="material.real" class="java.lang.Double"/>
 	<field name="material.price" class="java.lang.Double"/>
 	<field name="material.total" class="java.lang.Double"/>
-	<field name="name" class="java.lang.String"/>
+	<field name="personName" class="java.lang.String"/>
 	<field name="reason" class="java.lang.String"/>
 	<field name="stationName" class="java.lang.String"/>
 	<background>
@@ -101,7 +101,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{personName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="3cd27c1f-00c1-4daa-96ad-887bedaf5f0b" x="473" y="0" width="138" height="20"/>

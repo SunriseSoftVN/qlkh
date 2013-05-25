@@ -1,7 +1,7 @@
 package com.qlkh.server.handler.report;
 
-import com.qlkh.core.client.action.report.MaterialInReportAction;
-import com.qlkh.core.client.action.report.MaterialInReportResult;
+import com.qlkh.core.client.action.report.MaterialOutReportAction;
+import com.qlkh.core.client.action.report.MaterialOutReportResult;
 import com.qlkh.core.client.model.MaterialIn;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.dao.core.GeneralDao;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author Nguyen Duc Dung
  * @since 5/24/13 11:43 AM
  */
-public class MaterialInReportHandler extends AbstractHandler<MaterialInReportAction, MaterialInReportResult> {
+public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportAction, MaterialOutReportResult> {
 
     public static final String JASPER_REPORT_FILE_NAME = "phieuxuatkho.jasper";
     public static final String EXCEL_FILE_NAME = "phieuxuatkho.xls";
@@ -40,12 +40,12 @@ public class MaterialInReportHandler extends AbstractHandler<MaterialInReportAct
     private GeneralDao generalDao;
 
     @Override
-    public Class<MaterialInReportAction> getActionType() {
-        return MaterialInReportAction.class;
+    public Class<MaterialOutReportAction> getActionType() {
+        return MaterialOutReportAction.class;
     }
 
     @Override
-    public MaterialInReportResult execute(MaterialInReportAction action, ExecutionContext context) throws DispatchException {
+    public MaterialOutReportResult execute(MaterialOutReportAction action, ExecutionContext context) throws DispatchException {
         String reportFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, JASPER_REPORT_FILE_NAME);
         String xlsFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, EXCEL_FILE_NAME);
         try {
@@ -79,6 +79,6 @@ public class MaterialInReportHandler extends AbstractHandler<MaterialInReportAct
                 .append(EXCEL_FILE_NAME).toString();
 
 
-        return new MaterialInReportResult(downloadUrl);
+        return new MaterialOutReportResult(downloadUrl);
     }
 }

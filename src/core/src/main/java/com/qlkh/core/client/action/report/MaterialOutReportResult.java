@@ -8,14 +8,14 @@ import net.customware.gwt.dispatch.shared.Result;
  * @author Nguyen Duc Dung
  * @since 5/24/13 11:42 AM
  */
-public class MaterialInReportResult implements Result {
+public class MaterialOutReportResult implements Result {
 
     private String reportUrl;
 
-    public MaterialInReportResult() {
+    public MaterialOutReportResult() {
     }
 
-    public MaterialInReportResult(String reportUrl) {
+    public MaterialOutReportResult(String reportUrl) {
         this.reportUrl = reportUrl;
     }
 
