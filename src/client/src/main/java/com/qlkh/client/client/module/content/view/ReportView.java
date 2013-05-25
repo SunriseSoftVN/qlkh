@@ -67,6 +67,8 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     SimpleComboBox<ReportTypeEnum> cbbMaterialReportType = new SimpleComboBox<ReportTypeEnum>();
 
+    TextField<String> txtMaterialRegex = new TextField<String>();
+
     @I18nField
     Button btnPlanReportPdf = new Button();
 
@@ -217,10 +219,8 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         HorizontalPanel hp4 = new HorizontalPanel();
         hp4.setSpacing(4);
-        hp4.add(new Label("Tu so"));
-        hp4.add(new TextField<String>());
-        hp4.add(new Label("Den so"));
-        hp4.add(new TextField<String>());
+        hp4.add(new Label(getConstant().lblMaterialRegex()));
+        hp4.add(txtMaterialRegex);
         hp4.add(btnMaterialInReportXls);
 
         wareHouseReportPanel.add(hp4);
@@ -368,5 +368,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public Button getBtnMaterialInReportXls() {
         return btnMaterialInReportXls;
+    }
+
+    public TextField<String> getTxtMaterialRegex() {
+        return txtMaterialRegex;
     }
 }

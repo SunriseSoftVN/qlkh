@@ -10,4 +10,20 @@ import net.customware.gwt.dispatch.shared.Action;
  */
 public class MaterialInReportAction implements Action<MaterialInReportResult> {
 
+    private String regex;
+
+    public MaterialInReportAction() {
+    }
+
+    public MaterialInReportAction(String regex) {
+        this.regex = regex;
+    }
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public String[] getRegexs() {
+        return regex.split(",");
+    }
 }

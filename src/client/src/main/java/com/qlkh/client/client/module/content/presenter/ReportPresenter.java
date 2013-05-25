@@ -148,7 +148,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     }
 
     private void materialInReport() {
-        dispatch.execute(new MaterialInReportAction(), new AbstractAsyncCallback<MaterialInReportResult>() {
+        dispatch.execute(new MaterialInReportAction(view.getTxtMaterialRegex().getValue()), new AbstractAsyncCallback<MaterialInReportResult>() {
             @Override
             public void onSuccess(MaterialInReportResult result) {
                 reportWindow = view.createReportWindow(result.getReportUrl());

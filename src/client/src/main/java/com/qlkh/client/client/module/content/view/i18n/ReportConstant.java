@@ -34,4 +34,5 @@ public interface ReportConstant extends Constants {
     String btnMaterialReportXls();
     String wareHouseReportPanel();
     String btnMaterialInReportXls();
+    String lblMaterialRegex();
 }
