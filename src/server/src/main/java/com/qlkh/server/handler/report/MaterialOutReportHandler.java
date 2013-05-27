@@ -58,6 +58,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     public MaterialOutReportResult execute(MaterialOutReportAction action, ExecutionContext context) throws DispatchException {
         String reportFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, JASPER_REPORT_FILE_NAME);
         String xlsFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, EXCEL_FILE_NAME);
+        String downloadUrl = null;
         try {
             List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getRegex());
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
@@ -75,6 +76,14 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
                             new JRBeanCollectionDataSource(materialReportBeans));
                     ReportExporter.exportReportXls(jasperPrint, xlsFilePath);
+
+                    downloadUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
+                            .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
+                            .append(REPORT_SERVLET_URI)
+                            .append(ReportServlet.REPORT_FILENAME_PARAMETER)
+                            .append("=")
+                            .append(EXCEL_FILE_NAME).toString();
+
                 }
             }
         } catch (JRException e) {
@@ -82,15 +91,6 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        String downloadUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
-                .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
-                .append(REPORT_SERVLET_URI)
-                .append(ReportServlet.REPORT_FILENAME_PARAMETER)
-                .append("=")
-                .append(EXCEL_FILE_NAME).toString();
-
-
         return new MaterialOutReportResult(downloadUrl);
     }
 }

@@ -14,6 +14,7 @@ import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
 import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.content.place.ReportPlace;
 import com.qlkh.client.client.module.content.view.ReportView;
+import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.report.*;
 import com.qlkh.core.client.action.station.LoadStationAction;
@@ -29,6 +30,7 @@ import com.qlkh.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
+import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
 
 /**
@@ -142,17 +144,23 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnMaterialInReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                materialInReport();
+                if (StringUtils.isNotBlank(view.getTxtMaterialRegex().getValue())) {
+                    materialInReport(view.getTxtMaterialRegex().getValue());
+                }
             }
         });
     }
 
-    private void materialInReport() {
-        dispatch.execute(new MaterialOutReportAction(view.getTxtMaterialRegex().getValue()), new AbstractAsyncCallback<MaterialOutReportResult>() {
+    private void materialInReport(String regex) {
+        dispatch.execute(new MaterialOutReportAction(regex), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
-                reportWindow = view.createReportWindow(result.getReportUrl());
-                reportWindow.show();
+                if (StringUtils.isNotBlank(result.getReportUrl())) {
+                    reportWindow = view.createReportWindow(result.getReportUrl());
+                    reportWindow.show();
+                } else {
+                    DiaLogUtils.showMessage(view.getConstant().emptyMessage());
+                }
             }
         });
     }
@@ -217,13 +225,13 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             dispatch.execute(new MaterialMissingPriceReportAction(fileTypeEnum,
                     view.getCbbMaterialReportType().getSimpleValue().getValue(), view.getCbbMaterialYear().getSimpleValue()),
                     new AbstractAsyncCallback<MaterialMissingPriceReportResult>() {
-                @Override
-                public void onSuccess(MaterialMissingPriceReportResult result) {
-                    view.setEnableMaterialReportButton(true);
-                    reportWindow = view.createReportWindow(result.getReportUrl());
-                    reportWindow.show();
-                }
-            });
+                        @Override
+                        public void onSuccess(MaterialMissingPriceReportResult result) {
+                            view.setEnableMaterialReportButton(true);
+                            reportWindow = view.createReportWindow(result.getReportUrl());
+                            reportWindow.show();
+                        }
+                    });
         }
     }
 }

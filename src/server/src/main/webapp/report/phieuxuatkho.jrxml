@@ -41,13 +41,6 @@
 				<text><![CDATA[Phiếu xuất kho]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="541b7d4b-4555-4b01-b717-ccac21c2dbb3" style="default" x="295" y="51" width="29" height="20"/>
-				<textElement>
-					<font size="12" isBold="false"/>
-				</textElement>
-				<text><![CDATA[Số:]]></text>
-			</staticText>
-			<staticText>
 				<reportElement uuid="d64d1eb5-35c1-4bb2-a06c-c09662561f36" style="default" x="523" y="11" width="275" height="84"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="false"/>
@@ -66,13 +59,13 @@ Có:…………………………….....]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="248b3aed-f491-410f-a585-0e601c65798a" x="324" y="51" width="119" height="20"/>
+				<reportElement uuid="248b3aed-f491-410f-a585-0e601c65798a" x="356" y="51" width="117" height="20"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -80,45 +73,52 @@ Có:…………………………….....]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{code}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="d3758c43-e335-4c89-960d-4c15783737c0" style="default" x="261" y="51" width="95" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Số:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="65" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="1e373601-ddda-4b62-be40-e8fa5785fe8a" style="default" x="0" y="40" width="186" height="20"/>
+				<reportElement uuid="1e373601-ddda-4b62-be40-e8fa5785fe8a" style="default" x="0" y="40" width="162" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[- Xuất tại kho:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="07068684-32c0-4887-a622-41d126a86a1a" style="default" x="0" y="20" width="186" height="20"/>
+				<reportElement uuid="07068684-32c0-4887-a622-41d126a86a1a" style="default" x="0" y="20" width="162" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[- Lí do xuất kho:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="8123a929-07c7-454c-8a9a-846e0f761c3f" style="default" x="366" y="0" width="155" height="20"/>
+				<reportElement uuid="8123a929-07c7-454c-8a9a-846e0f761c3f" style="default" x="418" y="0" width="142" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[- Địa chỉ( Bộ phận):]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4dafaddd-1d15-439e-9d8d-1bea8d5d4f4b" style="default" x="0" y="0" width="186" height="20"/>
+				<reportElement uuid="4dafaddd-1d15-439e-9d8d-1bea8d5d4f4b" style="default" x="0" y="0" width="162" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[- Họ tên người nhận hàng:]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="211ad7fb-bfc5-41d3-aa78-dc61824647ad" x="186" y="0" width="138" height="20"/>
+				<reportElement uuid="211ad7fb-bfc5-41d3-aa78-dc61824647ad" x="168" y="0" width="208" height="20"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -132,7 +132,7 @@ Có:…………………………….....]]></text>
 				<textFieldExpression><![CDATA[$P{personName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="3cd27c1f-00c1-4daa-96ad-887bedaf5f0b" x="521" y="0" width="140" height="20"/>
+				<reportElement uuid="3cd27c1f-00c1-4daa-96ad-887bedaf5f0b" x="560" y="0" width="205" height="20"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -146,7 +146,7 @@ Có:…………………………….....]]></text>
 				<textFieldExpression><![CDATA[$P{stationName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="2ed2a7fd-aafa-42b9-94d1-8a9dde23db5b" x="186" y="20" width="138" height="20"/>
+				<reportElement uuid="2ed2a7fd-aafa-42b9-94d1-8a9dde23db5b" x="168" y="20" width="208" height="20"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -160,18 +160,25 @@ Có:…………………………….....]]></text>
 				<textFieldExpression><![CDATA[$P{reason}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="fd748a30-51b8-4598-8c7d-81c4f4c6d630" style="default" x="366" y="40" width="295" height="20"/>
+				<reportElement uuid="fd748a30-51b8-4598-8c7d-81c4f4c6d630" style="default" x="418" y="40" width="142" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
-				<text><![CDATA[ - Địa điểm: 25B Lệ Ninh Quán Bàu - Tp Vinh]]></text>
+				<text><![CDATA[ - Địa điểm:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1f848a24-6da3-4ee6-bb2a-c5eba68bb94f" style="default" x="186" y="40" width="138" height="20"/>
+				<reportElement uuid="1f848a24-6da3-4ee6-bb2a-c5eba68bb94f" style="default" x="168" y="40" width="138" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Công ty]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82bcd846-684e-47e7-adcc-fdb99ad639db" style="default" x="560" y="40" width="205" height="20"/>
+				<textElement>
+					<font size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[25B Lệ Ninh Quán Bàu - Tp Vinh]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

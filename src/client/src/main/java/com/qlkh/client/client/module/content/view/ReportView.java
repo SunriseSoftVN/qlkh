@@ -224,6 +224,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         hp4.add(btnMaterialInReportXls);
 
         wareHouseReportPanel.add(hp4);
+        wareHouseReportPanel.add(new Label(getConstant().lblMaterialRegexHelp()));
 
         VerticalPanel vp = new VerticalPanel();
         vp.setSpacing(10);
