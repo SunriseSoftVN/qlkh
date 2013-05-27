@@ -13,6 +13,7 @@ import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
+import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.server.dao.core.Dao;
 
 import java.util.List;
@@ -43,4 +44,6 @@ public interface SqlQueryDao extends Dao {
     List<TaskMaterialDataView> getTaskMaterialByMaterialId(long materialId, int year, int quarter);
 
     List<Material> getMaterialsMissingPrice(int year, int quarter);
+
+    List<MaterialReportBean> getMaterialOut(String regex);
 }

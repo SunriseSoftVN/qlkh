@@ -4,16 +4,14 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="default" isDefault="true" hAlign="Left" vAlign="Middle" fontName="Arial" fontSize="12" pdfFontName="Times-Roman" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-	<field name="material.name" class="java.lang.String"/>
-	<field name="material.code" class="java.lang.String"/>
-	<field name="material.unit" class="java.lang.String"/>
-	<field name="material.require" class="java.lang.Double"/>
-	<field name="material.real" class="java.lang.Double"/>
-	<field name="material.price" class="java.lang.Double"/>
-	<field name="material.total" class="java.lang.Double"/>
-	<field name="personName" class="java.lang.String"/>
-	<field name="reason" class="java.lang.String"/>
-	<field name="stationName" class="java.lang.String"/>
+	<parameter name="personName" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="require" class="java.lang.Double"/>
+	<field name="weight" class="java.lang.Double"/>
+	<field name="price" class="java.lang.Double"/>
+	<field name="total" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -101,7 +99,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{personName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{personName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="3cd27c1f-00c1-4daa-96ad-887bedaf5f0b" x="473" y="0" width="138" height="20"/>
@@ -115,7 +113,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{stationName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stationName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="2ed2a7fd-aafa-42b9-94d1-8a9dde23db5b" x="157" y="20" width="138" height="20"/>
@@ -129,7 +127,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{reason}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -403,7 +401,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="e2b69f3b-80a3-4625-b70d-9b3bc1049987" x="523" y="0" width="95" height="23"/>
@@ -417,7 +415,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.real}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{weight}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="031ae299-7449-4384-a072-c7c616f7e222" x="695" y="0" width="107" height="23"/>
@@ -431,7 +429,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.total}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="8071e4dd-5b42-4a6d-9f81-7ba29289c17d" x="290" y="0" width="76" height="23"/>
@@ -445,7 +443,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.code}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="a550c0c5-4845-40bf-a808-d472c97f92fd" x="367" y="0" width="76" height="23"/>
@@ -459,7 +457,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.unit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="48c66bd0-4fa4-4dfb-a725-842291c76004" x="443" y="0" width="80" height="23"/>
@@ -473,7 +471,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.require}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{require}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="9580ae62-3f44-4466-a67e-9adc4c25a9df" x="618" y="0" width="76" height="23"/>
@@ -487,7 +485,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{material.price}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

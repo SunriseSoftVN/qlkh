@@ -1,5 +1,7 @@
 package com.qlkh.core.client.report;
 
+import java.math.BigInteger;
+
 /**
  * The Class MaterialReportBean.
  *
@@ -8,13 +10,22 @@ package com.qlkh.core.client.report;
  */
 public class MaterialReportBean {
 
+    private Long materialId;
     private String name;
     private String code;
     private String unit;
     private Double require;
-    private Double real;
+    private Double weight;
     private Double price;
     private Double total;
+
+    public Long getMaterialId() {
+        return materialId;
+    }
+
+    public void setMaterialId(BigInteger materialId) {
+        this.materialId = materialId.longValue();
+    }
 
     public String getName() {
         return name;
@@ -48,12 +59,12 @@ public class MaterialReportBean {
         this.require = require;
     }
 
-    public Double getReal() {
-        return real;
+    public Double getWeight() {
+        return weight;
     }
 
-    public void setReal(Double real) {
-        this.real = real;
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 
     public Double getPrice() {

@@ -3,7 +3,9 @@ package com.qlkh.server.handler.report;
 import com.qlkh.core.client.action.report.MaterialOutReportAction;
 import com.qlkh.core.client.action.report.MaterialOutReportResult;
 import com.qlkh.core.client.model.MaterialIn;
+import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
+import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
@@ -15,13 +17,13 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Class MaterialInReportHandler.
@@ -39,6 +41,9 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     @Autowired
     private GeneralDao generalDao;
 
+    @Autowired
+    private SqlQueryDao sqlQueryDao;
+
     @Override
     public Class<MaterialOutReportAction> getActionType() {
         return MaterialOutReportAction.class;
@@ -49,27 +54,25 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
         String reportFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, JASPER_REPORT_FILE_NAME);
         String xlsFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, EXCEL_FILE_NAME);
         try {
-            Criterion lastCriterion = null;
-            for (String regex : action.getRegexs()) {
-                if (StringUtils.isNotBlank(regex)) {
-                    Criterion criterion = Restrictions.like("code",
-                            StringUtils.trimToEmpty(regex.replaceAll("\\*", ""))).ignoreCase();
-                    if (lastCriterion == null) {
-                        lastCriterion = criterion;
-                    } else {
-                        lastCriterion = Restrictions.or(lastCriterion, criterion);
-                    }
+            List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getRegex());
+            if (CollectionUtils.isNotEmpty(materialReportBeans)) {
+                MaterialReportBean materialReportBean = materialReportBeans.get(0);
+                MaterialIn materialIn = generalDao.findById(MaterialIn.class, materialReportBean.getMaterialId());
+                if (materialIn != null) {
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("stationsName", materialIn.getStation().getName());
+                    data.put("reason", materialIn.getMaterialGroup().getName());
+                    data.put("personName", materialIn.getMaterialPerson().getPersonName());
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
+                            new JRBeanCollectionDataSource(materialReportBeans));
+                    ReportExporter.exportReportXls(jasperPrint, xlsFilePath);
                 }
             }
-            List<MaterialIn> materials = generalDao.findCriteria(MaterialIn.class, lastCriterion);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, null, new JRBeanCollectionDataSource(materials));
-            ReportExporter.exportReportXls(jasperPrint, xlsFilePath);
         } catch (JRException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
 
         String downloadUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
                 .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())

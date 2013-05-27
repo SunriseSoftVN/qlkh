@@ -14,8 +14,10 @@ import com.qlkh.core.client.model.view.TaskDetailDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailKDKDataView;
 import com.qlkh.core.client.model.view.TaskDetailNamDataView;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
+import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.AbstractDao;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -23,6 +25,7 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -235,7 +238,8 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
 
                 int total = Integer.valueOf(countQuery.list().get(0).toString());
 
-                return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);            }
+                return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);
+            }
         });
     }
 
@@ -266,6 +270,45 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 int total = Integer.valueOf(countQuery.list().get(0).toString());
 
                 return new BasePagingLoadResult<Material>(selectQuery.list(), config.getOffset(), total);
+            }
+        });
+    }
+
+    @Override
+    public List<MaterialReportBean> getMaterialOut(final String regex) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<MaterialReportBean>>() {
+            @Override
+            public List<MaterialReportBean> doInHibernate(Session session) throws HibernateException, SQLException {
+                String select = "SELECT `material`.`name`, " +
+                        "`material`.`code`, " +
+                        "`material`.`unit`, " +
+                        "`material_price`.`price`, " +
+                        "`material_in`.`weight`, " +
+                        "`material_in`.`total`, " +
+                        "`material_in`.`id` AS `materialId` " +
+                        "FROM `material_in` " +
+                        "INNER JOIN `material` " +
+                        "ON `material_in`.`materialId` = `material`.`id` " +
+                        "INNER JOIN `material_person` " +
+                        "ON `material_in`.`materialPersonId` = `material_person`.`id` " +
+                        "INNER JOIN `station` " +
+                        "ON `material_in`.`stationId` = `station`.`id` " +
+                        "INNER JOIN `material_price` " +
+                        "ON `material_in`.`materialId` = `material_price`.`materialId` " +
+                        "AND `material_in`.`year` = `material_price`.`year` " +
+                        "AND `material_in`.`quarter` = `material_price`.`quarter` ";
+                if (StringUtils.isNotBlank(regex)) {
+                    String[] regexs = regex.split(",");
+                    select += "WHERE ";
+                    for (String regex : regexs) {
+                        select += "`material_in`.`code` LIKE '" + regex.replaceAll("\\*", "%") + "'";
+                        select += " AND ";
+                    }
+                    SQLQuery selectQuery = session.createSQLQuery(select.substring(0, select.length() - "AND ".length()));
+                    selectQuery.setResultTransformer(new AliasToBeanResultTransformer(MaterialReportBean.class));
+                    return selectQuery.list();
+                }
+                return Collections.emptyList();
             }
         });
     }
