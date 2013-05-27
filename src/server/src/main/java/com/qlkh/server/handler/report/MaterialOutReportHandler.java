@@ -9,6 +9,7 @@ import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
+import com.qlkh.server.util.DateTimeUtils;
 import com.qlkh.server.util.ReportExporter;
 import com.qlkh.server.util.ServletUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -60,9 +61,11 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                 MaterialIn materialIn = generalDao.findById(MaterialIn.class, materialReportBean.getMaterialId());
                 if (materialIn != null) {
                     Map<String, Object> data = new HashMap<String, Object>();
-                    data.put("stationsName", materialIn.getStation().getName());
+                    data.put("stationName", materialIn.getStation().getName());
                     data.put("reason", materialIn.getMaterialGroup().getName());
                     data.put("personName", materialIn.getMaterialPerson().getPersonName());
+                    data.put("code", materialIn.getCode());
+                    data.put("date", DateTimeUtils.dateTimeInVietnamese());
                     JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
                             new JRBeanCollectionDataSource(materialReportBeans));
                     ReportExporter.exportReportXls(jasperPrint, xlsFilePath);

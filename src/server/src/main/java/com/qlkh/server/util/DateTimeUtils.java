@@ -62,4 +62,11 @@ public final class DateTimeUtils {
         return daysBetween;
     }
 
+    public static String dateTimeInVietnamese() {
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int year = cal.get(Calendar.YEAR);
+        return "Ngày " + day + " tháng " + month + " năm " + year;
+    }
+
 }

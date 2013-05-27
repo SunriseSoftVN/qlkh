@@ -82,4 +82,8 @@ public class MaterialReportBean {
     public void setTotal(Double total) {
         this.total = total;
     }
+
+    public Double getMoney() {
+        return price * weight;
+    }
 }
