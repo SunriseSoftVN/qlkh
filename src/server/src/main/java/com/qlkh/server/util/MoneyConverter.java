@@ -1,5 +1,7 @@
 package com.qlkh.server.util;
 
+import org.springframework.util.StringUtils;
+
 /**
  * The Class MoneyConverter.
  *
@@ -66,6 +68,6 @@ public class MoneyConverter {
             number = number.substring(0, number.length() - 14);
         }
 
-        return number + "đồng chẵn";
+        return StringUtils.capitalize(number + "đồng chẵn");
     }
 }

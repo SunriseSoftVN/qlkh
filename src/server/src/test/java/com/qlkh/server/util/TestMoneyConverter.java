@@ -25,6 +25,7 @@ public class TestMoneyConverter {
                 120000000l,
                 1000000000l,
                 1200000000l,
+                9804000l,
         };
         for (Long money : data) {
             String result = MoneyConverter.transformNumber(money.toString());

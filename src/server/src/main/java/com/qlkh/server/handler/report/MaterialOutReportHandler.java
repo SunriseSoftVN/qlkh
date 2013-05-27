@@ -10,6 +10,7 @@ import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
 import com.qlkh.server.util.DateTimeUtils;
+import com.qlkh.server.util.MoneyConverter;
 import com.qlkh.server.util.ReportExporter;
 import com.qlkh.server.util.ServletUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -25,6 +26,9 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.sum;
 
 /**
  * The Class MaterialInReportHandler.
@@ -59,6 +63,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
                 MaterialReportBean materialReportBean = materialReportBeans.get(0);
                 MaterialIn materialIn = generalDao.findById(MaterialIn.class, materialReportBean.getMaterialId());
+                Double totalMoney = sum(materialReportBeans, on(MaterialReportBean.class).getMoney());
                 if (materialIn != null) {
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put("stationName", materialIn.getStation().getName());
@@ -66,6 +71,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     data.put("personName", materialIn.getMaterialPerson().getPersonName());
                     data.put("code", materialIn.getCode());
                     data.put("date", DateTimeUtils.dateTimeInVietnamese());
+                    data.put("totalMoneyString", MoneyConverter.transformNumber(String.valueOf(totalMoney.intValue())));
                     JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
                             new JRBeanCollectionDataSource(materialReportBeans));
                     ReportExporter.exportReportXls(jasperPrint, xlsFilePath);

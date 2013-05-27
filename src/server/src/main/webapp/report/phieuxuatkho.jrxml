@@ -9,6 +9,7 @@
 	<parameter name="stationName" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="code" class="java.lang.String"/>
+	<parameter name="totalMoneyString" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="unit" class="java.lang.String"/>
@@ -690,21 +691,7 @@ Có:…………………………….....]]></text>
 				<textElement verticalAlignment="Middle">
 					<font isItalic="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{personName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="d3611442-e1c1-464c-a160-178bc8b935a0" x="290" y="34" width="512" height="20"/>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font isItalic="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{personName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{totalMoneyString}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="69d772c8-b5dc-4e4a-a531-28efaa1b5931" style="default" x="11" y="84" width="104" height="20"/>
