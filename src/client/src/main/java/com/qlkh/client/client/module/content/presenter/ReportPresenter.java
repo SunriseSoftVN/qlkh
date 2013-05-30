@@ -152,6 +152,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     }
 
     private void materialInReport(String regex) {
+        view.getTxtMaterialRegex().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
         dispatch.execute(new MaterialOutReportAction(regex), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
@@ -159,6 +160,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {
                     reportWindow = view.createReportWindow(result.getReportUrl());
                     reportWindow.show();
+                    view.getTxtMaterialRegex().setEnabled(true);
                     view.getBtnMaterialInReport().setEnabled(true);
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
