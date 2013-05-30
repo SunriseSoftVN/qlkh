@@ -29,7 +29,6 @@ import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
-import com.smvp4g.mvp.client.core.utils.CollectionsUtils;
 import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -153,11 +152,14 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     }
 
     private void materialInReport(String regex) {
+        view.getBtnMaterialInReport().setEnabled(false);
         dispatch.execute(new MaterialOutReportAction(regex), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
-                if (CollectionsUtils.isNotEmpty(result.getReportUrls())) {
-
+                if (StringUtils.isNotBlank(result.getReportUrl())) {
+                    reportWindow = view.createReportWindow(result.getReportUrl());
+                    reportWindow.show();
+                    view.getBtnMaterialInReport().setEnabled(true);
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
                 }

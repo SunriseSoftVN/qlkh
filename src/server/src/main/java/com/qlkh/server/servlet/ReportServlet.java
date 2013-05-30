@@ -26,6 +26,7 @@ public class ReportServlet extends HttpServlet {
 
     public static final String REPORT_FILENAME_PARAMETER = "reportName";
     public static final String REPORT_DIRECTORY = "report";
+    public static final String REPORT_SERVLET_URI = "/report?";
 
     public static final String RESPONSE_HEADER = "Content-Disposition";
     public static final String RESPONSE_HEADER_CONTENT = "attachment; filename=";

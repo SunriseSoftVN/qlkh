@@ -2,8 +2,6 @@ package com.qlkh.core.client.action.report;
 
 import net.customware.gwt.dispatch.shared.Result;
 
-import java.util.List;
-
 /**
  * The Class MaterialInReportAction.
  *
@@ -12,16 +10,16 @@ import java.util.List;
  */
 public class MaterialOutReportResult implements Result {
 
-    private List<String> reportUrls;
+    private String reportUrl;
 
     public MaterialOutReportResult() {
     }
 
-    public MaterialOutReportResult(List<String> reportUrls) {
-        this.reportUrls = reportUrls;
+    public MaterialOutReportResult(String reportUrl) {
+        this.reportUrl = reportUrl;
     }
 
-    public List<String> getReportUrls() {
-        return reportUrls;
+    public String getReportUrl() {
+        return reportUrl;
     }
 }

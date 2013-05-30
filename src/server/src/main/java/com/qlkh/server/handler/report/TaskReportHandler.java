@@ -71,7 +71,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
  */
 public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskReportResult> {
 
-    private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "kehoachtacnghiep";
     private static final Font DEFAULT_FONT = new Font(8, "Arial", "/fonts/Arial.ttf",
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
@@ -128,7 +127,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
 
             return new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
                     .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
-                    .append(REPORT_SERVLET_URI)
+                    .append(ReportServlet.REPORT_SERVLET_URI)
                     .append(ReportServlet.REPORT_FILENAME_PARAMETER)
                     .append("=")
                     .append(fileName).toString();

@@ -21,6 +21,15 @@ public class MaterialReportBean {
     private String personName;
     private String stationName;
     private String reason;
+    private String reportCode;
+
+    public String getReportCode() {
+        return reportCode;
+    }
+
+    public void setReportCode(String reportCode) {
+        this.reportCode = reportCode;
+    }
 
     public String getReason() {
         return reason;

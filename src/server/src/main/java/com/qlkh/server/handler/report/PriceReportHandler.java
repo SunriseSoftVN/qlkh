@@ -62,7 +62,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
  */
 public class PriceReportHandler extends AbstractHandler<PriceReportAction, PriceReportResult> implements ApplicationContextAware {
 
-    private static final String REPORT_SERVLET_URI = "/report?";
     private static final String REPORT_FILE_NAME = "kehoachcungvatu";
     private static final Font DEFAULT_FONT = new Font(8, "Arial", "/fonts/Arial.ttf",
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
@@ -270,7 +269,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
             return new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
                     .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
-                    .append(REPORT_SERVLET_URI)
+                    .append(ReportServlet.REPORT_SERVLET_URI)
                     .append(ReportServlet.REPORT_FILENAME_PARAMETER)
                     .append("=")
                     .append(fileName).toString();
