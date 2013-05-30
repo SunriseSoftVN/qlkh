@@ -23,6 +23,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,9 @@ import static ch.lambdaj.Lambda.sum;
 public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportAction, MaterialOutReportResult> {
 
     public static final String JASPER_REPORT_FILE_NAME = "phieuxuatkho.jasper";
-    public static final String EXCEL_FILE_NAME = "phieuxuatkho.xls";
+    public static final String HTML_FILE_NAME = "phieuxuatkho";
 
-    private static final String REPORT_SERVLET_URI = "/report?";
+    private static final String REPORT_SERVLET_URI = "/report/";
 
     @Autowired
     private GeneralDao generalDao;
@@ -57,8 +58,8 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     @Override
     public MaterialOutReportResult execute(MaterialOutReportAction action, ExecutionContext context) throws DispatchException {
         String reportFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, JASPER_REPORT_FILE_NAME);
-        String xlsFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, EXCEL_FILE_NAME);
-        String downloadUrl = null;
+        String htmlFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, HTML_FILE_NAME);
+        List<String> downloadUrls = new ArrayList<String>();
         try {
             List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getRegex());
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
@@ -73,17 +74,21 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     data.put("code", materialIn.getCode());
                     data.put("date", DateTimeUtils.dateTimeInVietnamese());
                     data.put("totalMoneyString", MoneyConverter.transformNumber(String.valueOf(totalMoney.intValue())));
-                    JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
-                            new JRBeanCollectionDataSource(materialReportBeans));
-                    ReportExporter.exportReportXls(jasperPrint, xlsFilePath);
 
-                    downloadUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
-                            .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
-                            .append(REPORT_SERVLET_URI)
-                            .append(ReportServlet.REPORT_FILENAME_PARAMETER)
-                            .append("=")
-                            .append(EXCEL_FILE_NAME).toString();
+                    for (int i = 1; i <= 3; i++) {
+                        data.put("reportName", "Liên " + i);
+                        String fileOutputPath = htmlFilePath + i + ".html";
+                        String fileOutputName = HTML_FILE_NAME + i + ".html";
+                        JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
+                                new JRBeanCollectionDataSource(materialReportBeans));
+                        ReportExporter.exportReportHtml(jasperPrint, fileOutputPath);
 
+                        String downloadUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
+                                .append(REPORT_SERVLET_URI)
+                                .append(fileOutputName).toString();
+
+                        downloadUrls.add(downloadUrl);
+                    }
                 }
             }
         } catch (JRException e) {
@@ -91,6 +96,6 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return new MaterialOutReportResult(downloadUrl);
+        return new MaterialOutReportResult(downloadUrls);
     }
 }

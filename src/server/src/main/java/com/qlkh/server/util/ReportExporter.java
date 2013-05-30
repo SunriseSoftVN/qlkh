@@ -82,6 +82,8 @@ public class ReportExporter {
 
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
         exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, fos);
+        exporter.setParameter(JRXlsExporterParameter.IS_IGNORE_GRAPHICS, Boolean.TRUE);
+
         exporter.exportReport();
 
         logger.debug("HTML Report exported: " + path);

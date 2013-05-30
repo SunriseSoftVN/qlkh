@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="phieuxuatkho" pageWidth="842" pageHeight="615" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" isIgnorePagination="true" uuid="7ccc3238-19b5-4bd5-a54d-db814f98afad">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="phieuxuatkho" pageWidth="842" pageHeight="615" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="13" bottomMargin="0" isIgnorePagination="true" uuid="7ccc3238-19b5-4bd5-a54d-db814f98afad">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -10,6 +10,7 @@
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="code" class="java.lang.String"/>
 	<parameter name="totalMoneyString" class="java.lang.String"/>
+	<parameter name="reportName" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="unit" class="java.lang.String"/>
@@ -25,23 +26,23 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="99" splitType="Stretch">
+		<band height="130" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="0a4ce9ac-0031-4b74-b7a5-c586eabf93b8" style="default" x="11" y="11" width="61" height="20"/>
+				<reportElement uuid="0a4ce9ac-0031-4b74-b7a5-c586eabf93b8" style="default" x="11" y="32" width="61" height="20"/>
 				<textElement>
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Đơn vị:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="bf9f9336-d5a5-4969-b222-bc0ee8edbeb3" style="default" x="261" y="5" width="212" height="26"/>
+				<reportElement uuid="bf9f9336-d5a5-4969-b222-bc0ee8edbeb3" style="default" x="261" y="26" width="212" height="26"/>
 				<textElement textAlignment="Center">
 					<font size="20" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Phiếu xuất kho]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d64d1eb5-35c1-4bb2-a06c-c09662561f36" style="default" x="523" y="11" width="275" height="84"/>
+				<reportElement uuid="d64d1eb5-35c1-4bb2-a06c-c09662561f36" style="default" x="523" y="32" width="275" height="84"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="false"/>
 				</textElement>
@@ -51,7 +52,7 @@ Nợ:………………………...……..
 Có:…………………………….....]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="d942f1a2-f500-478b-a404-f99efd7a249d" x="261" y="31" width="212" height="20"/>
+				<reportElement uuid="d942f1a2-f500-478b-a404-f99efd7a249d" x="261" y="52" width="212" height="20"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -65,7 +66,7 @@ Có:…………………………….....]]></text>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="248b3aed-f491-410f-a585-0e601c65798a" x="356" y="51" width="117" height="20"/>
+				<reportElement uuid="248b3aed-f491-410f-a585-0e601c65798a" x="356" y="72" width="117" height="20"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -79,12 +80,26 @@ Có:…………………………….....]]></text>
 				<textFieldExpression><![CDATA[$P{code}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="d3758c43-e335-4c89-960d-4c15783737c0" style="default" x="261" y="51" width="95" height="20"/>
+				<reportElement uuid="d3758c43-e335-4c89-960d-4c15783737c0" style="default" x="261" y="72" width="95" height="20"/>
 				<textElement textAlignment="Right">
 					<font size="12" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Số:]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="4ab1ffab-820d-449d-8ce3-0c073c0516e8" x="307" y="0" width="117" height="20"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{reportName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -428,7 +443,7 @@ Có:…………………………….....]]></text>
 		<band height="23" splitType="Stretch">
 			<textField>
 				<reportElement uuid="fc313ea0-60d2-43d5-b565-4297ac905f75" x="0" y="0" width="59" height="23"/>
-				<box>
+				<box leftPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -442,7 +457,7 @@ Có:…………………………….....]]></text>
 			</textField>
 			<textField>
 				<reportElement uuid="0f2ee82b-b5da-4390-a60b-c6f44e006a6a" x="59" y="0" width="231" height="23"/>
-				<box>
+				<box leftPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -454,9 +469,9 @@ Có:…………………………….....]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="###,###.###">
 				<reportElement uuid="e2b69f3b-80a3-4625-b70d-9b3bc1049987" x="523" y="0" width="95" height="23"/>
-				<box>
+				<box rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -470,7 +485,7 @@ Có:…………………………….....]]></text>
 			</textField>
 			<textField pattern="###,###.###">
 				<reportElement uuid="031ae299-7449-4384-a072-c7c616f7e222" x="694" y="0" width="108" height="23"/>
-				<box>
+				<box rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -484,7 +499,7 @@ Có:…………………………….....]]></text>
 			</textField>
 			<textField>
 				<reportElement uuid="8071e4dd-5b42-4a6d-9f81-7ba29289c17d" x="290" y="0" width="76" height="23"/>
-				<box>
+				<box leftPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -498,7 +513,7 @@ Có:…………………………….....]]></text>
 			</textField>
 			<textField>
 				<reportElement uuid="a550c0c5-4845-40bf-a808-d472c97f92fd" x="366" y="0" width="77" height="23"/>
-				<box>
+				<box leftPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -510,9 +525,9 @@ Có:…………………………….....]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="###,###.###">
 				<reportElement uuid="48c66bd0-4fa4-4dfb-a725-842291c76004" x="443" y="0" width="80" height="23"/>
-				<box>
+				<box rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -524,9 +539,9 @@ Có:…………………………….....]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="###,###.###">
 				<reportElement uuid="9580ae62-3f44-4466-a67e-9adc4c25a9df" x="618" y="0" width="76" height="23"/>
-				<box>
+				<box rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>

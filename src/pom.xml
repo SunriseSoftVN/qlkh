@@ -32,6 +32,7 @@
         <mysqlDiverVersion>5.1.6</mysqlDiverVersion>
         <commonsVersion>2.6</commonsVersion>
         <dynamicJasperVersion>4.0.3</dynamicJasperVersion>
+        <jasperreportsVersion>4.1.1</jasperreportsVersion>
         <poiVersion>3.8</poiVersion>
         <lambdaj.version>2.3.1</lambdaj.version>
         <collectionsVersion>3.2</collectionsVersion>

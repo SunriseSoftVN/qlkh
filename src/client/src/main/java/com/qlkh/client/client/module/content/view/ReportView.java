@@ -107,7 +107,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     Button btnMaterialReportXls = new Button();
 
     @I18nField
-    Button btnMaterialInReportXls = new Button();
+    Button btnMaterialInReport = new Button();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -221,7 +221,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         hp4.setSpacing(4);
         hp4.add(new Label(getConstant().lblMaterialRegex()));
         hp4.add(txtMaterialRegex);
-        hp4.add(btnMaterialInReportXls);
+        hp4.add(btnMaterialInReport);
 
         wareHouseReportPanel.add(hp4);
         wareHouseReportPanel.add(new Label(getConstant().lblMaterialRegexHelp()));
@@ -367,8 +367,8 @@ public class ReportView extends AbstractView<ReportConstant> {
         return btnMaterialReportXls;
     }
 
-    public Button getBtnMaterialInReportXls() {
-        return btnMaterialInReportXls;
+    public Button getBtnMaterialInReport() {
+        return btnMaterialInReport;
     }
 
     public TextField<String> getTxtMaterialRegex() {
