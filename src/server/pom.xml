@@ -275,9 +275,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>${poiVersion}</version>
+        	<groupId>net.sf.jxls</groupId>
+        	<artifactId>jxls-core</artifactId>
+        	<version>${jxlsVersion}</version>
         </dependency>
         <!--end-->
 
