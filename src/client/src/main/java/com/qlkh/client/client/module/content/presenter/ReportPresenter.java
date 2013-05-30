@@ -157,9 +157,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (CollectionsUtils.isNotEmpty(result.getReportUrls())) {
-                    for (String url : result.getReportUrls()) {
-                        com.google.gwt.user.client.Window.open(url, url, "");
-                    }
+
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
                 }

@@ -18,6 +18,33 @@ public class MaterialReportBean {
     private Double weight;
     private Double price;
     private Double total;
+    private String personName;
+    private String stationName;
+    private String reason;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public String getStationName() {
+        return stationName;
+    }
+
+    public void setStationName(String stationName) {
+        this.stationName = stationName;
+    }
 
     public Long getMaterialId() {
         return materialId;
