@@ -108,7 +108,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     MyNumberField txtWeight = new MyNumberField();
 
     @I18nField
-    TextField<String> txtCode = new TextField<String>();
+    MyNumberField txtCode = new MyNumberField();
 
     @I18nField
     DateField exportDate = new DateField();
@@ -480,7 +480,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         return txtTotal;
     }
 
-    public TextField<String> getTxtCode() {
+    public MyNumberField getTxtCode() {
         return txtCode;
     }
 

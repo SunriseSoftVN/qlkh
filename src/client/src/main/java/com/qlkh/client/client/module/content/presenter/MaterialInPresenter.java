@@ -244,7 +244,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         currentMaterial.setStation(currentStation);
                         currentMaterial.setYear(currentYear);
                         currentMaterial.setQuarter(currentQuarter.getCode());
-                        currentMaterial.setCode(view.getTxtCode().getValue());
+                        currentMaterial.setCode(view.getTxtCode().getValue().intValue());
                         currentMaterial.setExportDate(view.getExportDate().getValue());
 
                         dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {

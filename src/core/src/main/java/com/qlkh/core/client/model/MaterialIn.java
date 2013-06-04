@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class MaterialIn extends AbstractEntity {
 
-    private String code;
+    private Integer code;
     private Double total;
     private Double weight;
     private int quarter;
@@ -31,11 +31,11 @@ public class MaterialIn extends AbstractEntity {
         return null;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 
