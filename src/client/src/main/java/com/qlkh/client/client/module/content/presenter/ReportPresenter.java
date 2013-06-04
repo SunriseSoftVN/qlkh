@@ -144,27 +144,31 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnMaterialInReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (StringUtils.isNotBlank(view.getTxtMaterialRegex().getValue())) {
-                    materialInReport(view.getTxtMaterialRegex().getValue());
+                if(view.getTxtMaterialFrom().getValue() != null
+                        && view.getTxtMaterialTo().getValue() != null) {
+                    materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
+                            view.getTxtMaterialTo().getValue().intValue());
                 }
             }
         });
     }
 
-    private void materialInReport(String regex) {
-        view.getTxtMaterialRegex().setEnabled(false);
+    private void materialInReport(int form, int to) {
+        view.getTxtMaterialFrom().setEnabled(false);
+        view.getTxtMaterialTo().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
-        dispatch.execute(new MaterialOutReportAction(regex), new AbstractAsyncCallback<MaterialOutReportResult>() {
+        dispatch.execute(new MaterialOutReportAction(form, to), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {
                     reportWindow = view.createReportWindow(result.getReportUrl());
                     reportWindow.show();
-                    view.getTxtMaterialRegex().setEnabled(true);
-                    view.getBtnMaterialInReport().setEnabled(true);
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
                 }
+                view.getTxtMaterialFrom().setEnabled(true);
+                view.getTxtMaterialTo().setEnabled(true);
+                view.getBtnMaterialInReport().setEnabled(true);
             }
         });
     }

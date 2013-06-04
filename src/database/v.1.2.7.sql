@@ -1,0 +1,1 @@
+ALTER TABLE  `material_in` CHANGE  `code`  `code` BIGINT NULL DEFAULT NULL;

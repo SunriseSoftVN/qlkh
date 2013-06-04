@@ -17,7 +17,6 @@ import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.AbstractDao;
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -25,7 +24,6 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.orm.hibernate3.HibernateCallback;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -275,7 +273,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
     }
 
     @Override
-    public List<MaterialReportBean> getMaterialOut(final String regex) {
+    public List<MaterialReportBean> getMaterialOut(final int form, final int to) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<MaterialReportBean>>() {
             @Override
             public List<MaterialReportBean> doInHibernate(Session session) throws HibernateException, SQLException {
@@ -302,19 +300,11 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "INNER JOIN `material_price` " +
                         "ON `material_in`.`materialId` = `material_price`.`materialId` " +
                         "AND `material_in`.`year` = `material_price`.`year` " +
-                        "AND `material_in`.`quarter` = `material_price`.`quarter` ";
-                if (StringUtils.isNotBlank(regex)) {
-                    String[] regexs = regex.split(",");
-                    select += "WHERE ";
-                    for (String regex : regexs) {
-                        select += "`material_in`.`code` LIKE '" + regex.replaceAll("\\*", "%") + "'";
-                        select += " AND ";
-                    }
-                    SQLQuery selectQuery = session.createSQLQuery(select.substring(0, select.length() - "AND ".length()));
-                    selectQuery.setResultTransformer(new AliasToBeanResultTransformer(MaterialReportBean.class));
-                    return selectQuery.list();
-                }
-                return Collections.emptyList();
+                        "AND `material_in`.`quarter` = `material_price`.`quarter` " +
+                        "WHERE `material_in`.`code` >= " + form + " AND `material_in`.`code` <= " + to;
+                SQLQuery selectQuery = session.createSQLQuery(select);
+                selectQuery.setResultTransformer(new AliasToBeanResultTransformer(MaterialReportBean.class));
+                return selectQuery.list();
             }
         });
     }

@@ -315,7 +315,9 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             cbPerson.setForceSelection(true);
 
             txtCode.setAllowBlank(false);
+            txtCode.setSelectOnFocus(true);
             txtWeight.setAllowBlank(false);
+            txtWeight.setSelectOnFocus(true);
             txtTotal.setReadOnly(true);
             txtTotal.setEnabled(false);
 

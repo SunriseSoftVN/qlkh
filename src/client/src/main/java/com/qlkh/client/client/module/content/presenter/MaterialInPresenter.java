@@ -165,38 +165,53 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
                             ClientRestrictions.eq("station.id", currentStation.getId())));
 
-                    MaterialIn selectedMaterial = view.getGird().getSelectionModel().getSelectedItem().getBean();
-                    editWindow = view.createEditWindow(null);
-                    currentMaterial = selectedMaterial;
+                    dispatch.execute(new MaterialInGetNextCodeAction(), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
+                        @Override
+                        public void onSuccess(MaterialInGetNextCodeResult result) {
+                            MaterialIn selectedMaterial = view.getGird().getSelectionModel().getSelectedItem().getBean();
+                            editWindow = view.createEditWindow(null);
+                            currentMaterial = selectedMaterial;
 
-                    view.getTxtCode().setValue(currentMaterial.getCode());
-                    view.getTxtTotal().setValue(currentMaterial.getTotal());
-                    view.getTxtWeight().setValue(currentMaterial.getWeight());
-                    view.getExportDate().setValue(currentMaterial.getExportDate());
+                            if (currentMaterial.getCode() != null) {
+                                view.getTxtCode().setValue(currentMaterial.getCode());
+                            } else {
+                                view.getTxtCode().setValue(result.getCode());
+                            }
 
-                    view.getTxtTotal().setEnabled(false);
-                    view.getTxtTotal().setReadOnly(true);
+                            view.getTxtTotal().setValue(currentMaterial.getTotal());
+                            view.getExportDate().setValue(currentMaterial.getExportDate());
 
-                    BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
-                    BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
+                            if (currentMaterial.getWeight() != null) {
+                                view.getTxtWeight().setValue(currentMaterial.getWeight());
+                            } else {
+                                view.getTxtWeight().setValue(currentMaterial.getTotal());
+                            }
 
-                    if (currentMaterial.getMaterialGroup() != null) {
-                        BeanModel group = groupFactory.createModel(currentMaterial.getMaterialGroup());
-                        view.getCbGroup().setValue(group);
-                    } else {
-                        view.getCbGroup().clear();
-                    }
+                            view.getTxtTotal().setEnabled(false);
+                            view.getTxtTotal().setReadOnly(true);
 
-                    if (currentMaterial.getMaterialPerson() != null) {
-                        BeanModel person = personFactory.createModel(currentMaterial.getMaterialPerson());
-                        view.getCbPerson().setValue(person);
-                        view.getCbPerson().clearInvalid();
-                    } else {
-                        view.getCbPerson().clear();
-                    }
+                            BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
+                            BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
 
-                    editWindow.show();
-                    editWindow.layout(true);
+                            if (currentMaterial.getMaterialGroup() != null) {
+                                BeanModel group = groupFactory.createModel(currentMaterial.getMaterialGroup());
+                                view.getCbGroup().setValue(group);
+                            } else {
+                                view.getCbGroup().clear();
+                            }
+
+                            if (currentMaterial.getMaterialPerson() != null) {
+                                BeanModel person = personFactory.createModel(currentMaterial.getMaterialPerson());
+                                view.getCbPerson().setValue(person);
+                                view.getCbPerson().clearInvalid();
+                            } else {
+                                view.getCbPerson().clear();
+                            }
+
+                            editWindow.show();
+                            editWindow.layout(true);
+                        }
+                    });
                 }
             }
         });

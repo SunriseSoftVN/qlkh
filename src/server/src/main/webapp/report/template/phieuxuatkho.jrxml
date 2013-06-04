@@ -8,7 +8,7 @@
 	<parameter name="reason" class="java.lang.String"/>
 	<parameter name="stationName" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
-	<parameter name="code" class="java.lang.String"/>
+	<parameter name="code" class="java.lang.Long"/>
 	<parameter name="totalMoneyString" class="java.lang.String"/>
 	<parameter name="reportName" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>

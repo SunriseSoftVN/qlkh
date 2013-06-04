@@ -59,7 +59,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
         String outputFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, OUTPUT_FILE_NAME);
         List<String> ouputs = new ArrayList<String>();
         try {
-            List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getRegex());
+            List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getForm(), action.getTo());
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
                 for (MaterialReportBean materialReportBean : materialReportBeans) {
                     Map<String, Object> data = new HashMap<String, Object>();

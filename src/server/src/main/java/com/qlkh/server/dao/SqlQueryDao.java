@@ -45,5 +45,5 @@ public interface SqlQueryDao extends Dao {
 
     List<Material> getMaterialsMissingPrice(int year, int quarter);
 
-    List<MaterialReportBean> getMaterialOut(String regex);
+    List<MaterialReportBean> getMaterialOut(int form, int to);
 }

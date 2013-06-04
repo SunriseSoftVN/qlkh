@@ -21,14 +21,14 @@ public class MaterialReportBean {
     private String personName;
     private String stationName;
     private String reason;
-    private String reportCode;
+    private long reportCode;
 
-    public String getReportCode() {
+    public long getReportCode() {
         return reportCode;
     }
 
-    public void setReportCode(String reportCode) {
-        this.reportCode = reportCode;
+    public void setReportCode(BigInteger reportCode) {
+        this.reportCode = reportCode.longValue();
     }
 
     public String getReason() {

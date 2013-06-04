@@ -11,8 +11,8 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
@@ -67,7 +67,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     SimpleComboBox<ReportTypeEnum> cbbMaterialReportType = new SimpleComboBox<ReportTypeEnum>();
 
-    TextField<String> txtMaterialRegex = new TextField<String>();
+    NumberField txtMaterialFrom = new NumberField();
+
+    NumberField txtMaterialTo = new NumberField();
 
     @I18nField
     Button btnPlanReportPdf = new Button();
@@ -220,11 +222,11 @@ public class ReportView extends AbstractView<ReportConstant> {
         HorizontalPanel hp4 = new HorizontalPanel();
         hp4.setSpacing(4);
         hp4.add(new Label(getConstant().lblMaterialRegex()));
-        hp4.add(txtMaterialRegex);
+        hp4.add(txtMaterialFrom);
+        hp4.add(txtMaterialTo);
         hp4.add(btnMaterialInReport);
 
         wareHouseReportPanel.add(hp4);
-        wareHouseReportPanel.add(new Label(getConstant().lblMaterialRegexHelp()));
 
         VerticalPanel vp = new VerticalPanel();
         vp.setSpacing(10);
@@ -371,7 +373,11 @@ public class ReportView extends AbstractView<ReportConstant> {
         return btnMaterialInReport;
     }
 
-    public TextField<String> getTxtMaterialRegex() {
-        return txtMaterialRegex;
+    public NumberField getTxtMaterialFrom() {
+        return txtMaterialFrom;
+    }
+
+    public NumberField getTxtMaterialTo() {
+        return txtMaterialTo;
     }
 }

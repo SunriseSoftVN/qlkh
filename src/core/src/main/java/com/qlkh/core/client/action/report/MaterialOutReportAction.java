@@ -10,20 +10,22 @@ import net.customware.gwt.dispatch.shared.Action;
  */
 public class MaterialOutReportAction implements Action<MaterialOutReportResult> {
 
-    private String regex;
+    private int form;
+    private int to;
 
     public MaterialOutReportAction() {
     }
 
-    public MaterialOutReportAction(String regex) {
-        this.regex = regex;
+    public MaterialOutReportAction(int form, int to) {
+        this.form = form;
+        this.to = to;
     }
 
-    public String getRegex() {
-        return regex;
+    public int getForm() {
+        return form;
     }
 
-    public String[] getRegexs() {
-        return regex.split(",");
+    public int getTo() {
+        return to;
     }
 }
