@@ -68,7 +68,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
                 final ListStore<BeanModel> store = new ListStore<BeanModel>();
                 view.getCbStation().setStore(store);
-                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName(), ClientRestrictions.eq("company", false)),
+                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName()),
                         new AbstractAsyncCallback<LoadResult>() {
                             @Override
                             public void onSuccess(LoadResult result) {
