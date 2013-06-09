@@ -66,8 +66,8 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     data.put("stationName", materialReportBean.getStationName());
                     data.put("reason", materialReportBean.getReason());
                     data.put("personName", materialReportBean.getPersonName());
-                    data.put("code", materialReportBean.getReportCode());
-                    data.put("date", DateTimeUtils.dateTimeInVietnamese());
+                    data.put("code", "A" + materialReportBean.getReportCode());
+                    data.put("date", DateTimeUtils.dateTimeInVietnamese(materialReportBean.getExportDate()));
                     data.put("totalMoneyString", MoneyConverter
                             .transformNumber(String.valueOf(materialReportBean.getMoney().intValue())));
 

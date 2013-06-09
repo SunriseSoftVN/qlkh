@@ -1,6 +1,7 @@
 package com.qlkh.core.client.report;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * The Class MaterialReportBean.
@@ -22,6 +23,7 @@ public class MaterialReportBean {
     private String stationName;
     private String reason;
     private long reportCode;
+    private Date exportDate;
 
     public long getReportCode() {
         return reportCode;
@@ -121,5 +123,13 @@ public class MaterialReportBean {
 
     public Double getMoney() {
         return price * weight;
+    }
+
+    public Date getExportDate() {
+        return exportDate;
+    }
+
+    public void setExportDate(Date exportDate) {
+        this.exportDate = exportDate;
     }
 }

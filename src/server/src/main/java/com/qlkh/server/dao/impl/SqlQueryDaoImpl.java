@@ -287,7 +287,8 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "`station`.`name` AS `stationName`,  " +
                         "`material_group`.`name` AS `reason`,  " +
                         "`material_person`.`personName`,  " +
-                        "`material_in`.`id` AS `materialId` " +
+                        "`material_in`.`id` AS `materialId`, " +
+                        "`material_in`.`exportDate` " +
                         "FROM `material_in` " +
                         "INNER JOIN `material` " +
                         "ON `material_in`.`materialId` = `material`.`id` " +

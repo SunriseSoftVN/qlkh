@@ -8,6 +8,7 @@ import com.qlkh.core.client.constant.QuarterEnum;
 import org.jfree.data.time.Quarter;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * The Class DateTimeUtils.
@@ -66,6 +67,13 @@ public final class DateTimeUtils {
         int day = cal.get(Calendar.DAY_OF_MONTH);
         int month = cal.get(Calendar.MONTH) + 1;
         int year = cal.get(Calendar.YEAR);
+        return "Ngày " + day + " tháng " + month + " năm " + year;
+    }
+
+    public static String dateTimeInVietnamese(Date date) {
+        int day = date.getDate();
+        int month = date.getMonth() + 1;
+        int year = date.getYear() + 1900;
         return "Ngày " + day + " tháng " + month + " năm " + year;
     }
 
