@@ -37,7 +37,7 @@
 			<staticText>
 				<reportElement uuid="bf9f9336-d5a5-4969-b222-bc0ee8edbeb3" style="default" x="217" y="22" width="128" height="20"/>
 				<textElement textAlignment="Center">
-					<font size="11" isBold="false"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PHIẾU XUẤT KHO]]></text>
 			</staticText>
@@ -101,12 +101,11 @@ Có:…………………………….....]]></text>
 				<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="523a2d4d-320b-45f7-a84f-6d146fd45a17" style="default" x="52" y="4" width="48" height="38"/>
+				<reportElement uuid="523a2d4d-320b-45f7-a84f-6d146fd45a17" style="default" x="52" y="4" width="111" height="18"/>
 				<textElement verticalAlignment="Top">
-					<font size="8" isBold="false" isItalic="true"/>
+					<font size="8" isBold="true" isItalic="false"/>
 				</textElement>
-				<text><![CDATA[CT TTTH
-Đ/S-VINH]]></text>
+				<text><![CDATA[CT TTTH Đ/S-VINH]]></text>
 			</staticText>
 		</band>
 	</title>
