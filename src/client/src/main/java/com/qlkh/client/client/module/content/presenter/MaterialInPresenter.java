@@ -78,6 +78,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                 if (!result.getList().isEmpty()) {
                                     view.getCbStation().setValue(store.getAt(0));
                                     currentStation = store.getAt(0).getBean();
+                                    view.getBtnCopy().setEnabled(false);
                                     view.createGrid(createGridStore());
                                     view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
                                     view.getPagingToolBar().refresh();
@@ -88,6 +89,11 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                         @Override
                                         public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
                                             currentStation = view.getCbStation().getValue().getBean();
+                                            if (currentStation.isCompany()) {
+                                                view.getBtnCopy().setEnabled(false);
+                                            } else {
+                                                view.getBtnCopy().setEnabled(true);
+                                            }
                                             view.getPagingToolBar().refresh();
                                         }
                                     });
@@ -120,8 +126,12 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             public void componentSelected(ButtonEvent buttonEvent) {
 
                 view.getCbPerson().clearSelections();
-                view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
-                        ClientRestrictions.eq("station.id", currentStation.getId())));
+                if (currentStation.isCompany()) {
+                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class));
+                } else {
+                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
+                            ClientRestrictions.eq("station.id", currentStation.getId())));
+                }
 
                 currentMaterial = new MaterialIn();
                 currentMaterial.setCreateBy(1l);
@@ -154,7 +164,14 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         }
                     }
                 });
-                editWindow.show();
+
+                dispatch.execute(new MaterialInGetNextCodeAction(), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
+                    @Override
+                    public void onSuccess(MaterialInGetNextCodeResult result) {
+                        view.getTxtCode().setValue(result.getCode());
+                        editWindow.show();
+                    }
+                });
             }
         });
 
@@ -162,8 +179,12 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getGird().getSelectionModel().getSelectedItem() != null) {
-                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
-                            ClientRestrictions.eq("station.id", currentStation.getId())));
+                    if (currentStation.isCompany()) {
+                        view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class));
+                    } else {
+                        view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
+                                ClientRestrictions.eq("station.id", currentStation.getId())));
+                    }
 
                     dispatch.execute(new MaterialInGetNextCodeAction(), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
                         @Override
