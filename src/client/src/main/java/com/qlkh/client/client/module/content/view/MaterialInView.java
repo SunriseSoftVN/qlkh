@@ -382,7 +382,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
                 MATERIAL_UNIT_WIDTH);
         columnConfigs.add(unitColumnConfig);
 
-        ColumnConfig noteColumnConfig = new ColumnConfig(MATERIAL_NOTE_COLUMN, getConstant().nameColumnTitle(),
+        ColumnConfig noteColumnConfig = new ColumnConfig(MATERIAL_NOTE_COLUMN, getConstant().noteColumnTitle(),
                 MATERIAL_NOTE_WIDTH);
         columnConfigs.add(noteColumnConfig);
 

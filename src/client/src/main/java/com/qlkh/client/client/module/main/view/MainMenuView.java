@@ -173,14 +173,14 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mlMaterialPrice.setStyleName("menulink");
         mainPanel.add(mlMaterialPrice, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
+        mlMaterialIn.setStyleName("menulink");
+        mainPanel.add(mlMaterialIn, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+
         mlMaterialPerson.setStyleName("menulink");
         mainPanel.add(mlMaterialPerson, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         mlMaterialGroup.setStyleName("menulink");
         mainPanel.add(mlMaterialGroup, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
-
-        mlMaterialIn.setStyleName("menulink");
-        mainPanel.add(mlMaterialIn, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //Report
         mnlReport.setStyleName("menulink");

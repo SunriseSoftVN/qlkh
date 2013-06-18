@@ -137,7 +137,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 currentMaterial.setCreateBy(1l);
                 currentMaterial.setUpdateBy(1l);
 
-                editWindow = view.createEditWindow(createMaterialStore());
+                editWindow = view.createEditWindow(GridUtils.createListStore(Material.class));
                 view.resetEditPanel();
                 view.getTxtTotal().setEnabled(true);
                 view.getTxtTotal().setReadOnly(false);
@@ -370,6 +370,35 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             }
         });
 
+        view.getTxtMaterialSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    String st = view.getTxtMaterialSearch().getValue();
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getMaterialGrid().getStore().getLoadConfig();
+                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("name", st);
+                        filters.put("code", st);
+                        loadConfig.set("filters", filters);
+                    } else {
+                        resetMaterialFilter();
+                    }
+                    view.getMaterialPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetMaterialFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getMaterialPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
+
         view.getBtnDelete().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -446,27 +475,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         return new ListStore<BeanModel>(pagingLoader);
     }
 
-
-    private ListStore<BeanModel> createMaterialStore() {
-        RpcProxy<LoadMaterialWithTaskResult> rpcProxy = new RpcProxy<LoadMaterialWithTaskResult>() {
-            @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadMaterialWithTaskResult> callback) {
-                dispatch.execute(new LoadMaterialWithTaskAction((BasePagingLoadConfig) loadConfig, currentQuarter.getCode(), currentYear), callback);
-            }
-        };
-
-        PagingLoader<PagingLoadResult<Material>> pagingLoader =
-                new BasePagingLoader<PagingLoadResult<Material>>(rpcProxy, new LoadGridDataReader()) {
-                    @Override
-                    protected void onLoadFailure(Object loadConfig, Throwable t) {
-                        super.onLoadFailure(loadConfig, t);
-                        //Log load exception.
-                        DiaLogUtils.logAndShowRpcErrorMessage(t);
-                    }
-                };
-
-        return new ListStore<BeanModel>(pagingLoader);
-    }
 
     private void resetFilter() {
         BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getGird().getStore().getLoadConfig();
