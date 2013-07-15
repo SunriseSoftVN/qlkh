@@ -9,7 +9,7 @@ package com.qlkh.core.client.rule;
 public final class RoundRule {
 
     public static String[] R_UNIT = new String[]{
-            "cái", "bộ", "viên", "cuộn", "thanh"
+            "cái", "bộ", "viên", "cuộn", "thanh", "bình", "cọc", "tấm", "card", "quả", "túi", "hộp"
     };
 
     public static boolean shouldRoundUp(String unit) {
