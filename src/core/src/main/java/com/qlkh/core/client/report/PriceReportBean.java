@@ -1,5 +1,7 @@
 package com.qlkh.core.client.report;
 
+import com.qlkh.core.client.rule.RoundRule;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +51,15 @@ public class PriceReportBean implements Serializable {
         if (children.isEmpty()) {
             for (PriceColumnBean column : columns.values()) {
                 if (column.getTaskWeight() != null && price != null) {
-                    double weight = column.getTaskWeight() * quantity;
+                    double weight = column.getTaskWeight() * getQuantity();
+
+                    //round up
+                    if (RoundRule.shouldRoundUp(unit)) {
+                        weight = Math.rint(weight);
+                    } else {
+                        weight = (double) Math.round(weight * 10) / 10;
+                    }
+
                     double price = weight * this.price;
                     column.setWeight(weight);
                     column.setPrice(price);
