@@ -59,6 +59,11 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
     @FieldSecurity
     @HistoryHandler
     @I18nField
+    MenuLink mnlGroupManager = new MenuLink(GroupManagerPlace.class);
+
+    @FieldSecurity
+    @HistoryHandler
+    @I18nField
     MenuLink mnlTaskManage = new MenuLink(TaskManagerPlace.class);
 
     @FieldSecurity
@@ -146,6 +151,8 @@ public class MainMenuView extends AbstractView<MainMenuConstant> {
         mainPanel.add(mnlStationManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
         mnlBranchManager.setStyleName("menulink");
         mainPanel.add(mnlBranchManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
+        mnlGroupManager.setStyleName("menulink");
+        mainPanel.add(mnlGroupManager, new HBoxLayoutData(new Margins(0, 5, 0, 0)));
 
         //Manager
         mnlTaskManage.setStyleName("menulink");

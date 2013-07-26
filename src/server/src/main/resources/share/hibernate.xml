@@ -32,6 +32,7 @@
                 <value>com/qlkh/core/client/model/MaterialPerson.hbm.xml</value>
                 <value>com/qlkh/core/client/model/MaterialGroup.hbm.xml</value>
                 <value>com/qlkh/core/client/model/MaterialIn.hbm.xml</value>
+                <value>com/qlkh/core/client/model/Group.hbm.xml</value>
             </list>
         </property>
     </bean>
