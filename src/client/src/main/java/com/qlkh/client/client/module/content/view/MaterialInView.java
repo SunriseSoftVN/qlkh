@@ -318,8 +318,8 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
             txtCode.setSelectOnFocus(true);
             txtWeight.setAllowBlank(false);
             txtWeight.setSelectOnFocus(true);
-            txtTotal.setReadOnly(true);
-            txtTotal.setEnabled(false);
+            txtTotal.setAllowBlank(false);
+            txtTotal.setSelectOnFocus(true);
 
             exportDate.setAllowBlank(false);
             exportDate.setEditable(false);

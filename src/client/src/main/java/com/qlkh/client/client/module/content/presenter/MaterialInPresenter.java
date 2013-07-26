@@ -139,8 +139,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
                 editWindow = view.createEditWindow(GridUtils.createListStore(Material.class));
                 view.resetEditPanel();
-                view.getTxtTotal().setEnabled(true);
-                view.getTxtTotal().setReadOnly(false);
+
                 view.getMaterialPagingToolBar().bind((PagingLoader<?>) view.getMaterialGrid().getStore().getLoader());
                 if (view.getMaterialGrid().getStore().getLoadConfig() != null) {
                     resetMaterialFilter();
@@ -208,8 +207,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                 view.getTxtWeight().setValue(currentMaterial.getTotal());
                             }
 
-                            view.getTxtTotal().setEnabled(false);
-                            view.getTxtTotal().setReadOnly(true);
 
                             BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
                             BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
