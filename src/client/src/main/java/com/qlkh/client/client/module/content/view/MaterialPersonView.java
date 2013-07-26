@@ -46,6 +46,8 @@ public class MaterialPersonView extends AbstractView<MaterialPersonConstant> {
     public static final int STT_COLUMN_WIDTH = 40;
     public static final String STATION_COLUMN = "station.name";
     public static final int STATION_WIDTH = 200;
+    public static final String GROUP_COLUMN = "group.name";
+    public static final int GROUP_WIDTH = 200;
     public static final String PERSON_COLUMN = "personName";
     public static final int PERSON_COLUMN_WIDTH = 200;
 
@@ -69,6 +71,9 @@ public class MaterialPersonView extends AbstractView<MaterialPersonConstant> {
 
     @I18nField
     ComboBox<BeanModel> cbStation = new ComboBox<BeanModel>();
+
+    @I18nField
+    ComboBox<BeanModel> cbGroup = new ComboBox<BeanModel>();
 
     @I18nField
     TextField<String> txtPersonName = new TextField<String>();
@@ -150,8 +155,11 @@ public class MaterialPersonView extends AbstractView<MaterialPersonConstant> {
         });
         columnConfigs.add(sttColumnConfig);
 
-        ColumnConfig codeColumnConfig = new ColumnConfig(STATION_COLUMN, getConstant().stationColumnTitle(), STATION_WIDTH);
-        columnConfigs.add(codeColumnConfig);
+        ColumnConfig stationColumnConfig = new ColumnConfig(STATION_COLUMN, getConstant().stationColumnTitle(), STATION_WIDTH);
+        columnConfigs.add(stationColumnConfig);
+
+        ColumnConfig groupColumnConfig = new ColumnConfig(GROUP_COLUMN, getConstant().groupColumnTitle(), GROUP_WIDTH);
+        columnConfigs.add(groupColumnConfig);
 
         ColumnConfig nameColumnConfig = new ColumnConfig(PERSON_COLUMN, getConstant().personColumnTitle(),
                 PERSON_COLUMN_WIDTH);
@@ -176,13 +184,21 @@ public class MaterialPersonView extends AbstractView<MaterialPersonConstant> {
         if (!cbStation.isRendered()) {
             cbStation.setDisplayField("name");
             cbStation.setEditable(false);
-            cbStation.setAllowBlank(false);
             cbStation.setSelectOnFocus(true);
             cbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
             cbStation.setForceSelection(true);
         }
 
+        if (!cbGroup.isRendered()) {
+            cbGroup.setDisplayField("name");
+            cbGroup.setEditable(false);
+            cbGroup.setSelectOnFocus(true);
+            cbGroup.setTriggerAction(ComboBox.TriggerAction.ALL);
+            cbGroup.setForceSelection(true);
+        }
+
         editPanel.add(cbStation);
+        editPanel.add(cbGroup);
         editPanel.add(txtPersonName);
 
         window.setFocusWidget(cbStation);
@@ -251,5 +267,9 @@ public class MaterialPersonView extends AbstractView<MaterialPersonConstant> {
 
     public MyFormPanel getEditPanel() {
         return editPanel;
+    }
+
+    public ComboBox<BeanModel> getCbGroup() {
+        return cbGroup;
     }
 }

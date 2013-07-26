@@ -11,6 +11,7 @@ import com.smvp4g.mvp.client.core.i18n.Constants;
 public interface MaterialPersonConstant extends Constants {
     String personColumnTitle();
     String stationColumnTitle();
+    String groupColumnTitle();
     String sttColumnTitle();
     String btnAdd();
     String btnEdit();
@@ -25,4 +26,5 @@ public interface MaterialPersonConstant extends Constants {
     String deleteMessage();
     String deleteSuccessMessage();
     String deleteErrorMessage();
+    String cbGroup();
 }

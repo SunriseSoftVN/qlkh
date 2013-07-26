@@ -4,10 +4,8 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelFactory;
 import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.data.PagingLoader;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.qlkh.client.client.constant.ExceptionConstant;
 import com.qlkh.client.client.core.dispatch.StandardDispatchAsync;
@@ -16,11 +14,9 @@ import com.qlkh.client.client.module.content.place.MaterialPersonPlace;
 import com.qlkh.client.client.module.content.view.MaterialPersonView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
-import com.qlkh.core.client.action.core.DeleteAction;
-import com.qlkh.core.client.action.core.DeleteResult;
-import com.qlkh.core.client.action.core.SaveAction;
-import com.qlkh.core.client.action.core.SaveResult;
+import com.qlkh.core.client.action.core.*;
 import com.qlkh.core.client.criterion.ClientRestrictions;
+import com.qlkh.core.client.model.Group;
 import com.qlkh.core.client.model.MaterialPerson;
 import com.qlkh.core.client.model.Station;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
@@ -43,6 +39,7 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
     private DispatchAsync dispatch = StandardDispatchAsync.INSTANCE;
     private Window editWindow;
     private MaterialPerson currentMaterial;
+    private Station currentStation;
 
     @Override
     public void onActivate() {
@@ -54,7 +51,18 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
     protected void doBind() {
         view.createGrid(GridUtils.createListStore(MaterialPerson.class));
         view.getPagingToolBar().bind((PagingLoader<?>) view.getMaterialPersonGird().getStore().getLoader());
-        view.getCbStation().setStore(GridUtils.createListStoreForCb(Station.class, ClientRestrictions.ne("id", 27l)));
+        view.getCbStation().setStore(GridUtils.createListStoreForCb(Station.class));
+
+        view.getCbStation().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
+                currentStation = view.getCbStation().getValue().getBean();
+                view.getCbGroup().reset();
+                view.getCbGroup().setStore(createGroupListStore());
+            }
+        });
+
+        view.getCbGroup().setStore(createGroupListStore());
 
         view.getBtnAdd().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -62,6 +70,9 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
                 editWindow = view.createEditWindow();
                 editWindow.show();
                 editWindow.layout(true);
+                view.getCbGroup().reset();
+                view.getTxtPersonName().setValue("");
+                view.getTxtPersonName().reset();
                 currentMaterial = null;
             }
         });
@@ -71,8 +82,8 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
             public void componentSelected(ButtonEvent buttonEvent) {
                 editWindow = view.createEditWindow();
                 MaterialPerson selectedMaterial = view.getMaterialPersonGird().getSelectionModel().getSelectedItem().getBean();
-                BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
-                view.getCbStation().setValue(factory.createModel(selectedMaterial.getStation()));
+                BeanModelFactory stationFactory = BeanModelLookup.get().getFactory(Station.class);
+                view.getCbStation().setValue(stationFactory.createModel(selectedMaterial.getStation()));
                 view.getTxtPersonName().setValue(selectedMaterial.getPersonName());
                 currentMaterial = selectedMaterial;
                 editWindow.show();
@@ -99,6 +110,10 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
 
                     currentMaterial.setPersonName(view.getTxtPersonName().getValue());
                     currentMaterial.setStation(view.getCbStation().getValue().<Station>getBean());
+                    if(view.getCbGroup().getValue() != null) {
+                        Group group = view.getCbGroup().getValue().getBean();
+                        currentMaterial.setGroup(group);
+                    }
 
                     dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
                         @Override
@@ -183,5 +198,29 @@ public class MaterialPersonPresenter extends AbstractPresenter<MaterialPersonVie
         view.getMaterialPersonGird().getSelectionModel().select(updateModel, false);
     }
 
+    public ListStore<BeanModel> createGroupListStore() {
+        final BeanModelFactory factory = BeanModelLookup.get().getFactory(Group.class);
+        final ListStore<BeanModel> store = new ListStore<BeanModel>();
+        Long stationId = null;
+        if (currentStation != null) {
+            stationId = currentStation.getId();
+        }
+        StandardDispatchAsync.INSTANCE
+                .execute(new LoadAction(Group.class.getName(), ClientRestrictions.eq("station.id", stationId)),
+                        new AbstractAsyncCallback<LoadResult>() {
+                            @Override
+                            public void onSuccess(LoadResult result) {
+                                for (Group entity : result.<Group>getList()) {
+                                    store.add(factory.createModel(entity));
+                                }
+
+                                if (currentMaterial != null && currentMaterial.getGroup() != null) {
+                                    BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(Group.class);
+                                    view.getCbGroup().setValue(groupFactory.createModel(currentMaterial.getGroup()));
+                                }
+                            }
+                        });
+        return store;
+    }
 
 }

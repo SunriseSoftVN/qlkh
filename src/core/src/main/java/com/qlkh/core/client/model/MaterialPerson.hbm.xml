@@ -18,5 +18,9 @@
             <column name="stationId" not-null="false"/>
         </many-to-one>
 
+        <many-to-one name="group" class="com.qlkh.core.client.model.Group" lazy="false" fetch="join" outer-join="auto">
+            <column name="groupId" not-null="false"/>
+        </many-to-one>
+
     </class>
 </hibernate-mapping>

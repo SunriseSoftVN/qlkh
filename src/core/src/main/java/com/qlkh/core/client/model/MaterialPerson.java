@@ -11,6 +11,7 @@ import com.qlkh.core.client.model.core.AbstractEntity;
 public class MaterialPerson extends AbstractEntity {
 
     private Station station;
+    private Group group;
     private String personName;
 
     public Station getStation() {
@@ -19,6 +20,14 @@ public class MaterialPerson extends AbstractEntity {
 
     public void setStation(Station station) {
         this.station = station;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public String getPersonName() {
