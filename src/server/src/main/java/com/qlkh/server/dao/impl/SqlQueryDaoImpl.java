@@ -285,6 +285,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "`material_in`.`total`, " +
                         "`material_in`.`code` AS `reportCode`, " +
                         "`station`.`name` AS `stationName`,  " +
+                        "`group`.`name` AS `groupName`,  " +
                         "`material_group`.`name` AS `reason`,  " +
                         "`material_person`.`personName`,  " +
                         "`material_in`.`id` AS `materialId`, " +
@@ -296,8 +297,10 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "ON `material_in`.`materialPersonId` = `material_person`.`id` " +
                         "INNER JOIN `material_group` " +
                         "ON `material_in`.`materialGroupId` = `material_group`.`id` " +
-                        "INNER JOIN `station` " +
+                        "LEFT OUTER JOIN `station` " +
                         "ON `material_in`.`stationId` = `station`.`id` " +
+                        "LEFT OUTER JOIN `group` " +
+                        "ON `material_in`.`groupId` = `group`.`id` " +
                         "INNER JOIN `material_price` " +
                         "ON `material_in`.`materialId` = `material_price`.`materialId` " +
                         "AND `material_in`.`year` = `material_price`.`year` " +

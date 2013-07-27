@@ -21,6 +21,7 @@ public class MaterialReportBean {
     private Double total;
     private String personName;
     private String stationName;
+    private String groupName;
     private String reason;
     private long reportCode;
     private Date exportDate;
@@ -131,5 +132,13 @@ public class MaterialReportBean {
 
     public void setExportDate(Date exportDate) {
         this.exportDate = exportDate;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

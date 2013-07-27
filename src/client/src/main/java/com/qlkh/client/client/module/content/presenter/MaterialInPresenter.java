@@ -91,6 +91,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                             GroupStationDto dto = new GroupStationDto();
                                             dto.setName(group.getName());
                                             dto.setId(group.getId());
+                                            dto.setStation(false);
                                             store.add(factory.createModel(dto));
                                             groups.add(group);
                                         }
@@ -173,7 +174,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 view.getMaterialGrid().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<BeanModel> event) {
-                        if (event.getSelectedItem() != null) {
+                        if (event.getSelectedItem() != null && currentStation != null) {
                             Material material = event.getSelectedItem().getBean();
                             LoadMaterialInTotalAction loadAction = new LoadMaterialInTotalAction(material.getId(), currentStation.getId(),
                                     null, currentQuarter.getCode(), currentYear);
@@ -536,7 +537,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         if (view.getCbStation().getValue() != null) {
             for (Station station : stations) {
                 GroupStationDto dto = view.getCbStation().getValue().getBean();
-                if (station.getId().equals(dto.getId())) {
+                if (dto.isStation() && station.getId().equals(dto.getId())) {
                     return station;
                 }
             }
@@ -548,7 +549,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         if (view.getCbStation().getValue() != null) {
             for (Group group : groups) {
                 GroupStationDto dto = view.getCbStation().getValue().getBean();
-                if (group.getId().equals(dto.getId())) {
+                if (!dto.isStation() && group.getId().equals(dto.getId())) {
                     return group;
                 }
             }

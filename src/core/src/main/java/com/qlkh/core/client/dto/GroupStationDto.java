@@ -14,7 +14,7 @@ public class GroupStationDto implements Serializable, BeanModelTag {
 
     private long id;
     private String name;
-    private boolean isStation;
+    private boolean isStation = true;
 
     public boolean isStation() {
         return isStation;

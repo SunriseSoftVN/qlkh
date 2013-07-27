@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jxls.util.Util;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,13 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
                 for (MaterialReportBean materialReportBean : materialReportBeans) {
                     Map<String, Object> data = new HashMap<String, Object>();
-                    data.put("stationName", materialReportBean.getStationName());
+
+                    if(StringUtils.isNotBlank(materialReportBean.getStationName())) {
+                        data.put("stationName", materialReportBean.getStationName());
+                    } else {
+                        data.put("stationName", materialReportBean.getGroupName());
+                    }
+
                     data.put("reason", materialReportBean.getReason());
                     data.put("personName", materialReportBean.getPersonName());
                     data.put("code", "A" + materialReportBean.getReportCode());
