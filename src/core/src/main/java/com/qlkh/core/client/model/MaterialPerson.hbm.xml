@@ -15,7 +15,7 @@
         <property name="personName" column="personName" not-null="true"/>
 
         <many-to-one name="station" class="com.qlkh.core.client.model.Station" lazy="false" fetch="join" outer-join="auto">
-            <column name="stationId" not-null="false"/>
+            <column name="stationId" not-null="true"/>
         </many-to-one>
 
         <many-to-one name="group" class="com.qlkh.core.client.model.Group" lazy="false" fetch="join" outer-join="auto">

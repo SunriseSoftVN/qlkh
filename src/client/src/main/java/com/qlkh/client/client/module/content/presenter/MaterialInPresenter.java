@@ -87,7 +87,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                 StandardDispatchAsync.INSTANCE.execute(new LoadAction(Group.class.getName()), new AbstractAsyncCallback<LoadResult>() {
                                     @Override
                                     public void onSuccess(LoadResult result) {
-                                        for(Group group : result.<Group>getList()) {
+                                        for (Group group : result.<Group>getList()) {
                                             GroupStationDto dto = new GroupStationDto();
                                             dto.setName(group.getName());
                                             dto.setId(group.getId());
@@ -151,11 +151,11 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             public void componentSelected(ButtonEvent buttonEvent) {
 
                 view.getCbPerson().clearSelections();
-                if (currentStation.isCompany()) {
+                ClientCriteria criteria = createCriteria();
+                if (criteria == null) {
                     view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class));
                 } else {
-                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
-                            ClientRestrictions.eq("station.id", currentStation.getId())));
+                    view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class, criteria));
                 }
 
                 currentMaterial = new MaterialIn();
@@ -203,11 +203,12 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getGird().getSelectionModel().getSelectedItem() != null) {
-                    if (currentStation.isCompany()) {
+
+                    ClientCriteria criteria = createCriteria();
+                    if (criteria == null) {
                         view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class));
                     } else {
-                        view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class,
-                                ClientRestrictions.eq("station.id", currentStation.getId())));
+                        view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class, criteria));
                     }
 
                     dispatch.execute(new MaterialInGetNextCodeAction(), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
@@ -471,17 +472,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
                 LoadGridDataAction loadAction;
 
-                ClientCriteria criteria = null;
-
-                if (currentStation != null) {
-                    if (!currentStation.isCompany()) {
-                        criteria = ClientRestrictions.eq("station.id", currentStation.getId());
-                    }
-                }
-
-                if (currentGroup != null) {
-                    criteria = ClientRestrictions.eq("group.id", currentGroup.getId());
-                }
+                ClientCriteria criteria = createCriteria();
 
                 if (criteria != null) {
                     loadAction = new LoadGridDataAction(MaterialIn.class.getName(),
@@ -511,6 +502,19 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         return new ListStore<BeanModel>(pagingLoader);
     }
 
+
+    private ClientCriteria createCriteria() {
+        ClientCriteria criteria = null;
+        if (currentStation != null) {
+            if (!currentStation.isCompany()) {
+                criteria = ClientRestrictions.eq("station.id", currentStation.getId());
+            }
+        }
+        if (currentGroup != null) {
+            criteria = ClientRestrictions.eq("group.id", currentGroup.getId());
+        }
+        return criteria;
+    }
 
     private void resetFilter() {
         BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getGird().getStore().getLoadConfig();
