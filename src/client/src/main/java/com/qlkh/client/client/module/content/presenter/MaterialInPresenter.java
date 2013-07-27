@@ -23,6 +23,7 @@ import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
+import com.qlkh.core.client.criterion.ClientCriteria;
 import com.qlkh.core.client.criterion.ClientRestrictions;
 import com.qlkh.core.client.dto.GroupStationDto;
 import com.qlkh.core.client.model.*;
@@ -76,7 +77,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         new AbstractAsyncCallback<LoadResult>() {
                             @Override
                             public void onSuccess(LoadResult result) {
-
                                 for (Station entity : result.<Station>getList()) {
                                     GroupStationDto dto = new GroupStationDto();
                                     dto.setName(entity.getName());
@@ -84,45 +84,61 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                     store.add(factory.createModel(dto));
                                     stations.add(entity);
                                 }
-                                if (!result.getList().isEmpty()) {
-                                    view.getCbStation().setValue(store.getAt(0));
-                                    currentStation = getCurrentStation();
-                                    view.getBtnCopy().setEnabled(false);
-                                    view.createGrid(createGridStore());
-                                    view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
-                                    view.getPagingToolBar().refresh();
-                                    view.getCbQuarter().setSimpleValue(currentQuarter);
-                                    view.getCbYear().setSimpleValue(currentYear);
+                                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Group.class.getName()), new AbstractAsyncCallback<LoadResult>() {
+                                    @Override
+                                    public void onSuccess(LoadResult result) {
+                                        for(Group group : result.<Group>getList()) {
+                                            GroupStationDto dto = new GroupStationDto();
+                                            dto.setName(group.getName());
+                                            dto.setId(group.getId());
+                                            store.add(factory.createModel(dto));
+                                            groups.add(group);
+                                        }
 
-                                    view.getCbStation().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
-                                        @Override
-                                        public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
+                                        if (!stations.isEmpty()) {
+                                            view.getCbStation().setValue(store.getAt(0));
                                             currentStation = getCurrentStation();
-                                            if (currentStation.isCompany()) {
-                                                view.getBtnCopy().setEnabled(false);
-                                            } else {
-                                                view.getBtnCopy().setEnabled(true);
-                                            }
+                                            view.getBtnCopy().setEnabled(false);
+                                            view.createGrid(createGridStore());
+                                            view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
                                             view.getPagingToolBar().refresh();
-                                        }
-                                    });
+                                            view.getCbQuarter().setSimpleValue(currentQuarter);
+                                            view.getCbYear().setSimpleValue(currentYear);
 
-                                    view.getCbQuarter().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<QuarterEnum>>() {
-                                        @Override
-                                        public void selectionChanged(SelectionChangedEvent<SimpleComboValue<QuarterEnum>> simpleComboValueSelectionChangedEvent) {
-                                            currentQuarter = view.getCbQuarter().getSimpleValue();
-                                            view.getPagingToolBar().refresh();
-                                        }
-                                    });
+                                            view.getCbStation().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+                                                @Override
+                                                public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
+                                                    currentStation = getCurrentStation();
+                                                    currentGroup = getCurrentGroup();
+                                                    if (currentStation != null) {
+                                                        if (currentStation.isCompany()) {
+                                                            view.getBtnCopy().setEnabled(false);
+                                                        } else {
+                                                            view.getBtnCopy().setEnabled(true);
+                                                        }
+                                                    }
+                                                    view.getPagingToolBar().refresh();
+                                                }
+                                            });
 
-                                    view.getCbYear().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<Integer>>() {
-                                        @Override
-                                        public void selectionChanged(SelectionChangedEvent<SimpleComboValue<Integer>> simpleComboValueSelectionChangedEvent) {
-                                            currentYear = view.getCbYear().getSimpleValue();
-                                            view.getPagingToolBar().refresh();
+                                            view.getCbQuarter().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<QuarterEnum>>() {
+                                                @Override
+                                                public void selectionChanged(SelectionChangedEvent<SimpleComboValue<QuarterEnum>> simpleComboValueSelectionChangedEvent) {
+                                                    currentQuarter = view.getCbQuarter().getSimpleValue();
+                                                    view.getPagingToolBar().refresh();
+                                                }
+                                            });
+
+                                            view.getCbYear().addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<Integer>>() {
+                                                @Override
+                                                public void selectionChanged(SelectionChangedEvent<SimpleComboValue<Integer>> simpleComboValueSelectionChangedEvent) {
+                                                    currentYear = view.getCbYear().getSimpleValue();
+                                                    view.getPagingToolBar().refresh();
+                                                }
+                                            });
                                         }
-                                    });
-                                }
+                                    }
+                                });
                             }
                         });
             }
@@ -323,13 +339,13 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             public void componentKeyPress(ComponentEvent event) {
                 if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
-                    String st = view.getTxtCodeSearch().getValue();
                     view.getTxtNameSearch().clear();
-                    if (StringUtils.isNotBlank(st)) {
+                    if (view.getTxtCodeSearch().getValue() != null) {
+                        Integer code = view.getTxtCodeSearch().getValue().intValue();
                         BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getGird().getStore().getLoadConfig();
                         loadConfig.set("hasFilter", true);
                         Map<String, Object> filters = new HashMap<String, Object>();
-                        filters.put("code", st);
+                        filters.put("code", code);
                         loadConfig.set("filters", filters);
                     } else {
                         resetFilter();
@@ -454,11 +470,23 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             @Override
             protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
                 LoadGridDataAction loadAction;
-                if (!currentStation.isCompany()) {
+
+                ClientCriteria criteria = null;
+
+                if (currentStation != null) {
+                    if (!currentStation.isCompany()) {
+                        criteria = ClientRestrictions.eq("station.id", currentStation.getId());
+                    }
+                }
+
+                if (currentGroup != null) {
+                    criteria = ClientRestrictions.eq("group.id", currentGroup.getId());
+                }
+
+                if (criteria != null) {
                     loadAction = new LoadGridDataAction(MaterialIn.class.getName(),
                             ClientRestrictions.eq("year", currentYear),
-                            ClientRestrictions.eq("quarter", currentQuarter.getCode()),
-                            ClientRestrictions.eq("station.id", currentStation.getId()));
+                            ClientRestrictions.eq("quarter", currentQuarter.getCode()), criteria);
                 } else {
                     loadAction = new LoadGridDataAction(MaterialIn.class.getName(),
                             ClientRestrictions.eq("year", currentYear),

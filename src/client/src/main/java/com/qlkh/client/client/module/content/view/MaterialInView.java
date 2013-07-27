@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -86,7 +87,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     TextField<String> txtNameSearch = new TextField<String>();
 
     @I18nField(emptyText = true)
-    TextField<String> txtCodeSearch = new TextField<String>();
+    NumberField txtCodeSearch = new NumberField();
 
     @I18nField(emptyText = true)
     TextField<String> txtMaterialSearch = new TextField<String>();
@@ -108,7 +109,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
     MyNumberField txtWeight = new MyNumberField();
 
     @I18nField
-    MyNumberField txtCode = new MyNumberField();
+    NumberField txtCode = new NumberField();
 
     @I18nField
     DateField exportDate = new DateField();
@@ -410,7 +411,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         return txtNameSearch;
     }
 
-    public TextField<String> getTxtCodeSearch() {
+    public NumberField getTxtCodeSearch() {
         return txtCodeSearch;
     }
 
@@ -482,7 +483,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         return txtTotal;
     }
 
-    public MyNumberField getTxtCode() {
+    public NumberField getTxtCode() {
         return txtCode;
     }
 
