@@ -174,7 +174,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 view.getMaterialGrid().getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                     @Override
                     public void selectionChanged(SelectionChangedEvent<BeanModel> event) {
-                        if (event.getSelectedItem() != null && currentStation != null) {
+                        if (event.getSelectedItem() != null && currentStation != null && !currentStation.isCompany()) {
                             Material material = event.getSelectedItem().getBean();
                             LoadMaterialInTotalAction loadAction = new LoadMaterialInTotalAction(material.getId(), currentStation.getId(),
                                     null, currentQuarter.getCode(), currentYear);
