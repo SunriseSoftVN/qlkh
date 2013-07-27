@@ -24,6 +24,7 @@ import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
 import com.qlkh.core.client.constant.QuarterEnum;
 import com.qlkh.core.client.criterion.ClientRestrictions;
+import com.qlkh.core.client.dto.GroupStationDto;
 import com.qlkh.core.client.model.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
@@ -49,6 +50,9 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
     private QuarterEnum currentQuarter;
     private int currentYear;
     private Station currentStation;
+    private Group currentGroup;
+    private List<Station> stations = new ArrayList<Station>();
+    private List<Group> groups = new ArrayList<Group>();
 
     @Override
     public void onActivate() {
@@ -65,19 +69,24 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
             public void onSuccess(GetServerTimeResult result) {
                 currentQuarter = result.getQuarter();
                 currentYear = result.getYear();
-                final BeanModelFactory factory = BeanModelLookup.get().getFactory(Station.class);
+                final BeanModelFactory factory = BeanModelLookup.get().getFactory(GroupStationDto.class);
                 final ListStore<BeanModel> store = new ListStore<BeanModel>();
                 view.getCbStation().setStore(store);
                 StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName()),
                         new AbstractAsyncCallback<LoadResult>() {
                             @Override
                             public void onSuccess(LoadResult result) {
+
                                 for (Station entity : result.<Station>getList()) {
-                                    store.add(factory.createModel(entity));
+                                    GroupStationDto dto = new GroupStationDto();
+                                    dto.setName(entity.getName());
+                                    dto.setId(entity.getId());
+                                    store.add(factory.createModel(dto));
+                                    stations.add(entity);
                                 }
                                 if (!result.getList().isEmpty()) {
                                     view.getCbStation().setValue(store.getAt(0));
-                                    currentStation = store.getAt(0).getBean();
+                                    currentStation = getCurrentStation();
                                     view.getBtnCopy().setEnabled(false);
                                     view.createGrid(createGridStore());
                                     view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
@@ -88,7 +97,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                     view.getCbStation().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
                                         @Override
                                         public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
-                                            currentStation = view.getCbStation().getValue().getBean();
+                                            currentStation = getCurrentStation();
                                             if (currentStation.isCompany()) {
                                                 view.getBtnCopy().setEnabled(false);
                                             } else {
@@ -268,38 +277,40 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
                         MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
 
-                        currentMaterial.setMaterial(material);
-                        currentMaterial.setMaterialGroup(materialGroup);
-                        currentMaterial.setMaterialPerson(materialPerson);
-                        currentMaterial.setTotal(total);
-                        currentMaterial.setWeight(weight);
-                        currentMaterial.setCreatedDate(new Date());
-                        currentMaterial.setStation(materialPerson.getStation());
-                        currentMaterial.setYear(currentYear);
-                        currentMaterial.setQuarter(currentQuarter.getCode());
-                        currentMaterial.setCode(view.getTxtCode().getValue().intValue());
-                        currentMaterial.setExportDate(view.getExportDate().getValue());
+                        if (currentMaterial != null) {
+                            currentMaterial.setMaterial(material);
+                            currentMaterial.setMaterialGroup(materialGroup);
+                            currentMaterial.setMaterialPerson(materialPerson);
+                            currentMaterial.setTotal(total);
+                            currentMaterial.setWeight(weight);
+                            currentMaterial.setCreatedDate(new Date());
+                            currentMaterial.setStation(materialPerson.getStation());
+                            currentMaterial.setYear(currentYear);
+                            currentMaterial.setQuarter(currentQuarter.getCode());
+                            currentMaterial.setCode(view.getTxtCode().getValue().intValue());
+                            currentMaterial.setExportDate(view.getExportDate().getValue());
 
-                        dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                if (caught instanceof ServiceException) {
-                                    String causeClassName = ((ServiceException) caught).getCauseClassname();
-                                    if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
-                                        DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                            dispatch.execute(new SaveAction(currentMaterial), new AbstractAsyncCallback<SaveResult>() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    if (caught instanceof ServiceException) {
+                                        String causeClassName = ((ServiceException) caught).getCauseClassname();
+                                        if (causeClassName.contains(ExceptionConstant.DATA_EXCEPTION)) {
+                                            DiaLogUtils.showMessage(view.getConstant().existCodeMessage());
+                                        }
+                                    } else {
+                                        super.onFailure(caught);
                                     }
-                                } else {
-                                    super.onFailure(caught);
                                 }
-                            }
 
-                            @Override
-                            public void onSuccess(SaveResult saveResult) {
-                                editWindow.hide();
-                                view.resetEditPanel();
-                                view.getPagingToolBar().refresh();
-                            }
-                        });
+                                @Override
+                                public void onSuccess(SaveResult saveResult) {
+                                    editWindow.hide();
+                                    view.resetEditPanel();
+                                    view.getPagingToolBar().refresh();
+                                }
+                            });
+                        }
 
                     } else {
                         DiaLogUtils.showMessage(view.getConstant().materialError());
@@ -487,5 +498,29 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtMaterialSearch().clear();
+    }
+
+    private Station getCurrentStation() {
+        if (view.getCbStation().getValue() != null) {
+            for (Station station : stations) {
+                GroupStationDto dto = view.getCbStation().getValue().getBean();
+                if (station.getId().equals(dto.getId())) {
+                    return station;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Group getCurrentGroup() {
+        if (view.getCbStation().getValue() != null) {
+            for (Group group : groups) {
+                GroupStationDto dto = view.getCbStation().getValue().getBean();
+                if (group.getId().equals(dto.getId())) {
+                    return group;
+                }
+            }
+        }
+        return null;
     }
 }

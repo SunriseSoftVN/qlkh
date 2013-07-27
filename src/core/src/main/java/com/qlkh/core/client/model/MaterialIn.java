@@ -21,6 +21,7 @@ public class MaterialIn extends AbstractEntity {
     private MaterialPerson materialPerson;
     private Material material;
     private Station station;
+    private Group group;
     private Date exportDate;
 
     //Only for display on grid.
@@ -109,5 +110,13 @@ public class MaterialIn extends AbstractEntity {
 
     public void setExportDate(Date exportDate) {
         this.exportDate = exportDate;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }

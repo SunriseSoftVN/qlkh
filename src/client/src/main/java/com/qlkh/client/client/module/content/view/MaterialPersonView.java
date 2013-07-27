@@ -184,6 +184,7 @@ public class MaterialPersonView extends AbstractView<MaterialPersonConstant> {
         if (!cbStation.isRendered()) {
             cbStation.setDisplayField("name");
             cbStation.setEditable(false);
+            cbStation.setAllowBlank(false);
             cbStation.setSelectOnFocus(true);
             cbStation.setTriggerAction(ComboBox.TriggerAction.ALL);
             cbStation.setForceSelection(true);
