@@ -26,10 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The Class MaterialInReportHandler.
@@ -65,7 +62,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                 for (MaterialReportBean materialReportBean : materialReportBeans) {
                     Map<String, Object> data = new HashMap<String, Object>();
 
-                    if(StringUtils.isNotBlank(materialReportBean.getStationName())) {
+                    if (StringUtils.isNotBlank(materialReportBean.getStationName())) {
                         data.put("stationName", materialReportBean.getStationName());
                     } else {
                         data.put("stationName", materialReportBean.getGroupName());
@@ -81,8 +78,9 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     List<MaterialReportBean> beans = new ArrayList<MaterialReportBean>();
                     beans.add(materialReportBean);
                     for (int i = 1; i <= 3; i++) {
+                        UUID id = UUID.randomUUID();
                         data.put("reportName", "Liên " + i);
-                        String fileOutputPath = outputFilePath + materialReportBean.getCode() + i + OUTPUT_FILE_EXT;
+                        String fileOutputPath = outputFilePath + id.toString() + OUTPUT_FILE_EXT;
                         JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
                                 new JRBeanCollectionDataSource(beans));
                         ReportExporter.exportReportXls(jasperPrint, fileOutputPath);

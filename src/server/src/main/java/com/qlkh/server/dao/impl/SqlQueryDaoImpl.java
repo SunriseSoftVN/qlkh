@@ -284,7 +284,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "`material_in`.`weight`, " +
                         "`material_in`.`total`, " +
                         "`material_in`.`code` AS `reportCode`, " +
-                        "`station`.`name` AS `stationName`,  " +
+                        "`station`.`name` AS `stationName`, " +
                         "`group`.`name` AS `groupName`,  " +
                         "`material_group`.`name` AS `reason`,  " +
                         "`material_person`.`personName`,  " +
@@ -306,6 +306,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "AND `material_in`.`year` = `material_price`.`year` " +
                         "AND `material_in`.`quarter` = `material_price`.`quarter` " +
                         "WHERE `material_in`.`code` >= " + form + " AND `material_in`.`code` <= " + to;
+                System.out.println(select);
                 SQLQuery selectQuery = session.createSQLQuery(select);
                 selectQuery.setResultTransformer(new AliasToBeanResultTransformer(MaterialReportBean.class));
                 return selectQuery.list();
