@@ -25,7 +25,10 @@ public class MaterialInDaoImpl extends AbstractDao<MaterialIn> implements Materi
             public Long doInHibernate(Session session) throws HibernateException, SQLException {
                 String select = "SELECT MAX(code) FROM `material_in`";
                 Query query  = session.createSQLQuery(select);
-                return Long.valueOf(query.list().get(0).toString()) + 1;
+                if (query.list().get(0) != null) {
+                    return Long.valueOf(query.list().get(0).toString()) + 1;
+                }
+                return 1l;
             }
         });
     }
