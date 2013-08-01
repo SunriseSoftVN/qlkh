@@ -457,12 +457,15 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         view.getBtnCopy().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                dispatch.execute(new CopyMaterialInAction(currentYear, currentQuarter.getCode(), currentStation.getId()), new AbstractAsyncCallback<CopyMaterialInResult>() {
-                    @Override
-                    public void onSuccess(CopyMaterialInResult copyMaterialInResult) {
-                        view.getPagingToolBar().refresh();
-                    }
-                });
+                if (currentStation != null) {
+                    dispatch.execute(new CopyMaterialInAction(currentYear, currentQuarter.getCode(), currentStation.getId()),
+                            new AbstractAsyncCallback<CopyMaterialInResult>() {
+                                @Override
+                                public void onSuccess(CopyMaterialInResult copyMaterialInResult) {
+                                    view.getPagingToolBar().refresh();
+                                }
+                            });
+                }
             }
         });
     }
