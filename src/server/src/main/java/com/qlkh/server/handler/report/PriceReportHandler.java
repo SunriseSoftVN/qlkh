@@ -39,6 +39,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.digester.SimpleRegexMatcher;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -88,7 +89,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         List<PriceReportBean> prices = new ArrayList<PriceReportBean>();
 
         //Add material group.
-        List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class);
+        List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class, Order.asc("code"));
         for (MaterialGroup materialGroup : materialGroups) {
             String[] regex = materialGroup.getRegexs();
             if (regex != null) {
