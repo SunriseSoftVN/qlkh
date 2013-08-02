@@ -264,9 +264,11 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         columnConfigs.add(totalColumnConfig);
 
         ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
+        weightColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
         columnConfigs.add(weightColumnConfig);
 
         ColumnConfig remainColumnConfig = new ColumnConfig("remain", getConstant().remainColumnTitle(), 80);
+        remainColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
         columnConfigs.add(remainColumnConfig);
 
         return columnConfigs;
@@ -317,7 +319,6 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
             txtCode.setAllowBlank(false);
             txtCode.setSelectOnFocus(true);
-            txtWeight.setAllowBlank(false);
             txtWeight.setSelectOnFocus(true);
             txtTotal.setAllowBlank(false);
             txtTotal.setSelectOnFocus(true);

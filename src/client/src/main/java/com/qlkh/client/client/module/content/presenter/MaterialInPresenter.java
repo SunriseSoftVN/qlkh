@@ -230,10 +230,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
                             if (currentMaterial.getWeight() != null) {
                                 view.getTxtWeight().setValue(currentMaterial.getWeight());
-                            } else {
-                                view.getTxtWeight().setValue(currentMaterial.getTotal());
                             }
-
 
                             BeanModelFactory groupFactory = BeanModelLookup.get().getFactory(MaterialGroup.class);
                             BeanModelFactory personFactory = BeanModelLookup.get().getFactory(MaterialPerson.class);
@@ -290,7 +287,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
                     if (material != null) {
                         double total = view.getTxtTotal().getValue().doubleValue();
-                        double weight = view.getTxtWeight().getValue().doubleValue();
 
                         MaterialPerson materialPerson = view.getCbPerson().getValue().getBean();
                         MaterialGroup materialGroup = view.getCbGroup().getValue().getBean();
@@ -300,7 +296,12 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                             currentMaterial.setMaterialGroup(materialGroup);
                             currentMaterial.setMaterialPerson(materialPerson);
                             currentMaterial.setTotal(total);
-                            currentMaterial.setWeight(weight);
+
+                            if (view.getTxtWeight().getValue() != null) {
+                                double weight = view.getTxtWeight().getValue().doubleValue();
+                                currentMaterial.setWeight(weight);
+                            }
+
                             currentMaterial.setCreatedDate(new Date());
                             currentMaterial.setStation(materialPerson.getStation());
                             currentMaterial.setYear(currentYear);
