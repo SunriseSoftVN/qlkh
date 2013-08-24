@@ -62,10 +62,10 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                 for (MaterialReportBean materialReportBean : materialReportBeans) {
                     Map<String, Object> data = new HashMap<String, Object>();
 
-                    if (StringUtils.isNotBlank(materialReportBean.getStationName())) {
-                        data.put("stationName", materialReportBean.getStationName());
-                    } else {
+                    if (StringUtils.isNotBlank(materialReportBean.getGroupName())) {
                         data.put("stationName", materialReportBean.getGroupName());
+                    } else {
+                        data.put("stationName", materialReportBean.getStationName());
                     }
 
                     data.put("reason", materialReportBean.getReason());
