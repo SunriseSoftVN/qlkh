@@ -55,6 +55,8 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
         upgradeV116.setEnabled(false);
         upgradePanel.add(upgradeV116);
 
+        upgradePanel.add(upgradeV134);
+
         contentPanel.add(upgradePanel);
         contentPanel.setHeaderVisible(false);
         contentPanel.setFrame(true);
@@ -69,5 +71,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
 
     public Button getUpgradeV116() {
         return upgradeV116;
+    }
+
+    public Button getUpgradeV134() {
+        return upgradeV134;
     }
 }

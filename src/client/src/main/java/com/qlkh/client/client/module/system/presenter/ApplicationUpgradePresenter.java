@@ -11,10 +11,7 @@ import com.qlkh.client.client.core.rpc.AbstractAsyncCallback;
 import com.qlkh.client.client.module.system.place.ApplicationUpgradePlace;
 import com.qlkh.client.client.module.system.view.ApplicationUpgradeView;
 import com.qlkh.client.client.utils.DiaLogUtils;
-import com.qlkh.core.client.action.system.Upgrade116Action;
-import com.qlkh.core.client.action.system.Upgrade116Result;
-import com.qlkh.core.client.action.system.UpgradeDatabaseAction;
-import com.qlkh.core.client.action.system.UpgradeDatabaseResult;
+import com.qlkh.core.client.action.system.*;
 import com.smvp4g.mvp.client.core.presenter.AbstractPresenter;
 import com.smvp4g.mvp.client.core.presenter.annotation.Presenter;
 import net.customware.gwt.dispatch.client.DispatchAsync;
@@ -54,6 +51,18 @@ public class ApplicationUpgradePresenter extends AbstractPresenter<ApplicationUp
                 dispatch.execute(new Upgrade116Action(), new AbstractAsyncCallback<Upgrade116Result>() {
                     @Override
                     public void onSuccess(Upgrade116Result upgrade116Result) {
+                        DiaLogUtils.notify("Upgrade Successful");
+                    }
+                });
+            }
+        });
+
+        view.getUpgradeV134().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                dispatch.execute(new Upgrade134Action(), new AbstractAsyncCallback<Upgrade134Result>() {
+                    @Override
+                    public void onSuccess(Upgrade134Result upgrade134Result) {
                         DiaLogUtils.notify("Upgrade Successful");
                     }
                 });
