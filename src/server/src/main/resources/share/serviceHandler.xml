@@ -37,6 +37,7 @@
                 <bean class="com.qlkh.server.handler.material.LoadMaterialWithTaskHandler"/>
                 <bean class="com.qlkh.server.handler.material.CopyMaterialInHandler"/>
                 <bean class="com.qlkh.server.handler.material.MaterialInGetNextCodeHandler"/>
+                <bean class="com.qlkh.server.handler.system.Upgrade134Handler"/>
                 <ref bean="taskReportHandler"/>
                 <ref bean="priceReportHandler"/>
                 <ref bean="materialMissingPriceReportHandler"/>

@@ -37,6 +37,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
     @I18nField
     Button upgradeV116 = new Button();
 
+    @I18nField
+    Button upgradeV134 = new Button();
+
     private ContentPanel contentPanel = new ContentPanel();
 
     @Override
@@ -47,8 +50,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
 
         //Only enable for v1.1
         upgradeV11.setEnabled(false);
-
         upgradePanel.add(upgradeV11);
+
+        upgradeV116.setEnabled(false);
         upgradePanel.add(upgradeV116);
 
         contentPanel.add(upgradePanel);

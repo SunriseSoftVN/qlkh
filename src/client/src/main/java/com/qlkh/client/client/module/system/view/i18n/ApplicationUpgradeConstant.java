@@ -16,4 +16,5 @@ public interface ApplicationUpgradeConstant extends Constants {
     String upgradePanel();
     String upgradeV11();
     String upgradeV116();
+    String upgradeV134();
 }

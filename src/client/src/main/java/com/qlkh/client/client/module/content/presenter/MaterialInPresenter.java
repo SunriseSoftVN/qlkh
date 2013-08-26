@@ -304,6 +304,9 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
 
                             currentMaterial.setCreatedDate(new Date());
                             currentMaterial.setStation(materialPerson.getStation());
+                            if (materialPerson.getGroup() != null) {
+                                currentMaterial.setGroup(materialPerson.getGroup());
+                            }
                             currentMaterial.setYear(currentYear);
                             currentMaterial.setQuarter(currentQuarter.getCode());
                             currentMaterial.setCode(view.getTxtCode().getValue().intValue());
