@@ -18,7 +18,6 @@ import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.*;
 import com.qlkh.core.client.action.grid.LoadGridDataAction;
-import com.qlkh.core.client.action.grid.LoadGridDataResult;
 import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
@@ -475,9 +474,9 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
     }
 
     private ListStore<BeanModel> createGridStore() {
-        RpcProxy<LoadGridDataResult> rpcProxy = new RpcProxy<LoadGridDataResult>() {
+        RpcProxy<LoadMaterialInResult> rpcProxy = new RpcProxy<LoadMaterialInResult>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<LoadGridDataResult> callback) {
+            protected void load(Object loadConfig, AsyncCallback<LoadMaterialInResult> callback) {
                 LoadGridDataAction loadAction;
 
                 ClientCriteria criteria = createCriteria();
@@ -493,7 +492,10 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 }
 
                 loadAction.setConfig((BasePagingLoadConfig) loadConfig);
-                dispatch.execute(loadAction, callback);
+
+                LoadMaterialInAction loadMaterialInAction = new LoadMaterialInAction((BasePagingLoadConfig) loadConfig);
+
+                dispatch.execute(loadMaterialInAction, callback);
             }
         };
 
