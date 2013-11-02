@@ -73,7 +73,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                 final BeanModelFactory factory = BeanModelLookup.get().getFactory(GroupStationDto.class);
                 final ListStore<BeanModel> store = new ListStore<BeanModel>();
                 view.getCbStation().setStore(store);
-                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Station.class.getName()),
+                dispatch.execute(new LoadAction(Station.class.getName()),
                         new AbstractAsyncCallback<LoadResult>() {
                             @Override
                             public void onSuccess(LoadResult result) {
@@ -84,7 +84,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                     store.add(factory.createModel(dto));
                                     stations.add(entity);
                                 }
-                                StandardDispatchAsync.INSTANCE.execute(new LoadAction(Group.class.getName()), new AbstractAsyncCallback<LoadResult>() {
+                                dispatch.execute(new LoadAction(Group.class.getName()), new AbstractAsyncCallback<LoadResult>() {
                                     @Override
                                     public void onSuccess(LoadResult result) {
                                         for (Group group : result.<Group>getList()) {

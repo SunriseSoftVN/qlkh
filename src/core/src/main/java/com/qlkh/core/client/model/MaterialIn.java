@@ -2,6 +2,7 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -25,6 +26,7 @@ public class MaterialIn extends AbstractEntity {
     private Date exportDate;
 
     //Only for display on grid.
+    @Transient
     public Double getRemain() {
         if (total != null && weight != null) {
             return total - weight;
