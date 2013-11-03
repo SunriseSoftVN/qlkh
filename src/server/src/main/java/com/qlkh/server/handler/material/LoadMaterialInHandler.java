@@ -4,11 +4,18 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.qlkh.core.client.action.material.LoadMaterialInAction;
 import com.qlkh.core.client.action.material.LoadMaterialInResult;
 import com.qlkh.core.client.model.MaterialIn;
+import com.qlkh.core.client.model.MaterialPrice;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * The Class LoadMaterialInHandler.
@@ -28,8 +35,28 @@ public class LoadMaterialInHandler extends AbstractHandler<LoadMaterialInAction,
 
     @Override
     public LoadMaterialInResult execute(LoadMaterialInAction action, ExecutionContext context) throws DispatchException {
-        BasePagingLoadResult<MaterialIn> result = generalDao.
-                getByBeanConfig(MaterialIn.class.getName(), action.getLoadConfig());
+        BasePagingLoadResult<MaterialIn> result = generalDao.getByBeanConfig(MaterialIn.class.getName(), action.getLoadConfig());
+
+        List<Long> materialIds = extract(result.getData(), on(MaterialIn.class).getMaterial().getId());
+
+        List<MaterialPrice> prices = generalDao.findCriteria(MaterialPrice.class,
+                Restrictions.in("material.id", materialIds),
+                Restrictions.eq("quarter", action.getQuarter()),
+                Restrictions.eq("year", action.getYear())
+        );
+
+
+        for (MaterialIn materialIn : result.getData()) {
+            if (materialIn.getMaterial() != null) {
+                MaterialPrice price = selectUnique(prices,
+                        having(on(MaterialPrice.class).getMaterial().getId(),
+                                equalTo(materialIn.getMaterial().getId())));
+                if (price != null) {
+                    materialIn.getMaterial().setCurrentPrice(price);
+                }
+            }
+        }
+
         return new LoadMaterialInResult(result);
     }
 }

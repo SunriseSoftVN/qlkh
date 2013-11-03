@@ -2,8 +2,6 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
-import javax.persistence.Transient;
-
 /**
  * The Class MaterialLimit.
  *
@@ -17,7 +15,7 @@ public class Material extends AbstractEntity {
     private String unit;
     private String note;
 
-    @Transient
+    //this field is transient with database.
     private MaterialPrice currentPrice;
 
     public String getName() {

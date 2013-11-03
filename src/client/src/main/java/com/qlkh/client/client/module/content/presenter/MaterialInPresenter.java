@@ -17,7 +17,6 @@ import com.qlkh.client.client.module.content.view.MaterialInView;
 import com.qlkh.client.client.utils.DiaLogUtils;
 import com.qlkh.client.client.utils.GridUtils;
 import com.qlkh.core.client.action.core.*;
-import com.qlkh.core.client.action.grid.LoadGridDataAction;
 import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
@@ -477,25 +476,18 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         RpcProxy<LoadMaterialInResult> rpcProxy = new RpcProxy<LoadMaterialInResult>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<LoadMaterialInResult> callback) {
-                LoadGridDataAction loadAction;
-
-                ClientCriteria criteria = createCriteria();
-
-                if (criteria != null) {
-                    loadAction = new LoadGridDataAction(MaterialIn.class.getName(),
-                            ClientRestrictions.eq("year", currentYear),
-                            ClientRestrictions.eq("quarter", currentQuarter.getCode()), criteria);
-                } else {
-                    loadAction = new LoadGridDataAction(MaterialIn.class.getName(),
-                            ClientRestrictions.eq("year", currentYear),
-                            ClientRestrictions.eq("quarter", currentQuarter.getCode()));
+                LoadMaterialInAction loadAction = new LoadMaterialInAction();
+                if (currentStation != null) {
+                    if (!currentStation.isCompany()) {
+                        loadAction.setStationId(currentStation.getId());
+                    }
+                } else if(currentGroup != null) {
+                    loadAction.setGroupId(currentGroup.getId());
                 }
-
-                loadAction.setConfig((BasePagingLoadConfig) loadConfig);
-
-                LoadMaterialInAction loadMaterialInAction = new LoadMaterialInAction((BasePagingLoadConfig) loadConfig);
-
-                dispatch.execute(loadMaterialInAction, callback);
+                loadAction.setLoadConfig((BasePagingLoadConfig) loadConfig);
+                loadAction.setQuarter(currentQuarter.getCode());
+                loadAction.setYear(currentYear);
+                dispatch.execute(loadAction, callback);
             }
         };
 

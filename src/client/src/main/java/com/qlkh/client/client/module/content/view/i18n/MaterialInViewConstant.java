@@ -28,6 +28,8 @@ public interface MaterialInViewConstant extends Constants {
     String deleteMessageSuccess();
     String deleteMessage();
     String totalColumnTitle();
+    String priceColumnTitle();
+    String totalPriceColumnTitle();
     String reasonColumnTitle();
     String groupCodeColumnTitle();
     String dateColumnTitle();
