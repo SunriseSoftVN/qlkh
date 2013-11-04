@@ -34,6 +34,16 @@ public class MaterialIn extends AbstractEntity {
         return null;
     }
 
+    //Only for display on grid.
+    @Transient
+    public Double getTotalPrice() {
+        if (material != null
+                && material.getCurrentPrice() != null && weight != null) {
+            return material.getCurrentPrice().getPrice() * weight;
+        }
+        return null;
+    }
+
     public Integer getCode() {
         return code;
     }

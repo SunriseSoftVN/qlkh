@@ -263,6 +263,10 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         totalColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
         columnConfigs.add(totalColumnConfig);
 
+        ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
+        weightColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
+        columnConfigs.add(weightColumnConfig);
+
         ColumnConfig priceColumnConfig = new ColumnConfig("material.currentPrice.price", getConstant().priceColumnTitle(), 70);
         priceColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
         columnConfigs.add(priceColumnConfig);
@@ -270,10 +274,6 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig totalPrice = new ColumnConfig("totalPrice", getConstant().totalPriceColumnTitle(), 70);
         totalPrice.setNumberFormat(NumberFormat.getFormat("###,###.##"));
         columnConfigs.add(totalPrice);
-
-        ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
-        weightColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
-        columnConfigs.add(weightColumnConfig);
 
         ColumnConfig remainColumnConfig = new ColumnConfig("remain", getConstant().remainColumnTitle(), 80);
         remainColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
