@@ -2,6 +2,7 @@ package com.qlkh.client.client.module.content.view;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.IconHelper;
@@ -237,7 +238,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         ColumnConfig materialCodeColumnConfig = new ColumnConfig("material.code", getConstant().materialCodeColumnTitle(), 50);
         columnConfigs.add(materialCodeColumnConfig);
 
-        ColumnConfig materialNameColumnConfig = new ColumnConfig("material.name", getConstant().nameColumnTitle(), 170);
+        ColumnConfig materialNameColumnConfig = new ColumnConfig("material.name", getConstant().nameColumnTitle(), 130);
         columnConfigs.add(materialNameColumnConfig);
 
         ColumnConfig materialUnitColumnConfig = new ColumnConfig("material.unit", getConstant().unitColumnTitle(), 50);
@@ -264,7 +265,16 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         columnConfigs.add(totalColumnConfig);
 
         ColumnConfig weightColumnConfig = new ColumnConfig("weight", getConstant().weightColumnTitle(), 70);
-        weightColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
+        weightColumnConfig.setRenderer(new GridCellRenderer() {
+            @Override
+            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i2, ListStore listStore, Grid grid) {
+                Double weight = modelData.get("weight");
+                if (weight != null && weight > 0) {
+                    return NumberFormat.getFormat("###,###.##").format(weight);
+                }
+                return "";
+            }
+        });
         columnConfigs.add(weightColumnConfig);
 
         ColumnConfig priceColumnConfig = new ColumnConfig("material.currentPrice.price", getConstant().priceColumnTitle(), 70);
@@ -272,7 +282,16 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         columnConfigs.add(priceColumnConfig);
 
         ColumnConfig totalPrice = new ColumnConfig("totalPrice", getConstant().totalPriceColumnTitle(), 70);
-        totalPrice.setNumberFormat(NumberFormat.getFormat("###,###.##"));
+        totalPrice.setRenderer(new GridCellRenderer() {
+            @Override
+            public Object render(ModelData modelData, String s, ColumnData columnData, int i, int i2, ListStore listStore, Grid grid) {
+                Double totalPrice = modelData.get(s);
+                if (totalPrice != null && totalPrice > 0) {
+                    return NumberFormat.getFormat("###,###.##").format(totalPrice);
+                }
+                return "";
+            }
+        });
         columnConfigs.add(totalPrice);
 
         ColumnConfig remainColumnConfig = new ColumnConfig("remain", getConstant().remainColumnTitle(), 80);
