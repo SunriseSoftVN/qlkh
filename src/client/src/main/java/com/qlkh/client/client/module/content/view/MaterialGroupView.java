@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.util.IconHelper;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
@@ -81,6 +82,9 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
 
     @I18nField
     TextField<String> txtRegex = new TextField<String>();
+
+    @I18nField
+    NumberField txtOrder = new NumberField();
 
     private MyFormPanel editPanel = new MyFormPanel();
 
@@ -174,6 +178,9 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
                 RANGE_WIDTH);
         columnConfigs.add(rangeColumnConfig);
 
+        ColumnConfig orderColumnConfig = new ColumnConfig("position", getConstant().orderColumnTitle(), 100);
+        columnConfigs.add(orderColumnConfig);
+
         return columnConfigs;
     }
 
@@ -198,10 +205,15 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
             txtCodeDisplay.setAllowBlank(false);
         }
 
+        if(!txtOrder.isRendered()) {
+            txtOrder.setAllowBlank(false);
+        }
+
         editPanel.add(txtCode);
         editPanel.add(txtCodeDisplay);
         editPanel.add(txtName);
         editPanel.add(txtRegex);
+        editPanel.add(txtOrder);
 
         window.setFocusWidget(txtName);
 
@@ -277,5 +289,9 @@ public class MaterialGroupView extends AbstractView<MaterialGroupConstant> {
 
     public TextField<String> getTxtCodeDisplay() {
         return txtCodeDisplay;
+    }
+
+    public NumberField getTxtOrder() {
+        return txtOrder;
     }
 }

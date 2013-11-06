@@ -16,6 +16,6 @@
         <property name="name" column="name" not-null="true"/>
         <property name="regex" column="regex"/>
         <property name="codeDisplay" column="codeDisplay" not-null="true"/>
-        <property name="order" column="codeDisplay" not-null="true"/>
+        <property name="position" column="position" not-null="true"/>
     </class>
 </hibernate-mapping>

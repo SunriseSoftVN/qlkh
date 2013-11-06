@@ -72,6 +72,7 @@ public class MaterialGroupPresenter extends AbstractPresenter<MaterialGroupView>
                 view.getTxtCode().setValue(selectedMaterial.getCode());
                 view.getTxtRegex().setValue(selectedMaterial.getRegex());
                 view.getTxtCodeDisplay().setValue(selectedMaterial.getCodeDisplay());
+                view.getTxtOrder().setValue(selectedMaterial.getPosition());
                 materialGroup = selectedMaterial;
                 editWindow.show();
                 editWindow.layout(true);
@@ -93,12 +94,14 @@ public class MaterialGroupPresenter extends AbstractPresenter<MaterialGroupView>
                         materialGroup = new MaterialGroup();
                         materialGroup.setCreateBy(1l);
                         materialGroup.setUpdateBy(1l);
+                        materialGroup.setPosition(0);
                     }
 
                     materialGroup.setName(view.getTxtName().getValue());
                     materialGroup.setCode(view.getTxtCode().getValue());
                     materialGroup.setRegex(view.getTxtRegex().getValue());
                     materialGroup.setCodeDisplay(view.getTxtCodeDisplay().getValue());
+                    materialGroup.setPosition(view.getTxtOrder().getValue().intValue());
 
                     dispatch.execute(new SaveAction(materialGroup), new AbstractAsyncCallback<SaveResult>() {
                         @Override

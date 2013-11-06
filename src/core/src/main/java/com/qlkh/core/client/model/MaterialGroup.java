@@ -16,7 +16,7 @@ public class MaterialGroup extends AbstractEntity {
     private String name;
     private String regex;
     private String codeDisplay;
-    private Integer order;
+    private Integer position;
 
     public String getCode() {
         return code;
@@ -58,11 +58,11 @@ public class MaterialGroup extends AbstractEntity {
         this.codeDisplay = codeDisplay;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPosition() {
+        return position;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPosition(Integer order) {
+        this.position = order;
     }
 }

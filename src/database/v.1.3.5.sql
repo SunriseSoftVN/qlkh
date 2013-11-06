@@ -1,11 +1,11 @@
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-ALTER TABLE `material_group` ADD `order` INT NOT NULL;
+ALTER TABLE `material_group` ADD `position` INT NOT NULL;
 
 TRUNCATE TABLE `material_group`;
 
-INSERT INTO `material_group` (`id`, `codeDisplay`, `createdDate`, `updatedDate`, `createBy`, `updateBy`, `name`, `code`, `regex`, `order`) VALUES
+INSERT INTO `material_group` (`id`, `codeDisplay`, `createdDate`, `updatedDate`, `createBy`, `updateBy`, `name`, `code`, `regex`, `position`) VALUES
 (14, 'SF1', '2013-04-29', '2013-07-29', 1, 1, 'ĐƯỜNG TRUYỀN TẢI', 'SF1', 'SF1.*', 3),
 (15, 'I', '2013-04-29', '2013-07-26', 1, 1, 'ĐỊNH KỲ', 'SF1.I', '1.1*,1.2*,1.3*,1.4*', 4),
 (16, 'II', '2013-04-29', '2013-07-26', 1, 1, 'KHÔNG ĐỊNH KỲ', 'SF1.II', '1.5*,1.6*', 5),
