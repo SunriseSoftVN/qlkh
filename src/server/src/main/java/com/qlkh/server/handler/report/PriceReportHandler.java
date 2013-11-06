@@ -90,11 +90,20 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     if (displayData.isEmpty()) {
                         displayData = data;
                     } else {
+
+                        //add material do not exist in last quarter
+
+                        for (PriceReportBean bean1 : data) {
+                            if(!displayData.contains(bean1)) {
+                                displayData.add(bean1);
+                            }
+                        }
+
                         for (PriceReportBean bean1 : displayData) {
                             for (PriceColumnBean column1 : bean1.getColumns().values()) {
                                 for (PriceReportBean bean2 : data) {
                                     for (PriceColumnBean column2 : bean2.getColumns().values()) {
-                                        if (bean2.getCode().equals(bean1.getCode())
+                                        if (bean2.equals(bean1)
                                                 && column1.getId() == column2.getId()) {
                                             if (column1.getWeight() == null) {
                                                 column1.setWeight(column2.getWeight());
@@ -111,6 +120,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                                         }
                                     }
                                 }
+                            }
+                        }
+
+                        //re caculator the price
+                        for (PriceReportBean bean1 : displayData) {
+                            PriceColumnBean companyCol = selectUnique(bean1.getColumns().values(),
+                                    having(on(PriceColumnBean.class).getId(), equalTo(StationCodeEnum.COMPANY.getId())));
+
+                            if (bean1.getPrice() != null) {
+                                double newPrice = companyCol.getPrice() / companyCol.getWeight();
+                                newPrice = Math.round(newPrice * 10) / 10;
+                                bean1.setPrice(newPrice);
                             }
                         }
                     }
