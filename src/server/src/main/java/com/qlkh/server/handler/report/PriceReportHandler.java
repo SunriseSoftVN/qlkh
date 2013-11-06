@@ -60,7 +60,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
  */
 public class PriceReportHandler extends AbstractHandler<PriceReportAction, PriceReportResult> implements ApplicationContextAware {
 
-    private static final String REPORT_FILE_NAME = "kehoachcungvatu";
+    private static final String REPORT_FILE_NAME = "kehoachcungvattu";
     private static final Font DEFAULT_FONT = new Font(8, "Arial", "/fonts/Arial.ttf",
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
     private static final Font TITLE_FONT = new Font(14, "Arial", "/fonts/Arial.ttf",
@@ -94,12 +94,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             for (PriceColumnBean column1 : bean1.getColumns().values()) {
                                 for (PriceReportBean bean2 : data) {
                                     for (PriceColumnBean column2 : bean2.getColumns().values()) {
-                                        if (column1.getId() == column2.getId()) {
+                                        if (bean2.getCode().equals(bean1.getCode())
+                                                && column1.getId() == column2.getId()) {
                                             if (column1.getWeight() == null) {
                                                 column1.setWeight(column2.getWeight());
+                                            }
+                                            if (column1.getPrice() == null) {
                                                 column1.setPrice(column2.getPrice());
-                                            } else if(column2.getWeight() != null) {
+                                            }
+                                            if (column1.getWeight() != null && column2.getWeight() != null) {
                                                 column1.setWeight(column2.getWeight() + column1.getWeight());
+                                            }
+                                            if (column1.getPrice() != null && column2.getPrice() != null) {
                                                 column1.setPrice(column2.getPrice() + column1.getPrice());
                                             }
                                         }
@@ -108,6 +114,8 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             }
                         }
                     }
+                } else {
+                    action.setReportTypeEnum(ReportTypeEnum.CA_NAM);
                 }
             }
         } else {
@@ -248,7 +256,8 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             childPrice.setQuantity(material.getQuantity());
                             childPrice.setMaterialId(material.getMaterialId());
                             childPrice.setTaskId(material.getTaskId());
-
+                            //code is unique for each bean
+                            childPrice.setCode(String.valueOf(material.getMaterialId()));
                             price.getChildren().add(childPrice);
                         }
                     }
