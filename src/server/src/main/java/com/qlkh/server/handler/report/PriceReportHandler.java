@@ -93,29 +93,30 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
                         //add material do not exist in last quarter
 
-                        for (PriceReportBean bean1 : data) {
-                            if(!displayData.contains(bean1)) {
-                                displayData.add(bean1);
-                            }
-                        }
+//                        for (PriceReportBean bean1 : data) {
+//                            if (!displayData.contains(bean1)) {
+//                                displayData.add(bean1);
+//                            }
+//                        }
 
                         for (PriceReportBean bean1 : displayData) {
                             for (PriceColumnBean column1 : bean1.getColumns().values()) {
                                 for (PriceReportBean bean2 : data) {
-                                    for (PriceColumnBean column2 : bean2.getColumns().values()) {
-                                        if (bean2.equals(bean1)
-                                                && column1.getId() == column2.getId()) {
-                                            if (column1.getWeight() == null) {
-                                                column1.setWeight(column2.getWeight());
-                                            }
-                                            if (column1.getPrice() == null) {
-                                                column1.setPrice(column2.getPrice());
-                                            }
-                                            if (column1.getWeight() != null && column2.getWeight() != null) {
-                                                column1.setWeight(column2.getWeight() + column1.getWeight());
-                                            }
-                                            if (column1.getPrice() != null && column2.getPrice() != null) {
-                                                column1.setPrice(column2.getPrice() + column1.getPrice());
+                                    if (bean2.getCode().equals(bean1.getCode())) {
+                                        for (PriceColumnBean column2 : bean2.getColumns().values()) {
+                                            if (column1.getId() == column2.getId()) {
+                                                if (column1.getWeight() == null) {
+                                                    column1.setWeight(column2.getWeight());
+                                                }
+                                                if (column1.getPrice() == null) {
+                                                    column1.setPrice(column2.getPrice());
+                                                }
+                                                if (column1.getWeight() != null && column2.getWeight() != null) {
+                                                    column1.setWeight(column2.getWeight() + column1.getWeight());
+                                                }
+                                                if (column1.getPrice() != null && column2.getPrice() != null) {
+                                                    column1.setPrice(column2.getPrice() + column1.getPrice());
+                                                }
                                             }
                                         }
                                     }

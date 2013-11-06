@@ -210,14 +210,4 @@ public class PriceReportBean implements Serializable {
     public void setTaskId(long taskId) {
         this.taskId = taskId;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof PriceReportBean) {
-            if (((PriceReportBean) obj).getCode() != null && this.code != null) {
-                return ((PriceReportBean) obj).getCode().equals(this.code);
-            }
-        }
-        return false;
-    }
 }
