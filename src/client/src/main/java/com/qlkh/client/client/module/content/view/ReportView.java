@@ -143,6 +143,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbPriceReportType.add(ReportTypeEnum.Q2);
         cbbPriceReportType.add(ReportTypeEnum.Q3);
         cbbPriceReportType.add(ReportTypeEnum.Q4);
+        cbbPriceReportType.add(ReportTypeEnum.CA_NAM);
         cbbPriceReportType.setSimpleValue(ReportTypeEnum.Q1);
         cbbPriceReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbPriceReportType.setEditable(false);
@@ -157,7 +158,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbMaterialReportType.setEditable(false);
         cbbMaterialReportType.setWidth(100);
 
-        for (int i = 2012; i < 2100; i++) {
+        for (int i = 2012; i < 2030; i++) {
             cbbTaskYear.add(i);
             cbbPriceYear.add(i);
             cbbMaterialYear.add(i);

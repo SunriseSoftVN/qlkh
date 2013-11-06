@@ -46,10 +46,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static com.qlkh.server.business.rule.StationCodeEnum.*;
@@ -84,6 +81,43 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
     @Override
     public PriceReportResult execute(PriceReportAction action, ExecutionContext executionContext) throws DispatchException {
+        List<PriceReportBean> displayData = Collections.emptyList();
+        if (action.getReportTypeEnum() == ReportTypeEnum.CA_NAM) {
+            for (ReportTypeEnum typeEnum : ReportTypeEnum.values()) {
+                if (typeEnum != ReportTypeEnum.CA_NAM) {
+                    action.setReportTypeEnum(typeEnum);
+                    List<PriceReportBean> data = buildReportData(action);
+                    if (displayData.isEmpty()) {
+                        displayData = data;
+                    } else {
+                        for (PriceReportBean bean1 : displayData) {
+                            for (PriceColumnBean column1 : bean1.getColumns().values()) {
+                                for (PriceReportBean bean2 : data) {
+                                    for (PriceColumnBean column2 : bean2.getColumns().values()) {
+                                        if (column1.getId() == column2.getId()) {
+                                            if (column1.getWeight() == null) {
+                                                column1.setWeight(column2.getWeight());
+                                                column1.setPrice(column2.getPrice());
+                                            } else if(column2.getWeight() != null) {
+                                                column1.setWeight(column2.getWeight() + column1.getWeight());
+                                                column1.setPrice(column2.getPrice() + column1.getPrice());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            displayData = buildReportData(action);
+        }
+
+        return new PriceReportResult(reportForCompany(action, displayData));
+    }
+
+    private List<PriceReportBean> buildReportData(PriceReportAction action) throws ActionException {
         List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
         List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
         List<PriceReportBean> prices = new ArrayList<PriceReportBean>();
@@ -156,8 +190,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 }
             }
         }
-
-        return new PriceReportResult(reportForCompany(action, displayData));
+        return displayData;
     }
 
     private void fillData(List<PriceReportBean> prices, List<TaskSumReportBean> tasks) {
