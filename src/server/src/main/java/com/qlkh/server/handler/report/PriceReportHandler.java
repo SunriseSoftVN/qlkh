@@ -153,7 +153,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         List<PriceReportBean> prices = new ArrayList<PriceReportBean>();
 
         //Add material group.
-        List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class, Order.asc("code"));
+        List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class, Order.asc("order"));
         for (MaterialGroup materialGroup : materialGroups) {
             String[] regex = materialGroup.getRegexs();
             if (regex != null) {
