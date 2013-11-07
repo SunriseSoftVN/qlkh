@@ -127,7 +127,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 PriceColumnBean companyCol = selectUnique(bean1.getColumns().values(),
                         having(on(PriceColumnBean.class).getId(), equalTo(StationCodeEnum.COMPANY.getId())));
 
-                if (!bean1.isGroup()) {
+                if (!bean1.isGroup() && companyCol.getPrice() != null && companyCol.getWeight() != null) {
                     double newPrice = companyCol.getPrice() / companyCol.getWeight();
                     newPrice = Math.round(newPrice * 10) / 10;
                     bean1.setPrice(newPrice);
