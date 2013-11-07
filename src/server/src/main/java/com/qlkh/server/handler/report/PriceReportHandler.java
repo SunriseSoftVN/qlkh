@@ -103,14 +103,13 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                                         if (column1.getId() == column2.getId()) {
                                             if (column1.getWeight() == null) {
                                                 column1.setWeight(column2.getWeight());
-                                            }
-                                            if (column1.getPrice() == null) {
-                                                column1.setPrice(column2.getPrice());
-                                            }
-                                            if (column1.getWeight() != null && column2.getWeight() != null) {
+                                            } else if (column1.getWeight() != null && column2.getWeight() != null) {
                                                 column1.setWeight(column2.getWeight() + column1.getWeight());
                                             }
-                                            if (column1.getPrice() != null && column2.getPrice() != null) {
+
+                                            if (column1.getPrice() == null) {
+                                                column1.setPrice(column2.getPrice());
+                                            } else if (column1.getPrice() != null && column2.getPrice() != null) {
                                                 column1.setPrice(column2.getPrice() + column1.getPrice());
                                             }
                                         }
@@ -119,22 +118,21 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             }
                         }
                     }
-                } else {
-                    action.setReportTypeEnum(ReportTypeEnum.CA_NAM);
                 }
             }
+            action.setReportTypeEnum(ReportTypeEnum.CA_NAM);
 
-//            //re caculator the price
-//            for (PriceReportBean bean1 : displayData) {
-//                PriceColumnBean companyCol = selectUnique(bean1.getColumns().values(),
-//                        having(on(PriceColumnBean.class).getId(), equalTo(StationCodeEnum.COMPANY.getId())));
-//
-//                if (bean1.getPrice() != null) {
-//                    double newPrice = companyCol.getPrice() / companyCol.getWeight();
-//                    newPrice = Math.round(newPrice * 10) / 10;
-//                    bean1.setPrice(newPrice);
-//                }
-//            }
+            //re caculator the price
+            for (PriceReportBean bean1 : displayData) {
+                PriceColumnBean companyCol = selectUnique(bean1.getColumns().values(),
+                        having(on(PriceColumnBean.class).getId(), equalTo(StationCodeEnum.COMPANY.getId())));
+
+                if (!bean1.isGroup()) {
+                    double newPrice = companyCol.getPrice() / companyCol.getWeight();
+                    newPrice = Math.round(newPrice * 10) / 10;
+                    bean1.setPrice(newPrice);
+                }
+            }
         } else {
             displayData = buildReportData(action);
         }
@@ -193,7 +191,6 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
         //Fill Data
         fillData(prices, tasks);
-
         forEach(prices).calculate();
 
         List<PriceReportBean> displayData = new ArrayList<PriceReportBean>();
@@ -223,7 +220,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         //hide some data
         if (action.getStationId() == COMPANY.getId()) {
             for (PriceReportBean price : displayData) {
-                if (price.getRegex().length > 0) {
+                if (price.isGroup()) {
                     for (PriceColumnBean column : price.getColumns().values()) {
                         if (column.getId() != COMPANY.getId()
                                 && column.getId() != ND_FOR_REPORT.getId()
@@ -294,7 +291,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                             childPrice.setMaterialId(material.getMaterialId());
                             childPrice.setTaskId(material.getTaskId());
                             //code is unique for each bean
-                            childPrice.setCode(String.valueOf(material.getMaterialId()));
+                            childPrice.setCode(String.valueOf(material.getMaterialId() + material.getTaskId()));
                             price.getChildren().add(childPrice);
                         }
                     }

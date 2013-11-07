@@ -210,4 +210,8 @@ public class PriceReportBean implements Serializable {
     public void setTaskId(long taskId) {
         this.taskId = taskId;
     }
+
+    public boolean isGroup() {
+        return regex != null && regex.length > 0;
+    }
 }
