@@ -2,8 +2,6 @@ package com.qlkh.core.client.model;
 
 import com.qlkh.core.client.model.core.AbstractEntity;
 
-import javax.persistence.Transient;
-
 /**
  * The Class MaterialGroup.
  *
@@ -38,7 +36,7 @@ public class MaterialGroup extends AbstractEntity {
         return regex;
     }
 
-    @Transient
+    @SuppressWarnings({"JpaAttributeTypeInspection", "JpaAttributeMemberSignatureInspection"})
     public String[] getRegexs() {
         if (regex != null) {
             return regex.split(",");

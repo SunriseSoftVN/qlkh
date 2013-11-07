@@ -50,6 +50,7 @@ public class Material extends AbstractEntity {
         this.note = note;
     }
 
+    @SuppressWarnings("JpaAttributeTypeInspection")
     public MaterialPrice getCurrentPrice() {
         return currentPrice;
     }

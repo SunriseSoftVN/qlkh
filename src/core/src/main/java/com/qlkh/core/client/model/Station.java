@@ -30,7 +30,7 @@ public class Station extends AbstractEntity {
         return name;
     }
 
-    @Transient
+    @SuppressWarnings("JpaAttributeMemberSignatureInspection")
     public String getShortName() {
         String prefix = "Xí nghiệp ";
         String shortName = name.replace(prefix, "");
