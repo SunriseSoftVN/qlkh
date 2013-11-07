@@ -17,7 +17,6 @@ public class PriceReportAction implements Action<PriceReportResult> {
     private long stationId;
     private Long branchId;
     private int year;
-    private boolean isYearReport;
 
     public PriceReportAction() {
     }
@@ -28,9 +27,6 @@ public class PriceReportAction implements Action<PriceReportResult> {
         this.stationId = stationId;
         this.branchId = branchId;
         this.year = year;
-        if(reportTypeEnum == ReportTypeEnum.CA_NAM) {
-            isYearReport = true;
-        }
     }
 
     public ReportTypeEnum getReportTypeEnum() {
@@ -73,11 +69,4 @@ public class PriceReportAction implements Action<PriceReportResult> {
         this.year = year;
     }
 
-    public boolean isYearReport() {
-        return isYearReport;
-    }
-
-    public void setYearReport(boolean yearReport) {
-        isYearReport = yearReport;
-    }
 }

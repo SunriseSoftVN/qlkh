@@ -46,7 +46,7 @@ public class TestReportHandler extends AbstractTransactionalJUnit4SpringContextT
                 ReportFileTypeEnum.EXCEL, CAUGIAT.getId(), null, 2012));
     }
 
-    @Test(timeout = 30000)
+    @Test(timeout = 40000)
     public void testPriceReport() throws DispatchException {
         dispatch.execute(new PriceReportAction(ReportTypeEnum.CA_NAM, ReportFileTypeEnum.PDF, 27, null, 2013));
     }

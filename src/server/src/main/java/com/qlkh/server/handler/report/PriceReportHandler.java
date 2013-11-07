@@ -46,7 +46,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static ch.lambdaj.Lambda.*;
 import static com.qlkh.server.business.rule.StationCodeEnum.*;
@@ -81,49 +84,38 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
     @Override
     public PriceReportResult execute(PriceReportAction action, ExecutionContext executionContext) throws DispatchException {
-        List<PriceReportBean> displayData = Collections.emptyList();
+        List<PriceReportBean> displayData;
         if (action.getReportTypeEnum() == ReportTypeEnum.CA_NAM) {
+
+            //init structure only no calculator.
+            displayData = buildReportData(action);
+
             for (ReportTypeEnum typeEnum : ReportTypeEnum.values()) {
                 if (typeEnum != ReportTypeEnum.CA_NAM) {
                     action.setReportTypeEnum(typeEnum);
                     List<PriceReportBean> data = buildReportData(action);
-                    if (displayData.isEmpty()) {
-                        displayData = data;
-                    } else {
-                        for (PriceReportBean bean1 : displayData) {
-                            for (PriceColumnBean column1 : bean1.getColumns().values()) {
-                                for (PriceReportBean bean2 : data) {
-                                    if (bean2.getCode().equals(bean1.getCode())) {
-                                        for (PriceColumnBean column2 : bean2.getColumns().values()) {
-                                            if (column1.getId() == column2.getId()) {
-                                                if (column1.getWeight() == null) {
-                                                    column1.setWeight(column2.getWeight());
-                                                }
-                                                if (column1.getPrice() == null) {
-                                                    column1.setPrice(column2.getPrice());
-                                                }
-                                                if (column1.getWeight() != null && column2.getWeight() != null) {
-                                                    column1.setWeight(column2.getWeight() + column1.getWeight());
-                                                }
-                                                if (column1.getPrice() != null && column2.getPrice() != null) {
-                                                    column1.setPrice(column2.getPrice() + column1.getPrice());
-                                                }
+
+                    for (PriceReportBean bean1 : displayData) {
+                        for (PriceColumnBean column1 : bean1.getColumns().values()) {
+                            for (PriceReportBean bean2 : data) {
+                                if (bean2.getCode().equals(bean1.getCode())) {
+                                    for (PriceColumnBean column2 : bean2.getColumns().values()) {
+                                        if (column1.getId() == column2.getId()) {
+                                            if (column1.getWeight() == null) {
+                                                column1.setWeight(column2.getWeight());
+                                            }
+                                            if (column1.getPrice() == null) {
+                                                column1.setPrice(column2.getPrice());
+                                            }
+                                            if (column1.getWeight() != null && column2.getWeight() != null) {
+                                                column1.setWeight(column2.getWeight() + column1.getWeight());
+                                            }
+                                            if (column1.getPrice() != null && column2.getPrice() != null) {
+                                                column1.setPrice(column2.getPrice() + column1.getPrice());
                                             }
                                         }
                                     }
                                 }
-                            }
-                        }
-
-                        //re caculator the price
-                        for (PriceReportBean bean1 : displayData) {
-                            PriceColumnBean companyCol = selectUnique(bean1.getColumns().values(),
-                                    having(on(PriceColumnBean.class).getId(), equalTo(StationCodeEnum.COMPANY.getId())));
-
-                            if (bean1.getPrice() != null) {
-                                double newPrice = companyCol.getPrice() / companyCol.getWeight();
-                                newPrice = Math.round(newPrice * 10) / 10;
-                                bean1.setPrice(newPrice);
                             }
                         }
                     }
@@ -131,6 +123,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     action.setReportTypeEnum(ReportTypeEnum.CA_NAM);
                 }
             }
+
+//            //re caculator the price
+//            for (PriceReportBean bean1 : displayData) {
+//                PriceColumnBean companyCol = selectUnique(bean1.getColumns().values(),
+//                        having(on(PriceColumnBean.class).getId(), equalTo(StationCodeEnum.COMPANY.getId())));
+//
+//                if (bean1.getPrice() != null) {
+//                    double newPrice = companyCol.getPrice() / companyCol.getWeight();
+//                    newPrice = Math.round(newPrice * 10) / 10;
+//                    bean1.setPrice(newPrice);
+//                }
+//            }
         } else {
             displayData = buildReportData(action);
         }
@@ -140,7 +144,14 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
     //this method is only for a quarter if you want to do for the whole year, you have to call this method 4 times.
     private List<PriceReportBean> buildReportData(PriceReportAction action) throws ActionException {
-        List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
+        List<TaskMaterialDataView> dataViews;
+
+        if (action.getReportTypeEnum() == ReportTypeEnum.CA_NAM) {
+            dataViews = sqlQueryDao.getTaskMaterial(action.getYear());
+        } else {
+            dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
+        }
+
         List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
         List<PriceReportBean> prices = new ArrayList<PriceReportBean>();
 
@@ -193,6 +204,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 if (child.getRegex().length == 0) {
                     child.setStt(String.valueOf(index += 1));
                     displayData.add(child);
+                }
+            }
+        }
+
+        if (action.getReportTypeEnum() == ReportTypeEnum.CA_NAM) {
+            //Empty data
+            for (PriceReportBean bean : displayData) {
+                bean.setPrice(null);
+                for (PriceColumnBean col : bean.getColumns().values()) {
+                    col.setPrice(null);
+                    col.setTaskWeight(null);
+                    col.setWeight(null);
                 }
             }
         }
