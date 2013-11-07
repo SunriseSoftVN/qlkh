@@ -143,7 +143,6 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbPriceReportType.add(ReportTypeEnum.Q2);
         cbbPriceReportType.add(ReportTypeEnum.Q3);
         cbbPriceReportType.add(ReportTypeEnum.Q4);
-        cbbPriceReportType.add(ReportTypeEnum.CA_NAM);
         cbbPriceReportType.setSimpleValue(ReportTypeEnum.Q1);
         cbbPriceReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbPriceReportType.setEditable(false);

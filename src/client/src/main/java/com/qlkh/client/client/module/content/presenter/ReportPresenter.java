@@ -7,6 +7,8 @@ package com.qlkh.client.client.module.content.presenter;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelLookup;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -21,6 +23,7 @@ import com.qlkh.core.client.action.station.LoadStationAction;
 import com.qlkh.core.client.action.station.LoadStationResult;
 import com.qlkh.core.client.action.time.GetServerTimeAction;
 import com.qlkh.core.client.action.time.GetServerTimeResult;
+import com.qlkh.core.client.constant.QuarterEnum;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.constant.UserRoleEnum;
@@ -47,6 +50,8 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     private ListStore<BeanModel> stationListStore;
     private ListStore<BeanModel> branchListStore;
     private Station currentStation;
+    private int currentYear;
+    private QuarterEnum currentQuarter;
 
     @Override
     public void onActivate() {
@@ -83,6 +88,8 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         dispatch.execute(new GetServerTimeAction(), new AbstractAsyncCallback<GetServerTimeResult>() {
             @Override
             public void onSuccess(GetServerTimeResult result) {
+                currentYear = result.getYear();
+                currentQuarter = result.getQuarter();
                 view.getCbbTaskYear().setSimpleValue(result.getYear());
                 view.getCbbPriceYear().setSimpleValue(result.getYear());
                 view.getCbbMaterialYear().setSimpleValue(result.getYear());
@@ -144,10 +151,25 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnMaterialInReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if(view.getTxtMaterialFrom().getValue() != null
+                if (view.getTxtMaterialFrom().getValue() != null
                         && view.getTxtMaterialTo().getValue() != null) {
                     materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
                             view.getTxtMaterialTo().getValue().intValue());
+                }
+            }
+        });
+
+        view.getCbbPriceReportStation().addSelectionChangedListener(new SelectionChangedListener<BeanModel>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<BeanModel> event) {
+                Station station = view.getCbbPriceReportStation().getValue().getBean();
+                if (station.isCompany()) {
+                    view.getCbbPriceReportType().add(ReportTypeEnum.CA_NAM);
+                } else {
+                    if (view.getCbbPriceReportType().getSimpleValue() == ReportTypeEnum.CA_NAM) {
+                        view.getCbbPriceReportType().setSimpleValue(ReportTypeEnum.valueOf(currentQuarter.getCode()));
+                    }
+                    view.getCbbPriceReportType().remove(ReportTypeEnum.CA_NAM);
                 }
             }
         });

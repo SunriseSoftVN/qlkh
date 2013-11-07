@@ -30,6 +30,7 @@ public class Station extends AbstractEntity {
         return name;
     }
 
+    @Transient
     public String getShortName() {
         String prefix = "Xí nghiệp ";
         String shortName = name.replace(prefix, "");
