@@ -96,6 +96,20 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
     }
 
     @Override
+    public List<TaskMaterialDataView> getTaskMaterial(final int year) {
+        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskMaterialDataView>>() {
+            @Override
+            public List<TaskMaterialDataView> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT  * FROM `task_material` " +
+                        "WHERE year = :year");
+                sqlQuery.setParameter("year", year);
+                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(TaskMaterialDataView.class));
+                return sqlQuery.list();
+            }
+        });
+    }
+
+    @Override
     public List<TaskMaterialDataView> getTaskMaterialByMaterialId(final long materialId, final int year, final int quarter) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<TaskMaterialDataView>>() {
             @Override

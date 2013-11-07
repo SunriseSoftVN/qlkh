@@ -90,15 +90,6 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                     if (displayData.isEmpty()) {
                         displayData = data;
                     } else {
-
-                        //add material do not exist in last quarter
-
-//                        for (PriceReportBean bean1 : data) {
-//                            if (!displayData.contains(bean1)) {
-//                                displayData.add(bean1);
-//                            }
-//                        }
-
                         for (PriceReportBean bean1 : displayData) {
                             for (PriceColumnBean column1 : bean1.getColumns().values()) {
                                 for (PriceReportBean bean2 : data) {
@@ -147,6 +138,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         return new PriceReportResult(reportForCompany(action, displayData));
     }
 
+    //this method is only for a quarter if you want to do for the whole year, you have to call this method 4 times.
     private List<PriceReportBean> buildReportData(PriceReportAction action) throws ActionException {
         List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getReportTypeEnum().getValue());
         List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
