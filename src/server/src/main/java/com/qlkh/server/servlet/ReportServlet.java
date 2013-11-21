@@ -29,7 +29,7 @@ public class ReportServlet extends HttpServlet {
     public static final String REPORT_SERVLET_URI = "/report?";
 
     public static final String RESPONSE_HEADER = "Content-Disposition";
-    public static final String RESPONSE_HEADER_CONTENT = "attachment; filename=";
+    public static final String RESPONSE_HEADER_CONTENT = "inline; filename=";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,7 +44,10 @@ public class ReportServlet extends HttpServlet {
             inputStream.read(bytes);
 
             resp.setContentType(fileTypeEnum.getFileContent());
-            resp.setHeader(RESPONSE_HEADER, RESPONSE_HEADER_CONTENT + reportFileName);
+            resp.setHeader(RESPONSE_HEADER, RESPONSE_HEADER_CONTENT + "\""  + reportFileName + "\"");
+            if (reportFileName.contains("pdf")) {
+                resp.setHeader("content-type", "application/pdf");
+            }
             resp.setContentLength(bytes.length);
             resp.getOutputStream().write(bytes, 0, bytes.length);
             resp.getOutputStream().flush();

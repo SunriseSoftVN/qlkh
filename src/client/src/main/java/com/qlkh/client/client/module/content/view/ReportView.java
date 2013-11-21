@@ -246,7 +246,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     public com.extjs.gxt.ui.client.widget.Window createReportWindow(String url) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         window.add(lblDownload);
-        window.getButtonBar().add(new Html("<a href='" + url + "'><b>Download</b></a>"));
+        window.getButtonBar().add(new Html("<a target='_blank' href='" + url + "'><b>Download</b></a>"));
         window.addButton(btnReportCancel);
         window.setSize(380, 50);
         window.setResizable(false);

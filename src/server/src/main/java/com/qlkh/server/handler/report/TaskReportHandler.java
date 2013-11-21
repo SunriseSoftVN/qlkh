@@ -263,11 +263,11 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         fastReportBuilder.setUseFullPageWidth(true);
         fastReportBuilder.setLeftMargin(10);
 
-        if (reportFileTypeEnum == ReportFileTypeEnum.PDF) {
-            fastReportBuilder.setPrintBackgroundOnOddRows(true);
-        } else {
-            fastReportBuilder.setIgnorePagination(true);
-        }
+//        if (reportFileTypeEnum == ReportFileTypeEnum.PDF) {
+//            fastReportBuilder.setPrintBackgroundOnOddRows(true);
+//        } else {
+//            fastReportBuilder.setIgnorePagination(true);
+//        }
 
         return fastReportBuilder.build();
     }
