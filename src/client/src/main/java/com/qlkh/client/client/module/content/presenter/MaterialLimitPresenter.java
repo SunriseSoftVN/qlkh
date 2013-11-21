@@ -198,6 +198,36 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
             }
         });
 
+        view.getTxtMaterialCodeSearch().addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                String st = view.getTxtMaterialCodeSearch().getValue();
+                if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (StringUtils.isNotBlank(st)) {
+                        BasePagingLoadConfig loadConfig = (BasePagingLoadConfig) view.getTaskGird().
+                                getStore().getLoadConfig();
+//                        loadConfig.set("hasFilter", true);
+                        Map<String, Object> filters = new HashMap<String, Object>();
+                        filters.put("material.code", view.getTxtMaterialCodeSearch().getValue());
+                        loadConfig.set("filters", filters);
+                        view.getCbShowTaskHasLimit().setValue(true);
+                        view.getCbShowTaskHasNoLimit().setValue(false);
+                    } else {
+                        resetMaterialFilter();
+                    }
+                    view.getTaskPagingToolBar().refresh();
+                } else if (event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    resetMaterialFilter();
+                    com.google.gwt.user.client.Timer timer = new Timer() {
+                        @Override
+                        public void run() {
+                            view.getTaskPagingToolBar().refresh();
+                        }
+                    };
+                    timer.schedule(100);
+                }
+            }
+        });
     }
 
     private void resetMaterialFilter() {
@@ -206,6 +236,7 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
         loadConfig.set("hasFilter", false);
         loadConfig.set("filters", null);
         view.getTxtMaterialSearch().clear();
+        view.getTxtMaterialCodeSearch().clear();
     }
 
     @Override

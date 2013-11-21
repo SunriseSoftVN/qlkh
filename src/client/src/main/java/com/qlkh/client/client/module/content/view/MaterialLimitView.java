@@ -1,6 +1,5 @@
 package com.qlkh.client.client.module.content.view;
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
@@ -77,6 +76,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     @I18nField(emptyText = true)
     TextField<String> txtMaterialSearch = new TextField<String>();
 
+    @I18nField(emptyText = true)
+    TextField<String> txtMaterialCodeSearch = new TextField<String>();
+
     private ContentPanel materialPanel = new ContentPanel();
     private PagingToolBar materialPagingToolBar = new PagingToolBar(100);
 
@@ -86,7 +88,11 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     @Override
     protected ToolBar createToolBar() {
         ToolBar toolBar = new ToolBar();
+        getTxtSearch().setWidth(150);
         toolBar.add(getTxtSearch());
+        toolBar.add(new SeparatorToolItem());
+        txtMaterialCodeSearch.setWidth(100);
+        toolBar.add(txtMaterialCodeSearch);
         toolBar.add(new SeparatorToolItem());
         cbShowTaskHasLimit.setBoxLabel(getConstant().cbShowTaskHasLimit());
         cbShowTaskHasNoLimit.setBoxLabel(getConstant().cbShowTaskHasNoLimit());
@@ -250,5 +256,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     public TextField<String> getTxtMaterialSearch() {
         return txtMaterialSearch;
+    }
+
+    public TextField<String> getTxtMaterialCodeSearch() {
+        return txtMaterialCodeSearch;
     }
 }

@@ -17,6 +17,7 @@ import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.MaterialReportBean;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.AbstractDao;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -162,8 +163,25 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
 
                 String sql = "";
 
+                String materialCode = "";
+                //hard code
+                if (config.get("filters") != null) {
+                    Map<String, Object> filters = config.get("filters");
+                    materialCode = (String) filters.get("material.code");
+                    filters.remove("material.code");
+                }
+
                 if (hasLimit && !hasNoLimit) {
-                    sql += "WHERE `task`.`id` IN (SELECT `taskid` FROM `material_limit`) ";
+                    sql += "WHERE `task`.`id` IN (" +
+                            "SELECT `taskid` FROM `material_limit` " +
+                            "INNER JOIN `material` " +
+                            "ON `material`.`id` = `material_limit`.`materialId` ";
+
+                    if (StringUtils.isNotBlank(materialCode)) {
+                        sql += "AND `material`.`code` = '" + materialCode + "' )";
+                    } else {
+                        sql += ")";
+                    }
                 } else if (hasNoLimit && !hasLimit) {
                     sql += "WHERE `task`.`id` NOT IN (SELECT `taskid` FROM `material_limit`) ";
                 }
