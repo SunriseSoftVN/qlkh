@@ -41,13 +41,13 @@ public class SaveTaskDefaultValueHandler extends AbstractHandler<SaveTaskDefault
     @Override
     public SaveTaskDefaultValueResult execute(SaveTaskDefaultValueAction action, ExecutionContext context) throws DispatchException {
         List<TaskDefaultValue> taskDefaultValues = generalDao.findCriteria(TaskDefaultValue.class,
-                Restrictions.eq("task.id", action.getTask().getId()), Restrictions.eq("quarter", getCurrentQuarter()),
+                Restrictions.eq("task.id", action.getTask().getId()), Restrictions.eq("quarter", getCurrentQuarter().getCode()),
                 Restrictions.eq("year", getCurrentYear()));
         TaskDefaultValue taskDefaultValue;
         if (CollectionUtils.isNotEmpty(taskDefaultValues)) {
             taskDefaultValue = selectUnique(taskDefaultValues,
                     having(on(TaskDefaultValue.class).getYear(), equalTo(getCurrentYear())).
-                            and(having(on(TaskDefaultValue.class).getQuarter(), equalTo(getCurrentQuarter()))));
+                            and(having(on(TaskDefaultValue.class).getQuarter(), equalTo(getCurrentQuarter().getCode()))));
         } else {
             taskDefaultValue = new TaskDefaultValue();
             taskDefaultValue.setTask(action.getTask());
