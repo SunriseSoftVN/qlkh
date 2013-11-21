@@ -56,22 +56,24 @@ public class LoadMaterialInHandler extends AbstractHandler<LoadMaterialInAction,
         }
 
 
-        List<Long> materialIds = extract(result.getData(), on(MaterialIn.class).getMaterial().getId());
+        if(result.getTotalLength() > 0) {
+            List<Long> materialIds = extract(result.getData(), on(MaterialIn.class).getMaterial().getId());
 
-        List<MaterialPrice> prices = generalDao.findCriteria(MaterialPrice.class,
-                Restrictions.in("material.id", materialIds),
-                Restrictions.eq("quarter", action.getQuarter()),
-                Restrictions.eq("year", action.getYear())
-        );
+            List<MaterialPrice> prices = generalDao.findCriteria(MaterialPrice.class,
+                    Restrictions.in("material.id", materialIds),
+                    Restrictions.eq("quarter", action.getQuarter()),
+                    Restrictions.eq("year", action.getYear())
+            );
 
 
-        for (MaterialIn materialIn : result.getData()) {
-            if (materialIn.getMaterial() != null) {
-                MaterialPrice price = selectUnique(prices,
-                        having(on(MaterialPrice.class).getMaterial().getId(),
-                                equalTo(materialIn.getMaterial().getId())));
-                if (price != null) {
-                    materialIn.getMaterial().setCurrentPrice(price);
+            for (MaterialIn materialIn : result.getData()) {
+                if (materialIn.getMaterial() != null) {
+                    MaterialPrice price = selectUnique(prices,
+                            having(on(MaterialPrice.class).getMaterial().getId(),
+                                    equalTo(materialIn.getMaterial().getId())));
+                    if (price != null) {
+                        materialIn.getMaterial().setCurrentPrice(price);
+                    }
                 }
             }
         }
