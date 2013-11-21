@@ -35,7 +35,26 @@ public class LoadMaterialInHandler extends AbstractHandler<LoadMaterialInAction,
 
     @Override
     public LoadMaterialInResult execute(LoadMaterialInAction action, ExecutionContext context) throws DispatchException {
-        BasePagingLoadResult<MaterialIn> result = generalDao.getByBeanConfig(MaterialIn.class.getName(), action.getLoadConfig());
+        BasePagingLoadResult<MaterialIn> result = null;
+        if (action.getGroupId() != null) {
+            result = generalDao.getByBeanConfig(
+                    MaterialIn.class.getName(), action.getLoadConfig(),
+                    Restrictions.eq("quarter", action.getQuarter()),
+                    Restrictions.eq("year", action.getYear()),
+                    Restrictions.eq("group.id", action.getGroupId()));
+        } else if (action.getStationId() != null) {
+            result = generalDao.getByBeanConfig(
+                    MaterialIn.class.getName(), action.getLoadConfig(),
+                    Restrictions.eq("quarter", action.getQuarter()),
+                    Restrictions.eq("year", action.getYear()),
+                    Restrictions.eq("station.id", action.getStationId()));
+        } else {
+            result = generalDao.getByBeanConfig(
+                    MaterialIn.class.getName(), action.getLoadConfig(),
+                    Restrictions.eq("quarter", action.getQuarter()),
+                    Restrictions.eq("year", action.getYear()));
+        }
+
 
         List<Long> materialIds = extract(result.getData(), on(MaterialIn.class).getMaterial().getId());
 
