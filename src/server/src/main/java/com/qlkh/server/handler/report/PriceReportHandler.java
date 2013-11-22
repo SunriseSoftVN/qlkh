@@ -494,11 +494,9 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         fastReportBuilder.setUseFullPageWidth(true);
         fastReportBuilder.setLeftMargin(10);
 
-//        if (reportFileTypeEnum == ReportFileTypeEnum.PDF) {
-//            fastReportBuilder.setPrintBackgroundOnOddRows(true);
-//        } else {
-//            fastReportBuilder.setIgnorePagination(true);
-//        }
+        if (reportFileTypeEnum == ReportFileTypeEnum.EXCEL) {
+            fastReportBuilder.setIgnorePagination(true);
+        }
 
         return fastReportBuilder.build();
     }

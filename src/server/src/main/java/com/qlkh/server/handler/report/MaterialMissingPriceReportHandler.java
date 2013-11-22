@@ -156,11 +156,9 @@ public class MaterialMissingPriceReportHandler extends AbstractHandler<MaterialM
             fastReportBuilder.setUseFullPageWidth(true);
             fastReportBuilder.setLeftMargin(10);
 
-//            if (action.getFileTypeEnum() == ReportFileTypeEnum.PDF) {
-//                fastReportBuilder.setPrintBackgroundOnOddRows(true);
-//            } else {
-//                fastReportBuilder.setIgnorePagination(true);
-//            }
+            if (action.getFileTypeEnum() == ReportFileTypeEnum.EXCEL) {
+                fastReportBuilder.setIgnorePagination(true);
+            }
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
