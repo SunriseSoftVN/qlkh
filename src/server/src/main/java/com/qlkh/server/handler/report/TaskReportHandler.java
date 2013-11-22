@@ -178,6 +178,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         numberStyle.setBorderLeft(Border.THIN());
         numberStyle.setBorderRight(Border.THIN());
         numberStyle.setBorderBottom(Border.THIN());
+        numberStyle.setPaddingRight(5);
 
         Style nameStyle = new Style();
         nameStyle.setFont(DEFAULT_FONT);
@@ -560,7 +561,9 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
                 double time = (defaultValueQ1 * weightQ1 + defaultValueQ2 * weightQ2
                         + defaultValueQ3 * weightQ3 + defaultValueQ4 * weightQ4) * task.getQuota();
                 double yearDefaultValue = time / (weightQ1 + weightQ2 + weightQ3 + weightQ4) / task.getQuota();
-                task.setDefaultValueForPrinting(yearDefaultValue);
+                if (yearDefaultValue > 0) {
+                    task.setDefaultValueForPrinting(yearDefaultValue);
+                }
                 return time;
         }
         return 0d;
