@@ -280,6 +280,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
 
         ColumnConfig priceColumnConfig = new ColumnConfig("material.currentPrice.price", getConstant().priceColumnTitle(), 70);
         priceColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
+        priceColumnConfig.setSortable(false);
         columnConfigs.add(priceColumnConfig);
 
         ColumnConfig totalPrice = new ColumnConfig("totalPrice", getConstant().totalPriceColumnTitle(), 70);
@@ -293,10 +294,12 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
                 return "";
             }
         });
+        totalPrice.setSortable(false);
         columnConfigs.add(totalPrice);
 
         ColumnConfig remainColumnConfig = new ColumnConfig("remain", getConstant().remainColumnTitle(), 80);
         remainColumnConfig.setNumberFormat(NumberFormat.getFormat("###,###.##"));
+        remainColumnConfig.setSortable(false);
         columnConfigs.add(remainColumnConfig);
 
         return columnConfigs;
