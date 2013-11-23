@@ -12,6 +12,7 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 import org.hibernate.criterion.*;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,25 +43,27 @@ public abstract class AbstractDao<E extends AbstractEntity> extends HibernateDao
 
     private DetachedCriteria buildCriteria(String entityName, BasePagingLoadConfig config, Criterion... criterions) {
         DetachedCriteria criteria = DetachedCriteria.forEntityName(entityName);
+        List<String> joinAlias = new ArrayList<String>();
         if (StringUtils.isNotBlank(config.getSortField())) {
+            String joinEntityName = getRootEntityName(config.getSortField());
+            if (StringUtils.isNotEmpty(joinEntityName)) {
+                joinAlias.add(joinEntityName);
+            }
             if (config.getSortDir() == Style.SortDir.ASC) {
                 criteria.addOrder(Order.asc(config.getSortField()));
             } else if (config.getSortDir() == Style.SortDir.DESC) {
                 criteria.addOrder(Order.desc(config.getSortField()));
             }
         }
-        if (config.get("hasFilter") != null && (Boolean) config.get("hasFilter")) {
+        if (config.get("hasFilter") != null && config.<Boolean>get("hasFilter")) {
             Map<String, Object> filters = config.get("filters");
             if (filters != null) {
                 Criterion criterion = null;
-                String joinEntityName = null;
+                String joinEntityName;
                 for (String filter : filters.keySet()) {
-                    if (joinEntityName == null
-                            || !joinEntityName.equals(getRootEntityName(filter))) {
-                        joinEntityName = getRootEntityName(filter);
-                        if (StringUtils.isNotEmpty(joinEntityName)) {
-                            criteria.createAlias(joinEntityName, joinEntityName);
-                        }
+                    joinEntityName = getRootEntityName(filter);
+                    if (StringUtils.isNotEmpty(joinEntityName) && !joinAlias.contains(joinEntityName)) {
+                        joinAlias.add(joinEntityName);
                     }
                     Criterion likeCriterion;
                     Object filterValue = filters.get(filter);
@@ -87,6 +90,13 @@ public abstract class AbstractDao<E extends AbstractEntity> extends HibernateDao
                 }
             }
         }
+
+        if (!joinAlias.isEmpty()) {
+            for (String alias : joinAlias) {
+                criteria.createAlias(alias, alias);
+            }
+        }
+
         return criteria;
     }
 

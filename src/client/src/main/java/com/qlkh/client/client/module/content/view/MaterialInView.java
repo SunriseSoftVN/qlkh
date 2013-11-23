@@ -135,6 +135,7 @@ public class MaterialInView extends AbstractView<MaterialInViewConstant> {
         gird.addPlugin(selectionModel);
         gird.getStore().getLoader().setSortDir(Style.SortDir.ASC);
         gird.getStore().getLoader().setSortField("id");
+        gird.getStore().getLoader().setRemoteSort(true);
         gird.addListener(Events.OnKeyDown, new KeyListener() {
             @Override
             public void handleEvent(ComponentEvent e) {
