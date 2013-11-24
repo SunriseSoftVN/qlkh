@@ -55,6 +55,7 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
         List<MaterialPerson> materialPersons = generalDao.getAll(MaterialPerson.class);
         List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class);
         List<MaterialIn> updateData = new ArrayList<MaterialIn>();
+        List<MaterialIn> removeData = new ArrayList<MaterialIn>();
 
         //copy for whole year
         for (QuarterEnum quarter : QuarterEnum.values()) {
@@ -131,9 +132,20 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
                 }
             }
 
+            List<Long> materialIds2 = extract(dataViews, on(TaskMaterialDataView.class).getMaterialId());
+            for (MaterialIn materialIn : materialIns) {
+                if (!materialIds2.contains(materialIn.getMaterial().getId())) {
+                    if (materialIn.getWeight() == null && materialIn.getCode() == null) {
+                        removeData.add(materialIn);
+                    }
+                }
+            }
+
             updateData.addAll(copyData.values());
         }
+
         generalDao.saveOrUpdate(updateData);
+        generalDao.deleteByIds(MaterialIn.class, extract(removeData, on(MaterialIn.class).getId()));
         return new CopyMaterialInResult();
     }
 
