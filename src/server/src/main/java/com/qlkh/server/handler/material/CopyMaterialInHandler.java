@@ -3,10 +3,12 @@ package com.qlkh.server.handler.material;
 import com.qlkh.core.client.action.material.CopyMaterialInAction;
 import com.qlkh.core.client.action.material.CopyMaterialInResult;
 import com.qlkh.core.client.action.report.TaskReportAction;
+import com.qlkh.core.client.constant.QuarterEnum;
 import com.qlkh.core.client.model.*;
 import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
+import com.qlkh.server.business.rule.StationCodeEnum;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -48,65 +50,76 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
 
     @Override
     public CopyMaterialInResult execute(CopyMaterialInAction action, ExecutionContext context) throws DispatchException {
-        List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
-        List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getQuarter());
         List<Material> materials = generalDao.getAll(Material.class);
-        Station station = generalDao.findById(Station.class, action.getStationId());
-        List<MaterialPerson> materialPersons = generalDao.findCriteria(MaterialPerson.class,
-                Restrictions.eq("station.id", action.getStationId()));
+        List<Station> stations = generalDao.findCriteria(Station.class, Restrictions.ne("id", StationCodeEnum.COMPANY.getId()));
+        List<MaterialPerson> materialPersons = generalDao.getAll(MaterialPerson.class);
         List<MaterialGroup> materialGroups = generalDao.getAll(MaterialGroup.class);
+        List<MaterialIn> updateData = new ArrayList<MaterialIn>();
 
-        List<MaterialIn> materialIns = generalDao.findCriteria(MaterialIn.class,
-                Restrictions.eq("quarter", action.getQuarter()),
-                Restrictions.eq("year", action.getYear()),
-                Restrictions.eq("station.id", action.getStationId()));
+        //copy for whole year
+        for (QuarterEnum quarter : QuarterEnum.values()) {
+            action.setQuarter(quarter.getCode());
+            action.setStationId(StationCodeEnum.COMPANY.getId());
 
-        List<Long> materialIds = extract(materialIns, on(MaterialIn.class).getMaterial().getId());
+            List<TaskSumReportBean> tasks = getTaskReportHandler().buildReportData(new TaskReportAction(action));
+            List<TaskMaterialDataView> dataViews = sqlQueryDao.getTaskMaterial(action.getYear(), action.getQuarter());
+            List<MaterialIn> materialIns = generalDao.findCriteria(MaterialIn.class,
+                    Restrictions.eq("quarter", action.getQuarter()),
+                    Restrictions.eq("year", action.getYear()));
 
-        Map<String, MaterialIn> copyData = new HashMap<String, MaterialIn>();
-        SimpleRegexMatcher matcher = new SimpleRegexMatcher();
-        for (TaskMaterialDataView dataView : dataViews) {
-            if (!materialIds.contains(dataView.getMaterialId())) {
-                for (TaskSumReportBean task : tasks) {
-                    if (task.getTask().getId() == dataView.getTaskId()) {
-                        StationReportBean stationBean = task.getStations().get(String.valueOf(action.getStationId()));
-                        if (stationBean != null) {
-                            for (MaterialGroup materialGroup : materialGroups) {
-                                if (materialGroup.getRegexs() != null) {
-                                    for (String regex : materialGroup.getRegexs()) {
-                                        if (matcher.match(task.getTask().getCode(), regex)) {
-                                            String groupCode = materialGroup.getCode().split("\\.")[0];
-                                            MaterialGroup rootGroup = selectUnique(materialGroups,
-                                                    having(on(MaterialGroup.class).getCode(), equalTo(groupCode)));
-                                            if (rootGroup != null) {
-                                                String key = dataView.getMaterialId() + "-" + rootGroup.getId();
-                                                double weight = stationBean.getValue() * dataView.getQuantity();
+            List<Long> materialIds = extract(materialIns, on(MaterialIn.class).getMaterial().getId());
 
-                                                if (copyData.get(key) != null) {
-                                                    MaterialIn materialIn = copyData.get(key);
-                                                    weight = materialIn.getTotal() + weight;
-                                                    materialIn.setTotal(weight);
-                                                } else {
-                                                    Material material = selectUnique(materials,
-                                                            having(on(Material.class).getId(), equalTo(dataView.getMaterialId())));
+            Map<String, MaterialIn> copyData = new HashMap<String, MaterialIn>();
+            SimpleRegexMatcher matcher = new SimpleRegexMatcher();
+            for (TaskMaterialDataView dataView : dataViews) {
+                if (!materialIds.contains(dataView.getMaterialId())) {
+                    for (TaskSumReportBean task : tasks) {
+                        if (task.getTask().getId() == dataView.getTaskId()) {
+                            for (Station station : stations) {
+                                StationReportBean stationBean = task.getStations().get(String.valueOf(station.getId()));
+                                if (stationBean != null && stationBean.getValue() != null) {
+                                    for (MaterialGroup materialGroup : materialGroups) {
+                                        if (materialGroup.getRegexs() != null) {
+                                            for (String regex : materialGroup.getRegexs()) {
+                                                if (matcher.match(task.getTask().getCode(), regex)) {
+                                                    String groupCode = materialGroup.getCode().split("\\.")[0];
+                                                    MaterialGroup rootGroup = selectUnique(materialGroups,
+                                                            having(on(MaterialGroup.class).getCode(), equalTo(groupCode)));
+                                                    if (rootGroup != null) {
+                                                        String key = dataView.getMaterialId() + "-" + rootGroup.getId();
+                                                        double weight = stationBean.getValue() * dataView.getQuantity();
 
-                                                    MaterialIn materialIn = new MaterialIn();
-                                                    materialIn.setCreateBy(1l);
-                                                    materialIn.setUpdateBy(1l);
-                                                    materialIn.setMaterial(material);
-                                                    materialIn.setStation(station);
-                                                    materialIn.setYear(action.getYear());
-                                                    materialIn.setQuarter(action.getQuarter());
-                                                    materialIn.setExportDate(new Date());
+                                                        if (copyData.get(key) != null) {
+                                                            MaterialIn materialIn = copyData.get(key);
+                                                            weight = materialIn.getTotal() + weight;
+                                                            materialIn.setTotal(weight);
+                                                        } else {
+                                                            Material material = selectUnique(materials,
+                                                                    having(on(Material.class).getId(), equalTo(dataView.getMaterialId())));
 
-                                                    materialIn.setTotal(weight);
+                                                            MaterialIn materialIn = new MaterialIn();
+                                                            materialIn.setCreateBy(1l);
+                                                            materialIn.setUpdateBy(1l);
+                                                            materialIn.setMaterial(material);
+                                                            materialIn.setStation(station);
+                                                            materialIn.setYear(action.getYear());
+                                                            materialIn.setQuarter(action.getQuarter());
+                                                            materialIn.setExportDate(new Date());
 
-                                                    if (!materialPersons.isEmpty()) {
-                                                        materialIn.setMaterialPerson(materialPersons.get(0));
+                                                            materialIn.setTotal(weight);
+
+                                                            if (!materialPersons.isEmpty()) {
+                                                                MaterialPerson materialPerson = selectFirst(materialPersons,
+                                                                        having(on(MaterialPerson.class).getStation().getId(), equalTo(station.getId())));
+                                                                if (materialPerson != null) {
+                                                                    materialIn.setMaterialPerson(materialPerson);
+                                                                }
+                                                            }
+
+                                                            materialIn.setMaterialGroup(rootGroup);
+                                                            copyData.put(key, materialIn);
+                                                        }
                                                     }
-
-                                                    materialIn.setMaterialGroup(rootGroup);
-                                                    copyData.put(key, materialIn);
                                                 }
                                             }
                                         }
@@ -117,9 +130,10 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
                     }
                 }
             }
-        }
 
-        generalDao.saveOrUpdate(new ArrayList<MaterialIn>(copyData.values()));
+            updateData.addAll(copyData.values());
+        }
+        generalDao.saveOrUpdate(updateData);
         return new CopyMaterialInResult();
     }
 

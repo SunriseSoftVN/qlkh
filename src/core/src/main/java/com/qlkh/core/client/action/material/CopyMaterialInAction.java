@@ -17,6 +17,10 @@ public class CopyMaterialInAction implements Action<CopyMaterialInResult> {
     public CopyMaterialInAction() {
     }
 
+    public CopyMaterialInAction(int year) {
+        this.year = year;
+    }
+
     public CopyMaterialInAction(int year, int quarter, long stationId) {
         this.year = year;
         this.quarter = quarter;

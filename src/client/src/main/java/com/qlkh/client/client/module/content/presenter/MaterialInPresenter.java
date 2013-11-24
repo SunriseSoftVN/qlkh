@@ -97,7 +97,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                         if (!stations.isEmpty()) {
                                             view.getCbStation().setValue(store.getAt(0));
                                             currentStation = getCurrentStation();
-                                            view.getBtnCopy().setEnabled(false);
                                             view.createGrid(createGridStore());
                                             view.getPagingToolBar().bind((PagingLoader<?>) view.getGird().getStore().getLoader());
                                             view.getPagingToolBar().refresh();
@@ -109,13 +108,6 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                                                 public void selectionChanged(SelectionChangedEvent<BeanModel> beanModelSelectionChangedEvent) {
                                                     currentStation = getCurrentStation();
                                                     currentGroup = getCurrentGroup();
-                                                    if (currentStation != null) {
-                                                        if (currentStation.isCompany()) {
-                                                            view.getBtnCopy().setEnabled(false);
-                                                        } else {
-                                                            view.getBtnCopy().setEnabled(true);
-                                                        }
-                                                    }
                                                     view.getPagingToolBar().refresh();
                                                 }
                                             });
@@ -442,13 +434,14 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equals("Yes")) {
-                                dispatch.execute(new DeleteAction(MaterialIn.class.getName(), materialIds), new AbstractAsyncCallback<DeleteResult>() {
-                                    @Override
-                                    public void onSuccess(DeleteResult deleteResult) {
-                                        DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
-                                        view.getPagingToolBar().refresh();
-                                    }
-                                });
+                                dispatch.execute(new DeleteAction(MaterialIn.class.getName(), materialIds),
+                                        new AbstractAsyncCallback<DeleteResult>() {
+                                            @Override
+                                            public void onSuccess(DeleteResult deleteResult) {
+                                                DiaLogUtils.notify(view.getConstant().deleteMessageSuccess());
+                                                view.getPagingToolBar().refresh();
+                                            }
+                                        });
                             }
                         }
                     });
@@ -459,15 +452,15 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
         view.getBtnCopy().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                if (currentStation != null) {
-                    dispatch.execute(new CopyMaterialInAction(currentYear, currentQuarter.getCode(), currentStation.getId()),
-                            new AbstractAsyncCallback<CopyMaterialInResult>() {
-                                @Override
-                                public void onSuccess(CopyMaterialInResult copyMaterialInResult) {
-                                    view.getPagingToolBar().refresh();
-                                }
-                            });
-                }
+                view.getBtnCopy().setEnabled(false);
+                dispatch.execute(new CopyMaterialInAction(currentYear),
+                        new AbstractAsyncCallback<CopyMaterialInResult>() {
+                            @Override
+                            public void onSuccess(CopyMaterialInResult copyMaterialInResult) {
+                                view.getPagingToolBar().refresh();
+                                view.getBtnCopy().setEnabled(true);
+                            }
+                        });
             }
         });
     }
@@ -481,7 +474,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     if (!currentStation.isCompany()) {
                         loadAction.setStationId(currentStation.getId());
                     }
-                } else if(currentGroup != null) {
+                } else if (currentGroup != null) {
                     loadAction.setGroupId(currentGroup.getId());
                 }
                 loadAction.setLoadConfig((BasePagingLoadConfig) loadConfig);
