@@ -13,6 +13,7 @@ import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.handler.report.TaskReportHandler;
+import com.qlkh.server.util.DateTimeUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import org.apache.commons.digester.SimpleRegexMatcher;
@@ -58,6 +59,9 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
         List<MaterialIn> removeData = new ArrayList<MaterialIn>();
 
         //copy for whole year
+        if (action.getYear() == 0) {
+            action.setYear(DateTimeUtils.getCurrentYear());
+        }
         for (QuarterEnum quarter : QuarterEnum.values()) {
             action.setQuarter(quarter.getCode());
             action.setStationId(StationCodeEnum.COMPANY.getId());

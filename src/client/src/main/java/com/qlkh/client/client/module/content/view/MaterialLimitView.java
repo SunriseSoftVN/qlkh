@@ -73,6 +73,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
     @I18nField
     Button btnMaterialEditCancel = new Button();
 
+    @I18nField
+    Button btnMaterialSync = new Button(null, IconHelper.createPath("assets/images/icons/fam/arrow_switch.png"));
+
     @I18nField(emptyText = true)
     TextField<String> txtMaterialSearch = new TextField<String>();
 
@@ -113,6 +116,7 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         subToolBar.add(btnDeleteTaskMaterial);
         subToolBar.add(new SeparatorToolItem());
         subToolBar.add(getBtnSubTaskRefresh());
+        subToolBar.add(btnMaterialSync);
         return subToolBar;
     }
 
@@ -260,5 +264,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
     public TextField<String> getTxtMaterialCodeSearch() {
         return txtMaterialCodeSearch;
+    }
+
+    public Button getBtnMaterialSync() {
+        return btnMaterialSync;
     }
 }

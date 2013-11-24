@@ -17,10 +17,7 @@ import com.qlkh.core.client.action.core.DeleteAction;
 import com.qlkh.core.client.action.core.DeleteResult;
 import com.qlkh.core.client.action.core.SaveAction;
 import com.qlkh.core.client.action.core.SaveResult;
-import com.qlkh.core.client.action.material.LoadMaterialLimitAction;
-import com.qlkh.core.client.action.material.LoadMaterialLimitResult;
-import com.qlkh.core.client.action.material.LoadMaterialWithoutLimitAction;
-import com.qlkh.core.client.action.material.LoadMaterialWithoutLimitResult;
+import com.qlkh.core.client.action.material.*;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitAction;
 import com.qlkh.core.client.action.task.LoadTaskHasLimitResult;
 import com.qlkh.core.client.model.Material;
@@ -226,6 +223,19 @@ public class MaterialLimitPresenter extends AbstractTaskDetailPresenter<Material
                     };
                     timer.schedule(100);
                 }
+            }
+        });
+
+        view.getBtnMaterialSync().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                view.getBtnMaterialSync().setEnabled(false);
+                dispatch.execute(new CopyMaterialInAction(), new AbstractAsyncCallback<CopyMaterialInResult>() {
+                    @Override
+                    public void onSuccess(CopyMaterialInResult result) {
+                        view.getBtnMaterialSync().setEnabled(true);
+                    }
+                });
             }
         });
     }

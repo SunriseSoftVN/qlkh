@@ -26,4 +26,5 @@ public interface MaterialLimitConstant extends TaskDetailDKConstant {
     String txtMaterialSearch();
     String materialNoteColumnTitle();
     String txtMaterialCodeSearch();
+    String btnMaterialSync();
 }
