@@ -183,7 +183,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {
-                    reportWindow = view.createReportWindow(result.getReportUrl());
+                    reportWindow = view.createReportWindow(result.getReportUrl(), false);
                     reportWindow.show();
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
@@ -195,7 +195,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         });
     }
 
-    private void priceReport(ReportFileTypeEnum fileTypeEnum) {
+    private void priceReport(final ReportFileTypeEnum fileTypeEnum) {
         Station station = null;
         Long branchId = null;
         if (UserRoleEnum.USER.getRole().equals(LoginUtils.getRole())) {
@@ -214,14 +214,18 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 @Override
                 public void onSuccess(PriceReportResult result) {
                     view.setEnablePriceReportButton(true);
-                    reportWindow = view.createReportWindow(result.getReportUrl());
+                    if (fileTypeEnum == ReportFileTypeEnum.PDF) {
+                        reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                    } else {
+                        reportWindow = view.createReportWindow(result.getReportUrl(), false);
+                    }
                     reportWindow.show();
                 }
             });
         }
     }
 
-    private void taskReport(ReportFileTypeEnum fileTypeEnum) {
+    private void taskReport(final ReportFileTypeEnum fileTypeEnum) {
         if (view.getCbbTaskYear().getValue() != null && view.getCbbTaskReportType().getValue() != null) {
             Station station = null;
             Long branchId = null;
@@ -241,7 +245,11 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                     @Override
                     public void onSuccess(TaskReportResult result) {
                         view.setEnableTaskReportButton(true);
-                        reportWindow = view.createReportWindow(result.getReportUrl());
+                        if (fileTypeEnum == ReportFileTypeEnum.PDF) {
+                            reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        } else {
+                            reportWindow = view.createReportWindow(result.getReportUrl(), false);
+                        }
                         reportWindow.show();
                     }
                 });
@@ -249,7 +257,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         }
     }
 
-    private void materialReport(ReportFileTypeEnum fileTypeEnum) {
+    private void materialReport(final ReportFileTypeEnum fileTypeEnum) {
         if (view.getCbbMaterialYear().getValue() != null && view.getCbbMaterialReportType().getValue() != null) {
             view.setEnableMaterialReportButton(false);
             dispatch.execute(new MaterialMissingPriceReportAction(fileTypeEnum,
@@ -258,7 +266,11 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                         @Override
                         public void onSuccess(MaterialMissingPriceReportResult result) {
                             view.setEnableMaterialReportButton(true);
-                            reportWindow = view.createReportWindow(result.getReportUrl());
+                            if (fileTypeEnum == ReportFileTypeEnum.PDF) {
+                                reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                            } else {
+                                reportWindow = view.createReportWindow(result.getReportUrl(), false);
+                            }
                             reportWindow.show();
                         }
                     });

@@ -243,10 +243,14 @@ public class ReportView extends AbstractView<ReportConstant> {
         setWidget(contentPanel);
     }
 
-    public com.extjs.gxt.ui.client.widget.Window createReportWindow(String url) {
+    public com.extjs.gxt.ui.client.widget.Window createReportWindow(String url, Boolean openInNewTab) {
         com.extjs.gxt.ui.client.widget.Window window = new com.extjs.gxt.ui.client.widget.Window();
         window.add(lblDownload);
-        window.getButtonBar().add(new Html("<a target='_blank' href='" + url + "'><b>Download</b></a>"));
+        if (openInNewTab) {
+            window.getButtonBar().add(new Html("<a target='_blank' href='" + url + "'><b>Xem online</b></a>"));
+        } else {
+            window.getButtonBar().add(new Html("<a href='" + url + "'><b>Download</b></a>"));
+        }
         window.addButton(btnReportCancel);
         window.setSize(380, 50);
         window.setResizable(false);
