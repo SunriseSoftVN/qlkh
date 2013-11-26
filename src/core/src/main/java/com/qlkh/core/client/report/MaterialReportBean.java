@@ -123,7 +123,10 @@ public class MaterialReportBean {
     }
 
     public Double getMoney() {
-        return price * weight;
+        if (price != null && weight != null) {
+            return price * weight;
+        }
+        return null;
     }
 
     public Date getExportDate() {

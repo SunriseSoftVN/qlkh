@@ -8,7 +8,6 @@ import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
 import com.qlkh.server.util.DateTimeUtils;
-import com.qlkh.server.util.MoneyConverter;
 import com.qlkh.server.util.ReportExporter;
 import com.qlkh.server.util.ServletUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -67,8 +66,8 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     data.put("personName", materialReportBean.getPersonName());
                     data.put("code", "A" + materialReportBean.getReportCode());
                     data.put("date", DateTimeUtils.dateTimeInVietnamese(materialReportBean.getExportDate()));
-                    data.put("totalMoneyString", MoneyConverter
-                            .transformNumber(String.valueOf(materialReportBean.getMoney().intValue())));
+//                    data.put("totalMoneyString", MoneyConverter
+//                            .transformNumber(String.valueOf(materialReportBean.getMoney().intValue())));
                     data.put(JRParameter.REPORT_LOCALE, new Locale("vi", "VN"));
 
                     List<MaterialReportBean> beans = new ArrayList<MaterialReportBean>();

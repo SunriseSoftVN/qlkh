@@ -194,6 +194,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getTxtMaterialFrom().setEnabled(false);
         view.getTxtMaterialTo().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
+        view.getBtnMaterialInViewReport().setEnabled(false);
         dispatch.execute(new MaterialOutReportAction(form, to), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
@@ -212,6 +213,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 view.getTxtMaterialFrom().setEnabled(true);
                 view.getTxtMaterialTo().setEnabled(true);
                 view.getBtnMaterialInReport().setEnabled(true);
+                view.getBtnMaterialInViewReport().setEnabled(true);
             }
         });
     }
