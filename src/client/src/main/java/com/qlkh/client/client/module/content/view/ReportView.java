@@ -115,6 +115,9 @@ public class ReportView extends AbstractView<ReportConstant> {
     @I18nField
     Button btnMaterialInReport = new Button();
 
+    @I18nField
+    Button btnMaterialInViewReport = new Button();
+
     private ContentPanel contentPanel = new ContentPanel();
 
     @Override
@@ -229,6 +232,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         hp4.add(txtMaterialFrom);
         hp4.add(txtMaterialTo);
         hp4.add(btnMaterialInReport);
+        hp4.add(btnMaterialInViewReport);
 
         wareHouseReportPanel.add(hp4);
 
@@ -246,8 +250,8 @@ public class ReportView extends AbstractView<ReportConstant> {
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
 
         if (UserRoleEnum.WAREHOUSE_MANAGER.getRole().equals(LoginUtils.getRole()) && !contentPanel.isRendered()) {
-            HTML applet = new HTML("<applet id='qz' archive='/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
-                    "\t<param name='jnlp_href' value='/qz-print_jnlp.jnlp'>\n" +
+            HTML applet = new HTML("<applet id='qz' archive='/qzprint/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
+                    "\t<param name='jnlp_href' value='/qzprint/qz-print_jnlp.jnlp'>\n" +
                     "\t<param name='cache_option' value='plugin'>\n" +
                     "\t<param name='disable_logging' value='false'>\n" +
                     "\t<param name='initial_focus' value='false'>\n" +
@@ -398,5 +402,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public NumberField getTxtMaterialTo() {
         return txtMaterialTo;
+    }
+
+    public Button getBtnMaterialInViewReport() {
+        return btnMaterialInViewReport;
     }
 }

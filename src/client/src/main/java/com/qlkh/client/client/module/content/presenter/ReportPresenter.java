@@ -153,9 +153,19 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getTxtMaterialFrom().getValue() != null
                         && view.getTxtMaterialTo().getValue() != null) {
-//                    materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
-//                            view.getTxtMaterialTo().getValue().intValue());
-                    test();
+                    materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
+                            view.getTxtMaterialTo().getValue().intValue(), true);
+                }
+            }
+        });
+
+        view.getBtnMaterialInViewReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                if (view.getTxtMaterialFrom().getValue() != null
+                        && view.getTxtMaterialTo().getValue() != null) {
+                    materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
+                            view.getTxtMaterialTo().getValue().intValue(), false);
                 }
             }
         });
@@ -176,11 +186,11 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         });
     }
 
-    public static native void test() /*-{
-        $wnd.findPrinters();
+    private static native void printPdf(String pdfUrl) /*-{
+        $wnd.printPDF(pdfUrl);
     }-*/;
 
-    private void materialInReport(int form, int to) {
+    private void materialInReport(int form, int to, final boolean print) {
         view.getTxtMaterialFrom().setEnabled(false);
         view.getTxtMaterialTo().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
@@ -188,8 +198,14 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {
-                    reportWindow = view.createReportWindow(result.getReportUrl(), true);
-                    reportWindow.show();
+                    if (print) {
+                        printPdf(result.getReportUrl());
+                        DiaLogUtils.showMessage("Đã gữi dữ liệu tới máy in, xin vui lòng đợi trong giây lát.");
+                    } else {
+                        reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        reportWindow.show();
+                    }
+
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
                 }

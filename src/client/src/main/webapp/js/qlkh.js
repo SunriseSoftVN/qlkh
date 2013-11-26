@@ -6,15 +6,15 @@
  */
 function deployQZ() {
     var attributes = {id: "qz", code: 'qz.PrintApplet.class',
-        archive: '/qz-print.jar', width: 1, height: 1};
-    var parameters = {jnlp_href: '/qz-print_jnlp.jnlp',
+        archive: '/qzprint/qz-print.jar', width: 1, height: 1};
+    var parameters = {jnlp_href: '/qzprint/qz-print_jnlp.jnlp',
         cache_option: 'plugin', disable_logging: 'false',
         initial_focus: 'false'};
     if (deployJava.versionCheck("1.7+") == true) {
     }
     else if (deployJava.versionCheck("1.6+") == true) {
-        attributes['archive'] = '/jre6/qz-print.jar';
-        parameters['jnlp_href'] = '/jre6/qz-print_jnlp.jnlp';
+        attributes['archive'] = '/qzprint/jre6/qz-print.jar';
+        parameters['jnlp_href'] = '/qzprint/jre6/qz-print_jnlp.jnlp';
     }
     deployJava.runApplet(attributes, parameters, '1.5');
 }
@@ -89,13 +89,37 @@ function useDefaultPrinter() {
     }
 
     // Automatically gets called when "qz.findPrinter()" is finished.
-    window['qzDoneFinding'] = function () {
-        // Alert the printer name to user
-        var printer = qz.getPrinter();
-        alert(printer !== null ? 'Default printer found: "' + printer :
-            'Default printer ' + 'not found');
+//    window['qzDoneFinding'] = function () {
+//        // Alert the printer name to user
+//        var printer = qz.getPrinter();
+//        alert(printer !== null ? 'Default printer found: "' + printer :
+//            'Default printer ' + 'not found');
+//
+//        // Remove reference to this function
+//        window['qzDoneFinding'] = null;
+//    };
+}
+
+/***************************************************************************
+ * Prototype function for printing a PDF to a PostScript capable printer.
+ * Not to be used in combination with raw printers.
+ * Usage:
+ *    qz.appendPDF('/path/to/sample.pdf');
+ *    window['qzDoneAppending'] = function() { qz.printPS(); };
+ ***************************************************************************/
+function printPDF(url) {
+    if (notReady()) { return; }
+    // Append our pdf (only one pdf can be appended per print)
+    qz.appendPDF(url);
+//    qz.setPaperSize("5.8in", "8.3in");  // A5 Letter
+//    qz.setOrientation("landscape");
+
+    // Automatically gets called when "qz.appendPDF()" is finished.
+    window['qzDoneAppending'] = function() {
+        // Tell the applet to print PostScript.
+        qz.printPS();
 
         // Remove reference to this function
-        window['qzDoneFinding'] = null;
+        window['qzDoneAppending'] = null;
     };
 }
