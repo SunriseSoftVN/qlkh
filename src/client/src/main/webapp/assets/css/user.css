@@ -52,3 +52,10 @@
     z-index: -1;
     overflow: hidden;
 }
+
+applet {
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    border: medium none;
+}

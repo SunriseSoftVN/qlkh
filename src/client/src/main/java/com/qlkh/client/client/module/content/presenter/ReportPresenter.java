@@ -183,7 +183,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {
-                    reportWindow = view.createReportWindow(result.getReportUrl(), false);
+                    reportWindow = view.createReportWindow(result.getReportUrl(), true);
                     reportWindow.show();
                 } else {
                     DiaLogUtils.showMessage(view.getConstant().emptyMessage());
