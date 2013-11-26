@@ -7,25 +7,22 @@ import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
-import com.qlkh.server.util.*;
+import com.qlkh.server.util.DateTimeUtils;
+import com.qlkh.server.util.MoneyConverter;
+import com.qlkh.server.util.ReportExporter;
+import com.qlkh.server.util.ServletUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jxls.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -39,8 +36,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     private static final String REPORT_TEMPLATE_DIRECTORY = "report/template";
     private static final String JASPER_REPORT_FILE_NAME = "phieuxuatkho.jasper";
     private static final String OUTPUT_FILE_NAME = "phieuxuatkho";
-    private static final String PRINT_All_FILE_NAME = "printall.xls";
-    private static final String OUTPUT_FILE_EXT = ".xls";
+    private static final String OUTPUT_FILE_EXT = ".pdf";
 
     @Autowired
     private SqlQueryDao sqlQueryDao;
@@ -53,9 +49,8 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     @Override
     public MaterialOutReportResult execute(MaterialOutReportAction action, ExecutionContext context) throws DispatchException {
         String reportFilePath = ServletUtils.getInstance().getRealPath(REPORT_TEMPLATE_DIRECTORY, JASPER_REPORT_FILE_NAME);
-        String printAllFilePath = ServletUtils.getInstance().getRealPath(REPORT_TEMPLATE_DIRECTORY, PRINT_All_FILE_NAME);
         String outputFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, OUTPUT_FILE_NAME);
-        List<String> ouputs = new ArrayList<String>();
+        List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
         try {
             List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getForm(), action.getTo());
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
@@ -74,19 +69,22 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     data.put("date", DateTimeUtils.dateTimeInVietnamese(materialReportBean.getExportDate()));
                     data.put("totalMoneyString", MoneyConverter
                             .transformNumber(String.valueOf(materialReportBean.getMoney().intValue())));
+                    data.put(JRParameter.REPORT_LOCALE, new Locale("vi", "VN"));
 
                     List<MaterialReportBean> beans = new ArrayList<MaterialReportBean>();
                     beans.add(materialReportBean);
                     for (int i = 1; i <= 3; i++) {
-                        UUID id = UUID.randomUUID();
                         data.put("reportName", "Liên " + i);
-                        String fileOutputPath = outputFilePath + id.toString() + OUTPUT_FILE_EXT;
                         JasperPrint jasperPrint = JasperFillManager.fillReport(reportFilePath, data,
                                 new JRBeanCollectionDataSource(beans));
-                        ReportExporter.exportReportXls(jasperPrint, fileOutputPath);
-                        ouputs.add(fileOutputPath);
+                        //fix for utf8
+                        jasperPrint.getDefaultStyle().setPdfFontName("/fonts/Arial.ttf");
+                        jasperPrints.add(jasperPrint);
                     }
                 }
+
+                String fileOutputPath = outputFilePath + OUTPUT_FILE_EXT;
+                ReportExporter.exportReport(jasperPrints, fileOutputPath);
             }
         } catch (JRException e) {
             e.printStackTrace();
@@ -94,39 +92,13 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
             e.printStackTrace();
         }
 
-        String reportUrl = null;
+        String reportUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
+                .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
+                .append(ReportServlet.REPORT_SERVLET_URI)
+                .append(ReportServlet.REPORT_FILENAME_PARAMETER)
+                .append("=")
+                .append(OUTPUT_FILE_NAME + OUTPUT_FILE_EXT).toString();
 
-        try {
-            if (CollectionUtils.isNotEmpty(ouputs)) {
-                File printAllFile = new File(printAllFilePath);
-                FileInputStream printAllFileInputStream = new FileInputStream(printAllFile);
-                HSSFWorkbook reportWorkbook = new HSSFWorkbook(printAllFileInputStream);
-                for (String output : ouputs) {
-                    File file = new File(output);
-                    FileInputStream input = new FileInputStream(file);
-                    HSSFWorkbook tempWorkbook = new HSSFWorkbook(input);
-                    if (tempWorkbook.getNumberOfSheets() > 0) {
-                        HSSFSheet copySheet = tempWorkbook.getSheetAt(0);
-                        HSSFSheet newSheet = reportWorkbook.createSheet();
-                        ExcelUtil.copySheets(newSheet, copySheet);
-                    }
-                    input.close();
-                    FileSystemUtils.deleteRecursively(file);
-                }
-                Util.writeToFile(outputFilePath + OUTPUT_FILE_EXT, reportWorkbook);
-                printAllFileInputStream.close();
-                reportUrl = new StringBuilder().append(ConfigurationServerUtil.getServerBaseUrl())
-                        .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
-                        .append(ReportServlet.REPORT_SERVLET_URI)
-                        .append(ReportServlet.REPORT_FILENAME_PARAMETER)
-                        .append("=")
-                        .append(OUTPUT_FILE_NAME + OUTPUT_FILE_EXT).toString();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return new MaterialOutReportResult(reportUrl);
     }
 }

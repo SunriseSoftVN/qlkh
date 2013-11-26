@@ -24,15 +24,15 @@ import com.qlkh.server.util.ReportExporter;
 import com.qlkh.server.util.ServletUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * The Class MaterialMissingPriceReportHandler.
@@ -66,8 +66,10 @@ public class MaterialMissingPriceReportHandler extends AbstractHandler<MaterialM
 
             List<Material> materials = sqlQueryDao.getMaterialsMissingPrice(action.getYear(), action.getQuarter());
 
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(JRParameter.REPORT_LOCALE, new Locale("vi", "VN"));
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(materials));
+                    fillReport(jasperReport, data, new JRBeanCollectionDataSource(materials));
 
             String fileName = REPORT_FILE_NAME + fileTypeEnum.getFileExt();
 

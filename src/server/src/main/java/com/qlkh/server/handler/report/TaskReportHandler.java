@@ -39,10 +39,7 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.Order;
@@ -100,8 +97,11 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(JRParameter.REPORT_LOCALE, new Locale("vi", "VN"));
+
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(buildReportData(action)));
+                    fillReport(jasperReport, data, new JRBeanCollectionDataSource(buildReportData(action)));
 
             String fileName = REPORT_FILE_NAME;
             if (action.getBranchId() != null) {

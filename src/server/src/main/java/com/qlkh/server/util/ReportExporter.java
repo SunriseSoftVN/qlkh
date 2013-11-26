@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.List;
 
 public class ReportExporter {
     /**
@@ -41,6 +42,26 @@ public class ReportExporter {
         FileOutputStream fos = new FileOutputStream(outputFile);
 
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
+        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, fos);
+
+        exporter.exportReport();
+
+        logger.debug("Report exported: " + path);
+    }
+
+    public static void exportReport(List<JasperPrint> jps, String path) throws JRException, FileNotFoundException {
+        logger.debug("Exporing report to: " + path);
+        JRPdfExporter exporter = new JRPdfExporter();
+
+        File outputFile = new File(path);
+        File parentFile = outputFile.getParentFile();
+        if (parentFile != null) {
+            parentFile.mkdirs();
+        }
+        FileOutputStream fos = new FileOutputStream(outputFile);
+
+        exporter.setParameter(JRExporterParameter.JASPER_PRINT_LIST, jps);
+        exporter.setParameter(JRPdfExporterParameter.IS_CREATING_BATCH_MODE_BOOKMARKS, true);
         exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, fos);
 
         exporter.exportReport();

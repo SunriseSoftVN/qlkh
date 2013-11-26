@@ -32,10 +32,7 @@ import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.DispatchException;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.digester.SimpleRegexMatcher;
@@ -46,10 +43,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static com.qlkh.server.business.rule.StationCodeEnum.*;
@@ -319,8 +313,10 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put(JRParameter.REPORT_LOCALE, new Locale("vi", "VN"));
             JasperPrint jasperPrint = JasperFillManager.
-                    fillReport(jasperReport, null, new JRBeanCollectionDataSource(priceReportBeans));
+                    fillReport(jasperReport, data, new JRBeanCollectionDataSource(priceReportBeans));
 
             String fileName = REPORT_FILE_NAME;
             if (action.getBranchId() != null) {
