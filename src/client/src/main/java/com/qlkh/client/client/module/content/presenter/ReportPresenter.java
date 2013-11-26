@@ -153,8 +153,9 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getTxtMaterialFrom().getValue() != null
                         && view.getTxtMaterialTo().getValue() != null) {
-                    materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
-                            view.getTxtMaterialTo().getValue().intValue());
+//                    materialInReport(view.getTxtMaterialFrom().getValue().intValue(),
+//                            view.getTxtMaterialTo().getValue().intValue());
+                    test();
                 }
             }
         });
@@ -174,6 +175,10 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             }
         });
     }
+
+    public static native void test() /*-{
+        $wnd.findPrinters();
+    }-*/;
 
     private void materialInReport(int form, int to) {
         view.getTxtMaterialFrom().setEnabled(false);

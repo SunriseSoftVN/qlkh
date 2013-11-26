@@ -6,15 +6,15 @@
  */
 function deployQZ() {
     var attributes = {id: "qz", code: 'qz.PrintApplet.class',
-        archive: 'qz-print.jar', width: 1, height: 1};
-    var parameters = {jnlp_href: 'qz-print_jnlp.jnlp',
+        archive: '/qz-print.jar', width: 1, height: 1};
+    var parameters = {jnlp_href: '/qz-print_jnlp.jnlp',
         cache_option: 'plugin', disable_logging: 'false',
         initial_focus: 'false'};
     if (deployJava.versionCheck("1.7+") == true) {
     }
     else if (deployJava.versionCheck("1.6+") == true) {
-        attributes['archive'] = 'jre6/qz-print.jar';
-        parameters['jnlp_href'] = 'jre6/qz-print_jnlp.jnlp';
+        attributes['archive'] = '/jre6/qz-print.jar';
+        parameters['jnlp_href'] = '/jre6/qz-print_jnlp.jnlp';
     }
     deployJava.runApplet(attributes, parameters, '1.5');
 }

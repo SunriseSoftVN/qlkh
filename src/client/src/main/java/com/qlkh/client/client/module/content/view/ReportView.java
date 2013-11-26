@@ -15,14 +15,18 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.ReportConstant;
 import com.qlkh.client.client.module.content.view.security.ReportSecurity;
 import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
+import com.qlkh.core.client.constant.UserRoleEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.FieldSecurity;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.view.AbstractView;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 
@@ -240,6 +244,17 @@ public class ReportView extends AbstractView<ReportConstant> {
         contentPanel.setFrame(true);
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
+
+        if (UserRoleEnum.WAREHOUSE_MANAGER.getRole().equals(LoginUtils.getRole()) && !contentPanel.isRendered()) {
+            HTML applet = new HTML("<applet id='qz' archive='/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
+                    "\t<param name='jnlp_href' value='/qz-print_jnlp.jnlp'>\n" +
+                    "\t<param name='cache_option' value='plugin'>\n" +
+                    "\t<param name='disable_logging' value='false'>\n" +
+                    "\t<param name='initial_focus' value='false'>\n" +
+                    "</applet>");
+            RootPanel.get().add(applet);
+        }
+
         setWidget(contentPanel);
     }
 
