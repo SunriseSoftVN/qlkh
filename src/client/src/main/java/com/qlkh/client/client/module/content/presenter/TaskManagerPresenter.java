@@ -106,24 +106,24 @@ public class TaskManagerPresenter extends AbstractPresenter<TaskManagerView> {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 if (view.getTaskGird().getSelectionModel().getSelectedItem() != null) {
-                    Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
+                    final Task selectedTask = view.getTaskGird().getSelectionModel().getSelectedItem().getBean();
                     taskEditWindow = view.createTaskEditWindow();
-                    view.getTxtTaskCode().setValue(selectedTask.getCode());
-                    view.getTxtTaskName().setValue(selectedTask.getName());
-                    view.getTxtTaskUnit().setValue(selectedTask.getUnit());
-                    view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
-                    view.getTxtTaskQuota().setValue(selectedTask.getQuota());
-                    view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
-                            valueOf(selectedTask.getTaskTypeCode()));
-                    view.getCbDynamicQuota().setValue(selectedTask.isDynamicQuota());
                     currentTask = selectedTask;
                     dispatch.execute(new CanEditAction(currentTask.getId(), RELATE_ENTITY_NAMES),
                             new AbstractAsyncCallback<CanEditResult>() {
                                 @Override
                                 public void onSuccess(CanEditResult result) {
+                                    taskEditWindow.show();
                                     view.getCbbTaskType().setEnabled(result.isEditable());
                                     view.getWarningMessage().setVisible(!result.isEditable());
-                                    taskEditWindow.show();
+                                    view.getTxtTaskCode().setValue(selectedTask.getCode());
+                                    view.getTxtTaskName().setValue(selectedTask.getName());
+                                    view.getTxtTaskUnit().setValue(selectedTask.getUnit());
+                                    view.getTxtTaskDefault().setValue(selectedTask.getDefaultValue());
+                                    view.getTxtTaskQuota().setValue(selectedTask.getQuota());
+                                    view.getCbbTaskType().setSimpleValue(TaskTypeEnum.
+                                            valueOf(selectedTask.getTaskTypeCode()));
+                                    view.getCbDynamicQuota().setValue(selectedTask.isDynamicQuota());
                                 }
                             });
                 }
