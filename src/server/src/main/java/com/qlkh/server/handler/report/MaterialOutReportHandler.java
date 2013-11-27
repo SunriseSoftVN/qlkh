@@ -8,6 +8,7 @@ import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
 import com.qlkh.server.util.DateTimeUtils;
+import com.qlkh.server.util.ExcelUtil;
 import com.qlkh.server.util.ReportExporter;
 import com.qlkh.server.util.ServletUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -17,11 +18,18 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jxls.util.Util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -35,7 +43,10 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     private static final String REPORT_TEMPLATE_DIRECTORY = "report/template";
     private static final String JASPER_REPORT_FILE_NAME = "phieuxuatkho.jasper";
     private static final String OUTPUT_FILE_NAME = "phieuxuatkho";
-    private static final String OUTPUT_FILE_EXT = ".pdf";
+    private static final String PRINT_All_FILE_NAME = "printall.xls";
+    private static final String PDF_OUTPUT_FILE_EXT = ".pdf";
+    private static final String EXCEL_OUTPUT_FILE_EXT = ".xls";
+
 
     @Autowired
     private SqlQueryDao sqlQueryDao;
@@ -49,6 +60,8 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     public MaterialOutReportResult execute(MaterialOutReportAction action, ExecutionContext context) throws DispatchException {
         String reportFilePath = ServletUtils.getInstance().getRealPath(REPORT_TEMPLATE_DIRECTORY, JASPER_REPORT_FILE_NAME);
         String outputFilePath = ServletUtils.getInstance().getRealPath(ReportServlet.REPORT_DIRECTORY, OUTPUT_FILE_NAME);
+        String printAllFilePath = ServletUtils.getInstance().getRealPath(REPORT_TEMPLATE_DIRECTORY, PRINT_All_FILE_NAME);
+
         List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
         try {
             List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getForm(), action.getTo());
@@ -82,12 +95,46 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                     }
                 }
 
-                String fileOutputPath = outputFilePath + OUTPUT_FILE_EXT;
-                ReportExporter.exportReport(jasperPrints, fileOutputPath);
+                if (action.isPdf()) {
+                    String fileOutputPath = outputFilePath + PDF_OUTPUT_FILE_EXT;
+                    ReportExporter.exportReport(jasperPrints, fileOutputPath);
+                } else {
+                    List<String> temps = new ArrayList<String>();
+                    for (JasperPrint jasperPrint : jasperPrints) {
+                        UUID id = UUID.randomUUID();
+                        String fileOutputPath = outputFilePath + id.toString() + EXCEL_OUTPUT_FILE_EXT;
+                        ReportExporter.exportReportXls(jasperPrint, fileOutputPath);
+                        temps.add(fileOutputPath);
+                    }
+
+                    if (CollectionUtils.isNotEmpty(temps)) {
+                        File printAllFile = new File(printAllFilePath);
+                        FileInputStream printAllFileInputStream = new FileInputStream(printAllFile);
+                        HSSFWorkbook reportWorkbook = new HSSFWorkbook(printAllFileInputStream);
+                        for (String output : temps) {
+                            File file = new File(output);
+                            FileInputStream input = new FileInputStream(file);
+                            HSSFWorkbook tempWorkbook = new HSSFWorkbook(input);
+                            if (tempWorkbook.getNumberOfSheets() > 0) {
+                                HSSFSheet copySheet = tempWorkbook.getSheetAt(0);
+                                HSSFSheet newSheet = reportWorkbook.createSheet();
+                                ExcelUtil.copySheets(newSheet, copySheet);
+                            }
+                            input.close();
+                            FileSystemUtils.deleteRecursively(file);
+                        }
+                        Util.writeToFile(outputFilePath + EXCEL_OUTPUT_FILE_EXT, reportWorkbook);
+                        printAllFileInputStream.close();
+                    }
+                }
+
+
             }
         } catch (JRException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -95,8 +142,14 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                 .append(ConfigurationServerUtil.getConfiguration().serverServletRootPath())
                 .append(ReportServlet.REPORT_SERVLET_URI)
                 .append(ReportServlet.REPORT_FILENAME_PARAMETER)
-                .append("=")
-                .append(OUTPUT_FILE_NAME + OUTPUT_FILE_EXT).toString();
+                .append("=").toString();
+
+
+        if (action.isPdf()) {
+            reportUrl += OUTPUT_FILE_NAME + PDF_OUTPUT_FILE_EXT;
+        } else {
+            reportUrl += OUTPUT_FILE_NAME + EXCEL_OUTPUT_FILE_EXT;
+        }
 
         return new MaterialOutReportResult(reportUrl);
     }

@@ -12,13 +12,15 @@ public class MaterialOutReportAction implements Action<MaterialOutReportResult> 
 
     private int form;
     private int to;
+    private boolean pdf;
 
     public MaterialOutReportAction() {
     }
 
-    public MaterialOutReportAction(int form, int to) {
+    public MaterialOutReportAction(int form, int to, boolean pdf) {
         this.form = form;
         this.to = to;
+        this.pdf = pdf;
     }
 
     public int getForm() {
@@ -27,5 +29,9 @@ public class MaterialOutReportAction implements Action<MaterialOutReportResult> 
 
     public int getTo() {
         return to;
+    }
+
+    public boolean isPdf() {
+        return pdf;
     }
 }

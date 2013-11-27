@@ -195,7 +195,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getTxtMaterialTo().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
         view.getBtnMaterialInViewReport().setEnabled(false);
-        dispatch.execute(new MaterialOutReportAction(form, to), new AbstractAsyncCallback<MaterialOutReportResult>() {
+        dispatch.execute(new MaterialOutReportAction(form, to, print), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {

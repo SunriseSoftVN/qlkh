@@ -250,8 +250,8 @@ public class ReportView extends AbstractView<ReportConstant> {
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
 
         if (UserRoleEnum.WAREHOUSE_MANAGER.getRole().equals(LoginUtils.getRole()) && !contentPanel.isRendered()) {
-            HTML applet = new HTML("<applet id='qz' archive='/qzprint/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
-                    "\t<param name='jnlp_href' value='/qzprint/qz-print_jnlp.jnlp'>\n" +
+            HTML applet = new HTML("<applet id='qz' archive='qzprint/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
+                    "\t<param name='jnlp_href' value='qzprint/qz-print_jnlp.jnlp'>\n" +
                     "\t<param name='cache_option' value='plugin'>\n" +
                     "\t<param name='disable_logging' value='false'>\n" +
                     "\t<param name='initial_focus' value='false'>\n" +
