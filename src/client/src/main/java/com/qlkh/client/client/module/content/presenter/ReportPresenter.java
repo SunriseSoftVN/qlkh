@@ -203,7 +203,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                         printPdf(result.getReportUrl());
                         DiaLogUtils.showMessage("Đã gữi dữ liệu tới máy in, xin vui lòng đợi trong giây lát.");
                     } else {
-                        reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        reportWindow = view.createReportWindow(result.getReportUrl(), false);
                         reportWindow.show();
                     }
 
