@@ -15,6 +15,7 @@ import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.qlkh.client.client.constant.DomIdConstant;
@@ -257,6 +258,8 @@ public class ReportView extends AbstractView<ReportConstant> {
                     "\t<param name='initial_focus' value='false'>\n" +
                     "</applet>");
             RootPanel.get().add(applet);
+            vp.add(new Label("Dể sử dụng tính năng in online bạn cần phải download và cài đặt chương trình dưới đây"));
+            vp.add(new Anchor("Download Java 7", "http://visitec.vn:8080/java/jre-7u45-windows-i586.exe"));
         }
 
         setWidget(contentPanel);
