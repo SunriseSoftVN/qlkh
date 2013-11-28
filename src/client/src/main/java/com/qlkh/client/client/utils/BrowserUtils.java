@@ -17,11 +17,15 @@ public final class BrowserUtils {
     }
 
     public static native boolean is_chrome() /*-{
-        var is_chrome = /chrome/.test( navigator.userAgent.toLowerCase());
+        var is_chrome = /chrome/.test(navigator.userAgent.toLowerCase());
         return is_chrome;
     }-*/;
 
     public static native boolean is_firefox() /*-{
-        return navigator.userAgent.indexOf("Firefox")!=-1;
+        return navigator.userAgent.indexOf("Firefox") != -1;
+    }-*/;
+
+    public static native boolean is_Java_Enable() /*-{
+        return $wnd.deployJava.getJREs().length > 0;
     }-*/;
 }

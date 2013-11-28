@@ -159,7 +159,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             }
         });
 
-        view.getBtnMaterialInViewReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
+        view.getBtnMaterialInExcelReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 if (view.getTxtMaterialFrom().getValue() != null
@@ -194,7 +194,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getTxtMaterialFrom().setEnabled(false);
         view.getTxtMaterialTo().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
-        view.getBtnMaterialInViewReport().setEnabled(false);
+        view.getBtnMaterialInExcelReport().setEnabled(false);
         dispatch.execute(new MaterialOutReportAction(form, to, print), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
@@ -213,7 +213,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 view.getTxtMaterialFrom().setEnabled(true);
                 view.getTxtMaterialTo().setEnabled(true);
                 view.getBtnMaterialInReport().setEnabled(true);
-                view.getBtnMaterialInViewReport().setEnabled(true);
+                view.getBtnMaterialInExcelReport().setEnabled(true);
             }
         });
     }

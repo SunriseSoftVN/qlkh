@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.ReportConstant;
 import com.qlkh.client.client.module.content.view.security.ReportSecurity;
+import com.qlkh.client.client.utils.BrowserUtils;
 import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.constant.UserRoleEnum;
@@ -117,7 +118,7 @@ public class ReportView extends AbstractView<ReportConstant> {
     Button btnMaterialInReport = new Button();
 
     @I18nField
-    Button btnMaterialInViewReport = new Button();
+    Button btnMaterialInExcelReport = new Button();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -227,13 +228,15 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         materialReportPanel.add(hp3);
 
+        btnMaterialInReport.setEnabled(BrowserUtils.is_Java_Enable());
+
         HorizontalPanel hp4 = new HorizontalPanel();
         hp4.setSpacing(4);
         hp4.add(new Label(getConstant().lblMaterialRegex()));
         hp4.add(txtMaterialFrom);
         hp4.add(txtMaterialTo);
         hp4.add(btnMaterialInReport);
-        hp4.add(btnMaterialInViewReport);
+        hp4.add(btnMaterialInExcelReport);
 
         wareHouseReportPanel.add(hp4);
 
@@ -251,15 +254,18 @@ public class ReportView extends AbstractView<ReportConstant> {
         contentPanel.setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
 
         if (UserRoleEnum.WAREHOUSE_MANAGER.getRole().equals(LoginUtils.getRole()) && !contentPanel.isRendered()) {
-            HTML applet = new HTML("<applet id='qz' archive='qzprint/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
-                    "\t<param name='jnlp_href' value='qzprint/qz-print_jnlp.jnlp'>\n" +
-                    "\t<param name='cache_option' value='plugin'>\n" +
-                    "\t<param name='disable_logging' value='false'>\n" +
-                    "\t<param name='initial_focus' value='false'>\n" +
-                    "</applet>");
-            RootPanel.get().add(applet);
-            vp.add(new Label("Dể sử dụng tính năng in online bạn cần phải download và cài đặt chương trình dưới đây"));
-            vp.add(new Anchor("Download Java 7", "http://visitec.vn:8080/java/jre-7u45-windows-i586.exe"));
+            if(BrowserUtils.is_Java_Enable()) {
+                HTML applet = new HTML("<applet id='qz' archive='qzprint/qz-print.jar' name='QZ Print Plugin' code='qz.PrintApplet.class' width='55' height='55'>\n" +
+                        "\t<param name='jnlp_href' value='qzprint/qz-print_jnlp.jnlp'>\n" +
+                        "\t<param name='cache_option' value='plugin'>\n" +
+                        "\t<param name='disable_logging' value='false'>\n" +
+                        "\t<param name='initial_focus' value='false'>\n" +
+                        "</applet>");
+                RootPanel.get().add(applet);
+            } else {
+                vp.add(new Label("Dể sử dụng tính năng in online bạn cần phải download và cài đặt chương trình dưới đây"));
+                vp.add(new Anchor("Download Java 7", "http://visitec.vn:8080/java/jre-7u45-windows-i586.exe"));
+            }
         }
 
         setWidget(contentPanel);
@@ -407,7 +413,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         return txtMaterialTo;
     }
 
-    public Button getBtnMaterialInViewReport() {
-        return btnMaterialInViewReport;
+    public Button getBtnMaterialInExcelReport() {
+        return btnMaterialInExcelReport;
     }
 }
