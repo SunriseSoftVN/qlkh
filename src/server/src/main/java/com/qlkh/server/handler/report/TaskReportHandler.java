@@ -56,8 +56,6 @@ import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
 import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
 import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
 import static com.qlkh.server.util.DateTimeUtils.getDateForQuarter;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
@@ -688,14 +686,30 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         }
     }
 
+    /**
+     * Lay thoi gian lon hon gan nhat voi thoi diem in report. (lay can tren cua thoi gian, neu ko co thi lay gia tri hien tai)
+     *
+     * @param taskDefaultValues
+     * @param task
+     * @param year
+     * @param quarter
+     * @return
+     */
     private double getDefaultValue(List<TaskDefaultValue> taskDefaultValues, TaskReportBean task, int year, int quarter) {
-        List<TaskDefaultValue> selectValues = select(taskDefaultValues,
-                having(on(TaskDefaultValue.class).getYear(), greaterThanOrEqualTo(year)).
-                        and(having(on(TaskDefaultValue.class).getQuarter(), greaterThan(quarter)).
-                                and(having(on(TaskDefaultValue.class).getTask().getId(), equalTo(task.getId())))
-                        )
-        );
-        TaskDefaultValue taskDefaultValue = selectMin(selectValues, on(TaskDefaultValue.class).getId());
+        List<TaskDefaultValue> potentialValues = new ArrayList<TaskDefaultValue>();
+        for (TaskDefaultValue defaultValue : taskDefaultValues) {
+            if(defaultValue.getTask().getId().equals(task.getId())) {
+                //Neu cung nam thi lay quarter lon hon
+                if (year == defaultValue.getYear() && quarter < defaultValue.getQuarter()) {
+                    potentialValues.add(defaultValue);
+                } else if (year < defaultValue.getYear()) {
+                    potentialValues.add(defaultValue);
+                }
+            }
+        }
+
+        //Lay gia tri can tren. dua tren id cua mysql
+        TaskDefaultValue taskDefaultValue = selectMin(potentialValues, on(TaskDefaultValue.class).getId());
         Double defaultValue;
         if (taskDefaultValue != null) {
             defaultValue = taskDefaultValue.getDefaultValue();
