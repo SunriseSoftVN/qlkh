@@ -200,8 +200,12 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {
                     if (print) {
-                        printPdf(result.getReportUrl());
-                        DiaLogUtils.showMessage("Đã gữi dữ liệu tới máy in, xin vui lòng đợi trong giây lát.");
+//                        printPdf(result.getReportUrl());
+//                        DiaLogUtils.showMessage("Đã gữi dữ liệu tới máy in, xin vui lòng đợi trong giây lát.");
+
+                        reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        reportWindow.show();
+
                     } else {
                         reportWindow = view.createReportWindow(result.getReportUrl(), false);
                         reportWindow.show();
