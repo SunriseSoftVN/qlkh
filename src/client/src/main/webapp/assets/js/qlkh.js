@@ -111,9 +111,8 @@ function printPDF(url) {
     if (notReady()) { return; }
     // Append our pdf (only one pdf can be appended per print)
     qz.appendPDF(url);
-//    qz.setPaperSize("5.8in", "8.3in");  // A5 Letter
-//    qz.setOrientation("landscape");
-
+    qz.setPaperSize("5.8in", "8.3in");  // A5 Letter
+    qz.setOrientation("landscape");
     // Automatically gets called when "qz.appendPDF()" is finished.
     window['qzDoneAppending'] = function() {
         // Tell the applet to print PostScript.
