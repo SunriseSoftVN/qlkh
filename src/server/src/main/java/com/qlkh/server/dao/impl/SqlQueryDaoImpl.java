@@ -312,7 +312,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                 String select = "SELECT `material`.`name`, " +
                         "`material`.`code`, " +
                         "`material`.`unit`, " +
-                        "`material_price`.`price`, " +
+//                        "`material_price`.`price`, " +
                         "`material_in`.`weight`, " +
                         "`material_in`.`total`, " +
                         "`material_in`.`code` AS `reportCode`, " +
