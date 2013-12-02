@@ -9,6 +9,7 @@ import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.DispatchException;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -56,7 +57,7 @@ public class LoadMaterialInHandler extends AbstractHandler<LoadMaterialInAction,
         }
 
 
-        if(result.getTotalLength() > 0) {
+        if(CollectionUtils.isNotEmpty(result.getData())) {
             List<Long> materialIds = extract(result.getData(), on(MaterialIn.class).getMaterial().getId());
 
             List<MaterialPrice> prices = generalDao.findCriteria(MaterialPrice.class,

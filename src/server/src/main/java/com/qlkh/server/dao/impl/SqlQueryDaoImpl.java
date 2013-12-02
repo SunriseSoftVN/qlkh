@@ -333,10 +333,10 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
                         "ON `material_in`.`stationId` = `station`.`id` " +
                         "LEFT OUTER JOIN `group` " +
                         "ON `material_in`.`groupId` = `group`.`id` " +
-                        "INNER JOIN `material_price` " +
-                        "ON `material_in`.`materialId` = `material_price`.`materialId` " +
-                        "AND `material_in`.`year` = `material_price`.`year` " +
-                        "AND `material_in`.`quarter` = `material_price`.`quarter` " +
+//                        "INNER JOIN `material_price` " +
+//                        "ON `material_in`.`materialId` = `material_price`.`materialId` " +
+//                        "AND `material_in`.`year` = `material_price`.`year` " +
+//                        "AND `material_in`.`quarter` = `material_price`.`quarter` " +
                         "WHERE `material_in`.`code` >= " + form + " AND `material_in`.`code` <= " + to;
                 SQLQuery selectQuery = session.createSQLQuery(select);
                 selectQuery.setResultTransformer(new AliasToBeanResultTransformer(MaterialReportBean.class));
