@@ -26,6 +26,7 @@ public final class BrowserUtils {
     }-*/;
 
     public static native boolean is_Java_Enable() /*-{
-        return $wnd.deployJava.getJREs().length > 0;
+//        return $wnd.deployJava.getJREs().length > 0;
+        return false;
     }-*/;
 }
