@@ -47,7 +47,6 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
     private static final String PDF_OUTPUT_FILE_EXT = ".pdf";
     private static final String EXCEL_OUTPUT_FILE_EXT = ".xls";
 
-
     @Autowired
     private SqlQueryDao sqlQueryDao;
 
@@ -127,8 +126,6 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
                         printAllFileInputStream.close();
                     }
                 }
-
-
             }
         } catch (JRException e) {
             e.printStackTrace();
