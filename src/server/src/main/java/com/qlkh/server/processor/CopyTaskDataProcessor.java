@@ -18,7 +18,7 @@ public class CopyTaskDataProcessor implements Processor {
     private Worker copyTaskDataWorker;
 
     //one time a day.
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     @Override
     public void process() {
         System.out.println("Hello");

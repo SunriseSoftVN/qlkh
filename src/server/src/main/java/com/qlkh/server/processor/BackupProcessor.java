@@ -4,6 +4,7 @@
 
 package com.qlkh.server.processor;
 
+import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.worker.Worker;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -18,10 +19,12 @@ public class BackupProcessor implements Processor {
     private Worker backupWorker;
 
     //one time a day.
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     @Override
     public void process() {
-        System.out.println("abc");
+        if (ConfigurationServerUtil.isProductionMode()) {
+            backupWorker.workForMe();
+        }
     }
 
     public void setBackupWorker(Worker backupWorker) {
