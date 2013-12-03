@@ -68,5 +68,19 @@ public class ApplicationUpgradePresenter extends AbstractPresenter<ApplicationUp
                 });
             }
         });
+
+        view.getCopyDataLastYear().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                view.getCopyDataLastYear().setEnabled(false);
+                dispatch.execute(new CopyDataFormLastYearAction(), new AbstractAsyncCallback<CopyDataFormLastYearResult>() {
+                    @Override
+                    public void onSuccess(CopyDataFormLastYearResult result) {
+                        view.getCopyDataLastYear().setEnabled(true);
+                        DiaLogUtils.notify("Copying Successful");
+                    }
+                });
+            }
+        });
     }
 }

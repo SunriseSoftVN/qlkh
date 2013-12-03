@@ -40,6 +40,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
     @I18nField
     Button upgradeV134 = new Button();
 
+    @I18nField
+    Button copyDataLastYear = new Button();
+
     private ContentPanel contentPanel = new ContentPanel();
 
     @Override
@@ -55,7 +58,10 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
         upgradeV116.setEnabled(false);
         upgradePanel.add(upgradeV116);
 
+        upgradeV134.setEnabled(false);
         upgradePanel.add(upgradeV134);
+
+        upgradePanel.add(copyDataLastYear);
 
         contentPanel.add(upgradePanel);
         contentPanel.setHeaderVisible(false);
@@ -75,5 +81,9 @@ public class ApplicationUpgradeView extends AbstractView<ApplicationUpgradeConst
 
     public Button getUpgradeV134() {
         return upgradeV134;
+    }
+
+    public Button getCopyDataLastYear() {
+        return copyDataLastYear;
     }
 }
