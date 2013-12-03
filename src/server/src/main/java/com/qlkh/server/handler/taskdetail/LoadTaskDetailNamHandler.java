@@ -74,6 +74,7 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
                                 findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear());
                         if (taskDetailNamLastYear != null) {
                             taskDetailNam.setLastYearValue(taskDetailNamLastYear.getRealValue());
+                            generalDao.saveOrUpdate(taskDetailNam);
                         }
                     }
                     taskDetailNams.add(taskDetailNam);

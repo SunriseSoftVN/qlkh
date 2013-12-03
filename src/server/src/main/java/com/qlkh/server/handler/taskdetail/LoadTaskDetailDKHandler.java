@@ -75,6 +75,7 @@ public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAct
 
                         if (taskDetailDKLastYear != null) {
                             taskDetailDK.setLastYearValue(taskDetailDKLastYear.getRealValue());
+                            generalDao.saveOrUpdate(taskDetailDK);
                         }
                     }
                     taskDetailDKs.add(taskDetailDK);

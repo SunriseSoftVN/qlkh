@@ -101,13 +101,6 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
                                 }
                             }
                         }
-
-                        try {
-                            //delay 100ms avoid overload for database
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
             }
@@ -119,7 +112,6 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
 
         generalDao.saveOrUpdate(taskDetailDKs);
         generalDao.saveOrUpdate(taskDetailNams);
-
         return new CopyDataFormLastYearResult();
     }
 }
