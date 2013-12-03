@@ -7,7 +7,6 @@
         <property name="beanNames">
             <list>
                 <value>com.qlkh.server.handler.*</value>
-                <value>com.qlkh.server.worker.*</value>
             </list>
         </property>
         <property name="interceptorNames">

@@ -2,14 +2,19 @@
  * Copyright (C) 2012 - 2013 Nguyen Duc Dung (dungvn3000@gmail.com)
  */
 
-package com.qlkh.server.worker;
+package com.qlkh.server.handler.system;
 
+import com.qlkh.core.client.action.system.CopyDataFormLastYearAction;
+import com.qlkh.core.client.action.system.CopyDataFormLastYearResult;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.*;
 import com.qlkh.server.dao.TaskDetailDKDao;
 import com.qlkh.server.dao.TaskDetailNamDao;
 import com.qlkh.server.dao.core.GeneralDao;
+import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.util.DateTimeUtils;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.DispatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class CopyTaskDataWorker.
+ * The Class UpgradeDatabaseHandler.
  *
  * @author Nguyen Duc Dung
- * @since 12/3/13 9:10 AM
+ * @since 6/16/12, 7:25 PM
  */
-public class CopyTaskDataWorker implements Worker {
+public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLastYearAction, CopyDataFormLastYearResult> {
 
-    private Logger logger = LoggerFactory.getLogger(CopyTaskDataWorker.class);
+    private Logger logger = LoggerFactory.getLogger(CopyDataFormLastYearHandler.class);
 
     @Autowired
     private GeneralDao generalDao;
@@ -37,7 +42,12 @@ public class CopyTaskDataWorker implements Worker {
     private TaskDetailNamDao taskDetailNamDao;
 
     @Override
-    public void workForMe() {
+    public Class<CopyDataFormLastYearAction> getActionType() {
+        return CopyDataFormLastYearAction.class;
+    }
+
+    @Override
+    public CopyDataFormLastYearResult execute(CopyDataFormLastYearAction action, ExecutionContext context) throws DispatchException {
         List<Task> tasks = generalDao.getAll(Task.class);
         List<Station> stations = generalDao.getAll(Station.class);
         List<Branch> branches = generalDao.getAll(Branch.class);
@@ -109,5 +119,7 @@ public class CopyTaskDataWorker implements Worker {
 
         generalDao.saveOrUpdate(taskDetailDKs);
         generalDao.saveOrUpdate(taskDetailNams);
+
+        return new CopyDataFormLastYearResult();
     }
 }
