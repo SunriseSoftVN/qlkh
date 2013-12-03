@@ -15,11 +15,13 @@
     <context:component-scan base-package="com.qlkh.backup.processor"/>
     <task:annotation-driven/>
 
-    <bean class="com.qlkh.backup.worker.BackupWorker">
+    <bean class="com.qlkh.backup.worker.BackupWorker" id="backupWorker">
         <property name="userName" value="${jdbc.username}"/>
         <property name="passWord" value="${jdbc.password}"/>
         <property name="dir" value="${backup.dir}"/>
     </bean>
-    <bean id="backupProcessor" class="com.qlkh.backup.processor.BackupProcessor"/>
+    <bean id="backupProcessor" class="com.qlkh.backup.processor.BackupProcessor">
+        <property name="backupWorker" ref="backupWorker"/>
+    </bean>
 
 </beans>
