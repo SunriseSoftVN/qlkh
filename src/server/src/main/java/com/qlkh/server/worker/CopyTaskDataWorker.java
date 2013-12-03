@@ -4,8 +4,6 @@
 
 package com.qlkh.server.worker;
 
-import com.qlkh.backup.worker.Worker;
-
 /**
  * The Class CopyTaskDataWorker.
  *

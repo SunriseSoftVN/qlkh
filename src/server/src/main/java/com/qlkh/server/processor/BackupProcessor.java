@@ -2,10 +2,9 @@
  * Copyright (C) 2012 - 2013 Nguyen Duc Dung (dungvn3000@gmail.com)
  */
 
-package com.qlkh.backup.processor;
+package com.qlkh.server.processor;
 
-import com.qlkh.backup.worker.Worker;
-import com.qlkh.core.configuration.ConfigurationServerUtil;
+import com.qlkh.server.worker.Worker;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -19,12 +18,10 @@ public class BackupProcessor implements Processor {
     private Worker backupWorker;
 
     //one time a day.
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
+    @Scheduled(fixedDelay = 1000)
     @Override
     public void process() {
-        if (ConfigurationServerUtil.isProductionMode()) {
-            backupWorker.workForMe();
-        }
+        System.out.println("abc");
     }
 
     public void setBackupWorker(Worker backupWorker) {

@@ -2,7 +2,7 @@
  * Copyright (C) 2012 - 2013 Nguyen Duc Dung (dungvn3000@gmail.com)
  */
 
-package com.qlkh.backup.processor;
+package com.qlkh.server.processor;
 
 /**
  * The Class Processor.

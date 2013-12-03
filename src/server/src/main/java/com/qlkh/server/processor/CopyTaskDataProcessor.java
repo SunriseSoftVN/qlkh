@@ -4,8 +4,7 @@
 
 package com.qlkh.server.processor;
 
-import com.qlkh.backup.processor.Processor;
-import com.qlkh.backup.worker.Worker;
+import com.qlkh.server.worker.Worker;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -19,7 +18,7 @@ public class CopyTaskDataProcessor implements Processor {
     private Worker copyTaskDataWorker;
 
     //one time a day.
-    @Scheduled(fixedDelay = 1000 * 2)
+    @Scheduled(fixedDelay = 1000)
     @Override
     public void process() {
         System.out.println("Hello");
