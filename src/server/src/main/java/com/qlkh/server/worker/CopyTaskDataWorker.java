@@ -91,6 +91,13 @@ public class CopyTaskDataWorker implements Worker {
                                 }
                             }
                         }
+
+                        try {
+                            //delay 100ms avoid overload for database
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
