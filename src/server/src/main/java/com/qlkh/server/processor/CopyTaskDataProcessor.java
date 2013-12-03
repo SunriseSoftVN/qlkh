@@ -22,6 +22,7 @@ public class CopyTaskDataProcessor implements Processor {
     @Override
     public void process() {
         System.out.println("Hello");
+        copyTaskDataWorker.workForMe();
     }
 
     public void setCopyTaskDataWorker(Worker copyTaskDataWorker) {
