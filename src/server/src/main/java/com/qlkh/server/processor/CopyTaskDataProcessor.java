@@ -21,7 +21,6 @@ public class CopyTaskDataProcessor implements Processor {
     @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
     @Override
     public void process() {
-        System.out.println("Hello");
         copyTaskDataWorker.workForMe();
     }
 
