@@ -15,7 +15,7 @@ public class CopyRightView extends AbstractView {
     protected void initializeView() {
         HTML html = new HTML("<p style='text-align:center'>" +
                 "© Copyright 2012 <a href='http://www.visitec.vn'>Công ty TTTH ĐS Vinh</a> " +
-                "- Hotline: <a href='#'>0905611699</a> gặp Dũng - Email: <a href='mailto:dungvn3000@gmail.com'>dungvn3000@gmail.com</a></p>");
+                "- Hotline: <a href='#'>0905611699</a> gặp Dũng - Email góp ý: <a href='mailto:dungvn3000@gmail.com'>dungvn3000@gmail.com</a></p>");
         setWidget(html);
     }
 }
