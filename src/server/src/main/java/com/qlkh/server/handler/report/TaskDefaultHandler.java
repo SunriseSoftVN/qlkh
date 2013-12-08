@@ -144,10 +144,10 @@ public class TaskDefaultHandler extends AbstractHandler<TaskDefaultAction, TaskD
 
         try {
             fastReportBuilder.addColumn("Mã CV", "code", String.class, 18, detailStyle)
-                    .addColumn("Nội dung công việc", "name", String.class, 78, nameStyle)
-                    .addColumn("Đơn vị", "unit", String.class, 15, detailStyle)
-                    .addColumn("Định mức", "defaultValue", Double.class, 15, false, "###,###.###", detailStyle)
-                    .addColumn("Số lần", "quota", Integer.class, 14, detailStyle);
+                    .addColumn("Nội dung công việc", "name", String.class, 200, nameStyle)
+                    .addColumn("Đơn vị", "unit", String.class, 20, detailStyle)
+                    .addColumn("Định mức", "defaultValue", Double.class, 20, false, "###,###.###", detailStyle)
+                    .addColumn("Số lần", "quota", Integer.class, 20, detailStyle);
             fastReportBuilder.setTitle("ĐỊNH MỨC CÔNG VIỆC CÔNG TY THÔNG TIN TÍN HIỆU ĐS VINH NĂM " + DateTimeUtils.getCurrentYear());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
