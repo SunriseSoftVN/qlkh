@@ -167,7 +167,7 @@ public class TaskDefaultHandler extends AbstractHandler<TaskDefaultAction, TaskD
     }
 
     public List<Task> buildReportData() {
-        return generalDao.getAll(Task.class, Order.asc("id"));
+        return generalDao.getAll(Task.class, Order.asc("code"));
     }
 
 }
