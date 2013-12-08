@@ -187,11 +187,11 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         nameStyle.setBorderBottom(Border.THIN());
 
         try {
-            fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 15, detailStyle)
-                    .addColumn("Nội dung công việc", "task.name", String.class, 80, nameStyle)
+            fastReportBuilder.addColumn("Mã CV", "task.code", String.class, 18, detailStyle)
+                    .addColumn("Nội dung công việc", "task.name", String.class, 78, nameStyle)
                     .addColumn("Đơn vị", "task.unit", String.class, 15, detailStyle)
                     .addColumn("Định mức", "task.defaultValueForPrinting", Double.class, 15, false, "###,###.###", detailStyle)
-                    .addColumn("Số lần", "task.quotaForPrinting", Integer.class, 15, detailStyle);
+                    .addColumn("Số lần", "task.quotaForPrinting", Integer.class, 14, detailStyle);
 
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
