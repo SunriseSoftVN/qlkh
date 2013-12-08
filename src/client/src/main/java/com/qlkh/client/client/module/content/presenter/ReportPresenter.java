@@ -184,6 +184,36 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 }
             }
         });
+
+        view.getBtnTaskDefaultReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                view.getBtnTaskDefaultReport().setEnabled(false);
+                dispatch.execute(new TaskDefaultAction(ReportFileTypeEnum.PDF), new AbstractAsyncCallback<TaskDefaultResult>() {
+                    @Override
+                    public void onSuccess(TaskDefaultResult result) {
+                        view.getBtnTaskDefaultReport().setEnabled(true);
+                        reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        reportWindow.show();
+                    }
+                });
+            }
+        });
+
+        view.getBtnTaskDefaultExcelReport().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                view.getBtnTaskDefaultExcelReport().setEnabled(false);
+                dispatch.execute(new TaskDefaultAction(ReportFileTypeEnum.EXCEL), new AbstractAsyncCallback<TaskDefaultResult>() {
+                    @Override
+                    public void onSuccess(TaskDefaultResult result) {
+                        view.getBtnTaskDefaultExcelReport().setEnabled(true);
+                        reportWindow = view.createReportWindow(result.getReportUrl(), false);
+                        reportWindow.show();
+                    }
+                });
+            }
+        });
     }
 
     private static native void printPdf(String pdfUrl) /*-{
