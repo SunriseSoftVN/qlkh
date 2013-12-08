@@ -45,6 +45,10 @@ public class ReportSecurity implements ViewSecurityConfigurator {
         return new HasRole[]{UserRoleEnum.MATERIAL_MANAGER};
     }
 
+    public HasRole[] taskDefaultValueReportPanel() {
+        return new HasRole[]{UserRoleEnum.USER, UserRoleEnum.MANAGER};
+    }
+
     public HasRole[] planReportPanel() {
         return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.USER};
     }

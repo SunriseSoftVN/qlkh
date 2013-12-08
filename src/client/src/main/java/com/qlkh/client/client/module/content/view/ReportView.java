@@ -104,6 +104,10 @@ public class ReportView extends AbstractView<ReportConstant> {
     FormPanel wareHouseReportPanel = new FormPanel();
 
     @I18nField
+    @FieldSecurity
+    FormPanel taskDefaultValueReportPanel = new FormPanel();
+
+    @I18nField
     Button btnMaterialReportPdf = new Button();
 
     @I18nField
@@ -114,6 +118,12 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     @I18nField
     Button btnMaterialInExcelReport = new Button();
+
+    @I18nField
+    Button btnTaskDefaultReport = new Button();
+
+    @I18nField
+    Button btnTaskDefaultExcelReport = new Button();
 
     private ContentPanel contentPanel = new ContentPanel();
 
@@ -198,6 +208,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         priceReportPanel.setFrame(true);
         materialReportPanel.setFrame(true);
         wareHouseReportPanel.setFrame(true);
+        taskDefaultValueReportPanel.setFrame(true);
 
         cbbPriceReportStation.setDisplayField(StationManagerView.STATION_NAME_COLUMN);
         cbbPriceReportStation.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -235,12 +246,20 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         wareHouseReportPanel.add(hp4);
 
+        HorizontalPanel hp5 = new HorizontalPanel();
+        hp5.add(btnTaskDefaultReport);
+        hp5.add(btnTaskDefaultExcelReport);
+        hp5.setSpacing(4);
+
+        taskDefaultValueReportPanel.add(hp5);
+
         VerticalPanel vp = new VerticalPanel();
         vp.setSpacing(10);
         vp.add(planReportPanel);
         vp.add(priceReportPanel);
         vp.add(materialReportPanel);
         vp.add(wareHouseReportPanel);
+        vp.add(taskDefaultValueReportPanel);
         contentPanel.add(vp);
 
         contentPanel.setHeaderVisible(false);
@@ -410,5 +429,13 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public Button getBtnMaterialInExcelReport() {
         return btnMaterialInExcelReport;
+    }
+
+    public Button getBtnTaskDefaultReport() {
+        return btnTaskDefaultReport;
+    }
+
+    public Button getBtnTaskDefaultExcelReport() {
+        return btnTaskDefaultExcelReport;
     }
 }

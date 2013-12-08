@@ -37,4 +37,7 @@ public interface ReportConstant extends Constants {
     String btnMaterialInExcelReport();
     String lblMaterialRegex();
     String emptyMessage();
+    String taskDefaultValueReportPanel();
+    String btnTaskDefaultReport();
+    String btnTaskDefaultExcelReport();
 }
