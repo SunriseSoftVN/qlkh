@@ -393,6 +393,7 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
         numberStyle.setBorderLeft(Border.THIN());
         numberStyle.setBorderRight(Border.THIN());
         numberStyle.setBorderBottom(Border.THIN());
+        numberStyle.setPaddingRight(5);
 
         Style nameStyle = new Style();
         nameStyle.setFont(DEFAULT_FONT);
