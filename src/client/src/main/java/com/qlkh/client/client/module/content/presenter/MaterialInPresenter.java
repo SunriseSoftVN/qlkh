@@ -180,7 +180,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                     }
                 });
 
-                dispatch.execute(new MaterialInGetNextCodeAction(), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
+                dispatch.execute(new MaterialInGetNextCodeAction(currentYear), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
                     @Override
                     public void onSuccess(MaterialInGetNextCodeResult result) {
                         view.getTxtCode().setValue(result.getCode());
@@ -202,7 +202,7 @@ public class MaterialInPresenter extends AbstractPresenter<MaterialInView> {
                         view.getCbPerson().setStore(GridUtils.createListStoreForCb(MaterialPerson.class, criteria));
                     }
 
-                    dispatch.execute(new MaterialInGetNextCodeAction(), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
+                    dispatch.execute(new MaterialInGetNextCodeAction(currentYear), new AbstractAsyncCallback<MaterialInGetNextCodeResult>() {
                         @Override
                         public void onSuccess(MaterialInGetNextCodeResult result) {
                             MaterialIn selectedMaterial = view.getGird().getSelectionModel().getSelectedItem().getBean();

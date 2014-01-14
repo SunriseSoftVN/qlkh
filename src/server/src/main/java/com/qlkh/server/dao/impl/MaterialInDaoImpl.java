@@ -19,11 +19,11 @@ import java.sql.SQLException;
 public class MaterialInDaoImpl extends AbstractDao<MaterialIn> implements MaterialInDao {
 
     @Override
-    public long getNextCode() {
+    public long getNextCode(final int year) {
         return getHibernateTemplate().execute(new HibernateCallback<Long>() {
             @Override
             public Long doInHibernate(Session session) throws HibernateException, SQLException {
-                String select = "SELECT MAX(code) FROM `material_in`";
+                String select = "SELECT MAX(code) FROM `material_in` WHERE `year` = " + year;
                 Query query  = session.createSQLQuery(select);
                 if (query.list().get(0) != null) {
                     return Long.valueOf(query.list().get(0).toString()) + 1;

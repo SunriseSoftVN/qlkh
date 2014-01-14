@@ -1,0 +1,1 @@
+ALTER TABLE `qlkh`.`material_in` DROP INDEX `code`, ADD UNIQUE `code_fk` (`code`, `year`)COMMENT '';

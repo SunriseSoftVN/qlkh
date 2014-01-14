@@ -11,6 +11,6 @@ import com.qlkh.server.dao.core.Dao;
  */
 public interface MaterialInDao extends Dao<MaterialIn> {
 
-    public long getNextCode();
+    public long getNextCode(int year);
 
 }

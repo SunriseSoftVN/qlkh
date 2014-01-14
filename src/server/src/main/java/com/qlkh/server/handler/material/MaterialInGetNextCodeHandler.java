@@ -26,6 +26,6 @@ public class MaterialInGetNextCodeHandler extends AbstractHandler<MaterialInGetN
 
     @Override
     public MaterialInGetNextCodeResult execute(MaterialInGetNextCodeAction action, ExecutionContext context) throws DispatchException {
-        return new MaterialInGetNextCodeResult(materialInDao.getNextCode());
+        return new MaterialInGetNextCodeResult(materialInDao.getNextCode(action.getYear()));
     }
 }
