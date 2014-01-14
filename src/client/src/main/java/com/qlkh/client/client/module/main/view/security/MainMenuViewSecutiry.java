@@ -94,7 +94,7 @@ public class MainMenuViewSecutiry implements ViewSecurityConfigurator {
     }
 
     public HasRole[] mlLimitJob() {
-        return new HasRole[]{UserRoleEnum.MANAGER};
+        return new HasRole[]{UserRoleEnum.MANAGER, UserRoleEnum.USER};
     }
 
     public HasRole[] mlMaterial() {

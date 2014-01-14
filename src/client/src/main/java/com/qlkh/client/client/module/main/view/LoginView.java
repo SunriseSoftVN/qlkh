@@ -11,6 +11,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.main.view.i18n.LoginConstants;
 import com.qlkh.client.client.utils.BrowserUtils;
@@ -67,6 +68,12 @@ public class LoginView extends AbstractView<LoginConstants> {
         if (!BrowserUtils.is_chrome() && !BrowserUtils.is_firefox()) {
             contentPanel.add(downloadChromeOrFireFoxHtml);
         }
+
+        contentPanel.add(new HTML("<b>Cập nhật phiên bản 1.4.0</b>" +
+                "<ul>" +
+                "<li>- User xí nghiệp có thể xem định mức cho từng công việc</li>" +
+                "<li>- Số chứng từ hoá đơn xẽ tự động reset về 1 khi chuyển sang năm mới</li>" +
+                "</ul>"));
 
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setHeaderVisible(false);

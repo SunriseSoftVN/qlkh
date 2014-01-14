@@ -19,8 +19,10 @@ import com.qlkh.client.client.module.content.view.i18n.MaterialLimitConstant;
 import com.qlkh.client.client.module.content.view.security.MaterialLimitSecurity;
 import com.qlkh.client.client.module.content.view.share.AbstractTaskDetailView;
 import com.qlkh.client.client.widget.MyNumberField;
+import com.qlkh.core.client.constant.UserRoleEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
 import com.smvp4g.mvp.client.core.security.ViewSecurity;
+import com.smvp4g.mvp.client.core.utils.LoginUtils;
 import com.smvp4g.mvp.client.core.view.annotation.View;
 import com.smvp4g.mvp.client.widget.TextField;
 
@@ -117,6 +119,9 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
         subToolBar.add(new SeparatorToolItem());
         subToolBar.add(getBtnSubTaskRefresh());
         subToolBar.add(btnMaterialSync);
+        if (LoginUtils.getRole().equals(UserRoleEnum.USER.getRole())) {
+            subToolBar.setEnabled(false);
+        }
         return subToolBar;
     }
 
@@ -138,10 +143,14 @@ public class MaterialLimitView extends AbstractTaskDetailView<MaterialLimitConst
 
         ColumnConfig quantityColumnConfig = new ColumnConfig(MATERIAL_LIMIT_QUANTITY_COLUMN,
                 getConstant().materialQuantityColumnTitle(), MATERIAL_LIMIT_QUANTITY_WIDTH);
-        MyNumberField quantityNumberField = new MyNumberField();
-        quantityNumberField.setSelectOnFocus(true);
-        quantityColumnConfig.setEditor(new CellEditor(quantityNumberField));
+
+        if (!LoginUtils.getRole().equals(UserRoleEnum.USER.getRole())) {
+            MyNumberField quantityNumberField = new MyNumberField();
+            quantityNumberField.setSelectOnFocus(true);
+            quantityColumnConfig.setEditor(new CellEditor(quantityNumberField));
+        }
         columnConfigs.add(quantityColumnConfig);
+
 
         for (int i = 1; i < columnConfigs.size(); i++) {
             columnConfigs.get(i).setNumberFormat(NumberFormat.getDecimalFormat());
