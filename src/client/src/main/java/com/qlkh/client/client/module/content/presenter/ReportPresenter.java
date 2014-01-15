@@ -93,6 +93,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 view.getCbbTaskYear().setSimpleValue(result.getYear());
                 view.getCbbPriceYear().setSimpleValue(result.getYear());
                 view.getCbbMaterialYear().setSimpleValue(result.getYear());
+                view.getCbbWareHouseYear().setSimpleValue(result.getYear());
                 ReportTypeEnum reportTypeEnum = ReportTypeEnum.valueOf(result.getQuarter().getCode());
                 if (reportTypeEnum != null) {
                     view.getCbbPriceReportType().setSimpleValue(reportTypeEnum);
@@ -225,7 +226,7 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getTxtMaterialTo().setEnabled(false);
         view.getBtnMaterialInReport().setEnabled(false);
         view.getBtnMaterialInExcelReport().setEnabled(false);
-        dispatch.execute(new MaterialOutReportAction(form, to, print), new AbstractAsyncCallback<MaterialOutReportResult>() {
+        dispatch.execute(new MaterialOutReportAction(form, to, print, view.getCbbWareHouseYear().getSimpleValue()), new AbstractAsyncCallback<MaterialOutReportResult>() {
             @Override
             public void onSuccess(MaterialOutReportResult result) {
                 if (StringUtils.isNotBlank(result.getReportUrl())) {

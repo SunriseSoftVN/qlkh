@@ -305,7 +305,7 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
     }
 
     @Override
-    public List<MaterialReportBean> getMaterialOut(final int form, final int to) {
+    public List<MaterialReportBean> getMaterialOut(final int form, final int to, final int year) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<MaterialReportBean>>() {
             @Override
             public List<MaterialReportBean> doInHibernate(Session session) throws HibernateException, SQLException {
@@ -337,7 +337,8 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
 //                        "ON `material_in`.`materialId` = `material_price`.`materialId` " +
 //                        "AND `material_in`.`year` = `material_price`.`year` " +
 //                        "AND `material_in`.`quarter` = `material_price`.`quarter` " +
-                        "WHERE `material_in`.`code` >= " + form + " AND `material_in`.`code` <= " + to;
+                        "WHERE `material_in`.`code` >= " + form + " AND `material_in`.`code` <= " + to +
+                        " AND `material_in`.`year` = " + year;
                 SQLQuery selectQuery = session.createSQLQuery(select);
                 selectQuery.setResultTransformer(new AliasToBeanResultTransformer(MaterialReportBean.class));
                 return selectQuery.list();

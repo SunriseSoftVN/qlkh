@@ -63,7 +63,7 @@ public class MaterialOutReportHandler extends AbstractHandler<MaterialOutReportA
 
         List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
         try {
-            List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getForm(), action.getTo());
+            List<MaterialReportBean> materialReportBeans = sqlQueryDao.getMaterialOut(action.getForm(), action.getTo(), action.getYear());
             if (CollectionUtils.isNotEmpty(materialReportBeans)) {
                 for (MaterialReportBean materialReportBean : materialReportBeans) {
                     Map<String, Object> data = new HashMap<String, Object>();

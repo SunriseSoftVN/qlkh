@@ -13,14 +13,16 @@ public class MaterialOutReportAction implements Action<MaterialOutReportResult> 
     private int form;
     private int to;
     private boolean pdf;
+    private int year;
 
     public MaterialOutReportAction() {
     }
 
-    public MaterialOutReportAction(int form, int to, boolean pdf) {
+    public MaterialOutReportAction(int form, int to, boolean pdf, int year) {
         this.form = form;
         this.to = to;
         this.pdf = pdf;
+        this.year = year;
     }
 
     public int getForm() {
@@ -33,5 +35,9 @@ public class MaterialOutReportAction implements Action<MaterialOutReportResult> 
 
     public boolean isPdf() {
         return pdf;
+    }
+
+    public int getYear() {
+        return year;
     }
 }

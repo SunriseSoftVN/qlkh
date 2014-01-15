@@ -18,7 +18,6 @@ import com.google.gwt.user.client.Window;
 import com.qlkh.client.client.constant.DomIdConstant;
 import com.qlkh.client.client.module.content.view.i18n.ReportConstant;
 import com.qlkh.client.client.module.content.view.security.ReportSecurity;
-import com.qlkh.client.client.utils.BrowserUtils;
 import com.qlkh.core.client.constant.ReportFormEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.smvp4g.mvp.client.core.i18n.I18nField;
@@ -51,6 +50,8 @@ public class ReportView extends AbstractView<ReportConstant> {
     ComboBox<BeanModel> cbbTaskReportBranch = new ComboBox<BeanModel>();
 
     SimpleComboBox<Integer> cbbTaskYear = new SimpleComboBox<Integer>();
+
+    SimpleComboBox<Integer> cbbWareHouseYear = new SimpleComboBox<Integer>();
 
     SimpleComboBox<ReportFormEnum> cbbTaskReportForm = new SimpleComboBox<ReportFormEnum>();
 
@@ -175,6 +176,7 @@ public class ReportView extends AbstractView<ReportConstant> {
             cbbTaskYear.add(i);
             cbbPriceYear.add(i);
             cbbMaterialYear.add(i);
+            cbbWareHouseYear.add(i);
         }
         cbbTaskYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbTaskYear.setWidth(60);
@@ -187,6 +189,10 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbMaterialYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbMaterialYear.setWidth(60);
         cbbMaterialYear.setEditable(false);
+
+        cbbWareHouseYear.setTriggerAction(ComboBox.TriggerAction.ALL);
+        cbbWareHouseYear.setWidth(60);
+        cbbWareHouseYear.setEditable(false);
 
         cbbTaskReportForm.add(Arrays.asList(ReportFormEnum.values()));
         cbbTaskReportForm.setSimpleValue(ReportFormEnum.MAU_1);
@@ -234,13 +240,15 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         materialReportPanel.add(hp3);
 
-        btnMaterialInReport.setEnabled(BrowserUtils.is_Java_Enable());
+//        btnMaterialInReport.setEnabled(BrowserUtils.is_Java_Enable());
+        btnMaterialInReport.setEnabled(false);
 
         HorizontalPanel hp4 = new HorizontalPanel();
         hp4.setSpacing(4);
         hp4.add(new Label(getConstant().lblMaterialRegex()));
         hp4.add(txtMaterialFrom);
         hp4.add(txtMaterialTo);
+        hp4.add(cbbWareHouseYear);
         hp4.add(btnMaterialInReport);
         hp4.add(btnMaterialInExcelReport);
 
@@ -437,5 +445,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public Button getBtnTaskDefaultExcelReport() {
         return btnTaskDefaultExcelReport;
+    }
+
+    public SimpleComboBox<Integer> getCbbWareHouseYear() {
+        return cbbWareHouseYear;
     }
 }
