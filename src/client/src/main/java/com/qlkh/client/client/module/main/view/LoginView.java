@@ -69,11 +69,16 @@ public class LoginView extends AbstractView<LoginConstants> {
             contentPanel.add(downloadChromeOrFireFoxHtml);
         }
 
-        contentPanel.add(new HTML("<b>Cập nhật phiên bản 1.4.0</b>" +
+        contentPanel.add(new HTML("<div>" +
+                "<p><b>Cập nhật phiên bản 1.4.1 - 07/02/2014</b></p>" +
+                "<ul>" +
+                "<li>- Sửa lỗi sai định dạng số trong Excel</li>" +
+                "</ul>" +
+                "<p><b>Cập nhật phiên bản 1.4.0</b></p>" +
                 "<ul>" +
                 "<li>- User xí nghiệp có thể xem định mức cho từng công việc</li>" +
                 "<li>- Số chứng từ hoá đơn xẽ tự động reset về 1 khi chuyển sang năm mới</li>" +
-                "</ul>"));
+                "</ul></div>"));
 
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setHeaderVisible(false);
