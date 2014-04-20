@@ -2,6 +2,7 @@ package com.qlkh.server.rest;
 
 import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.constant.ReportTypeEnum;
+import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.server.handler.report.TaskReportHandler;
 import net.customware.gwt.dispatch.shared.ActionException;
 import org.springframework.beans.BeansException;
@@ -10,7 +11,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * The Class ReportController.
@@ -23,15 +27,17 @@ public class ReportController implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
-    @RequestMapping(value = "/report", method = RequestMethod.GET)
-    public @ResponseBody UserBean getReport() throws ActionException {
+    @RequestMapping(value = "/reportStation", method = RequestMethod.GET)
+    public @ResponseBody List<TaskSumReportBean> getReportStationData(
+            @RequestParam(value="stationId", required=false) long stationId,
+            @RequestParam(value="quarter", required=false) int quarter,
+            @RequestParam(value="year", required=false) int year
+    ) throws ActionException {
         TaskReportAction action = new TaskReportAction();
-        action.setStationId(31l);
-        action.setReportTypeEnum(ReportTypeEnum.Q2);
-        action.setYear(2014);
-
-        getTaskReportHandler().buildReportData(action);
-        return new UserBean("dung ne");
+        action.setStationId(stationId);
+        action.setReportTypeEnum(ReportTypeEnum.valueOf(quarter));
+        action.setYear(year);
+        return getTaskReportHandler().buildReportData(action);
     }
 
     private TaskReportHandler getTaskReportHandler() {
