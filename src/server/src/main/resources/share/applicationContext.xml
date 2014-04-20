@@ -24,4 +24,5 @@
     <import resource="dao.xml"/>
     <import resource="serviceHandler.xml"/>
     <import resource="worker.xml"/>
+    <import resource="rest.xml"/>
 </beans>

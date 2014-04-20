@@ -88,4 +88,28 @@ public class TaskReportAction implements Action<TaskReportResult> {
     public ReportFormEnum getReportFormEnum() {
         return reportFormEnum;
     }
+
+    public void setReportTypeEnum(ReportTypeEnum reportTypeEnum) {
+        this.reportTypeEnum = reportTypeEnum;
+    }
+
+    public void setFileTypeEnum(ReportFileTypeEnum fileTypeEnum) {
+        this.fileTypeEnum = fileTypeEnum;
+    }
+
+    public void setReportFormEnum(ReportFormEnum reportFormEnum) {
+        this.reportFormEnum = reportFormEnum;
+    }
+
+    public void setStationId(long stationId) {
+        this.stationId = stationId;
+    }
+
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
 }
