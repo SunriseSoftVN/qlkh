@@ -37,6 +37,7 @@
         <collectionsVersion>3.2</collectionsVersion>
         <junitVerion>4.8.1</junitVerion>
         <guavaVerion>12.0</guavaVerion>
+        <jacksonVersion>1.9.13</jacksonVersion>
         <appplicationMode>DEV</appplicationMode>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>
