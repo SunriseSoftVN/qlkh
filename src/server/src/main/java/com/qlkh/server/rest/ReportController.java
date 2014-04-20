@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,16 +29,28 @@ public class ReportController implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
     @RequestMapping(value = "/reportStation", method = RequestMethod.GET)
-    public @ResponseBody List<TaskSumReportBean> getReportStationData(
-            @RequestParam(value="stationId", required=true) long stationId,
-            @RequestParam(value="quarter", required=true) int quarter,
-            @RequestParam(value="year", required=true) int year
+    public
+    @ResponseBody
+    List<TaskExportBean> getReportStationData(
+            @RequestParam(value = "stationId", required = true) long stationId,
+            @RequestParam(value = "quarter", required = true) int quarter,
+            @RequestParam(value = "year", required = true) int year
     ) throws ActionException {
         TaskReportAction action = new TaskReportAction();
         action.setStationId(stationId);
         action.setReportTypeEnum(ReportTypeEnum.valueOf(quarter));
         action.setYear(year);
-        return getTaskReportHandler().buildReportData(action);
+
+        List<TaskExportBean> exportData = new ArrayList<TaskExportBean>();
+        List<TaskSumReportBean> data = getTaskReportHandler().buildReportData(action);
+        for (TaskSumReportBean sum : data) {
+            TaskExportBean exportBean = new TaskExportBean();
+            exportBean.setId(sum.getTask().getId());
+            exportBean.setKhoiLuong(sum.getStations().get(String.valueOf(stationId)).getValue());
+            exportBean.setGio(sum.getStations().get(String.valueOf(stationId)).getTime());
+            exportData.add(exportBean);
+        }
+        return exportData;
     }
 
     private TaskReportHandler getTaskReportHandler() {
