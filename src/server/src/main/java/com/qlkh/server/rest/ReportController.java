@@ -29,9 +29,9 @@ public class ReportController implements ApplicationContextAware {
 
     @RequestMapping(value = "/reportStation", method = RequestMethod.GET)
     public @ResponseBody List<TaskSumReportBean> getReportStationData(
-            @RequestParam(value="stationId", required=false) long stationId,
-            @RequestParam(value="quarter", required=false) int quarter,
-            @RequestParam(value="year", required=false) int year
+            @RequestParam(value="stationId", required=true) long stationId,
+            @RequestParam(value="quarter", required=true) int quarter,
+            @RequestParam(value="year", required=true) int year
     ) throws ActionException {
         TaskReportAction action = new TaskReportAction();
         action.setStationId(stationId);

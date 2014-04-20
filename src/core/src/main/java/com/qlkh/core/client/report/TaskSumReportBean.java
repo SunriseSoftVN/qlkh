@@ -5,7 +5,9 @@
 package com.qlkh.core.client.report;
 
 import com.qlkh.core.client.model.Task;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ public class TaskSumReportBean implements Serializable, Comparable<TaskSumReport
     private TaskReportBean task;
     private boolean calculated;
     private Map<String, StationReportBean> stations = new HashMap<String, StationReportBean>();
+    @JsonIgnore
     private List<TaskSumReportBean> childBeans = new ArrayList<TaskSumReportBean>();
 
     public void calculate() {
@@ -84,6 +87,7 @@ public class TaskSumReportBean implements Serializable, Comparable<TaskSumReport
         return stations;
     }
 
+    @JsonIgnore
     public List<TaskSumReportBean> getChildBeans() {
         return childBeans;
     }

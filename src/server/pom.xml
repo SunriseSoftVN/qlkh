@@ -153,18 +153,6 @@
         <!--end-->
 
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-lgpl</artifactId>
-            <version>${jacksonVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jacksonVersion}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guiceVersion}</version>
