@@ -40,14 +40,34 @@ public class ReportController implements ApplicationContextAware {
         action.setStationId(stationId);
         action.setReportTypeEnum(ReportTypeEnum.valueOf(quarter));
         action.setYear(year);
+        return exportData(action);
+    }
 
+    @RequestMapping(value = "/reportBrand", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<TaskExportBean> getReportBrandData(
+            @RequestParam(value = "stationId", required = true) long stationId,
+            @RequestParam(value = "brandId", required = true) long brandId,
+            @RequestParam(value = "quarter", required = true) int quarter,
+            @RequestParam(value = "year", required = true) int year
+    ) throws ActionException {
+        TaskReportAction action = new TaskReportAction();
+        action.setBranchId(brandId);
+        action.setStationId(stationId);
+        action.setReportTypeEnum(ReportTypeEnum.valueOf(quarter));
+        action.setYear(year);
+        return exportData(action);
+    }
+
+    private List<TaskExportBean> exportData(TaskReportAction action) throws ActionException {
         List<TaskExportBean> exportData = new ArrayList<TaskExportBean>();
         List<TaskSumReportBean> data = getTaskReportHandler().buildReportData(action);
         for (TaskSumReportBean sum : data) {
             TaskExportBean exportBean = new TaskExportBean();
             exportBean.setId(sum.getTask().getId());
-            Double khoiLuong = sum.getStations().get(String.valueOf(stationId)).getValue();
-            Double gio = sum.getStations().get(String.valueOf(stationId)).getTime();
+            Double khoiLuong = sum.getStations().get(String.valueOf(action.getStationId())).getValue();
+            Double gio = sum.getStations().get(String.valueOf(action.getStationId())).getTime();
             if (khoiLuong != null && gio != null) {
                 exportBean.setKhoiLuong(khoiLuong);
                 exportBean.setGio(gio);
@@ -56,6 +76,7 @@ public class ReportController implements ApplicationContextAware {
         }
         return exportData;
     }
+
 
     private TaskReportHandler getTaskReportHandler() {
         return applicationContext.getBean(TaskReportHandler.class);
