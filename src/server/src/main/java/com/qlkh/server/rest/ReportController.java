@@ -43,17 +43,17 @@ public class ReportController implements ApplicationContextAware {
         return exportData(action);
     }
 
-    @RequestMapping(value = "/reportBrand", method = RequestMethod.GET)
+    @RequestMapping(value = "/reportBranch", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<TaskExportBean> getReportBrandData(
+    List<TaskExportBean> getReportBranchData(
             @RequestParam(value = "stationId", required = true) long stationId,
-            @RequestParam(value = "brandId", required = true) long brandId,
+            @RequestParam(value = "branchId", required = true) long branchId,
             @RequestParam(value = "quarter", required = true) int quarter,
             @RequestParam(value = "year", required = true) int year
     ) throws ActionException {
         TaskReportAction action = new TaskReportAction();
-        action.setBranchId(brandId);
+        action.setBranchId(branchId);
         action.setStationId(stationId);
         action.setReportTypeEnum(ReportTypeEnum.valueOf(quarter));
         action.setYear(year);
