@@ -68,7 +68,7 @@ public class ReportController implements ApplicationContextAware {
             exportBean.setId(sum.getTask().getId());
             Double khoiLuong = sum.getStations().get(String.valueOf(action.getStationId())).getValue();
             Double gio = sum.getStations().get(String.valueOf(action.getStationId())).getTime();
-            if (khoiLuong != null && gio != null) {
+            if (gio != null) {
                 exportBean.setKhoiLuong(khoiLuong);
                 exportBean.setGio(gio);
                 exportData.add(exportBean);
