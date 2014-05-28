@@ -359,6 +359,32 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         return beans;
     }
 
+    public List<TaskSumReportBean> buildTaskTree() {
+        List<TaskSumReportBean> beans = new ArrayList<TaskSumReportBean>();
+        List<TaskSumReportBean> parentBeans = new ArrayList<TaskSumReportBean>();
+        List<Task> tasks = generalDao.getAll(Task.class, Order.asc("code"));
+        for (Task task : tasks) {
+            TaskSumReportBean bean = new TaskSumReportBean();
+            bean.setTask(task);
+            beans.add(bean);
+            if (task.getTaskTypeCode() == SUBSUM.getCode()
+                    || task.getTaskTypeCode() == SUM.getCode()) {
+                parentBeans.add(bean);
+            }
+        }
+
+        //Build tree
+        buildTree(beans, parentBeans);
+
+        //Sort by Alphabetical.
+        Collections.sort(beans);
+
+        //Business Order.
+        ReportOrderRule.sort(beans);
+
+        return beans;
+    }
+
 
     private void buildTree(List<TaskSumReportBean> beans,
                            List<TaskSumReportBean> parentBeans) {

@@ -26,7 +26,7 @@
         </property>
     </bean>
 
-    <bean name="exceptionsInterceptor" class="com.qlkh.server.Interceptor.ExceptionsInterceptor"/>
+    <bean name="exceptionsInterceptor" class="com.qlkh.server.interceptor.ExceptionsInterceptor"/>
 
     <!--Transaction Manager-->
     <bean name="transactionInterceptor"
@@ -44,6 +44,6 @@
     </bean>
 
     <!--Hibernate Interceptor-->
-    <bean name="auditInterceptor" class="com.qlkh.server.Interceptor.AuditInterceptor"/>
+    <bean name="auditInterceptor" class="com.qlkh.server.interceptor.AuditInterceptor"/>
 
 </beans>

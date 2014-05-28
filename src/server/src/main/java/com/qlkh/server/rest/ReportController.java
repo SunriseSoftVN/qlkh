@@ -60,6 +60,35 @@ public class ReportController implements ApplicationContextAware {
         return exportData(action);
     }
 
+    @RequestMapping(value = "/taskTree", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<TaskTreeExportBean> getTaskTree() {
+        List<TaskSumReportBean> beans = getTaskReportHandler().buildTaskTree();
+        List<TaskTreeExportBean> exportBeans = new ArrayList<TaskTreeExportBean>();
+        for (TaskSumReportBean bean : beans) {
+            TaskTreeExportBean exportBean = new TaskTreeExportBean();
+            exportBean.setId(bean.getTask().getId());
+            exportBean.setName(bean.getTask().getName());
+            exportBean.setTaskTypeCode(bean.getTask().getTaskTypeCode());
+            exportBean.setDonVi(bean.getTask().getUnit());
+            exportBean.setDinhMuc(bean.getTask().getDefaultValue());
+            exportBean.setSoLan(bean.getTask().getQuota());
+            for (TaskSumReportBean child : bean.getChildBeans()) {
+                TaskTreeExportBean childBean = new TaskTreeExportBean();
+                childBean.setId(child.getTask().getId());
+                childBean.setTaskTypeCode(child.getTask().getTaskTypeCode());
+                childBean.setName(child.getTask().getName());
+                childBean.setDonVi(child.getTask().getUnit());
+                childBean.setDinhMuc(child.getTask().getDefaultValue());
+                childBean.setSoLan(child.getTask().getQuota());
+                exportBean.getChildren().add(childBean);
+            }
+            exportBeans.add(exportBean);
+        }
+        return exportBeans;
+    }
+
     private List<TaskExportBean> exportData(TaskReportAction action) throws ActionException {
         List<TaskExportBean> exportData = new ArrayList<TaskExportBean>();
         List<TaskSumReportBean> data = getTaskReportHandler().buildReportData(action);
