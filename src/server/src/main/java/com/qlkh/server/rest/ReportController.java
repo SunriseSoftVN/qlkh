@@ -70,14 +70,14 @@ public class ReportController implements ApplicationContextAware {
             TaskTreeExportBean exportBean = new TaskTreeExportBean();
             exportBean.setId(bean.getTask().getId());
             exportBean.setName(bean.getTask().getName());
-            exportBean.setTaskTypeCode(bean.getTask().getTaskTypeCode());
+            exportBean.setCode(bean.getTask().getCode());
             exportBean.setDonVi(bean.getTask().getUnit());
             exportBean.setDinhMuc(bean.getTask().getDefaultValue());
             exportBean.setSoLan(bean.getTask().getQuota());
             for (TaskSumReportBean child : bean.getChildBeans()) {
                 TaskTreeExportBean childBean = new TaskTreeExportBean();
                 childBean.setId(child.getTask().getId());
-                childBean.setTaskTypeCode(child.getTask().getTaskTypeCode());
+                childBean.setCode(child.getTask().getCode());
                 childBean.setName(child.getTask().getName());
                 childBean.setDonVi(child.getTask().getUnit());
                 childBean.setDinhMuc(child.getTask().getDefaultValue());

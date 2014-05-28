@@ -9,11 +9,12 @@ import java.util.List;
 public class TaskTreeExportBean {
 
     private long id;
+    private String code;
     private String name;
     private String donVi;
     private Double dinhMuc;
     private Integer soLan;
-    private int taskTypeCode;
+
     private List<TaskTreeExportBean> children = new ArrayList<TaskTreeExportBean>();
 
     public long getId() {
@@ -26,14 +27,6 @@ public class TaskTreeExportBean {
 
     public List<TaskTreeExportBean> getChildren() {
         return children;
-    }
-
-    public int getTaskTypeCode() {
-        return taskTypeCode;
-    }
-
-    public void setTaskTypeCode(int taskTypeCode) {
-        this.taskTypeCode = taskTypeCode;
     }
 
     public String getDonVi() {
@@ -66,5 +59,13 @@ public class TaskTreeExportBean {
 
     public void setSoLan(Integer soLan) {
         this.soLan = soLan;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
