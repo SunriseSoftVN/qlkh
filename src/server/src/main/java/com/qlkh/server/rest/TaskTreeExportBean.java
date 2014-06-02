@@ -14,6 +14,7 @@ public class TaskTreeExportBean {
     private String donVi;
     private Double dinhMuc;
     private Integer soLan;
+    private boolean isHidden;
 
     private List<TaskTreeExportBean> children = new ArrayList<TaskTreeExportBean>();
 
@@ -67,5 +68,13 @@ public class TaskTreeExportBean {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean isHidden) {
+        this.isHidden = isHidden;
     }
 }

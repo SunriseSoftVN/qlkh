@@ -3,6 +3,7 @@ package com.qlkh.server.rest;
 import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.constant.ReportTypeEnum;
 import com.qlkh.core.client.report.TaskSumReportBean;
+import com.qlkh.server.business.rule.HideDetailTaskRule;
 import com.qlkh.server.handler.report.TaskReportHandler;
 import net.customware.gwt.dispatch.shared.ActionException;
 import org.springframework.beans.BeansException;
@@ -74,6 +75,7 @@ public class ReportController implements ApplicationContextAware {
             exportBean.setDonVi(bean.getTask().getUnit());
             exportBean.setDinhMuc(bean.getTask().getDefaultValue());
             exportBean.setSoLan(bean.getTask().getQuota());
+            exportBean.setHidden(HideDetailTaskRule.isRemoveTask(bean.getTask()));
             for (TaskSumReportBean child : bean.getChildBeans()) {
                 TaskTreeExportBean childBean = new TaskTreeExportBean();
                 childBean.setId(child.getTask().getId());

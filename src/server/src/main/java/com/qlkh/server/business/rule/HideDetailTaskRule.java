@@ -71,7 +71,7 @@ public final class HideDetailTaskRule {
                 && NAM.getCode() != task.getTaskTypeCode();
     }
 
-    private static boolean isRemoveTask(TaskReportBean task) {
+    public static boolean isRemoveTask(TaskReportBean task) {
         //Remove for *.10*, *.20*, *.30*
         Integer subCode = TaskCodeUtils.getTaskPrefix(task.getCode());
         return subCode != null && subCode > 100 && subCode < 400
