@@ -39,26 +39,29 @@ public class MaterialPriceDaoImpl extends AbstractDao<MaterialPrice> implements 
         List<MaterialPrice> fromMaterialPrices = findByTime(form, fromYear);
         List<MaterialPrice> toMaterialPrices = findByTime(to, toYear);
 
-        List<MaterialPrice> copyData = new ArrayList<MaterialPrice>();
+        List<MaterialPrice> addNewData = new ArrayList<MaterialPrice>();
+        List<MaterialPrice> updateData = new ArrayList<MaterialPrice>();
 
         for (MaterialPrice fromMaterialPrice : fromMaterialPrices) {
             boolean isFound = false;
             for (MaterialPrice toMaterialPrice : toMaterialPrices) {
                 if(fromMaterialPrice.getMaterial().getId().equals(toMaterialPrice.getMaterial().getId())) {
                     isFound = true;
+                    if(fromMaterialPrice.getPrice() != toMaterialPrice.getPrice()) {
+                        toMaterialPrice.setPrice(fromMaterialPrice.getPrice());
+                        updateData.add(toMaterialPrice);
+                    }
                 }
             }
 
             if(!isFound) {
-                copyData.add(fromMaterialPrice);
+                addNewData.add(fromMaterialPrice);
             }
         }
 
-        if(!copyData.isEmpty()) {
+        if(!addNewData.isEmpty()) {
             List<MaterialPrice> newPrices = new ArrayList<MaterialPrice>();
-            for (MaterialPrice copyPrice : copyData) {
-                //Set id to null make it
-
+            for (MaterialPrice copyPrice : addNewData) {
                 MaterialPrice newPrice = new MaterialPrice();
                 newPrice.setMaterial(copyPrice.getMaterial());
                 newPrice.setPrice(copyPrice.getPrice());
@@ -71,5 +74,7 @@ public class MaterialPriceDaoImpl extends AbstractDao<MaterialPrice> implements 
 
             getHibernateTemplate().saveOrUpdateAll(newPrices);
         }
+
+        getHibernateTemplate().saveOrUpdateAll(updateData);
     }
 }

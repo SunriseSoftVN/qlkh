@@ -70,14 +70,18 @@ public class LoginView extends AbstractView<LoginConstants> {
         }
 
         contentPanel.add(new HTML("<div>" +
+                "<p><b>Cập nhật phiên bản 1.4.2 - 31/07/2014</b></p>" +
+                "<ul>" +
+                "<li>- Tính năng copy dữ liệu của giá vật tư xẻ copy đè dữ liệu nếu giá của quý trước có thay đổi.</li>" +
+                "</ul>" +
                 "<p><b>Cập nhật phiên bản 1.4.1 - 07/02/2014</b></p>" +
                 "<ul>" +
-                "<li>- Sửa lỗi sai định dạng số trong Excel</li>" +
+                "<li>- Sửa lỗi sai định dạng số trong Excel.</li>" +
                 "</ul>" +
                 "<p><b>Cập nhật phiên bản 1.4.0</b></p>" +
                 "<ul>" +
-                "<li>- User xí nghiệp có thể xem định mức cho từng công việc</li>" +
-                "<li>- Số chứng từ hoá đơn xẽ tự động reset về 1 khi chuyển sang năm mới</li>" +
+                "<li>- User xí nghiệp có thể xem định mức cho từng công việc.</li>" +
+                "<li>- Số chứng từ hoá đơn xẽ tự động reset về 1 khi chuyển sang năm mới.</li>" +
                 "</ul></div>"));
 
         contentPanel.setHeight(Window.getClientHeight() - 90);
