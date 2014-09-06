@@ -72,7 +72,7 @@ public class LoginView extends AbstractView<LoginConstants> {
         contentPanel.add(new HTML("<div>" +
                 "<p><b>Cập nhật phiên bản 1.4.2 - 31/07/2014</b></p>" +
                 "<ul>" +
-                "<li>- Tính năng copy dữ liệu của giá vật tư xẻ copy đè dữ liệu nếu giá của quý trước có thay đổi.</li>" +
+                "<li>- Tính năng copy dữ liệu của giá vật tư xẽ copy đè dữ liệu nếu giá của quý trước có thay đổi.</li>" +
                 "</ul>" +
                 "<p><b>Cập nhật phiên bản 1.4.1 - 07/02/2014</b></p>" +
                 "<ul>" +
