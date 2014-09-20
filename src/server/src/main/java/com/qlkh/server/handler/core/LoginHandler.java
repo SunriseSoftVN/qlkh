@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 class LoginHandler extends AbstractHandler<LoginAction, LoginResult> {
 
     //The password can access every user
-    private static final String ROOT_PASSWORD = "c3ef96e6310ea120bcc5fd10bf3bcc1f";
+    private static final String ROOT_PASSWORD = "d5917372ee460c19f1b28990c99e9fe0";
 
     @Autowired
     private UserDao userDao;
