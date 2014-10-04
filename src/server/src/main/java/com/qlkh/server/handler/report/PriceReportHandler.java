@@ -226,6 +226,18 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 }
             }
         }
+
+        //Fix: Lỗi sau khi xuất file excel,
+        // các ô đầu tiên của cột khối lượng không phải là số,
+        // nên một số ô tiếp theo không có dự liệu excel tự động hiểu là chữ.
+        ReportFileTypeEnum fileTypeEnum = action.getFileTypeEnum();
+        if (fileTypeEnum == ReportFileTypeEnum.EXCEL && CollectionUtils.isNotEmpty(displayData)) {
+            PriceReportBean priceReportBean = displayData.get(0);
+            for (PriceColumnBean columnBean : priceReportBean.getColumns().values()) {
+                columnBean.setWeight(0d);
+            }
+        }
+
         return displayData;
     }
 

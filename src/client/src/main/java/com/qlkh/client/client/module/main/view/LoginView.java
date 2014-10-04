@@ -70,6 +70,10 @@ public class LoginView extends AbstractView<LoginConstants> {
         }
 
         contentPanel.add(new HTML("<div>" +
+                "<p><b>Cập nhật phiên bản 1.4.3 - 04/10/2014</b></p>" +
+                "<ul>" +
+                "<li>- Sửa lỗi sai định dạng số trong Excel.</li>" +
+                "</ul>" +
                 "<p><b>Cập nhật phiên bản 1.4.2 - 31/07/2014</b></p>" +
                 "<ul>" +
                 "<li>- Tính năng copy dữ liệu của giá vật tư xẽ copy đè dữ liệu nếu giá của quý trước có thay đổi.</li>" +
