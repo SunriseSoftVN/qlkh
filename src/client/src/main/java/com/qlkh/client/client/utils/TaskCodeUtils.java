@@ -72,8 +72,10 @@ public final class TaskCodeUtils {
             if (index > 1) {
                 String first = code.substring(0, index);
                 String last = code.substring(index, code.length());
-                Integer from = Integer.valueOf(last) + 1;
-                return first + from;
+                String lastNumber = last.substring(last.length() - 1, last.length());
+                last = last.substring(0, last.length() -1);
+                Integer from = Integer.valueOf(lastNumber) + 1;
+                return first + last + from;
             }
         }
         return code;
