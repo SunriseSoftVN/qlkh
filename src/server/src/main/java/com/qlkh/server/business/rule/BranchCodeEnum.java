@@ -12,7 +12,7 @@ package com.qlkh.server.business.rule;
  */
 public enum BranchCodeEnum {
 
-    ND(25l);
+    ND(82l);
 
     private long id;
 
