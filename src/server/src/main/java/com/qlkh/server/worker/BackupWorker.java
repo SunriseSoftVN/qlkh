@@ -33,9 +33,9 @@ public class BackupWorker implements Worker {
             command += " -p" + passWord;
         }
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String fileName = "qlkh-" + dateFormat.format(new Date()) + ".sql";
+        String fileName = "qlkh2-" + dateFormat.format(new Date()) + ".sql";
 
-        command += " qlkh -r " + dir + fileName;
+        command += " qlkh2 -r " + dir + fileName;
 
         try {
             Runtime.getRuntime().exec(command);

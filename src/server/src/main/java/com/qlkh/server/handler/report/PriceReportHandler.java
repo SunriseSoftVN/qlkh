@@ -28,6 +28,7 @@ import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
 import com.qlkh.server.util.ReportExporter;
 import com.qlkh.server.util.ServletUtils;
+import com.qlkh.server.util.StringUtilsFixed;
 import com.smvp4g.mvp.client.core.utils.StringUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -333,11 +334,11 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
             String fileName = REPORT_FILE_NAME;
             if (action.getBranchId() != null) {
                 Branch branch = generalDao.findById(Branch.class, action.getBranchId());
-                fileName += "_" + StringUtils.convertNonAscii(branch.getName()).
+                fileName += "_" + StringUtilsFixed.convertNonAscii(branch.getName()).
                         replaceAll(" ", "_").toLowerCase();
             } else {
                 Station station = generalDao.findById(Station.class, action.getStationId());
-                fileName += "_" + StringUtils.convertNonAscii(station.getName()).
+                fileName += "_" + StringUtilsFixed.convertNonAscii(station.getName()).
                         replaceAll(" ", "_").toLowerCase();
             }
 

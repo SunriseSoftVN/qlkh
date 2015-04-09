@@ -70,6 +70,10 @@ public class LoginView extends AbstractView<LoginConstants> {
         }
 
         contentPanel.add(new HTML("<div>" +
+                "<p><b>Cập nhật phiên bản 2.0.0 - 09/04/2015</b></p>" +
+                "<ul>" +
+                "<li>- Thay đổi cơ cấu của công ty.</li>" +
+                "</ul>" +
                 "<p><b>Cập nhật phiên bản 1.4.4 - 27/10/2014</b></p>" +
                 "<ul>" +
                 "<li>- Sửa lỗi tạo công việc loại subsum bị sai mã công việc con.</li>" +
