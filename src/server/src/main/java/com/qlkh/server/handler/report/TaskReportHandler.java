@@ -54,8 +54,8 @@ import static com.qlkh.client.client.utils.NumberUtils.convertNullToDouble;
 import static com.qlkh.core.client.constant.ReportTypeEnum.*;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUBSUM;
 import static com.qlkh.core.client.constant.TaskTypeEnum.SUM;
-import static com.qlkh.server.business.rule.StationCodeEnum.CAUGIAT;
 import static com.qlkh.server.business.rule.StationCodeEnum.COMPANY;
+import static com.qlkh.server.business.rule.StationCodeEnum.VINH;
 import static com.qlkh.server.util.DateTimeUtils.getDateForQuarter;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -210,7 +210,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
                             + reportTypeEnum.getName() + " NĂM " + action.getYear() + " \\n"
                             + branch.getName().toUpperCase() + "\\n");
                 } else {
-                    if (stationId == CAUGIAT.getId()) {
+                    if (stationId == VINH.getId()) {
                         //Add two more columns. Business rule. TODO remove @dungvn3000
                         AdditionStationColumnRule.addStation(stations);
                     }
@@ -240,8 +240,8 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
                     AdditionStationColumnRule.setStyle(fastReportBuilder.getColumns());
                 }
 
-                //Add two more column for CAU GIAT station report.
-                if (stationId == CAUGIAT.getId() && branchId == null) {
+                //Add two more column for Vinh station report.
+                if (stationId == VINH.getId() && branchId == null) {
                     for (Integer colIndex : colSpans.keySet()) {
                         fastReportBuilder.setColspan(colIndex, 2, colSpans.get(colIndex));
                     }
@@ -314,7 +314,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         }
 
         //Add two more columns. Business rule.
-        if (stationId == COMPANY.getId() || stationId == CAUGIAT.getId()) {
+        if (stationId == COMPANY.getId() || stationId == VINH.getId()) {
             AdditionStationColumnRule.addDataForDSND(beans);
         }
 
@@ -353,7 +353,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
         HideDetailTaskRule.hide(beans, taskReportAction);
 
         //Calculate for DSTN
-        if (stationId == COMPANY.getId() || stationId == CAUGIAT.getId()) {
+        if (stationId == COMPANY.getId() || stationId == VINH.getId()) {
             AdditionStationColumnRule.addDataForDSTN(beans, stationId);
         }
 

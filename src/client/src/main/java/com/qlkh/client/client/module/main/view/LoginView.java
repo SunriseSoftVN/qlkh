@@ -70,6 +70,10 @@ public class LoginView extends AbstractView<LoginConstants> {
         }
 
         contentPanel.add(new HTML("<div>" +
+                "<p><b>Cập nhật phiên bản 2.0.1 - 07/07/2015</b></p>" +
+                "<ul>" +
+                "<li>- Thêm cột DSTN trong báo cáo cho xí nghiệp Vinh.</li>" +
+                "</ul>" +
                 "<p><b>Cập nhật phiên bản 2.0.0 - 09/04/2015</b></p>" +
                 "<ul>" +
                 "<li>- Thay đổi cơ cấu của công ty.</li>" +
