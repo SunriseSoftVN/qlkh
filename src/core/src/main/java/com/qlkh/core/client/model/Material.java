@@ -18,6 +18,9 @@ public class Material extends AbstractEntity {
     //this field is transient with database.
     private MaterialPrice currentPrice;
 
+    //this field is transient with database. only using for report
+    private double currentPriceValue;
+
     public String getName() {
         return name;
     }
@@ -57,5 +60,13 @@ public class Material extends AbstractEntity {
 
     public void setCurrentPrice(MaterialPrice currentPrice) {
         this.currentPrice = currentPrice;
+    }
+
+    public double getCurrentPriceValue() {
+        return currentPriceValue;
+    }
+
+    public void setCurrentPriceValue(double currentPriceValue) {
+        this.currentPriceValue = currentPriceValue;
     }
 }

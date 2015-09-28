@@ -314,11 +314,11 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     private void materialReport(final ReportFileTypeEnum fileTypeEnum) {
         if (view.getCbbMaterialYear().getValue() != null && view.getCbbMaterialReportType().getValue() != null) {
             view.setEnableMaterialReportButton(false);
-            dispatch.execute(new MaterialMissingPriceReportAction(fileTypeEnum,
+            dispatch.execute(new MaterialReportAction(fileTypeEnum,
                     view.getCbbMaterialReportType().getSimpleValue().getValue(), view.getCbbMaterialYear().getSimpleValue()),
-                    new AbstractAsyncCallback<MaterialMissingPriceReportResult>() {
+                    new AbstractAsyncCallback<MaterialReportResult>() {
                         @Override
-                        public void onSuccess(MaterialMissingPriceReportResult result) {
+                        public void onSuccess(MaterialReportResult result) {
                             view.setEnableMaterialReportButton(true);
                             if (fileTypeEnum == ReportFileTypeEnum.PDF) {
                                 reportWindow = view.createReportWindow(result.getReportUrl(), true);
