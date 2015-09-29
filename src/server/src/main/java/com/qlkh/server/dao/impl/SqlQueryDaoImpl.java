@@ -126,22 +126,6 @@ public class SqlQueryDaoImpl extends AbstractDao implements SqlQueryDao {
         });
     }
 
-
-    @Override
-    public List<Material> getMaterials(final int year, final int quarter) {
-        return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<Material>>() {
-            @Override
-            public List<Material> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery sqlQuery = session.createSQLQuery("SELECT  `material`.`id` AS `bigId`, `name`, `code`, `material_price`.`price` AS `currentPriceValue` FROM `material` " +
-                        "INNER JOIN `material_price` WHERE `material_price`.`materialId` = `material`.`id` AND `material_price`.`year` = :year AND `material_price`.`quarter` = :quarter");
-                sqlQuery.setParameter("year", year);
-                sqlQuery.setParameter("quarter", quarter);
-                sqlQuery.setResultTransformer(new AliasToBeanResultTransformer(Material.class));
-                return sqlQuery.list();
-            }
-        });
-    }
-
     @Override
     public List<Material> getMaterialsMissingPrice(final int year, final int quarter) {
         return getHibernateTemplate().executeWithNativeSession(new HibernateCallback<List<Material>>() {

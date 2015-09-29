@@ -65,10 +65,6 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     SimpleComboBox<ReportTypeEnum> cbbPriceReportType = new SimpleComboBox<ReportTypeEnum>();
 
-    SimpleComboBox<Integer> cbbMaterialYear = new SimpleComboBox<Integer>();
-
-    SimpleComboBox<ReportTypeEnum> cbbMaterialReportType = new SimpleComboBox<ReportTypeEnum>();
-
     NumberField txtMaterialFrom = new NumberField();
 
     NumberField txtMaterialTo = new NumberField();
@@ -163,19 +159,9 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbPriceReportType.setEditable(false);
         cbbPriceReportType.setWidth(100);
 
-        cbbMaterialReportType.add(ReportTypeEnum.Q1);
-        cbbMaterialReportType.add(ReportTypeEnum.Q2);
-        cbbMaterialReportType.add(ReportTypeEnum.Q3);
-        cbbMaterialReportType.add(ReportTypeEnum.Q4);
-        cbbMaterialReportType.setSimpleValue(ReportTypeEnum.Q1);
-        cbbMaterialReportType.setTriggerAction(ComboBox.TriggerAction.ALL);
-        cbbMaterialReportType.setEditable(false);
-        cbbMaterialReportType.setWidth(100);
-
         for (int i = 2012; i < 2030; i++) {
             cbbTaskYear.add(i);
             cbbPriceYear.add(i);
-            cbbMaterialYear.add(i);
             cbbWareHouseYear.add(i);
         }
         cbbTaskYear.setTriggerAction(ComboBox.TriggerAction.ALL);
@@ -185,10 +171,6 @@ public class ReportView extends AbstractView<ReportConstant> {
         cbbPriceYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbPriceYear.setWidth(60);
         cbbPriceYear.setEditable(false);
-
-        cbbMaterialYear.setTriggerAction(ComboBox.TriggerAction.ALL);
-        cbbMaterialYear.setWidth(60);
-        cbbMaterialYear.setEditable(false);
 
         cbbWareHouseYear.setTriggerAction(ComboBox.TriggerAction.ALL);
         cbbWareHouseYear.setWidth(60);
@@ -233,8 +215,6 @@ public class ReportView extends AbstractView<ReportConstant> {
 
         HorizontalPanel hp3 = new HorizontalPanel();
         hp3.setSpacing(4);
-        hp3.add(cbbMaterialReportType);
-        hp3.add(cbbMaterialYear);
         hp3.add(btnMaterialReportPdf);
         hp3.add(btnMaterialReportXls);
 
@@ -320,8 +300,6 @@ public class ReportView extends AbstractView<ReportConstant> {
     }
 
     public void setEnableMaterialReportButton(boolean enable) {
-        cbbMaterialYear.setEnabled(enable);
-        cbbMaterialReportType.setEnabled(enable);
         btnMaterialReportPdf.setEnabled(enable);
         btnMaterialReportXls.setEnabled(enable);
     }
@@ -405,14 +383,6 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public ContentPanel getContentPanel() {
         return contentPanel;
-    }
-
-    public SimpleComboBox<Integer> getCbbMaterialYear() {
-        return cbbMaterialYear;
-    }
-
-    public SimpleComboBox<ReportTypeEnum> getCbbMaterialReportType() {
-        return cbbMaterialReportType;
     }
 
     public Button getBtnMaterialReportPdf() {

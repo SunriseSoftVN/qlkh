@@ -17,7 +17,7 @@ import com.qlkh.core.client.action.report.MaterialReportResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.model.Material;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
-import com.qlkh.server.dao.SqlQueryDao;
+import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
 import com.qlkh.server.util.ReportExporter;
@@ -49,7 +49,7 @@ public class MaterialReportHandler extends AbstractHandler<MaterialReportAction,
             Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
 
     @Autowired
-    private SqlQueryDao sqlQueryDao;
+    private GeneralDao generalDao;
 
     @Override
     public Class<MaterialReportAction> getActionType() {
@@ -64,7 +64,7 @@ public class MaterialReportHandler extends AbstractHandler<MaterialReportAction,
             JasperReport jasperReport = DynamicJasperHelper.
                     generateJasperReport(dynamicReport, new ClassicLayoutManager(), null);
 
-            List<Material> materials = sqlQueryDao.getMaterials(action.getYear(), action.getQuarter());
+            List<Material> materials = generalDao.getAll(Material.class);
 
             Map<String, Object> data = new HashMap<String, Object>();
             data.put(JRParameter.REPORT_LOCALE, new Locale("vi", "VN"));
@@ -153,10 +153,9 @@ public class MaterialReportHandler extends AbstractHandler<MaterialReportAction,
             fastReportBuilder
                     .addColumn("Tên và quy cách vật tư", "name", String.class, 80, nameStyle)
                     .addColumn("Mã", "code", String.class, 15, nameStyle)
-                    .addColumn("Giá", "currentPriceValue", Double.class, 15, numberStyle);
+                    .addColumn("Đơn vị", "unit", String.class, 15, nameStyle);
 
-            fastReportBuilder.setTitle("Báo cáo vật tư \\n"
-                    + "quý " + action.getQuarter() + " năm " + action.getYear() + " \\n");
+            fastReportBuilder.setTitle("Báo cáo vật tư");
             fastReportBuilder.setDefaultStyles(titleStyle, null, headerStyle, null);
             fastReportBuilder.setUseFullPageWidth(true);
             fastReportBuilder.setLeftMargin(10);

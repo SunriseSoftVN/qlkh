@@ -92,13 +92,11 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                 currentQuarter = result.getQuarter();
                 view.getCbbTaskYear().setSimpleValue(result.getYear());
                 view.getCbbPriceYear().setSimpleValue(result.getYear());
-                view.getCbbMaterialYear().setSimpleValue(result.getYear());
                 view.getCbbWareHouseYear().setSimpleValue(result.getYear());
                 ReportTypeEnum reportTypeEnum = ReportTypeEnum.valueOf(result.getQuarter().getCode());
                 if (reportTypeEnum != null) {
                     view.getCbbPriceReportType().setSimpleValue(reportTypeEnum);
                     view.getCbbTaskReportType().setSimpleValue(reportTypeEnum);
-                    view.getCbbMaterialReportType().setSimpleValue(reportTypeEnum);
                 }
             }
         });
@@ -312,22 +310,19 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
     }
 
     private void materialReport(final ReportFileTypeEnum fileTypeEnum) {
-        if (view.getCbbMaterialYear().getValue() != null && view.getCbbMaterialReportType().getValue() != null) {
-            view.setEnableMaterialReportButton(false);
-            dispatch.execute(new MaterialReportAction(fileTypeEnum,
-                    view.getCbbMaterialReportType().getSimpleValue().getValue(), view.getCbbMaterialYear().getSimpleValue()),
-                    new AbstractAsyncCallback<MaterialReportResult>() {
-                        @Override
-                        public void onSuccess(MaterialReportResult result) {
-                            view.setEnableMaterialReportButton(true);
-                            if (fileTypeEnum == ReportFileTypeEnum.PDF) {
-                                reportWindow = view.createReportWindow(result.getReportUrl(), true);
-                            } else {
-                                reportWindow = view.createReportWindow(result.getReportUrl(), false);
-                            }
-                            reportWindow.show();
+        view.setEnableMaterialReportButton(false);
+        dispatch.execute(new MaterialReportAction(fileTypeEnum),
+                new AbstractAsyncCallback<MaterialReportResult>() {
+                    @Override
+                    public void onSuccess(MaterialReportResult result) {
+                        view.setEnableMaterialReportButton(true);
+                        if (fileTypeEnum == ReportFileTypeEnum.PDF) {
+                            reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        } else {
+                            reportWindow = view.createReportWindow(result.getReportUrl(), false);
                         }
-                    });
-        }
+                        reportWindow.show();
+                    }
+                });
     }
 }
