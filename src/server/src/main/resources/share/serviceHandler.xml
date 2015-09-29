@@ -44,6 +44,7 @@
                 <ref bean="taskReportHandler"/>
                 <ref bean="priceReportHandler"/>
                 <ref bean="materialReportHandler"/>
+                <ref bean="materialPriceReportHandler"/>
                 <ref bean="materialMissingPriceReportHandler"/>
                 <ref bean="materialOutReportHandler"/>
             </list>
@@ -54,6 +55,7 @@
     <bean class="com.qlkh.server.handler.report.PriceReportHandler" id="priceReportHandler"/>
     <bean class="com.qlkh.server.handler.report.MaterialMissingPriceReportHandler" id="materialMissingPriceReportHandler"/>
     <bean class="com.qlkh.server.handler.report.MaterialReportHandler" id="materialReportHandler"/>
+    <bean class="com.qlkh.server.handler.report.MaterialPriceReportHandler" id="materialPriceReportHandler"/>
     <bean class="com.qlkh.server.handler.report.MaterialOutReportHandler" id="materialOutReportHandler"/>
 
 </beans>

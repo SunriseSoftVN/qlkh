@@ -40,4 +40,5 @@ public interface ReportConstant extends Constants {
     String taskDefaultValueReportPanel();
     String btnTaskDefaultReport();
     String btnTaskDefaultExcelReport();
+    String btnMaterialAllReportXls();
 }
