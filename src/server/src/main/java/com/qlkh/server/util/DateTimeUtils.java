@@ -25,7 +25,8 @@ public final class DateTimeUtils {
     }
 
     public static int getCurrentYear() {
-        return cal.get(Calendar.YEAR);
+//        return cal.get(Calendar.YEAR);
+        return 2016;
     }
 
     public static int getLastYear() {
@@ -33,9 +34,11 @@ public final class DateTimeUtils {
     }
 
     public static QuarterEnum getCurrentQuarter() {
-        int month = cal.get(Calendar.MONTH);
-        int quarter = month / 3 + 1;
-        return QuarterEnum.valueOf(quarter);
+//        int month = cal.get(Calendar.MONTH);
+//        int quarter = month / 3 + 1;
+//        return QuarterEnum.valueOf(quarter);
+
+        return QuarterEnum.Q1;
     }
 
     public static int getDateForQuarter(int quarter, int year) {
