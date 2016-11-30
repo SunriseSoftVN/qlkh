@@ -115,6 +115,9 @@ public class ReportView extends AbstractView<ReportConstant> {
     Button btnMaterialReportXls = new Button();
 
     @I18nField
+    Button btnMaterialAllReportXls = new Button();
+
+    @I18nField
     Button btnMaterialInReport = new Button();
 
     @I18nField
@@ -239,6 +242,7 @@ public class ReportView extends AbstractView<ReportConstant> {
         hp3.add(btnMaterialReportXls);
 
         materialReportPanel.add(hp3);
+        materialReportPanel.add(btnMaterialAllReportXls);
 
 //        btnMaterialInReport.setEnabled(BrowserUtils.is_Java_Enable());
         btnMaterialInReport.setEnabled(false);
@@ -449,5 +453,9 @@ public class ReportView extends AbstractView<ReportConstant> {
 
     public SimpleComboBox<Integer> getCbbWareHouseYear() {
         return cbbWareHouseYear;
+    }
+
+    public Button getBtnMaterialAllReportXls() {
+        return btnMaterialAllReportXls;
     }
 }
