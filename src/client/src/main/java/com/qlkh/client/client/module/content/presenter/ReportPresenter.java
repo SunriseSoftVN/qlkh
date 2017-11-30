@@ -138,11 +138,18 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         view.getBtnMaterialReportPdf().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
-                materialReport(ReportFileTypeEnum.PDF);
+                materialPriceReport(ReportFileTypeEnum.PDF);
             }
         });
 
         view.getBtnMaterialReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                materialPriceReport(ReportFileTypeEnum.EXCEL);
+            }
+        });
+
+        view.getBtnMaterialAllReportXls().addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 materialReport(ReportFileTypeEnum.EXCEL);
@@ -311,14 +318,14 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
         }
     }
 
-    private void materialReport(final ReportFileTypeEnum fileTypeEnum) {
+    private void materialPriceReport(final ReportFileTypeEnum fileTypeEnum) {
         if (view.getCbbMaterialYear().getValue() != null && view.getCbbMaterialReportType().getValue() != null) {
             view.setEnableMaterialReportButton(false);
-            dispatch.execute(new MaterialMissingPriceReportAction(fileTypeEnum,
-                    view.getCbbMaterialReportType().getSimpleValue().getValue(), view.getCbbMaterialYear().getSimpleValue()),
-                    new AbstractAsyncCallback<MaterialMissingPriceReportResult>() {
+            dispatch.execute(new MaterialPriceReportAction(fileTypeEnum,
+                            view.getCbbMaterialReportType().getSimpleValue().getValue(), view.getCbbMaterialYear().getSimpleValue()),
+                    new AbstractAsyncCallback<MaterialPriceReportResult>() {
                         @Override
-                        public void onSuccess(MaterialMissingPriceReportResult result) {
+                        public void onSuccess(MaterialPriceReportResult result) {
                             view.setEnableMaterialReportButton(true);
                             if (fileTypeEnum == ReportFileTypeEnum.PDF) {
                                 reportWindow = view.createReportWindow(result.getReportUrl(), true);
@@ -329,5 +336,22 @@ public class ReportPresenter extends AbstractPresenter<ReportView> {
                         }
                     });
         }
+    }
+
+    private void materialReport(final ReportFileTypeEnum fileTypeEnum) {
+        view.setEnableMaterialReportButton(false);
+        dispatch.execute(new MaterialReportAction(fileTypeEnum),
+                new AbstractAsyncCallback<MaterialReportResult>() {
+                    @Override
+                    public void onSuccess(MaterialReportResult result) {
+                        view.setEnableMaterialReportButton(true);
+                        if (fileTypeEnum == ReportFileTypeEnum.PDF) {
+                            reportWindow = view.createReportWindow(result.getReportUrl(), true);
+                        } else {
+                            reportWindow = view.createReportWindow(result.getReportUrl(), false);
+                        }
+                        reportWindow.show();
+                    }
+                });
     }
 }
