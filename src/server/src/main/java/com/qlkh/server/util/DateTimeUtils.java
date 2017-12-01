@@ -25,13 +25,7 @@ public final class DateTimeUtils {
     }
 
     public static int getCurrentYear() {
-        int month = cal.get(Calendar.MONTH);
-
-        if (month == Calendar.DECEMBER) {
-            return cal.get(Calendar.YEAR) + 1;
-        } else {
-            return cal.get(Calendar.YEAR);
-        }
+        return cal.get(Calendar.YEAR);
     }
 
     public static int getLastYear() {
@@ -41,12 +35,7 @@ public final class DateTimeUtils {
     public static QuarterEnum getCurrentQuarter() {
         int month = cal.get(Calendar.MONTH);
         int quarter = month / 3 + 1;
-
-        if(month == Calendar.DECEMBER) {
-            return QuarterEnum.Q1;
-        } else {
-            return QuarterEnum.valueOf(quarter);
-        }
+        return QuarterEnum.valueOf(quarter);
     }
 
     public static int getDateForQuarter(int quarter, int year) {
