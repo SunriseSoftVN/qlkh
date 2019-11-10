@@ -9,6 +9,7 @@ import com.qlkh.core.client.model.view.TaskMaterialDataView;
 import com.qlkh.core.client.report.StationReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.server.business.rule.StationCodeEnum;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -42,6 +43,9 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
     private SqlQueryDao sqlQueryDao;
 
     @Autowired
+    private SettingDao settingDao;
+
+    @Autowired
     private GeneralDao generalDao;
 
     @Override
@@ -60,7 +64,7 @@ public class CopyMaterialInHandler extends AbstractHandler<CopyMaterialInAction,
 
         //copy for whole year
         if (action.getYear() == 0) {
-            action.setYear(DateTimeUtils.getCurrentYear());
+            action.setYear(DateTimeUtils.getCurrentYear(settingDao));
         }
         for (QuarterEnum quarter : QuarterEnum.values()) {
             action.setQuarter(quarter.getCode());

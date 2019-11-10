@@ -5,6 +5,9 @@
 package com.qlkh.server.util;
 
 import com.qlkh.core.client.constant.QuarterEnum;
+import com.qlkh.core.client.constant.SettingEnum;
+import com.qlkh.core.client.model.Settings;
+import com.qlkh.server.dao.SettingDao;
 import org.jfree.data.time.Quarter;
 
 import java.util.Calendar;
@@ -24,18 +27,31 @@ public final class DateTimeUtils {
 
     }
 
-    public static int getCurrentYear() {
-        return cal.get(Calendar.YEAR);
+    public static int getCurrentYear(SettingDao dao) {
+        Settings settings = dao.findByName(SettingEnum.YEAR.getName());
+
+        if (settings != null) {
+            int year = Integer.parseInt(settings.getValue());
+            return year;
+        } else {
+            return cal.get(Calendar.YEAR);
+        }
     }
 
-    public static int getLastYear() {
-        return getCurrentYear() - 1;
+    public static int getLastYear(SettingDao dao) {
+        return getCurrentYear(dao) - 1;
     }
 
-    public static QuarterEnum getCurrentQuarter() {
-        int month = cal.get(Calendar.MONTH);
-        int quarter = month / 3 + 1;
-        return QuarterEnum.valueOf(quarter);
+    public static QuarterEnum getCurrentQuarter(SettingDao dao) {
+        int currentYear = getCurrentYear(dao);
+
+        if (currentYear == cal.get(Calendar.YEAR)) {
+            int month = cal.get(Calendar.MONTH);
+            int quarter = month / 3 + 1;
+            return QuarterEnum.valueOf(quarter);
+        } else {
+            return QuarterEnum.Q1;
+        }
     }
 
     public static int getDateForQuarter(int quarter, int year) {

@@ -7,6 +7,7 @@ package com.qlkh.server.handler.task;
 import com.qlkh.core.client.action.task.SaveTaskDefaultValueAction;
 import com.qlkh.core.client.action.task.SaveTaskDefaultValueResult;
 import com.qlkh.core.client.model.TaskDefaultValue;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -33,6 +34,9 @@ public class SaveTaskDefaultValueHandler extends AbstractHandler<SaveTaskDefault
     @Autowired
     private GeneralDao generalDao;
 
+    @Autowired
+    private SettingDao settingDao;
+
     @Override
     public Class<SaveTaskDefaultValueAction> getActionType() {
         return SaveTaskDefaultValueAction.class;
@@ -41,18 +45,19 @@ public class SaveTaskDefaultValueHandler extends AbstractHandler<SaveTaskDefault
     @Override
     public SaveTaskDefaultValueResult execute(SaveTaskDefaultValueAction action, ExecutionContext context) throws DispatchException {
         List<TaskDefaultValue> taskDefaultValues = generalDao.findCriteria(TaskDefaultValue.class,
-                Restrictions.eq("task.id", action.getTask().getId()), Restrictions.eq("quarter", getCurrentQuarter().getCode()),
-                Restrictions.eq("year", getCurrentYear()));
+                Restrictions.eq("task.id", action.getTask().getId()),
+                Restrictions.eq("quarter", getCurrentQuarter(settingDao).getCode()),
+                Restrictions.eq("year", getCurrentYear(settingDao)));
         TaskDefaultValue taskDefaultValue;
         if (CollectionUtils.isNotEmpty(taskDefaultValues)) {
             taskDefaultValue = selectUnique(taskDefaultValues,
-                    having(on(TaskDefaultValue.class).getYear(), equalTo(getCurrentYear())).
-                            and(having(on(TaskDefaultValue.class).getQuarter(), equalTo(getCurrentQuarter().getCode()))));
+                    having(on(TaskDefaultValue.class).getYear(), equalTo(getCurrentYear(settingDao))).
+                            and(having(on(TaskDefaultValue.class).getQuarter(), equalTo(getCurrentQuarter(settingDao).getCode()))));
         } else {
             taskDefaultValue = new TaskDefaultValue();
             taskDefaultValue.setTask(action.getTask());
-            taskDefaultValue.setQuarter(getCurrentQuarter().getCode());
-            taskDefaultValue.setYear(getCurrentYear());
+            taskDefaultValue.setQuarter(getCurrentQuarter(settingDao).getCode());
+            taskDefaultValue.setYear(getCurrentYear(settingDao));
             taskDefaultValue.setCreateBy(1l);
             taskDefaultValue.setUpdateBy(1l);
             taskDefaultValue.setDefaultValue(action.getTask().getDefaultValue());

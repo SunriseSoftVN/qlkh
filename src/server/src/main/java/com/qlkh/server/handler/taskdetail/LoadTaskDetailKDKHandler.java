@@ -12,6 +12,7 @@ import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailKDK;
 import com.qlkh.server.dao.BranchDao;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.TaskDetailKDKDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -31,6 +32,9 @@ import java.util.List;
  * @since 6/2/12, 12:45 PM
  */
 public class LoadTaskDetailKDKHandler extends AbstractHandler<LoadTaskDetailKDKAction, LoadTaskDetailKDKResult> {
+
+    @Autowired
+    private SettingDao settingDao;
 
     @Autowired
     private GeneralDao generalDao;
@@ -61,11 +65,11 @@ public class LoadTaskDetailKDKHandler extends AbstractHandler<LoadTaskDetailKDKA
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
                     TaskDetailKDK taskDetailKDK = taskDetailKDKDao.
-                            findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear());
+                            findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear(settingDao));
                     if (taskDetailKDK == null) {
                         taskDetailKDK = new TaskDetailKDK();
                         taskDetailKDK.setTask(task);
-                        taskDetailKDK.setYear(DateTimeUtils.getCurrentYear());
+                        taskDetailKDK.setYear(DateTimeUtils.getCurrentYear(settingDao));
                         taskDetailKDK.setBranch(branch);
                         taskDetailKDK.setCreateBy(1l);
                         taskDetailKDK.setUpdateBy(1l);

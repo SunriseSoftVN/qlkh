@@ -16,6 +16,7 @@ import com.qlkh.core.client.action.report.TaskReportAction;
 import com.qlkh.core.client.action.report.TaskReportResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
 import com.qlkh.core.client.constant.ReportTypeEnum;
+import com.qlkh.core.client.constant.SettingEnum;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Station;
@@ -29,6 +30,7 @@ import com.qlkh.core.client.report.TaskReportBean;
 import com.qlkh.core.client.report.TaskSumReportBean;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
 import com.qlkh.server.business.rule.*;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.SqlQueryDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -75,6 +77,9 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
 
     @Autowired
     private GeneralDao generalDao;
+
+    @Autowired
+    private SettingDao settingDao;
 
     @Autowired
     private SqlQueryDao sqlQueryDao;
@@ -200,7 +205,7 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
                 fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS " + reportTypeEnum.getName()
-                        + " NĂM " + action.getYear() + " \\n CÔNG TY TTTH ĐS VINH \\n");
+                        + " NĂM " + action.getYear() + " \\n " +  settingDao.findByName(SettingEnum.COMPANY_NAME.getName()) + " \\n");
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
                 stations.add(station);

@@ -8,6 +8,7 @@ import com.qlkh.core.client.action.system.Upgrade116Action;
 import com.qlkh.core.client.action.system.Upgrade116Result;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.*;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.TaskDetailDKDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -29,6 +30,9 @@ import static org.hamcrest.core.IsEqual.equalTo;
  * @since 11/16/12, 2:27 PM
  */
 public class Upgrade116Handler extends AbstractHandler<Upgrade116Action, Upgrade116Result> {
+
+    @Autowired
+    private SettingDao settingDao;
 
     @Autowired
     private GeneralDao generalDao;
@@ -65,13 +69,13 @@ public class Upgrade116Handler extends AbstractHandler<Upgrade116Action, Upgrade
                                                     having(on(TaskDetailDK.class).getTask().getId(), equalTo(task.getId()))
                                             )
                                             .and(
-                                                    having(on(TaskDetailDK.class).getYear(), equalTo(DateTimeUtils.getCurrentYear()))
+                                                    having(on(TaskDetailDK.class).getYear(), equalTo(DateTimeUtils.getCurrentYear(settingDao)))
                                             )
                             );
 
                             if (taskDetailDK == null) {
                                 taskDetailDK = new TaskDetailDK();
-                                taskDetailDK.setYear(DateTimeUtils.getCurrentYear());
+                                taskDetailDK.setYear(DateTimeUtils.getCurrentYear(settingDao));
                                 taskDetailDK.setTask(task);
                                 taskDetailDK.setBranch(branch);
                                 taskDetailDK.setCreateBy(1l);
@@ -84,7 +88,7 @@ public class Upgrade116Handler extends AbstractHandler<Upgrade116Action, Upgrade
                                                         having(on(TaskDetailDK.class).getTask().getId(), equalTo(task.getId()))
                                                 )
                                                 .and(
-                                                        having(on(TaskDetailDK.class).getYear(), equalTo(DateTimeUtils.getLastYear()))
+                                                        having(on(TaskDetailDK.class).getYear(), equalTo(DateTimeUtils.getLastYear(settingDao)))
                                                 )
                                 );
 
@@ -105,13 +109,13 @@ public class Upgrade116Handler extends AbstractHandler<Upgrade116Action, Upgrade
                                                     having(on(TaskDetailNam.class).getTask().getId(), equalTo(task.getId()))
                                             )
                                             .and(
-                                                    having(on(TaskDetailNam.class).getYear(), equalTo(DateTimeUtils.getCurrentYear()))
+                                                    having(on(TaskDetailNam.class).getYear(), equalTo(DateTimeUtils.getCurrentYear(settingDao)))
                                             )
                             );
 
                             if (taskDetailNam == null) {
                                 taskDetailNam = new TaskDetailNam();
-                                taskDetailNam.setYear(DateTimeUtils.getCurrentYear());
+                                taskDetailNam.setYear(DateTimeUtils.getCurrentYear(settingDao));
                                 taskDetailNam.setTask(task);
                                 taskDetailNam.setBranch(branch);
                                 taskDetailNam.setCreateBy(1l);
@@ -124,7 +128,7 @@ public class Upgrade116Handler extends AbstractHandler<Upgrade116Action, Upgrade
                                                         having(on(TaskDetailNam.class).getTask().getId(), equalTo(task.getId()))
                                                 )
                                                 .and(
-                                                        having(on(TaskDetailNam.class).getYear(), equalTo(DateTimeUtils.getLastYear()))
+                                                        having(on(TaskDetailNam.class).getYear(), equalTo(DateTimeUtils.getLastYear(settingDao)))
                                                 )
                                 );
 

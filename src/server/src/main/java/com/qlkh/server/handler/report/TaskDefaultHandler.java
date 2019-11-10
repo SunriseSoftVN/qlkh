@@ -12,8 +12,10 @@ import ar.com.fdvs.dj.domain.constants.VerticalAlign;
 import com.qlkh.core.client.action.report.TaskDefaultAction;
 import com.qlkh.core.client.action.report.TaskDefaultResult;
 import com.qlkh.core.client.constant.ReportFileTypeEnum;
+import com.qlkh.core.client.constant.SettingEnum;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.configuration.ConfigurationServerUtil;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.servlet.ReportServlet;
@@ -49,6 +51,9 @@ public class TaskDefaultHandler extends AbstractHandler<TaskDefaultAction, TaskD
 
     @Autowired
     private GeneralDao generalDao;
+
+    @Autowired
+    private SettingDao settingDao;
 
     @Override
     public Class<TaskDefaultAction> getActionType() {
@@ -148,7 +153,7 @@ public class TaskDefaultHandler extends AbstractHandler<TaskDefaultAction, TaskD
                     .addColumn("Đơn vị", "unit", String.class, 20, detailStyle)
                     .addColumn("Định mức", "defaultValue", Double.class, 20, false, "###,###.###", detailStyle)
                     .addColumn("Số lần", "quota", Integer.class, 20, detailStyle);
-            fastReportBuilder.setTitle("ĐỊNH MỨC CÔNG VIỆC CÔNG TY THÔNG TIN TÍN HIỆU ĐS VINH NĂM " + DateTimeUtils.getCurrentYear());
+            fastReportBuilder.setTitle("ĐỊNH MỨC CÔNG VIỆC " + settingDao.findByName(SettingEnum.COMPANY_NAME.getName()) + " NĂM " + DateTimeUtils.getCurrentYear(settingDao));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

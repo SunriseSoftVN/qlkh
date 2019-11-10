@@ -4,6 +4,7 @@ import com.qlkh.core.client.action.material.CopyMaterialPriceAction;
 import com.qlkh.core.client.action.material.CopyMaterialPriceResult;
 import com.qlkh.core.client.constant.QuarterEnum;
 import com.qlkh.server.dao.MaterialPriceDao;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.handler.core.AbstractHandler;
 import com.qlkh.server.util.DateTimeUtils;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -19,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CopyMaterialPriceHandler extends AbstractHandler<CopyMaterialPriceAction, CopyMaterialPriceResult> {
 
     @Autowired
+    private SettingDao settingDao;
+
+    @Autowired
     private MaterialPriceDao materialPriceDao;
 
     @Override
@@ -30,7 +34,7 @@ public class CopyMaterialPriceHandler extends AbstractHandler<CopyMaterialPriceA
     public CopyMaterialPriceResult execute(CopyMaterialPriceAction action, ExecutionContext executionContext) throws DispatchException {
         int fromQuarter = 0;
         int formYear = 0;
-        int toYear = DateTimeUtils.getCurrentYear();
+        int toYear = DateTimeUtils.getCurrentYear(settingDao);
         if (action.getQuarter().getCode() > 1) {
             fromQuarter = action.getQuarter().getCode() - 1;
             formYear = toYear;

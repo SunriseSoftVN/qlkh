@@ -8,6 +8,7 @@ import com.qlkh.core.client.action.system.CopyDataFormLastYearAction;
 import com.qlkh.core.client.action.system.CopyDataFormLastYearResult;
 import com.qlkh.core.client.constant.TaskTypeEnum;
 import com.qlkh.core.client.model.*;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.TaskDetailDKDao;
 import com.qlkh.server.dao.TaskDetailNamDao;
 import com.qlkh.server.dao.core.GeneralDao;
@@ -34,6 +35,9 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
 
     @Autowired
     private GeneralDao generalDao;
+
+    @Autowired
+    private SettingDao settingDao;
 
     @Autowired
     private TaskDetailDKDao taskDetailDKDao;
@@ -63,10 +67,10 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
                     if (branch.getStation().getId().equals(station.getId())) {
                         if (task.getTaskTypeCode() == TaskTypeEnum.DK.getCode()) {
                             TaskDetailDK taskDetailDK = taskDetailDKDao.
-                                    findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear());
+                                    findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear(settingDao));
                             if (taskDetailDK == null) {
                                 taskDetailDK = new TaskDetailDK();
-                                taskDetailDK.setYear(DateTimeUtils.getCurrentYear());
+                                taskDetailDK.setYear(DateTimeUtils.getCurrentYear(settingDao));
                                 taskDetailDK.setTask(task);
                                 taskDetailDK.setBranch(branch);
                                 taskDetailDK.setCreateBy(1l);
@@ -74,7 +78,7 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
 
                                 //Copy value from last year
                                 TaskDetailDK taskDetailDKLastYear = taskDetailDKDao.
-                                        findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getLastYear());
+                                        findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getLastYear(settingDao));
 
                                 if (taskDetailDKLastYear != null) {
                                     taskDetailDK.setLastYearValue(taskDetailDKLastYear.getRealValue());
@@ -83,10 +87,10 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
                             }
                         } else if (task.getTaskTypeCode() == TaskTypeEnum.NAM.getCode()) {
                             TaskDetailNam taskDetailNam = taskDetailNamDao.
-                                    findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear());
+                                    findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getCurrentYear(settingDao));
                             if (taskDetailNam == null) {
                                 taskDetailNam = new TaskDetailNam();
-                                taskDetailNam.setYear(DateTimeUtils.getCurrentYear());
+                                taskDetailNam.setYear(DateTimeUtils.getCurrentYear(settingDao));
                                 taskDetailNam.setTask(task);
                                 taskDetailNam.setBranch(branch);
                                 taskDetailNam.setCreateBy(1l);
@@ -94,7 +98,7 @@ public class CopyDataFormLastYearHandler extends AbstractHandler<CopyDataFormLas
 
                                 //Copy value from last year
                                 TaskDetailNam taskDetailNamLastYear = taskDetailNamDao.
-                                        findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getLastYear());
+                                        findByTaskIdAndBranchId(task.getId(), branch.getId(), DateTimeUtils.getLastYear(settingDao));
                                 if (taskDetailNamLastYear != null) {
                                     taskDetailNam.setLastYearValue(taskDetailNamLastYear.getRealValue());
                                     taskDetailNams.add(taskDetailNam);

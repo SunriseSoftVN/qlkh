@@ -12,6 +12,7 @@ import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailNam;
 import com.qlkh.server.dao.BranchDao;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.TaskDetailNamDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -39,6 +40,9 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
     private BranchDao branchDao;
 
     @Autowired
+    private SettingDao settingsDao;
+
+    @Autowired
     private TaskDetailNamDao taskDetailNamDao;
 
     @Override
@@ -60,10 +64,10 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
                     TaskDetailNam taskDetailNam = taskDetailNamDao.
-                            findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getCurrentYear());
+                            findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getCurrentYear(settingsDao));
                     if (taskDetailNam == null) {
                         taskDetailNam = new TaskDetailNam();
-                        taskDetailNam.setYear(DateTimeUtils.getCurrentYear());
+                        taskDetailNam.setYear(DateTimeUtils.getCurrentYear(settingsDao));
                         taskDetailNam.setTask(task);
                         taskDetailNam.setBranch(branch);
                         taskDetailNam.setCreateBy(1l);
@@ -71,7 +75,7 @@ public class LoadTaskDetailNamHandler extends AbstractHandler<LoadTaskDetailNamA
 
                         //Copy value from last year
                         TaskDetailNam taskDetailNamLastYear = taskDetailNamDao.
-                                findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear());
+                                findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear(settingsDao));
                         if (taskDetailNamLastYear != null) {
                             taskDetailNam.setLastYearValue(taskDetailNamLastYear.getRealValue());
                             generalDao.saveOrUpdate(taskDetailNam);

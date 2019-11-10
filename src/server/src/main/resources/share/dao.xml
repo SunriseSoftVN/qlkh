@@ -59,4 +59,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean class="com.qlkh.server.dao.impl.SettingDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
 </beans>

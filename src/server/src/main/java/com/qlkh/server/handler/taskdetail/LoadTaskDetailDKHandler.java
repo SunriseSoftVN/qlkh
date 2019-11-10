@@ -12,6 +12,7 @@ import com.qlkh.core.client.model.Branch;
 import com.qlkh.core.client.model.Task;
 import com.qlkh.core.client.model.TaskDetailDK;
 import com.qlkh.server.dao.BranchDao;
+import com.qlkh.server.dao.SettingDao;
 import com.qlkh.server.dao.TaskDetailDKDao;
 import com.qlkh.server.dao.core.GeneralDao;
 import com.qlkh.server.handler.core.AbstractHandler;
@@ -31,6 +32,9 @@ import java.util.List;
  * @since 6/1/12, 9:10 PM
  */
 public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAction, LoadTaskDetailDKResult> {
+
+    @Autowired
+    private SettingDao settingDao;
 
     @Autowired
     private GeneralDao generalDao;
@@ -60,10 +64,10 @@ public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAct
             if (CollectionUtils.isNotEmpty(branches)) {
                 for (Branch branch : branches) {
                     TaskDetailDK taskDetailDK = taskDetailDKDao.
-                            findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getCurrentYear());
+                            findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getCurrentYear(settingDao));
                     if (taskDetailDK == null) {
                         taskDetailDK = new TaskDetailDK();
-                        taskDetailDK.setYear(DateTimeUtils.getCurrentYear());
+                        taskDetailDK.setYear(DateTimeUtils.getCurrentYear(settingDao));
                         taskDetailDK.setTask(task);
                         taskDetailDK.setBranch(branch);
                         taskDetailDK.setCreateBy(1l);
@@ -71,7 +75,7 @@ public class LoadTaskDetailDKHandler extends AbstractHandler<LoadTaskDetailDKAct
 
                         //Copy value from last year
                         TaskDetailDK taskDetailDKLastYear = taskDetailDKDao.
-                                findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear());
+                                findByTaskIdAndBranchId(taskId, branch.getId(), DateTimeUtils.getLastYear(settingDao));
 
                         if (taskDetailDKLastYear != null) {
                             taskDetailDK.setLastYearValue(taskDetailDKLastYear.getRealValue());
