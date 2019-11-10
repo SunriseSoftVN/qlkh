@@ -31,8 +31,6 @@ import com.smvp4g.mvp.client.widget.TextField;
 @View(parentDomId = DomIdConstant.CONTENT_PANEL, constantsClass = LoginConstants.class)
 public class LoginView extends AbstractView<LoginConstants> {
 
-    private Html downloadChromeOrFireFoxHtml = new Html(getConstant().downloadChromeOrFireFox());
-
     private ContentPanel contentPanel = new ContentPanel(new CenterLayout());
 
     @I18nField
@@ -64,45 +62,6 @@ public class LoginView extends AbstractView<LoginConstants> {
         loginPanel.setButtonAlign(Style.HorizontalAlignment.CENTER);
 
         contentPanel.add(loginPanel);
-
-        if (!BrowserUtils.is_chrome() && !BrowserUtils.is_firefox()) {
-            contentPanel.add(downloadChromeOrFireFoxHtml);
-        }
-
-        contentPanel.add(new HTML("<div>" +
-                "<p><b>Cập nhật phiên bản 2.0.2 - 29/09/2015</b></p>" +
-                "<ul>" +
-                "<li>- Thêm cột giá vật tư trong báo cáo vật tư của user quản lý vật tư.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 2.0.1 - 07/07/2015</b></p>" +
-                "<ul>" +
-                "<li>- Thêm cột DSTN trong báo cáo cho xí nghiệp Vinh.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 2.0.0 - 09/04/2015</b></p>" +
-                "<ul>" +
-                "<li>- Thay đổi cơ cấu của công ty.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 1.4.4 - 27/10/2014</b></p>" +
-                "<ul>" +
-                "<li>- Sửa lỗi tạo công việc loại subsum bị sai mã công việc con.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 1.4.3 - 04/10/2014</b></p>" +
-                "<ul>" +
-                "<li>- Sửa lỗi sai định dạng số trong Excel.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 1.4.2 - 31/07/2014</b></p>" +
-                "<ul>" +
-                "<li>- Tính năng copy dữ liệu của giá vật tư xẽ copy đè dữ liệu nếu giá của quý trước có thay đổi.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 1.4.1 - 07/02/2014</b></p>" +
-                "<ul>" +
-                "<li>- Sửa lỗi sai định dạng số trong Excel.</li>" +
-                "</ul>" +
-                "<p><b>Cập nhật phiên bản 1.4.0</b></p>" +
-                "<ul>" +
-                "<li>- User xí nghiệp có thể xem định mức cho từng công việc.</li>" +
-                "<li>- Số chứng từ hoá đơn xẽ tự động reset về 1 khi chuyển sang năm mới.</li>" +
-                "</ul></div>"));
 
         contentPanel.setHeight(Window.getClientHeight() - 90);
         contentPanel.setHeaderVisible(false);

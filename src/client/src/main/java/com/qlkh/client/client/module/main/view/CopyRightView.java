@@ -13,9 +13,7 @@ import com.smvp4g.mvp.client.core.view.annotation.View;
 public class CopyRightView extends AbstractView {
     @Override
     protected void initializeView() {
-        HTML html = new HTML("<p style='text-align:center'>" +
-                "© Copyright 2012 <a href='http://www.sunrisesoft.vn/'>Công ty TNHH SunriseSoft</a> " +
-                "-Phone: <a href='#'>08.62896162</a> - Hotline: <a href='#'>0905611699</a> gặp Dũng - Email góp ý: <a href='mailto:dungvn3000@gmail.com'>dungvn3000@gmail.com</a></p>");
+        HTML html = new HTML("<p style='text-align:center'> © Copyright 2012 </p>");
         setWidget(html);
     }
 }
