@@ -18,8 +18,8 @@ public class BackupProcessor implements Processor {
 
     private Worker backupWorker;
 
-    //one time a day.
-    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24)
+    //one time a week.
+    @Scheduled(fixedDelay = 1000 * 60 * 60 * 24 * 7)
     @Override
     public void process() {
         if (ConfigurationServerUtil.isProductionMode()) {
