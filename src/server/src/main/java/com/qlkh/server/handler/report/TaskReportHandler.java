@@ -202,8 +202,12 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
             List<Station> stations = new ArrayList<Station>();
             if (stationId == COMPANY.getId()) {
                 stations = generalDao.getAll(Station.class);
-                //Add two more columns. Business rule. TODO remove @dungvn3000
-                AdditionStationColumnRule.addStation(stations);
+
+                if(settingDao.isShowDSTNNDReport()) {
+                    //Add two more columns. Business rule. TODO remove @dungvn3000
+                    AdditionStationColumnRule.addStation(stations);
+                }
+
                 fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
                         + reportTypeEnum.getName()
                         + " NĂM " + action.getYear() + " \\n " +

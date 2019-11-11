@@ -435,8 +435,10 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
                 stations.remove(company);
                 stations.add(company);
 
-                //Add two more columns. Business rule. TODO remove @dungvn3000
-                AdditionStationColumnRule.addStation(stations);
+                if (settingDao.isShowDSTNNDReport()) {
+                    //Add two more columns. Business rule. TODO remove @dungvn3000
+                    AdditionStationColumnRule.addStation(stations);
+                }
 
                 fastReportBuilder.setTitle("KẾ HOẠCH CUNG ỨNG VẬT TƯ SCTX – KCHT TTTH ĐS "
                         + reportTypeEnum.getName()
