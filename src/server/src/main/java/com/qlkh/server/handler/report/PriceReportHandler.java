@@ -440,7 +440,9 @@ public class PriceReportHandler extends AbstractHandler<PriceReportAction, Price
 
                 fastReportBuilder.setTitle("KẾ HOẠCH CUNG ỨNG VẬT TƯ SCTX – KCHT TTTH ĐS "
                         + reportTypeEnum.getName()
-                        + " NĂM " + action.getYear() + " \\n " + settingDao.findByName(SettingEnum.COMPANY_NAME.getName()) + " \\n");
+                        + " NĂM " + action.getYear() + " \\n "
+                        + settingDao.findByName(SettingEnum.COMPANY_NAME.getName()).getValue()
+                        + " \\n");
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
                 stations.add(station);

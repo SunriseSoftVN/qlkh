@@ -204,8 +204,11 @@ public class TaskReportHandler extends AbstractHandler<TaskReportAction, TaskRep
                 stations = generalDao.getAll(Station.class);
                 //Add two more columns. Business rule. TODO remove @dungvn3000
                 AdditionStationColumnRule.addStation(stations);
-                fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS " + reportTypeEnum.getName()
-                        + " NĂM " + action.getYear() + " \\n " +  settingDao.findByName(SettingEnum.COMPANY_NAME.getName()) + " \\n");
+                fastReportBuilder.setTitle("KẾ HOẠCH SCTX – KCHT THÔNG TIN TÍN HIỆU ĐS "
+                        + reportTypeEnum.getName()
+                        + " NĂM " + action.getYear() + " \\n " +
+                        settingDao.findByName(SettingEnum.COMPANY_NAME.getName()).getValue()
+                        + " \\n");
             } else {
                 Station station = generalDao.findById(Station.class, stationId);
                 stations.add(station);

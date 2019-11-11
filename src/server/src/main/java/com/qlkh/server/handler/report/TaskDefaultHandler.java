@@ -153,7 +153,9 @@ public class TaskDefaultHandler extends AbstractHandler<TaskDefaultAction, TaskD
                     .addColumn("Đơn vị", "unit", String.class, 20, detailStyle)
                     .addColumn("Định mức", "defaultValue", Double.class, 20, false, "###,###.###", detailStyle)
                     .addColumn("Số lần", "quota", Integer.class, 20, detailStyle);
-            fastReportBuilder.setTitle("ĐỊNH MỨC CÔNG VIỆC " + settingDao.findByName(SettingEnum.COMPANY_NAME.getName()) + " NĂM " + DateTimeUtils.getCurrentYear(settingDao));
+            fastReportBuilder.setTitle("ĐỊNH MỨC CÔNG VIỆC " +
+                    settingDao.findByName(SettingEnum.COMPANY_NAME.getName()).getValue()
+                    + " NĂM " + DateTimeUtils.getCurrentYear(settingDao));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

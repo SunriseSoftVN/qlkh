@@ -1,1 +1,1 @@
-CREATE TABLE `qlkh2`.`settings` ( `id` BIGINT NOT NULL AUTO_INCREMENT , `name` VARCHAR(50) NOT NULL , `value` VARCHAR(250) NOT NULL , `created_date` DATE NOT NULL , `updated_date` DATE NOT NULL , `create_by` BIGINT NOT NULL , `update_by` BIGINT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `qlkh2`.`settings` ( `id` BIGINT NOT NULL AUTO_INCREMENT , `name` VARCHAR(50) NOT NULL , `value` VARCHAR(250) NOT NULL , `createdDate` DATE NOT NULL , `updatedDate` DATE NOT NULL , `createBy` BIGINT NOT NULL , `updateBy` BIGINT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
